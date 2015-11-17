@@ -1,0 +1,203 @@
+\documentclass{article} %{book}`
+  %%% Encodage
+   \usepackage[utf8]{inputenc}
+   \usepackage[T1]{fontenc}
+	 \usepackage[french]{babel}
+	 \usepackage{lmodern}
+	 \usepackage[pdftex]{hyperref}
+	 \usepackage{csquotes}
+   \usepackage[rightcaption]{sidecap} % Pour créer un nouvel environnement d'image pour mettre la légende à droite
+	 \usepackage{nccrules} % Pour tracer des filets de longueur désirée dans le bas de page
+	 \usepackage{lastpage} % Pour avoir le nombre total de pages
+   \usepackage{textcomp} % Pour avoir le symbole pourmille \textperthousand
+   \usepackage{pifont} % pour avoir des symboles sympas, notamment une coche et une croix
+
+   %%% Bibliographie
+	 \usepackage[backend=bibtex,bibstyle=authoryear, style=authoryear]{biblatex}
+   \bibliography{biblio}
+
+%----------------------------------------------------------------------------------------
+%  Figures et les tableaux
+%----------------------------------------------------------------------------------------
+   \usepackage{graphicx}
+   \usepackage[margin=1cm]{geometry} 
+	 \usepackage{subfigure}
+	 \usepackage{array}
+   \usepackage{multicol}
+	 \usepackage[table]{xcolor}
+   \usepackage{rotating} % Afin de tourner les tableaux
+   \usepackage{longtable} % pour les tableaux sur plusieurs pages
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+opts_chunk$set(
+  fig.align='center', 
+	cache=FALSE, 
+	echo=FALSE, # afin d'effacer les appels de commandes
+	results='hide', # Afin d'effacer les résultats texte
+	message=FALSE, # Afin d'effacer les messages 
+	warning=FALSE, # Afin d'effacer les alertes
+	error=FALSE # (FALSE will make R stop if an error occurs; TRUE will show the error messages in the output)
+	) #
+@
+
+<<library>>=
+library(aquatools)
+library(dplyr)
+library(foreign)
+library(gdata)
+library(ggplot2)
+library(lubridate)
+library(readxl)
+library(reshape2)
+library(RSQLite)
+library(scales)
+library(xlsx)
+library(xtable)
+@
+
+<<Donnees>>=
+##### Importation des données #####
+## Données poissons ##
+Resultats <- poissons.resultats.BDD() # Avec Aquatools
+Resultats$DateDebut.x <- ymd_hms(Resultats$DateDebut.x)
+Resultats$DateDebut.x <- format(Resultats$DateDebut.x, "%Y-%m-%d")
+@
+
+\includegraphics[width=0.15\textwidth]{FD39.png} 
+
+<<parametres, results='asis', fig.show='hold'>>=
+Parametres <-
+Resultats %>%
+  filter(Nom == "SOR10-2") %>%
+  filter(DateDebut.x == "2015-05-19") %>%
+  select(DateDebut.x, Nomecosysteme, Commune, XLambert, YLambert, Gestionnaire, Nombreanodes, NombreDePassages, LongueurProspectee, LargeurLameeau, Surface, TemperatureEau, OxygenationmgL, OxygenationPourcent, ConductiviteEau, pHEau)
+
+Parametres <- unique(Parametres)
+colnames(Parametres) <- c("Date","Cours d'eau","Commune","Coordonnée X","Coordonnée Y","Gestionnaire", "Nombre d'anodes", "Nombre de passages", "Longueur (m)", "Largeur (m)", "Surface (m2)", "Température", "Oxygénation (mg/l)", "Oxygénation (%)", "Conductivité", "pH")
+#Parametres$Date <- ymd_hms(Parametres$Date)
+#Parametres$Date <- paste(day(Parametres$Date), month(Parametres$Date), year(Parametres$Date),sep="-")
+
+Parametres <- t(Parametres)
+
+tabParametres <- xtable(Parametres, caption = "Paramètres", label="Parametres")
+rws <- seq(1, (nrow(Parametres)), by = 2)
+col <- rep("\\rowcolor[gray]{0.85}", length(rws))
+print(tabParametres,
+  table.placement="!htbp",
+  caption.placement="top", 
+  include.rownames=TRUE,
+  include.colnames=FALSE,
+  #floating.environment='sidewaystable', # pour avoir un tableau tourné
+  scalebox=0.95, # afin de réduire la taille globale du tableau
+  add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
+  )
+
+# Il manque l'opérateur, le lieu-dit, 
+@
+
+<<tabbruts, results='asis'>>=
+
+## Résultats bruts
+Bruts <-
+Resultats %>%
+  filter(Nom == "SOR10-2") %>%
+  filter(DateDebut.x == "2015-05-19") %>%
+  select(Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, NombreTotalCaptures, DensiteNumeriqueBrute, BiomasseTotaleCapturee, DensitePonderaleBrute) %>%
+  arrange(Codeespece)
+
+Bruts$DensiteNumeriqueBrute <- round(Bruts$DensiteNumeriqueBrute,1)
+Bruts$DensitePonderaleBrute <- round(Bruts$DensitePonderaleBrute,1)
+
+temporaire <-
+    Bruts %>% 
+    summarise(Codeespece = n(),
+              N_SommeCapturePassage1 = sum(N_SommeCapturePassage1),
+              N_SommeCapturePassage2 = sum(N_SommeCapturePassage2),
+              N_SommeCapturePassage3 = sum(N_SommeCapturePassage3),
+              NombreTotalCaptures = sum(NombreTotalCaptures),
+              DensiteNumeriqueBrute = sum(DensiteNumeriqueBrute),
+              BiomasseTotaleCapturee = sum(BiomasseTotaleCapturee),
+              DensitePonderaleBrute = sum(DensitePonderaleBrute)
+    )
+  temporaire$Nom <- "TOTAL"
+  Bruts <- merge(Bruts, temporaire, all=T)
+  
+  Bruts <- Bruts %>% 
+    select(Nom, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, NombreTotalCaptures, DensiteNumeriqueBrute, BiomasseTotaleCapturee, DensitePonderaleBrute) %>% 
+    arrange(desc(Nom))
+
+colnames(Bruts)<-c("","Espèce","P1","P2","P3","Nb total","Ind/10a", "Biomasse (g)", "g/ha")
+tabBruts <- xtable(Bruts, caption = "Résultats bruts", label="tabbruts")
+digits(tabBruts)<-c(0,0,0,0,0,0,0,1,0,1)
+rws <- seq(1, (nrow(Bruts)), by = 2)
+col <- rep("\\rowcolor[gray]{0.85}", length(rws))
+print(tabBruts,
+  table.placement="!htbp",
+  caption.placement="top", 
+  include.rownames=FALSE,
+  #floating.environment='sidewaystable', # pour avoir un tableau tourné
+  #scalebox=0.75, # afin de réduire la taille globale du tableau
+  add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
+  )
+
+@
+
+<<tabelabores, results='asis'>>=
+
+## Résultats élaborés
+Elabores <-
+Resultats %>%
+  filter(Nom == "SOR10-2") %>%
+  filter(DateDebut.x == "2015-05-19") %>%
+  select(Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, estimationeffectifNumerique, DensiteNumeriqueestimee, IntervalleConfianceDensiteNum, estimationeffectifPonderal, DensitePonderaleestimee, IntervalleConfianceDensitePond, CoteabondanceNumerique, CoteabondancePonderale) %>%
+  arrange(Codeespece)
+
+  Elabores$DensiteNumeriqueestimee <- round(Elabores$DensiteNumeriqueestimee,1)
+  Elabores$IntervalleConfianceDensiteNum <- round(Elabores$IntervalleConfianceDensiteNum,1)
+  Elabores$DensitePonderaleestimee <- round(Elabores$DensitePonderaleestimee,1)
+  Elabores$IntervalleConfianceDensitePond <- round(Elabores$IntervalleConfianceDensitePond,1)
+  
+ temporaire <-
+    Elabores %>% 
+    summarise(Codeespece = n(),
+              N_SommeCapturePassage1 = sum(N_SommeCapturePassage1),
+              N_SommeCapturePassage2 = sum(N_SommeCapturePassage2),
+              N_SommeCapturePassage3 = sum(N_SommeCapturePassage3),
+              estimationeffectifNumerique = sum(estimationeffectifNumerique),
+              DensiteNumeriqueestimee = sum(DensiteNumeriqueestimee),
+              estimationeffectifPonderal = sum(estimationeffectifPonderal),
+              DensitePonderaleestimee = sum(DensitePonderaleestimee)
+              )
+  temporaire$Nom <- "TOTAL"
+  Elabores <- merge(Elabores, temporaire, all=T)
+  
+  # Remise en ordre des colonnes et renommage #
+  
+  Elabores <- Elabores %>% 
+  select(Nom, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, estimationeffectifNumerique, DensiteNumeriqueestimee, IntervalleConfianceDensiteNum, estimationeffectifPonderal, DensitePonderaleestimee, IntervalleConfianceDensitePond, CoteabondanceNumerique, CoteabondancePonderale)
+
+colnames(Elabores)<-c("","Espèce","P1","P2","P3","Eff. est.","Ind/10a","IC Ind/10a","Biom. est. (g)","g/ha","IC g/ha", "CAN", "CAP")
+tabElabores <- xtable(Elabores, caption = "Résultats estimés", label="tabelabores")
+digits(tabElabores)<-c(0,0,0,0,0,0,0,1,1,0,1,1,1,0)
+rws <- seq(1, (nrow(Elabores)), by = 2)
+col <- rep("\\rowcolor[gray]{0.85}", length(rws))
+print(tabElabores,
+  table.placement="!htbp",
+  caption.placement="top", 
+  include.rownames=FALSE,
+  #floating.environment='sidewaystable', # pour avoir un tableau tourné
+  #scalebox=0.75, # afin de réduire la taille globale du tableau
+  add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
+  )
+
+@
+
+\clearpage % Whitespace to the end of the page
+
+% Rajouter les pages suivants par espèce.
+% Faire le calcul sur l'ensemble des données de la station (pas que la pêche en question) des courbes taille-poids
+
+\end{document}
