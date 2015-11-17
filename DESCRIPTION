@@ -1,7 +1,7 @@
 Package: aquatools
 Title: Tools for freshwater managers
 Version: 0.1
-Authors@R: "First Last <first.last@example.com> [aut, cre]"
+Authors@R: person("Jean-Baptiste", "Fagot", email = "jbfagot.fede39@gmail.com", role = c("aut", "cre"))
 Description: What the package does (paragraph)
 Depends:
     R (>= 3.0.3)
