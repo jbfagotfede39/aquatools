@@ -11,8 +11,8 @@
 #' poissons.brut("SOR10-2", "2015-05-19")
 
 poissons.brut <- function(
-  station="SAI2-3",
-  date="2014-09-10")
+  station="AIN18-4",
+  date="2011-09-07")
 {
   
   ## Connexion à la BDD ##
@@ -39,9 +39,9 @@ poissons.brut <- function(
   ## Simplification ##
   Captures <- 
     Captures %>%
-    select(Nom, DateDebut, NumeroDePassage, Codeespece, TailleMinimum, TailleMaximum, Nombre, Poids) %>% 
+    select(Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids) %>% 
     filter(Nom == station, DateDebut == date) %>% 
-    rename(Station = Nom, Date = DateDebut, Passage = NumeroDePassage, Espèce = Codeespece) %>% 
+    rename(Station = Nom, Date = DateDebut, Passage = NumeroDePassage, Espèce = CodeEspece) %>% 
     arrange(Passage, Espèce, Nombre)
   Captures[Captures == 0] <- ""
   
