@@ -23,8 +23,8 @@ BDD.sauvegarde <- function(x,
   ## Poissons ##
 
   ## Thermie ##
-  if(Type == "Thermie" & file.exists("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/Archives_BDD_Thermie_FD39/BDD_Tps_travail_FD39-",now(),".sqlite"))
-  if(Type == "Thermie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite") == T) file.copy("/Users/jean-baptistefagot_FD39/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/Archives_BDD_Thermie_FD39/BDD_Tps_travail_FD39-",now(),".sqlite"))
+  if(Type == "Thermie" & file.exists("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/Archives_BDD_Thermie_FD39/BDD_Thermie_FD39-",now(),".sqlite"))
+  if(Type == "Thermie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite") == T) file.copy("/Users/jean-baptistefagot_FD39/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/Archives_BDD_Thermie_FD39/BDD_Thermie_FD39-",now(),".sqlite"))
   
   ## Physico-chimie ##
   if(Type == "Physico-chimie" & file.exists("/Users/imac27/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Physico-chimie/Archives_BDD_FD39/BDD_Physico-chimie_FD39-",now(),".sqlite"))
