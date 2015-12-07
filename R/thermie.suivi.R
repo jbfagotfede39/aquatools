@@ -4,7 +4,7 @@
 #' 
 #' @param Type Type de donnée de suivi
 #' @keywords 
-#' @import aquatools DBI dplyr
+#' @import DBI dplyr
 #' @export
 #' @examples
 #' thermie.suivi("CG39", Type = "MO")

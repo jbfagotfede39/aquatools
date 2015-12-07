@@ -8,12 +8,12 @@ BDD.ouverture(x, Type = c("Poissons", "Thermie", "Physico-chimie",
   "Piézométrie", "Temps de travail"))
 }
 \arguments{
-\item{Type}{de base de données}
+\item{Type}{Type de base de données}
 }
 \description{
 Cette fonction permet de charger les bases de données de la fédération
 }
 \examples{
-BDD.ouverture(Type = "Thermie") Type <- "Therme"
+BDD.ouverture(Type = "Thermie")
 }
 

@@ -8,7 +8,7 @@ BDD.sauvegarde(x, Type = c("Thermie", "Physico-chimie", "Piézométrie",
   "Temps de travail"))
 }
 \arguments{
-\item{Type}{de base de données}
+\item{Type}{Type de base de données}
 }
 \description{
 Cette fonction permet de sauvegarder les bases de données de la fédération

@@ -13,7 +13,7 @@ Imports:
     ggplot2,
     RSQLite
 License: What license is it under?
-URL:https://github.com/jbfagotfede39/Aquatools
-BugReports:https://github.com/jbfagotfede39/Aquatools/issues
+URL: https://github.com/jbfagotfede39/Aquatools
+BugReports: https://github.com/jbfagotfede39/Aquatools/issues
 LazyData: true
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
