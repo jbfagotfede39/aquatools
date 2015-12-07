@@ -2,12 +2,12 @@
 #'
 #' Cette fonction permet de charger les bases de données de la fédération
 #' 
-#' @param Type de base de données
+#' @param Type Type de base de données
 #' @keywords 
 #' @import dplyr DBI RSQLite
 #' @export
 #' @examples
-#' BDD.ouverture(Type = "Thermie") Type <- "Therme"
+#' BDD.ouverture(Type = "Thermie")
 
 ##### TODO LIST #####
 # 
