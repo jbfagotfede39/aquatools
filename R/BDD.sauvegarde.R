@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet de sauvegarder les bases de données de la fédération
 #' 
-#' @param Type de base de données
+#' @param Type Type de base de données
 #' @keywords 
 #' @import lubridate
 #' @export
