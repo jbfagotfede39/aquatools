@@ -71,3 +71,4 @@ thermie.suivi <- function(x,
     #filter(Date == recherche) %>% 
     filter(Capteur == recherche) %>% 
     arrange(desc(Date))
+}
