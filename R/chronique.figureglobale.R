@@ -89,7 +89,7 @@ chronique.figureglobale <- function(
     geom_line(aes(y = TMaxJ, colour = "Max/J")) +
     geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold") +
     geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2) +
-    scale_x_date(breaks = "1 month") +
+    scale_x_date(date_breaks = "1 month") +
     #ylim(0,25) +
     labs(x = "", y = legendeY, title=st, color = "Températures :") # Pour changer le titre
   plotrelatif
