@@ -29,6 +29,7 @@ chronique.figureglobale <- function(
   
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates) et Y (temp)
+  # Ajout d'un interrupteur pour activer ou désactiver le calcul et l'affichage de la TMM30J
   
   ##### -------------- A FAIRE -------------- #####
   
