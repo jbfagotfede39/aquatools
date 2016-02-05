@@ -14,7 +14,7 @@
 #####################
 
 BDD.ouverture <- function(x, 
-    Type = c("Poissons", "Thermie", "Physico-chimie", "Piézométrie", "Temps de travail"))
+    Type = c("Poissons", "Thermie", "Physico-chimie", "Piézométrie", "Hydrologie", "Temps de travail"))
 {
 
 ## Évaluation des choix
@@ -38,6 +38,10 @@ if(Type == "Physico-chimie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/
 ## Piézométrie ##
 if(Type == "Piézométrie" & file.exists("/Users/imac27/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite")
 if(Type == "Piézométrie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite")
+
+## Hydrologie ##
+if(Type == "Hydrologie" & file.exists("/Users/imac27/hubiC/Données/Hydrologie/BDD_Hydrologie_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Hydrologie/BDD_Hydrologie_FD39.sqlite")
+if(Type == "Hydrologie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Piézométrie/BDD_Hydrologie_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Hydrologie/BDD_Hydrologie_FD39.sqlite")
 
 ## Temps de travail ##
 if(Type == "Temps de travail" & file.exists("/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")

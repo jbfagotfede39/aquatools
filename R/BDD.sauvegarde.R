@@ -14,7 +14,7 @@
 #####################
 
 BDD.sauvegarde <- function(x, 
-                          Type = c("Thermie", "Physico-chimie", "Piézométrie", "Temps de travail"))
+                          Type = c("Thermie", "Physico-chimie", "Hydrologie", "Piézométrie", "Temps de travail"))
 {
   
   ## Évaluation des choix
@@ -33,6 +33,10 @@ BDD.sauvegarde <- function(x,
   ## Piézométrie ##
   if(Type == "Piézométrie" & file.exists("/Users/imac27/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Piézométrie/Archives_BDD_piézo_FD39/BDD_Piézométrie_FD39-",now(),".sqlite"))
   if(Type == "Piézométrie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite") == T) file.copy("/Users/jean-baptistefagot_FD39/hubiC/Données/Piézométrie/BDD_Piézométrie_FD39.sqlite", paste0("/Users/jean-baptistefagot_FD39/hubiC/Données/Piézométrie/Archives_BDD_piézo_FD39/BDD_Piézométrie_FD39-",now(),".sqlite"))
+  
+  ## Hydrologie ##
+  if(Type == "Hydrologie" & file.exists("/Users/imac27/hubiC/Données/Hydrologie/BDD_Hydrologie_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Hydrologie/BDD_Hydrologie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Hydrologie/Archives_BDD_Hydrologie_FD39/BDD_Hydrologie_FD39-",now(),".sqlite"))
+  if(Type == "Hydrologie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Hydrologie/BDD_Hydrologie_FD39.sqlite") == T) file.copy("/Users/jean-baptistefagot_FD39/hubiC/Données/Hydrologie/BDD_Hydrologie_FD39.sqlite", paste0("/Users/jean-baptistefagot_FD39/hubiC/Données/Hydrologie/Archives_BDD_Hydrologie_FD39/BDD_Hydrologie_FD39-",now(),".sqlite"))
   
   ## Temps de travail ##
   if(Type == "Temps de travail" & file.exists("/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite", paste0("/Users/imac27/hubiC/FD39/Activité/Temps de travail/Archives_BDD_FD39/BDD_Tps_travail_FD39-",now(),".sqlite"))
