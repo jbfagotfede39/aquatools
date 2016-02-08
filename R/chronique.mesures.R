@@ -16,7 +16,7 @@ chronique.mesures <- function(
   # library("DBI");library("dplyr");library("lubridate");library("RSQLite");library("stringr")
   
 ## Évaluation des choix
-  TypeMesure <- match.arg(TypeMesure)
+  Type <- match.arg(Type)
   
 
 ##### Connexion à la BDD #####
