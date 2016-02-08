@@ -4,11 +4,11 @@
 \alias{chronique.stations}
 \title{Listage des stations de chroniques}
 \usage{
-chronique.stations(x = "CD39", Type = c("MO", "Milieu", "Bassin",
+chronique.stations(x = "CD39", Recherche = c("MO", "Milieu", "Bassin",
   "Sous-bassin", "Commune", "Département"))
 }
 \arguments{
-\item{Type}{Type de donnée de suivi}
+\item{Recherche}{Type de données recherchées}
 
 \item{Nom}{Nom recherché}
 }

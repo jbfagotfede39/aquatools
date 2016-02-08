@@ -13,7 +13,7 @@
 # 
 #####################
 
-BDD.ouverture <- function(data)
+chronique.validation <- function(data)
 {
   data <-
     data %>% 

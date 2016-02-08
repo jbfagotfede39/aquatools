@@ -3,7 +3,7 @@
 #' Cette fonction permet de lister les stations de la BDD Chroniques
 #' 
 #' @param Nom Nom recherché
-#' @param Type Type de donnée de suivi
+#' @param Recherche Type de données recherchées
 #' @keywords stations
 #' @import dplyr DBI RSQLite
 #' @export
@@ -19,12 +19,12 @@
 #####################
 
 chronique.stations <- function(x = "CD39", 
-                                Type = c("MO", "Milieu", "Bassin", "Sous-bassin", "Commune", "Département")
+                                Recherche = c("MO", "Milieu", "Bassin", "Sous-bassin", "Commune", "Département")
 )
 {
   
   ## Évaluation des choix
-  Type <- match.arg(Type)
+  Recherche <- match.arg(Recherche)
   
   ## Connexion à la BDD ##
   db <- BDD.ouverture(Type = "Chroniques")
@@ -33,7 +33,7 @@ chronique.stations <- function(x = "CD39",
   Stations <- dbReadTable(db, "Stations")
   
   ## x en tant que telle
-  if(Type == "MO") 
+  if(Recherche == "MO") 
     Vue <-
     Stations %>% 
     filter(MO == x) %>% 
@@ -44,7 +44,7 @@ chronique.stations <- function(x = "CD39",
     #filter(Departement == x) %>% 
     arrange(CodeRDT)
   
-  if(Type == "Milieu") 
+  if(Recherche == "Milieu") 
     Vue <-
     Stations %>% 
     #filter(MO == x) %>% 
@@ -55,7 +55,7 @@ chronique.stations <- function(x = "CD39",
     #filter(Departement == x) %>% 
     arrange(CodeRDT)
   
-  if(Type == "Bassin") 
+  if(Recherche == "Bassin") 
     Vue <-
     Stations %>% 
     #filter(MO == x) %>% 
@@ -66,7 +66,7 @@ chronique.stations <- function(x = "CD39",
     #filter(Departement == x) %>% 
     arrange(CodeRDT)
   
-  if(Type == "Sous-bassin") 
+  if(Recherche == "Sous-bassin") 
     Vue <-
     Stations %>% 
     #filter(MO == x) %>% 
@@ -77,7 +77,7 @@ chronique.stations <- function(x = "CD39",
     #filter(Departement == x) %>% 
     arrange(CodeRDT)
   
-  if(Type == "Commune") 
+  if(Recherche == "Commune") 
     Vue <-
     Stations %>% 
     #filter(MO == x) %>% 
@@ -88,7 +88,7 @@ chronique.stations <- function(x = "CD39",
     #filter(Departement == x) %>% 
     arrange(CodeRDT)
   
-  if(Type == "Département") 
+  if(Recherche == "Département") 
     Vue <-
     Stations %>% 
     #filter(MO == x) %>% 

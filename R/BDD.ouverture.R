@@ -14,7 +14,7 @@
 #####################
 
 BDD.ouverture <- function(x, 
-                           Type = c("Chroniques", "Poissons", "Thermie", "Physico-chimie", "Hydrologie", "Piézométrie", "Temps de travail"))
+                           Type = c("Chroniques", "Poissons", "Thermie", "Physico-chimie", "Piézométrie", "Temps de travail"))
 {
   
   ## Évaluation des choix
