@@ -1,4 +1,4 @@
-#' Extraction suivi terrain thermie
+#' Extraction suivi terrain chroniques
 #'
 #' Cette fonction permet d'extraire des données de suivi de terrain
 #' 
@@ -7,17 +7,17 @@
 #' @import DBI dplyr
 #' @export
 #' @examples
-#' thermie.suivi("CG39", Type = "MO")
-#' thermie.suivi("JB-Stéphane", Type = "Opérateurs")
-#' thermie.suivi("DRO14-2", Type = "Station")
-#' thermie.suivi("2015-10-23", Type = "Date")
-#' thermie.suivi("9759803", Type = "Sonde")
+#' chronique.suivi("CG39", Type = "MO")
+#' chronique.suivi("JB-Stéphane", Type = "Opérateurs")
+#' chronique.suivi("DRO14-2", Type = "Station")
+#' chronique.suivi("2015-10-23", Type = "Date")
+#' chronique.suivi("9759803", Type = "Sonde")
 
 ##### TODO LIST #####
 # 
 #####################
 
-thermie.suivi <- function(x = "ORA2-7", 
+chronique.suivi <- function(x = "ORA2-7", 
                           Type = c("MO", "Opérateurs", "Station", "Date", "Sonde")
                           )
 {
@@ -26,7 +26,7 @@ thermie.suivi <- function(x = "ORA2-7",
   Type <- match.arg(Type)
   
   ## Connexion à la BDD ##
-  db <- BDD.ouverture(Type = "Thermie")
+  db <- BDD.ouverture(Type = "Chroniques")
   
   ## Chargement des données ##
   SuiviTerrain <- dbReadTable(db, "SuiviTerrain")
