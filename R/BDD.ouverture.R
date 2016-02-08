@@ -14,14 +14,12 @@
 #####################
 
 BDD.ouverture <- function(x, 
-    Type = c("Chroniques", "Poissons", "Thermie", "Physico-chimie", "Piézométrie", "Temps de travail")
-    )
-  
+                           Type = c("Chroniques", "Poissons", "Thermie", "Physico-chimie", "Hydrologie", "Piézométrie", "Temps de travail"))
 {
-
+  
   ## Évaluation des choix
-Type <- match.arg(Type)
-
+  Type <- match.arg(Type)
+  
 ## Connexion à la BDD ##
 drv <- dbDriver("SQLite")
 
