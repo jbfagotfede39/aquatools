@@ -18,7 +18,7 @@
 
 #####################
 
-stations.ecosysteme <- function(x = "CD39", 
+chronique.stations <- function(x = "CD39", 
                                 Type = c("MO", "Milieu", "Bassin", "Sous-bassin", "Commune", "Département")
 )
 {
