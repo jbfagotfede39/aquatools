@@ -24,7 +24,7 @@ Type <- match.arg(Type)
 drv <- dbDriver("SQLite")
 
 ## Chroniques ##
-if(Type == "Chroniques" & file.exists("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Poissons/Chroniques/BDD_Chroniques_FD39.sqlite")
+if(Type == "Chroniques" & file.exists("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite")
 if(Type == "Chroniques" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite")
 
 ## Poissons ##
