@@ -7,7 +7,7 @@
 #' @examples
 #' chronique.mesures("DRO6-8", "Thermie", "2013")
 
-thermie.mesures <- function(  
+chronique.mesures <- function(  
   CodeStation ="DRO6-8",
   Type = c("Thermie", "Piézométrie", "Hydrologie", "O2", "Pluviométrie"),
   annee="2013")
