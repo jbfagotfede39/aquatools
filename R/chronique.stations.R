@@ -27,7 +27,7 @@ chronique.stations <- function(x = "CD39",
   Recherche <- match.arg(Recherche)
   
   ## Connexion à la BDD ##
-  db <- BDD.ouverture(Type = "Chroniques")
+  db <- BDD.ouverture()
   
   ## Chargement des données ##
   Stations <- dbReadTable(db, "Stations")
