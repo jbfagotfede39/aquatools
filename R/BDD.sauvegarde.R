@@ -23,8 +23,8 @@ BDD.sauvegarde <- function(x,
   ## Poissons ##
 
   ## Chroniques ##
-  if(Type == "Thermie" & file.exists("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
-  if(Type == "Thermie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
+  if(Type == "Chroniques" & file.exists("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
+  if(Type == "Chroniques" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
   
   ## Thermie ##
   if(Type == "Thermie" & file.exists("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/BDD_Thermie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Thermie/Exploitation_données_thermie/Archives_BDD_Thermie_FD39/BDD_Thermie_FD39-",now(),".sqlite"))
