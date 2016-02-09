@@ -2,63 +2,57 @@
 #'
 #' Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.)
 #' 
-#' @param thermie Data.frame contenant a minima une colonne Date et une colonne Temp
-#' @param CodeRDT Titre du graphique (vide par défaut)
+#' @param thermie Data.frame contenant a minima une colonne Date et une colonne Valeur
+#' @param Titre Titre du graphique (vide par défaut)
 #' @param legendeY Défini le texte de la légende de l'axe Y (Température (C))
 #' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
+#' @param Vmm30j Si \code{FALSE} (par défault), n'affiche pas les
+#'    Vmm30j.  Si \code{TRUE}, les affiche.
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les
 #'    figures.  Si \code{TRUE}, les enregistre.
 #' @param format Défini le format d'enregistrement (par défaut .png)
-#' @keywords temperature
+#' @keywords chronique
 #' @import ggplot2 dplyr
 #' @export
 #' @examples
-#' chronique.figure(thermie)
-#' chronique.figure(thermie = mesdonnees, legendeY = "Température (°C)", duree = "Complet")
-#' chronique.figure(thermie = tableaudonnee, CodeRDT=nom, legendeY = "Température (°C)", save=T, format=".png")
+#' chronique.figure(data)
+#' chronique.figure(data = mesdonnees, legendeY = "Température (°C)", duree = "Complet")
+#' chronique.figure(data = tableaudonnee, Titre=nom, legendeY = "Température (°C)", save=T, format=".png")
 
 chronique.figure <- function(
-    thermie = tab,
-    CodeRDT="",
+    data = data,
+    Titre="",
     legendeY = "Température (°C)",
     duree = "Complet",
     save=F,
+    Vmm30j=F,
     format=".png")
   {
   
-  ##### -------------- A FAIRE -------------- #####
-  
+##### -------------- A FAIRE -------------- #####
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
+  # Il faudra rajouter un interrupteur pour les supprimer ou non les vmax et vmin par jour (pour n'avoir qu'une seule courbe)
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates) et Y (temp)
+  # Rajouter une détection de durée minimale de 30 jours
+# -------------- A FAIRE -------------- #
   
-  ##### -------------- A FAIRE -------------- #####
-  
-  ## Chargement des données pour travaux ##
-  #thermie <- read.delim2("./Données-test/ANG0-7_10316505_ANG1-a2014.csv",header=TRUE,sep=";")
-  #thermie$Temp <- as.numeric( sub(",", ".", thermie$Temp))
-  #library(ggplot2);library(dplyr);library(aquatools)
-  
-  #CodeRDT="saineamontconflemme2011";legendeY = "Température (°C)";save=T;format=".png"
-  #str(thermie)
-  #resume(thermie)
-  #thermie <- Mesures
-
 ##### Mise au format des données #####
 
 ## Transformation du format des dates
-thermie$Date <- as.Date(thermie$Date,format="%Y-%m-%d")
+data$Date <- as.Date(data$Date,format="%Y-%m-%d")
 
 ## Extraction des valeurs remarquables journalières ##
 
 syntjour <-
-  thermie %>%
+  data %>%
   group_by(Date) %>%
   summarise(
-    TMinJ=min(Temperature),
-    TMoyJ=mean(Temperature),
-    TMaxJ=max(Temperature)
+    TMinJ=min(Valeur),
+    TMoyJ=mean(Valeur),
+    TMaxJ=max(Valeur)
     )
 
+if(Vmm30j == T){
 ###T Moymax 30 J
 cumuleTMaxJ <- numeric(length(syntjour$TMaxJ)-30)
 for (i in 1:length(syntjour$TMaxJ)){
@@ -77,73 +71,74 @@ data.label <- data.frame(
   ytext = TMaxMoy30J+2,
   label = "Tmm30j"
 )
-
+}
 #resume(syntjour)
 #head(syntjour)
 #tail(syntjour)
+#str(syntjour)
 
 ##### Plot temps relatif sur l'échantillon de données #####
-plotrelatif <-
-ggplot(syntjour, aes(Date)) +
-  geom_line(aes(y = TMinJ, colour = "Min/J")) +
-  geom_line(aes(y = TMoyJ, colour = "Moy/J")) +
-  geom_line(aes(y = TMaxJ, colour = "Max/J")) +
-  geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold") +
-  geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2) +
-  scale_x_date(breaks = "1 month") +
-  ylim(0,25) +
-  labs(x = "", y = legendeY, title=CodeRDT, color = "Températures :") # Pour changer le titre
+
+  plotrelatif <- ggplot(syntjour, aes(Date))
+  plotrelatif <- plotrelatif + geom_line(aes(y = TMinJ, colour = "Min/J"))
+  plotrelatif <- plotrelatif + geom_line(aes(y = TMoyJ, colour = "Moy/J"))
+  plotrelatif <- plotrelatif + geom_line(aes(y = TMaxJ, colour = "Max/J"))
+  if(Vmm30j == T){plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
+  plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
+  plotrelatif <- plotrelatif + scale_x_date(date_breaks = "1 month")
+  plotrelatif <- plotrelatif + ylim(0,25)
+  plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=Titre, color = "Températures :") # Pour changer le titre
 
 if(duree == "Relatif"){
   plotrelatif
-  if(save==T){ggsave(file=paste("Sorties/Vues/relatif_",CodeRDT,format,sep=""))}
+  if(save==T){ggsave(file=paste("Sorties/Vues/relatif_",Titre,format,sep=""))}
   return(plotrelatif)
 }
 
 ##### Plot temps absolu sur une année ####
 if(length(unique(format(syntjour$Date,"%Y"))) == 1){
   plotabsolu <-
-  ggplot(syntjour, aes(Date)) +
-    geom_line(aes(y = TMinJ, colour = "Min/J")) +
-    geom_line(aes(y = TMoyJ, colour = "Moy/J")) +
-    geom_line(aes(y = TMaxJ, colour = "Max/J")) +
-    geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold") +
-    geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2) +
-    scale_x_date(#breaks = "2 month", 
+    plotabsolu <- ggplot(syntjour, aes(Date))
+    plotabsolu <- plotabsolu + geom_line(aes(y = TMinJ, colour = "Min/J"))
+    plotabsolu <- plotabsolu + geom_line(aes(y = TMoyJ, colour = "Moy/J"))
+    plotabsolu <- plotabsolu + geom_line(aes(y = TMaxJ, colour = "Max/J"))
+    if(Vmm30j == T){plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
+    plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
+    plotabsolu <- plotabsolu + scale_x_date(#breaks = "2 month", 
       #labels = date_format("%m-%Y"), # Ne fonctionne pas
-      limits = as.Date(c(paste(as.numeric(format(syntjour$Date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$Date[length(syntjour$Date)],"%Y"),"-09-30",sep="")))) +
+      limits = as.Date(c(paste(as.numeric(format(syntjour$Date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$Date[length(syntjour$Date)],"%Y"),"-09-30",sep=""))))
     
     #scale_x_date(breaks = "2 month", #### Save qui fonctionne avant le test automatique plus haut
     #labels = date_format("%m-%Y"), # Ne fonctionne pas
     #limits = as.Date(c('2013-10-01','2014-09-30'))) +
-    ylim(0,25) +
-    labs(x = "", y = legendeY, title=CodeRDT, color = "Températures :") # Pour changer le titre
-  #if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",CodeRDT,format,sep=""))}
+    plotabsolu <- plotabsolu + ylim(0,25)
+    plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title=Titre, color = "Températures :") # Pour changer le titre
+  #if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",Titre,format,sep=""))}
 }
 
 if(length(unique(format(syntjour$Date,"%Y"))) == 2){
-  plotabsolu <-
-  ggplot(syntjour, aes(Date)) +
-    geom_line(aes(y = TMinJ, colour = "Min/J")) +
-    geom_line(aes(y = TMoyJ, colour = "Moy/J")) +
-    geom_line(aes(y = TMaxJ, colour = "Max/J")) +
-    geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold") +
-    geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2) +
-    scale_x_date(#breaks = "2 month", 
+  
+  plotabsolu <- ggplot(syntjour, aes(Date))
+  plotabsolu <- plotabsolu + geom_line(aes(y = TMinJ, colour = "Min/J"))
+  plotabsolu <- plotabsolu + geom_line(aes(y = TMoyJ, colour = "Moy/J"))
+  plotabsolu <- plotabsolu + geom_line(aes(y = TMaxJ, colour = "Max/J"))
+  if(Vmm30j == T){plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
+  plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
+  plotabsolu <- plotabsolu + scale_x_date(#breaks = "2 month", 
       #labels = date_format("%m-%Y"), # Ne fonctionne pas
-      limits = as.Date(c(paste(format(syntjour$Date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$Date[length(syntjour$Date)],"%Y"),"-09-30",sep="")))) +
+      limits = as.Date(c(paste(format(syntjour$Date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$Date[length(syntjour$Date)],"%Y"),"-09-30",sep=""))))
     
     #scale_x_date(breaks = "2 month", #### Save qui fonctionne avant le test automatique plus haut
     #labels = date_format("%m-%Y"), # Ne fonctionne pas
     #limits = as.Date(c('2013-10-01','2014-09-30'))) +
-    ylim(0,25) +
-    labs(x = "", y = legendeY, title=CodeRDT, color = "Températures :") # Pour changer le titre
- # if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",CodeRDT,format,sep=""))}
+  plotabsolu <- plotabsolu + ylim(0,25)
+  plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title=Titre, color = "Températures :") # Pour changer le titre
+ # if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",Titre,format,sep=""))}
 }
 
 if(duree == "Complet"){
   plotabsolu
-  if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",CodeRDT,format,sep=""))}
+  if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",Titre,format,sep=""))}
   return(plotabsolu)
 }
 

@@ -15,6 +15,9 @@
 
 ##### TODO LIST #####
 # La valeur d'écart de référence (ici 1 heure) devrait être personnalisable
+# Améliorer l'affichage des valeurs supérieures ou égales à une valeur donnée en changeant le format tbl_df vers dataframe pê ?
+# Changer titre journées complètes et Complétude des jours et la première valeur à s'afficher
+# Créer un nouveau test qui affiche les valeurs NA
 #####################
 
 chronique.validation <- function(data, ValMax = 21, ValEcart = 1)

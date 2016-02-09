@@ -4,14 +4,11 @@
 \alias{chronique.figure}
 \title{Représentation de chroniques}
 \usage{
-chronique.figure(thermie = tab, CodeRDT = "",
-  legendeY = "Température (°C)", duree = "Complet", save = F,
-  format = ".png")
+chronique.figure(data = data, Titre = "", legendeY = "Température (°C)",
+  duree = "Complet", save = F, Vmm30j = F, format = ".png")
 }
 \arguments{
-\item{thermie}{Data.frame contenant a minima une colonne Date et une colonne Temp}
-
-\item{CodeRDT}{Titre du graphique (vide par défaut)}
+\item{Titre}{Titre du graphique (vide par défaut)}
 
 \item{legendeY}{Défini le texte de la légende de l'axe Y (Température (C))}
 
@@ -20,15 +17,20 @@ chronique.figure(thermie = tab, CodeRDT = "",
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
 figures.  Si \code{TRUE}, les enregistre.}
 
+\item{Vmm30j}{Si \code{FALSE} (par défault), n'affiche pas les
+Vmm30j.  Si \code{TRUE}, les affiche.}
+
 \item{format}{Défini le format d'enregistrement (par défaut .png)}
+
+\item{thermie}{Data.frame contenant a minima une colonne Date et une colonne Valeur}
 }
 \description{
 Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.)
 }
 \examples{
-chronique.figure(thermie)
-chronique.figure(thermie = mesdonnees, legendeY = "Température (°C)", duree = "Complet")
-chronique.figure(thermie = tableaudonnee, CodeRDT=nom, legendeY = "Température (°C)", save=T, format=".png")
+chronique.figure(data)
+chronique.figure(data = mesdonnees, legendeY = "Température (°C)", duree = "Complet")
+chronique.figure(data = tableaudonnee, Titre=nom, legendeY = "Température (°C)", save=T, format=".png")
 }
-\keyword{temperature}
+\keyword{chronique}
 
