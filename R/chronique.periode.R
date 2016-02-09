@@ -13,7 +13,7 @@
 #' chronique.periode(Data, "2015-02-04 11:00:00", "2015-02-04 14:00:00")
 
 ##### TODO LIST #####
-
+# Des valeurs pré et post semblent être enlevées en trop
 #####################
 
 chronique.periode <- function(x = Data, deb = "2011-07-13 14:00:00", fin = "2014-07-13 14:00:00")

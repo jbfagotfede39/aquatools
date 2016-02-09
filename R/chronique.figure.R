@@ -85,7 +85,8 @@ data.label <- data.frame(
   plotrelatif <- plotrelatif + geom_line(aes(y = TMaxJ, colour = "Max/J"))
   if(Vmm30j == T){plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
   plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
-  plotrelatif <- plotrelatif + scale_x_date(date_breaks = "1 month")
+  #plotrelatif <- plotrelatif + scale_x_date(date_breaks = "1 month")
+  plotrelatif <- plotrelatif + scale_x_date(date_labels = "%m/%Y")
   plotrelatif <- plotrelatif + ylim(0,25)
   plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=Titre, color = "Températures :") # Pour changer le titre
 
