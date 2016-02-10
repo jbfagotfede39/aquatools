@@ -9,9 +9,9 @@
 #' chronique.mesures("DRO6-8", "Thermie", "2013")
 
 chronique.mesures <- function(  
-  CodeStation ="DRO6-8",
+  CodeStation ="",
   Type = c("Thermie", "Piézométrie", "Hydrologie", "O2", "Pluviométrie"),
-  annee="2013")
+  annee="")
 {
   
   # library("DBI");library("dplyr");library("lubridate");library("RSQLite");library("stringr")
@@ -46,6 +46,7 @@ Mesures <-
   filter(TypeMesure == Type)
 
 ## Période ##
+if(annee != "") {
 Mesures$Date <- ymd(Mesures$Date)
 
 Datefin <- ymd(str_c(annee, "-09-30"))
@@ -54,6 +55,7 @@ Datedebut <- Datefin - years(1) + days(1)
 Mesures <-
 Mesures %>% 
   filter(Date >= Datedebut & Date < Datefin + days(1))
+}
 
 return(Mesures)
 

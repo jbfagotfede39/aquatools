@@ -4,8 +4,8 @@
 \alias{chronique.mesures}
 \title{Extraction de données brutes de chronique}
 \usage{
-chronique.mesures(CodeStation = "DRO6-8", Type = c("Thermie",
-  "Piézométrie", "Hydrologie", "O2", "Pluviométrie"), annee = "2013")
+chronique.mesures(CodeStation = "", Type = c("Thermie", "Piézométrie",
+  "Hydrologie", "O2", "Pluviométrie"), annee = "")
 }
 \description{
 Permet d'extraire les données de chronique d'une station
