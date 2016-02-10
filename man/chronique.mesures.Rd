@@ -8,10 +8,11 @@ chronique.mesures(CodeStation = "DRO6-8", Type = c("Thermie",
   "Piézométrie", "Hydrologie", "O2", "Pluviométrie"), annee = "2013")
 }
 \description{
-Permet d'extraire les données de chronique d'une station pour une année biologique
+Permet d'extraire les données de chronique d'une station
 }
 \examples{
+chronique.mesures("HER0-6", "Thermie") 
 chronique.mesures("DRO6-8", "Thermie", "2013")
 }
-\keyword{donnees}
+\keyword{chronique}
 

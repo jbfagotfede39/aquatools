@@ -1,10 +1,11 @@
 #' Extraction de données brutes de chronique
 #'
-#' Permet d'extraire les données de chronique d'une station pour une année biologique
-#' @keywords donnees
+#' Permet d'extraire les données de chronique d'une station
+#' @keywords chronique
 #' @import DBI dplyr lubridate RSQLite stringr
 #' @export
 #' @examples
+#' chronique.mesures("HER0-6", "Thermie") 
 #' chronique.mesures("DRO6-8", "Thermie", "2013")
 
 chronique.mesures <- function(  

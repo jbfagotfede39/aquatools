@@ -5,6 +5,7 @@
 #' @param data Chronique à valider
 #' @param ValMax Valeur maximale dont les dépassements sont pris en compte
 #' @param ValEcart Écart entre deux valeurs successives dont les dépassements sont pris en compte
+#' @param TempsDiff Différence de temps attendue entre 2 valeurs successives (1 par défault)
 #' @keywords 
 #' @import dplyr DBI RSQLite
 #' @export
@@ -12,6 +13,7 @@
 #' chronique.validation(data)
 #' chronique.validation(data, 21)
 #' chronique.validation(data, 21, 1.5)
+#' chronique.validation(data, 21, 1.5, 3600)
 
 ##### TODO LIST #####
 # La valeur d'écart de référence (ici 1 heure) devrait être personnalisable
@@ -20,7 +22,7 @@
 # Créer un nouveau test qui affiche les valeurs NA
 #####################
 
-chronique.validation <- function(data, ValMax = 21, ValEcart = 1)
+chronique.validation <- function(data, ValMax = 21, ValEcart = 1, TempsDiff = 1)
 {
   # Transformation du format de date et calcul des écarts
   data <-
@@ -29,11 +31,11 @@ chronique.validation <- function(data, ValMax = 21, ValEcart = 1)
     arrange(DateFine) %>% 
     mutate(Difference = DateFine - lag(DateFine)) # calcule l'écart de temps entre une valeur et la valeur précédente
   
-  # Écarts différents de 1 heure
-  "Écarts différents de 1 heure :"
+  # Écarts différents de 1 heure (ou autre)
+  "Écarts différents d'une valeur TempsDiff :"
   a <-
     data %>% 
-    filter(Difference != 1 | is.na(Difference))
+    filter(Difference != TempsDiff | is.na(Difference))
   
   # Complétude des jours
   verif <-

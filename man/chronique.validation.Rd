@@ -4,7 +4,7 @@
 \alias{chronique.validation}
 \title{Validation des chroniques}
 \usage{
-chronique.validation(data, ValMax = 21, ValEcart = 1)
+chronique.validation(data, ValMax = 21, ValEcart = 1, TempsDiff = 1)
 }
 \arguments{
 \item{data}{Chronique à valider}
@@ -12,6 +12,8 @@ chronique.validation(data, ValMax = 21, ValEcart = 1)
 \item{ValMax}{Valeur maximale dont les dépassements sont pris en compte}
 
 \item{ValEcart}{Écart entre deux valeurs successives dont les dépassements sont pris en compte}
+
+\item{TempsDiff}{Différence de temps attendue entre 2 valeurs successives (1 par défault)}
 }
 \description{
 Cette fonction permet d'obtenir des éléments afin de valider les chroniques
@@ -20,5 +22,6 @@ Cette fonction permet d'obtenir des éléments afin de valider les chroniques
 chronique.validation(data)
 chronique.validation(data, 21)
 chronique.validation(data, 21, 1.5)
+chronique.validation(data, 21, 1.5, 3600)
 }
 
