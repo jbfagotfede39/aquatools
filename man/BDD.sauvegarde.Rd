@@ -4,8 +4,8 @@
 \alias{BDD.sauvegarde}
 \title{Sauvegarde des bases de données}
 \usage{
-BDD.sauvegarde(x, Type = c("Chroniques", "Thermie", "Physico-chimie",
-  "Hydrologie", "Piézométrie", "Temps de travail"))
+BDD.sauvegarde(Type = c("Chroniques", "Physico-chimie", "Macroinvertébrés",
+  "Temps de travail"))
 }
 \arguments{
 \item{Type}{Type de base de données}
@@ -14,6 +14,6 @@ BDD.sauvegarde(x, Type = c("Chroniques", "Thermie", "Physico-chimie",
 Cette fonction permet de sauvegarder les bases de données de la fédération
 }
 \examples{
-BDD.sauvegarde(Type = "Thermie")
+BDD.sauvegarde(Type = "Chroniques")
 }
 

@@ -33,6 +33,8 @@ chronique.figure <- function(
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra rajouter un interrupteur pour les supprimer ou non les vmax et vmin par jour (pour n'avoir qu'une seule courbe)
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates) et Y (temp)
+  # Évaluation du paramètre Relatif ou complet
+  # Choix de l'année d'affichage de la chronique, plus pertinent que complet car pas le choix de l'année (même si détection automatique : seule la fin de la chronique pluriannuelle est conservée)
   # Rajouter une détection de durée minimale de 30 jours
 # -------------- A FAIRE -------------- #
   

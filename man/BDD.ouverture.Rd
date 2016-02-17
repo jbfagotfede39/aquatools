@@ -4,8 +4,8 @@
 \alias{BDD.ouverture}
 \title{Chargement des bases de données}
 \usage{
-BDD.ouverture(x, Type = c("Chroniques", "Poissons", "Thermie",
-  "Physico-chimie", "Piézométrie", "Temps de travail"))
+BDD.ouverture(Type = c("Chroniques", "Poissons", "Macroinvertébrés",
+  "Physico-chimie", "Temps de travail"))
 }
 \arguments{
 \item{Type}{Type de base de données}
@@ -14,6 +14,6 @@ BDD.ouverture(x, Type = c("Chroniques", "Poissons", "Thermie",
 Cette fonction permet de charger les bases de données de la fédération
 }
 \examples{
-BDD.ouverture(Type = "Thermie")
+BDD.ouverture(Type = "Chroniques")
 }
 
