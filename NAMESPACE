@@ -2,6 +2,7 @@
 
 export(BDD.ouverture)
 export(BDD.sauvegarde)
+export(MI.nettoyage)
 export(SIG.exportSHP)
 export(chronique.complete)
 export(chronique.figure)
