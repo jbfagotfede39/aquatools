@@ -44,7 +44,7 @@ MI.systematique <- function(data)
   Systematique <- distinct(Systematique)
   
   # Travail sur les captures #
-  if(all(colnames(data) %in% colnames(Captures))) {
+  #if(all(colnames(data) %in% colnames(Captures))) {
     
     # Ajout de la systématique #
     SyntEsp <- merge(Systematique, data, by.x="Espece", by.y="Taxon")
@@ -60,9 +60,7 @@ MI.systematique <- function(data)
     
     data <- distinct(data)
     
-  }
-  
-  if(length(Absents) > 0) return <- list(data, Absents) else return <- data
+  #}
   
   return(data)
   
