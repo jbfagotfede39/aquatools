@@ -19,12 +19,8 @@ poissons.IPR <- function(
   date="2011-09-08")
 {
   
-  ## Connexion à la BDD ##
-  drv <- dbDriver("SQLite")
-  #db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite")
-  
-  if (file.exists("/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite")
-  if (file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite")
+  ## Ouverture de la BDD ##
+  db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
   #Captures <- dbReadTable(db, "Captures")
