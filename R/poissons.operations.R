@@ -17,13 +17,10 @@ poissons.operations <- function(
   station="SOR10-2")
 {
   
-  ## Connexion à la BDD ##
-  drv <- dbDriver("SQLite")
-  #db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite")
-  
-  if (file.exists("/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite")
-  if (file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite")
-  
+  ## Ouverture de la BDD ##
+  ## Connexion à la BDD
+  db <- BDD.ouverture(Type = "Poissons")
+  dbListTables(db)
   ## Récupération des données ##
   #Captures <- dbReadTable(db, "Captures")
   #Operations <- dbReadTable(db, "Operations")
