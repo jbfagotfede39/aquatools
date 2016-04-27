@@ -15,7 +15,7 @@
 
 BDD.format <- function(data)
 {
-  
+  ###### MI ######
   ## Connexion à la BDD ##
   db <- BDD.ouverture("Macroinvertébrés")
   
@@ -48,7 +48,29 @@ BDD.format <- function(data)
     # Ajout des ID
     data$CaptureID <- row_number(data$PrelevementID) + max(Captures$CaptureID) # Pour incrémenter les CaptureID à partir du dernier
   }
+  
+  ###### Chroniques ######
+  ## Connexion à la BDD ##
+  db <- BDD.ouverture("Chroniques")
+  
+  ## Récupération des données ##
+  Stations <- dbReadTable(db, "Stations")
+  Capteurs <- dbReadTable(db, "Capteurs")
+  SuiviTerrain <- dbReadTable(db, "SuiviTerrain")
+  Mesures <- dbReadTable(db, "Mesures")
+  
+  # Mesures #
+  if(all(colnames(data) %in% colnames(Mesures))) {
+    
+    # Transformation des formats
+    data$MesureID <- as.integer(data$MesureID)
+    data$Date <- as.character(data$Date)
+    
+    # Ajout des ID
+    data$MesureID <- row_number(data$Valeur) + max(Mesures$MesureID) # Pour incrémenter les CaptureID à partir du dernier
+  }
 
+  ##### Commun #####
 data <- as.data.frame(data)
 
   return(data)

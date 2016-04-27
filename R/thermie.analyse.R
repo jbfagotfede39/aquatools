@@ -22,6 +22,7 @@ thermie.analyse <- function(CodeRDT="",
   {
 
 ## Chargement des données pour travaux ##
+#CodeRDT=StationsSMISA[i,2];Annee="2015";jour=DataTravail[,4];temp=DataTravail[,6];tempmin=4;tempmax=19;tempmaxextreme=25;pasdetemps=1
 #thermie<-read.delim2("./Entrees/FUR0-4_10316500_FUR1.csv-a2014.txt",header=TRUE,sep=";")
 #thermie<-read.delim2("./Entrees/saineamontconflemme2011_lacunaire.csv",header=TRUE,sep=";")
 #thermie<-read.delim2("./Entrees/SAI18-5_été2012.csv",header=TRUE,sep=";")
@@ -164,11 +165,11 @@ for (i in 1:length(TMaxJ)){
 	if (i+29<=length(TMaxJ)) cumuleTMaxJ[i]<-sum(TMaxJ[i:(i+29)])}	
 TMaxMoy30J<-round(max(cumuleTMaxJ)/30,1)
 
-DateDebutTMaxMoy30J<-levels(jourfac)[which(cumuleTMaxJ==max(cumuleTMaxJ))]
-DateFinTMaxMoy30J<-levels(jourfac)[which(cumuleTMaxJ==max(cumuleTMaxJ))+29]
+DateDebutTMaxMoy30J<-levels(jourfac)[which(cumuleTMaxJ==max(cumuleTMaxJ))][1] # Le [1] permet de ne conserver que le premier niveau s'il y a plusieurs dates
+DateFinTMaxMoy30J<-levels(jourfac)[which(cumuleTMaxJ==max(cumuleTMaxJ))+29][1]
 
 ### Extraction de l'année du TMM ##
-AnneeTMM <- substr(levels(jourfac)[which(cumuleTMaxJ==max(cumuleTMaxJ))+30], 1, 4)
+AnneeTMM <- substr(levels(jourfac)[which(cumuleTMaxJ==max(cumuleTMaxJ))+30][1], 1, 4)
 
 ###T Moymax 50 J
 # cumuleTMaxJ<-numeric(length(TMaxJ)-50)
@@ -196,6 +197,6 @@ Periode <- data.frame(NbJ,NbJOK,NbJpasOK,DateDPeriode,DateFPeriode, CodeRDT, Ann
 #write.table(Periode,file=paste("Sorties/Elaboresannuels/",CodeRDT,".txt", sep= ""),col.names=T, sep= ";",row.names=F)
 #write.table(TmoyM,file=paste("Sorties/Mensuelles/",CodeRDT,".txt", sep= ""),col.names=T, sep= ";",row.names=F)
 
-return(Periode)
+#return(Periode)
 
 } # Fin de la fonction

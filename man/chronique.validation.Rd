@@ -4,12 +4,15 @@
 \alias{chronique.validation}
 \title{Validation des chroniques}
 \usage{
-chronique.validation(data, ValMax = 21, ValEcart = 1, TempsDiff = 1)
+chronique.validation(data, ValMax = 21, ValMin = 0, ValEcart = 1,
+  TempsDiff = 1)
 }
 \arguments{
-\item{data}{Chronique à valider}
+\item{data}{Chronique à valider (contenant un champ date défini en tant que tel)}
 
 \item{ValMax}{Valeur maximale dont les dépassements sont pris en compte}
+
+\item{ValMin}{Valeur maximale dont les dépassements sont pris en compte}
 
 \item{ValEcart}{Écart entre deux valeurs successives dont les dépassements sont pris en compte}
 
@@ -21,7 +24,8 @@ Cette fonction permet d'obtenir des éléments afin de valider les chroniques
 \examples{
 chronique.validation(data)
 chronique.validation(data, 21)
-chronique.validation(data, 21, 1.5)
-chronique.validation(data, 21, 1.5, 3600)
+chronique.validation(data, 21, 0, 1.5)
+chronique.validation(data, 21, 0, 1.5, 3600)
+chronique.validation(DataToAdd, ValMax = 1080, ValMin = 1040, ValEcart = 10, TempsDiff = 4)
 }
 

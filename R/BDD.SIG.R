@@ -43,7 +43,7 @@ BDD.SIG <- function()
   Stations <- dbReadTable(db, "Stations")
   Stations <- Stations %>% filter(TypeLambert == 'L93')
   
-    if(file.exists("/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - fede39.sqlite") == T){
+    if(file.exists("/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T){
     file.copy("/Users/imac27/hubiC/SIG/Données/Réseaux/Poissons/Stations_poissons.dbf", paste0("/Users/imac27/hubiC/SIG/Données/Réseaux/Poissons/archives/", format(now(), format="%Y-%m-%d"),"_Stations_poissons.dbf"), overwrite = T)
     file.copy("/Users/imac27/hubiC/SIG/Données/Réseaux/Poissons/Stations_poissons.prj", paste0("/Users/imac27/hubiC/SIG/Données/Réseaux/Poissons/archives/", format(now(), format="%Y-%m-%d"),"_Stations_poissons.prj"), overwrite = T)
     file.copy("/Users/imac27/hubiC/SIG/Données/Réseaux/Poissons/Stations_poissons.shp", paste0("/Users/imac27/hubiC/SIG/Données/Réseaux/Poissons/archives/", format(now(), format="%Y-%m-%d"),"_Stations_poissons.shp"), overwrite = T)
@@ -51,7 +51,7 @@ BDD.SIG <- function()
     SIG.exportSHP(Stations, Stations$XLambert, Stations$YLambert, "/Users/imac27/hubiC/SIG/Données/Réseaux/Poissons/Stations_poissons")
   }
   
-  if(file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/poissons/BDD_poissons_FD39.sqlite") == T){
+  if(file.exists("/Users/jean-baptistefagot_FD39/hubiC/DonnéesPoissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T){
     file.copy("/Users/jean-baptistefagot_FD39/hubiC/SIG/Données/Réseaux/Poissons/Stations_poissons.dbf", paste0("/Users/jean-baptistefagot_FD39/hubiC/SIG/Données/Réseaux/Poissons/archives/", format(now(), format="%Y-%m-%d"),"_Stations_poissons.dbf"), overwrite = T)
     file.copy("/Users/jean-baptistefagot_FD39/hubiC/SIG/Données/Réseaux/Poissons/Stations_poissons.prj", paste0("/Users/jean-baptistefagot_FD39/hubiC/SIG/Données/Réseaux/Poissons/archives/", format(now(), format="%Y-%m-%d"),"_Stations_poissons.prj"), overwrite = T)
     file.copy("/Users/jean-baptistefagot_FD39/hubiC/SIG/Données/Réseaux/Poissons/Stations_poissons.shp", paste0("/Users/jean-baptistefagot_FD39/hubiC/SIG/Données/Réseaux/Poissons/archives/", format(now(), format="%Y-%m-%d"),"_Stations_poissons.shp"), overwrite = T)

@@ -4,7 +4,7 @@
 #' 
 #' @param Type Type de donnée de suivi
 #' @keywords 
-#' @import DBI dplyr
+#' @import DBI dplyr lubridate
 #' @export
 #' @examples
 #' chronique.suivi("CG39", Type = "MO")
@@ -30,6 +30,9 @@ chronique.suivi <- function(x = "ORA2-7",
   
   ## Chargement des données ##
   SuiviTerrain <- dbReadTable(db, "SuiviTerrain")
+  
+  ## Formatage ##
+  SuiviTerrain$Date <- ymd(SuiviTerrain$Date)
   
   ## x en tant que telle
   if(Type == "MO") 

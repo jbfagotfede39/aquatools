@@ -34,7 +34,8 @@ if (nchar(fin) == 0){
   x <-
     x %>% 
     mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
-    filter(Time > deb + hours(1)) %>% #, Time <= fin
+    #filter(Time > deb + hours(1)) %>% #, Time <= fin
+    filter(Time > deb) %>% #, Time <= fin
     select(-Time)
 }
 
@@ -44,7 +45,8 @@ if (nchar(deb) != 0 & nchar(fin) != 0){
   x <-
     x %>% 
     mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
-    filter(Time > deb + hours(1), Time < fin) %>% 
+    #filter(Time > deb + hours(1), Time < fin) %>% 
+    filter(Time > deb, Time < fin) %>% 
     select(-Time)
 }
   
