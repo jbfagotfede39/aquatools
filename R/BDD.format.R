@@ -69,6 +69,13 @@ BDD.format <- function(data)
     # Ajout des ID
     data$MesureID <- row_number(data$Valeur) + max(Mesures$MesureID) # Pour incrémenter les CaptureID à partir du dernier
   }
+  
+  # SuiviTerrain #
+  if(all(colnames(data) %in% colnames(SuiviTerrain))) {
+    
+    # Transformation des numéros de capteurs
+    data$Capteur <- sub(".0$", "", data$Capteur) # On supprime d'éventuels .0 à la fin
+  }
 
   ##### Commun #####
 data <- as.data.frame(data)
