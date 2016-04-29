@@ -5,7 +5,7 @@
 \title{Extraction de données brutes de chronique}
 \usage{
 chronique.mesures(CodeStation = "", Type = c("Thermie", "Piézométrie",
-  "Hydrologie", "O2", "Pluviométrie"), annee = "")
+  "Hydrologie", "O2", "Pluviométrie"), annee = "", Validé = T)
 }
 \description{
 Permet d'extraire les données de chronique d'une station
@@ -13,6 +13,7 @@ Permet d'extraire les données de chronique d'une station
 \examples{
 chronique.mesures("HER0-6", "Thermie") 
 chronique.mesures("DRO6-8", "Thermie", "2013")
+chronique.mesures("GCLzhaval", "Piézométrie", "2015", Validé = F)
 }
 \keyword{chronique}
 
