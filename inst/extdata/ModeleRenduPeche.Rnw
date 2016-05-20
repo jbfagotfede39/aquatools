@@ -1,3 +1,10 @@
+%%%%% À faire %%%%%
+
+% Rajouter les pages suivants par espèce.
+% Faire le calcul sur l'ensemble des données de la station (pas que la pêche en question) des courbes taille-poids
+
+%%%%% %%%%% %%%%% %%%%%
+
 \documentclass{article} %{book}`
   %%% Encodage
    \usepackage[utf8]{inputenc}
@@ -196,8 +203,5 @@ print(tabElabores,
 @
 
 \clearpage % Whitespace to the end of the page
-
-% Rajouter les pages suivants par espèce.
-% Faire le calcul sur l'ensemble des données de la station (pas que la pêche en question) des courbes taille-poids
 
 \end{document}

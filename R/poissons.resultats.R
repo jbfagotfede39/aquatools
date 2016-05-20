@@ -26,6 +26,13 @@ poissons.resultats <- function(
   Ecosystemes <- dbReadTable(db, "Ecosystemes")
   Communes <- dbReadTable(db, "Communes")
   
+  ## Renommage des colonnes Observations ##
+  Resultats <- Resultats %>% rename(ObservationsResultats = Observations)
+  Inventaires <- Inventaires %>% rename(ObservationInventaires = Observations)
+  Stations <- Stations %>% rename(ObservationStations = Observations)
+  Ecosystemes <- Ecosystemes %>% rename(ObservationsEcosystemes = Observations)
+  Communes <- Communes %>% rename(ObservationsCommunes = Observations)
+  
   ##### Synthèse des données #####
   Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))
   Operations <- merge(Operations, Inventaires, by = c("CodeInventaire"))
