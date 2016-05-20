@@ -40,16 +40,16 @@ poissons.IPR <- function(
   ## Simplification ##
   IPR <- 
     IPR %>%
-    select(1:42) %>% # Pour nettoyage
+    select(1:42,49,75) %>% # Pour nettoyage
     select(-(1:2), -(4:6)) %>% # Pour nettoyage
-    select(37,1:33) %>% # Pour remettre le nom de la station en premier
+    select(37,39,38,1:33) %>% # Pour remettre le nom de la station en premier
     filter(Nom == station, DateIPR == date) %>% 
-    rename(Stations = Nom, Dates = DateIPR) %>% 
+    rename(Stations = Nom, Date = DateIPR) %>% 
     arrange(Stations)
   
   IPR <-
     IPR %>% 
-    select(Stations:Especes)
+    select(Stations, CodeSIERMC, Altitude, Date:Especes)
   
   ##### Sorties des résultats traités au format Excel #####
   

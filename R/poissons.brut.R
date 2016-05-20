@@ -5,7 +5,7 @@
 #' @param station Code de la station
 #' @param date Date de la pêche
 #' @keywords poissons
-#' @import dplyr DBI RSQLite xlsx lubridate
+#' @import dplyr RSQLite xlsx lubridate
 #' @export
 #' @examples
 #' poissons.brut("SOR10-2", "2015-05-19")
@@ -37,8 +37,8 @@ poissons.brut <- function(
     Captures %>%
     select(Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids) %>% 
     filter(Nom == station, DateDebut == date) %>% 
-    rename(Station = Nom, Date = DateDebut, Passage = NumeroDePassage, Espèce = CodeEspece) %>% 
-    arrange(Passage, Espèce, Nombre)
+    rename(Station = Nom, Date = DateDebut, Passage = NumeroDePassage, Espece = CodeEspece) %>% 
+    arrange(Passage, Espece, Nombre)
   Captures[Captures == 0] <- ""
   
   ##### Sorties des résultats traités au format Excel #####
