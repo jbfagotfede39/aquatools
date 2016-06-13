@@ -25,23 +25,23 @@ drv <- dbDriver("SQLite")
 
 ## Chroniques ##
 if(Type == "Chroniques" & file.exists("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite")
-if(Type == "Chroniques" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite")
+if(Type == "Chroniques" & file.exists("/Volumes/Fixe-FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Volumes/Fixe-FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite")
 
 ## Poissons ##
 if(Type == "Poissons" & file.exists("/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
-if(Type == "Poissons" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
+if(Type == "Poissons" & file.exists("/Volumes/Fixe-FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- dbConnect(drv, dbname="/Volumes/Fixe-FD39/hubiC/Données/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
 
 ## Macroinvertébrés ##
 if(Type == "Macroinvertébrés" & file.exists("/Users/imac27/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite")
-if(Type == "Macroinvertébrés" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite")
+if(Type == "Macroinvertébrés" & file.exists("/Volumes/Fixe-FD39/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Volumes/Fixe-FD39/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite")
 
 ## Physico-chimie ##
 if(Type == "Physico-chimie" & file.exists("/Users/imac27/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite")
-if(Type == "Physico-chimie" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite")
+if(Type == "Physico-chimie" & file.exists("/Volumes/Fixe-FD39/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Volumes/Fixe-FD39/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite")
 
 ## Temps de travail ##
 if(Type == "Temps de travail" & file.exists("/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
-if(Type == "Temps de travail" & file.exists("/Users/jean-baptistefagot_FD39/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Users/jean-baptistefagot_FD39/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
+if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- dbConnect(drv, dbname="/Volumes/Fixe-FD39/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
 
 return(db)
 
