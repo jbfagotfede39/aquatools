@@ -4,18 +4,21 @@
 \alias{poissons.fiche}
 \title{Création de fiches de résultats de pêche}
 \usage{
-poissons.fiche(station = "AIN18-4", date = "2013-09-27")
+poissons.fiche(station = "AIN18-4", date = "07/09/2015",
+  commentaires = FALSE)
 }
 \arguments{
 \item{station}{Code de la station}
 
 \item{date}{Date de la pêche}
+
+\item{commentaires}{\code{FALSE} par défault}
 }
 \description{
 Cette fonction permet de créer une fiche de synthèse des résultats de pêche
 }
 \examples{
-poissons.fiche("AIN18-4", "2013-09-27")
+poissons.fiche("AIN18-4", "2013-09-27", commentaires = FALSE)
 }
 \keyword{poissons}
 

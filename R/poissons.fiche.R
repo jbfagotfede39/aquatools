@@ -4,18 +4,20 @@
 #' 
 #' @param station Code de la station
 #' @param date Date de la pêche
+#' @param commentaires \code{FALSE} par défault
 #' @keywords poissons
 #' @import stringr DBI RSQLite lubridate knitr
 #' @export
 #' @examples
-#' poissons.fiche("AIN18-4", "2013-09-27")
+#' poissons.fiche("AIN18-4", "2013-09-27", commentaires = FALSE)
 
 poissons.fiche <- function(
   station="AIN18-4",
-  date="2013-09-27")
+  date="2013-09-27",
+  commentaires = FALSE)
 {
 
-fileName <- system.file("extdata", "ModeleRenduPeche.Rnw", package = "aquatools")
+if(commentaires == FALSE) fileName <- system.file("extdata", "ModeleRenduPeche.Rnw", package = "aquatools") else fileName <- system.file("extdata", "ModeleRenduPecheCommente.Rnw", package = "aquatools")
 ModeleRenduPeche <- readChar(fileName, file.info(fileName)$size)
 
 date <- ymd(date)
