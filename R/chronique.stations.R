@@ -11,6 +11,7 @@
 #' chronique.stations("CD39","MO")
 #' chronique.stations("Suran","Milieu")
 #' chronique.stations("Ain","Bassin")
+#' chronique.stations("Serpentine","Sous-bassin")
 #' chronique.stations("Lons-le-Saunier","Commune")
 #' chronique.stations("39","Département")
 

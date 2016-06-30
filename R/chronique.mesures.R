@@ -61,6 +61,8 @@ Mesures %>%
   filter(Date >= Datedebut & Date < Datefin + days(1))
 }
 
+Mesures <- Mesures %>% arrange(Date, Heure)
+
 return(Mesures)
 
 } # Fin de la fonction
