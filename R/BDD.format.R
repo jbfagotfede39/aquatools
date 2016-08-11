@@ -4,7 +4,7 @@
 #' 
 #' @param data Chronique à valider
 #' @keywords data
-#' @import dplyr DBI
+#' @import dplyr DBI stringr
 #' @export
 #' @examples
 #' BDD.format(data)
@@ -62,6 +62,9 @@ BDD.format <- function(data)
   # Mesures #
   if(all(colnames(data) %in% colnames(Mesures))) {
     
+    # Arrondi des valeurs
+    data$Valeur <- round(as.numeric(data$Valeur),3) # On arrondi à 3 chiffres après la virgule
+    
     # Transformation des formats
     data$MesureID <- as.integer(data$MesureID)
     data$Date <- as.character(data$Date)
@@ -73,8 +76,26 @@ BDD.format <- function(data)
   # SuiviTerrain #
   if(all(colnames(data) %in% colnames(SuiviTerrain))) {
     
+    # Travail sur les stations #
+    data$CodeRDT <- str_replace(data$CodeRDT, " ", "") # On efface les espaces en trop dans les noms de station
+    
+    # Travail sur les heures #
+    data$Heure <- str_replace(data$Heure, "h", ":") # On remplace le h par :
+    data$Heure <- str_c(data$Heure, ":00") # On complète les secondes à la fin
+    
+    # Travail sur les valeurs manuelles #
+    data$Valeur <- str_replace(data$Valeur, "-", NA) # On met des NA pour les valeurs absentes
+    data$Valeur <- round(as.numeric(data$Valeur),2) # On arrondi à 1 chiffre après la virgule
+    
     # Transformation des numéros de capteurs
-    data$Capteur <- sub(".0$", "", data$Capteur) # On supprime d'éventuels .0 à la fin
+    data$Capteur <- str_replace(data$Capteur, "\\..*", "") # On supprime d'éventuels .0 à la fin
+    
+    # Transformation des formats
+    data$SuiviTerrainID <- as.integer(data$SuiviTerrainID)
+    data$Date <- as.character(data$Date)
+    
+    # Ajout des ID
+    data$SuiviTerrainID <- row_number(data$CodeRDT) + max(SuiviTerrain$SuiviTerrainID) # Pour incrémenter les CaptureID à partir du dernier
   }
 
   ##### Commun #####
