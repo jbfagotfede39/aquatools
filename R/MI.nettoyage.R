@@ -66,7 +66,8 @@ if(all(colnames(data) %in% colnames(Captures))) {
   data$Taxon <- str_trim(data$Taxon) # Pour enlever les espaces de début et de fin de taxon
   data$Taxon[data$Taxon == "Anthomyiidae"] <- "Anthomyidae"
   data$Taxon[data$Taxon == "Bythinia"] <- "Bithynia"
-  data$Taxon[data$Taxon == "Cloëon"] <- "Cloeon"
+  data$Taxon[data$Taxon == "Cloeon"] <- "Cloëon"
+  data$Taxon[data$Taxon == "Conchostracés"] <- "Conchostraca"
   data$Taxon[data$Taxon == "Cordulegastridae"] <- "Cordulegasteridae"
   data$Taxon[data$Taxon == "Elodes"] <- "Helodes"
   data$Taxon[data$Taxon == "Glossossoma"] <- "Glossosoma"
