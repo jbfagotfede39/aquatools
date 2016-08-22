@@ -24,7 +24,7 @@ HabitatsReference <- dbReadTable(db, "HabitatsReference")
 Prelevements <- dbReadTable(db, "Prelevements")
 Captures <- dbReadTable(db, "Captures")
 
-# Travail sur les prélèvements #
+##### Travail sur les prélèvements #####
 if(all(colnames(data) %in% colnames(Prelevements))) {
   # Substrats #
 data$HabitatAbrevSub[data$HabitatAbrevSub == "BRYO"] <- "BRY"
@@ -51,7 +51,7 @@ if (all(data$HabitatAbrevVit %in% HabitatsReference$HabitatAbrev) == FALSE) stop
 if (all(data$HabitatAbrevHau %in% HabitatsReference$HabitatAbrev) == FALSE) stop("Erreur avec un code hauteur")
 }
 
-# Travail sur les captures #
+##### Travail sur les captures #####
 if(all(colnames(data) %in% colnames(Captures))) {
   
   # Nettoyage des taxons sans effectif #
@@ -64,16 +64,19 @@ if(all(colnames(data) %in% colnames(Captures))) {
   
   # Nettoyage des fautes de saisie #
   data$Taxon <- str_trim(data$Taxon) # Pour enlever les espaces de début et de fin de taxon
-  data$Taxon[data$Taxon == "Glossossoma"] <- "Glossosoma"
-  data$Taxon[data$Taxon == "Elodes"] <- "Helodes"
-  data$Taxon[data$Taxon == "Onichogomphus"] <- "Onychogomphus"
-  data$Taxon[data$Taxon == "Psychomia"] <- "Psychomyia"
+  data$Taxon[data$Taxon == "Anthomyiidae"] <- "Anthomyidae"
   data$Taxon[data$Taxon == "Bythinia"] <- "Bithynia"
-  data$Taxon[data$Taxon == "Procleon"] <- "Procloeon"
+  data$Taxon[data$Taxon == "Cloëon"] <- "Cloeon"
   data$Taxon[data$Taxon == "Cordulegastridae"] <- "Cordulegasteridae"
-  data$Taxon[data$Taxon == "Polymitarcidae"] <- "Polymitarcyidae"
+  data$Taxon[data$Taxon == "Elodes"] <- "Helodes"
+  data$Taxon[data$Taxon == "Glossossoma"] <- "Glossosoma"
   data$Taxon[data$Taxon == "Hydracariens"] <- "Hydracarina"
-  
+  data$Taxon[data$Taxon == "Oligochetes"] <- "Oligochaeta"
+  data$Taxon[data$Taxon == "Oligochètes"] <- "Oligochaeta"
+  data$Taxon[data$Taxon == "Onichogomphus"] <- "Onychogomphus"
+  data$Taxon[data$Taxon == "Polymitarcidae"] <- "Polymitarcyidae"
+  data$Taxon[data$Taxon == "Procleon"] <- "Procloeon"
+  data$Taxon[data$Taxon == "Psychomia"] <- "Psychomyia"
 }
 
   return(data)
