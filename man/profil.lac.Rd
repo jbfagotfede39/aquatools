@@ -19,6 +19,6 @@ profil.lac(PC,param="O2mg")
 profil.lac(PC,param="O2pourc")
 profil.lac(PC,param="Cond")
 profil.lac(PC,param="ph")
+#' profil.lac(PC,param="temp")
 }
-\keyword{cats}
 
