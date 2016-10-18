@@ -81,10 +81,10 @@ BDD.format <- function(data)
     
     # Travail sur les heures #
     data$Heure <- str_replace(data$Heure, "h", ":") # On remplace le h par :
-    data$Heure <- str_c(data$Heure, ":00") # On complète les secondes à la fin
+    data$Heure <- if(all(str_count(data$Heure, ":") == 1)) str_c(data$Heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
     
     # Travail sur les valeurs manuelles #
-    data$Valeur <- str_replace(data$Valeur, "-", NA) # On met des NA pour les valeurs absentes
+    data <- data %>% mutate(Valeur = ifelse(Valeur == "-", NA, Valeur)) # On met des NA pour les valeurs absentes
     data$Valeur <- round(as.numeric(data$Valeur),2) # On arrondi à 1 chiffre après la virgule
     
     # Transformation des numéros de capteurs
