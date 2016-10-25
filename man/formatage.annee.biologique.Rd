@@ -2,7 +2,7 @@
 % Please edit documentation in R/formatage.annee.biologique.R
 \name{formatage.annee.biologique}
 \alias{formatage.annee.biologique}
-\title{Reformatage de dates}
+\title{Reformatage de dates en année biologique}
 \usage{
 formatage.annee.biologique(data)
 }
@@ -10,7 +10,7 @@ formatage.annee.biologique(data)
 \item{data}{Jeu de données contenant une colonne Date au format Date}
 }
 \description{
-Reformate les dates par lot de fichiers (répertoire /Regroupement/Bruts vers /Regroupement/) en format "2014-10-10"
+Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année)
 }
 \examples{
 formatage.annee.biologique(data)

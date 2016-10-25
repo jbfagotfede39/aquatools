@@ -1,6 +1,6 @@
-#' Reformatage de dates
+#' Reformatage de dates en année biologique
 #'
-#' Reformate les dates par lot de fichiers (répertoire /Regroupement/Bruts vers /Regroupement/) en format "2014-10-10"
+#' Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année)
 #' 
 #' @param data Jeu de données contenant une colonne Date au format Date
 #' @keywords donnees
@@ -12,6 +12,10 @@
 formatage.annee.biologique <- function(data)
   {
 
+##### TODO LIST #####
+# 
+#####################
+  
   #library(aquatools);library(lubridate)
   #data <- chronique.mesures("HER0-6", "Thermie")
   #str(data)
