@@ -22,7 +22,7 @@ chronique.complete <- function(
 if(length(unique(data$CodeRDT)) == 1) CodeRDT <- unique(data$CodeRDT) else stop("Différentes stations dans le data")
 if(length(unique(data$Unité)) == 1) Unité <- unique(data$Unité) else stop("Différentes unités dans le data")
 if(length(unique(data$TypeMesure)) == 1) TypeMesure <- unique(data$TypeMesure) else stop("Différents types de mesure dans le data")
-if(length(unique(data$Validation)) == 1) Validation <- unique(data$Validation) else stop("Différents statuts de validation dans le data")
+if(length(unique(data$Validation)) == 1) Validation <- unique(data$Validation) else warning("Différents statuts de validation dans le data")
 
 data <-
   data %>% 
@@ -52,8 +52,10 @@ data <-
   data %>% 
   select(-Time)
 
+ValeurBrutNA$Date <- ymd(ValeurBrutNA$Date)
+
 data <-
-  bind_rows(ValeurBrutNA, data) 
+  bind_rows(ValeurBrutNA, data)
 
 data <-
   data %>% 
@@ -62,7 +64,8 @@ data <-
 data$CodeRDT <- CodeRDT
 data$Unité <- Unité
 data$TypeMesure <- TypeMesure
-data$Validation <- Validation
+#data$Validation <- Validation
+data$Validation[is.na(data$Validation)] <- "Validé"
 
 data <-
   data %>% 

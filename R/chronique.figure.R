@@ -36,6 +36,7 @@ chronique.figure <- function(
   # Évaluation du paramètre Relatif ou complet
   # Choix de l'année d'affichage de la chronique, plus pertinent que complet car pas le choix de l'année (même si détection automatique : seule la fin de la chronique pluriannuelle est conservée)
   # Rajouter une détection de durée minimale de 30 jours
+  # Rajouter un interrupteur pour valeur max d'affichage : pour l'instant fixée à 25°C
 # -------------- A FAIRE -------------- #
   
 ##### Mise au format des données #####

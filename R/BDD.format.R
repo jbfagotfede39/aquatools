@@ -71,6 +71,8 @@ BDD.format <- function(data)
     
     # Ajout des ID
     data$MesureID <- row_number(data$Valeur) + max(Mesures$MesureID) # Pour incrémenter les CaptureID à partir du dernier
+    if(dim(filter(data, is.na(MesureID)))[1] > 0 & dim(filter(data, is.na(Validation)))[1] == 0) data$MesureID <- row_number(data$Validation) + max(Mesures$MesureID)
+    if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
   }
   
   # SuiviTerrain #

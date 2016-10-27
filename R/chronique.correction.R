@@ -48,9 +48,9 @@ chronique.correction <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
   ##### Écritures des lignes juste et fausse/corrigée #####
   LigneJuste <- LigneFausse
   LigneJuste[1,6] <- cNvelleValeur
-  LigneJuste[1,8] <- "Estimé"
+  LigneJuste[1,10] <- "Estimé"
   
-  LigneFausse[1,7] <- "Rejeté"
+  LigneFausse[1,9] <- "Rejeté"
   
   ##### Remise en commun des morceaux #####
   data <-
@@ -58,6 +58,11 @@ chronique.correction <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
   data <-
     dplyr::union(data, LigneFausse)
 
+  ##### Rangement dans l'ordre chronologique #####
+  data <-
+    data %>% 
+    arrange(Date, Heure)
+  
   ##### Remise en commun des morceaux #####
   return(data)
   
