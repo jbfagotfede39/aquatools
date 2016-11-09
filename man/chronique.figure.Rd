@@ -5,7 +5,8 @@
 \title{Représentation de chroniques}
 \usage{
 chronique.figure(data = data, Titre = "", legendeY = "Température (°C)",
-  duree = "Complet", save = F, Vmm30j = F, format = ".png")
+  duree = "Complet", Vmm30j = F, Vminmax = T, Ymin = 0, Ymax = NA,
+  save = F, format = ".png")
 }
 \arguments{
 \item{Titre}{Titre du graphique (vide par défaut)}
@@ -14,11 +15,18 @@ chronique.figure(data = data, Titre = "", legendeY = "Température (°C)",
 
 \item{duree}{Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.}
 
-\item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
-figures.  Si \code{TRUE}, les enregistre.}
-
 \item{Vmm30j}{Si \code{FALSE} (par défault), n'affiche pas les
 Vmm30j.  Si \code{TRUE}, les affiche.}
+
+\item{Vminmax}{Si \code{TRUE} (par défault), affiche pas les
+valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche pas.}
+
+\item{Ymin}{Valeur minimale de l'axe des Y (0 par défaut)}
+
+\item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
+
+\item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
+figures.  Si \code{TRUE}, les enregistre.}
 
 \item{format}{Défini le format d'enregistrement (par défaut .png)}
 
