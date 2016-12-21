@@ -1,20 +1,21 @@
 #' Extraction de données de stations
 #'
-#' Cette fonction permet d'extraire les données complètes d'une station piscicole
+#' Cette fonction permet d'extraire les données complètes de l'ensemble des stations piscicoles (par défaut) ou d'une seule
 #' 
 #' @param Nom de la station
 #' @keywords stations
 #' @import DBI dplyr RSQLite
 #' @export
 #' @examples
-#' poissons.stations("SOR10-2")
+#' Stations <- poissons.stations()
+#' Station <- poissons.stations("SOR10-2")
 
 ##### TODO LIST #####
 
 #####################
 
 poissons.stations <- function(
-  station="SOR10-2")
+  station="")
 {
   
   ## Ouverture de la BDD ##
@@ -27,15 +28,20 @@ poissons.stations <- function(
   #Inventaires <- dbReadTable(db, "Inventaires")
   Stations <- dbReadTable(db, "Stations")
   
-  ## Extraction des afférences ##
-  # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
-  
+  ## Extraction des données de la station si une est spécifiée ##
+  if(nchar(station) != 0) {
+    # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
   if(dim(Stations %>% filter(Nom == station)
   )[1] == 0) 
     stop("Attention : nom de station absent de la base de données")
-  
+    
+    # filtrage en tant que tel 
   station <-
     Stations %>% 
-    filter(Nom == station)
+    filter(Nom == station)}
+  
+  ## Extraction de toutes les stations si aucune spécifiée ##
+  if(nchar(station) == 0) {
+  station <- Stations}
   
 } # Fin de la fonction

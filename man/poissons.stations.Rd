@@ -4,16 +4,17 @@
 \alias{poissons.stations}
 \title{Extraction de données de stations}
 \usage{
-poissons.stations(station = "SOR10-2")
+poissons.stations(station = "")
 }
 \arguments{
 \item{Nom}{de la station}
 }
 \description{
-Cette fonction permet d'extraire les données complètes d'une station piscicole
+Cette fonction permet d'extraire les données complètes de l'ensemble des stations piscicoles (par défaut) ou d'une seule
 }
 \examples{
-poissons.stations("SOR10-2")
+Stations <- poissons.stations()
+Station <- poissons.stations("SOR10-2")
 }
 \keyword{stations}
 
