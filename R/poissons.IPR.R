@@ -4,6 +4,7 @@
 #' 
 #' @param station Code de la station
 #' @param date Date de la pêche
+#' @param expertise \code{TRUE} par défault
 #' @keywords poissons
 #' @import dplyr DBI RSQLite xlsx lubridate
 #' @export
@@ -15,8 +16,9 @@
 #####################
 
 poissons.IPR <- function(
-  station="SAI17-8",
-  date="2011-09-08")
+  station="LEU15-2",
+  date="2013-10-22",
+  expertise=TRUE)
 {
   
   ## Ouverture de la BDD ##
@@ -24,13 +26,13 @@ poissons.IPR <- function(
   
   ## Récupération des données ##
   #Captures <- dbReadTable(db, "Captures")
-  #Operations <- dbReadTable(db, "Operations")
+  Operations <- dbReadTable(db, "Operations") %>% select(Codeoperation, AvisExpertCourt, AvisExpert)
   IPR <- dbReadTable(db, "IPRs")
   #Inventaires <- dbReadTable(db, "Inventaires")
   Stations <- dbReadTable(db, "Stations")
   
   ## Synthèse des données ##
-  #IPR <- merge(IPR, Inventaires, by = c("CodeInventaire"))
+  IPR <- left_join(IPR, Operations, by = c("CodeOperation" = "Codeoperation"))
   IPR <- merge(IPR, Stations, by = c("CodeStation"))
   
   ## Format de dates ##
@@ -40,16 +42,24 @@ poissons.IPR <- function(
   ## Simplification ##
   IPR <- 
     IPR %>%
-    select(1:42,49,75) %>% # Pour nettoyage
-    select(-(1:2), -(4:6)) %>% # Pour nettoyage
-    select(37,39,38,1:33) %>% # Pour remettre le nom de la station en premier
+    select(1:44,51,77) %>% # Pour nettoyage
+    select(-(1:2), -(4:7)) %>% # Pour nettoyage
+    select(38,40,39,1:34) %>% # Pour remettre le nom de la station en premier
     filter(Nom == station, DateIPR == date) %>% 
     rename(Stations = Nom, Date = DateIPR) %>% 
     arrange(Stations)
   
+  if(expertise == TRUE){
   IPR <-
     IPR %>% 
-    select(Stations, CodeSIERMC, Altitude, Date:Especes)
+    select(Stations, CodeSIERMC, Altitude, Date:Qualite, AvisExpertCourt, AvisExpert, Especes)
+  }
+  
+  if(expertise == FALSE){
+    IPR <-
+      IPR %>% 
+      select(Stations, CodeSIERMC, Altitude, Date:Especes)
+  }
   
   ##### Sorties des résultats traités au format Excel #####
   

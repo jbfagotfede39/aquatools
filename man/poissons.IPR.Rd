@@ -4,12 +4,14 @@
 \alias{poissons.IPR}
 \title{Exportation des IPR}
 \usage{
-poissons.IPR(station = "SAI17-8", date = "2011-09-08")
+poissons.IPR(station = "LEU15-2", date = "2013-10-22", expertise = TRUE)
 }
 \arguments{
 \item{station}{Code de la station}
 
 \item{date}{Date de la pêche}
+
+\item{expertise}{\code{TRUE} par défault}
 }
 \description{
 Cette fonction permet d'exporter les résultats IPR de pêche
