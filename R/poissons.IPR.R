@@ -10,10 +10,13 @@
 #' @export
 #' @examples
 #' poissons.IPR("SOR10-2", "2015-05-19")
+#' poissons.IPR("SOR10-2", "2015-05-19", expertise = FALSE)
 
 ##### TODO LIST #####
 
 #####################
+
+#library(aquatools);library(dplyr);library(lubridate);library(RSQLite)
 
 poissons.IPR <- function(
   station="LEU15-2",
@@ -43,8 +46,9 @@ poissons.IPR <- function(
   IPR <- 
     IPR %>%
     select(1:44,51,77) %>% # Pour nettoyage
-    select(-(1:2), -(4:7)) %>% # Pour nettoyage
-    select(38,40,39,1:34) %>% # Pour remettre le nom de la station en premier
+    select(-(1:2), -(4:6)) %>% # Pour nettoyage
+    select(39,41,40,1:35) %>% # Pour remettre le nom de la station en premier
+    #select(38,40,39,1:34) %>% # Pour remettre le nom de la station en premier
     filter(Nom == station, DateIPR == date) %>% 
     rename(Stations = Nom, Date = DateIPR) %>% 
     arrange(Stations)
@@ -52,13 +56,13 @@ poissons.IPR <- function(
   if(expertise == TRUE){
   IPR <-
     IPR %>% 
-    select(Stations, CodeSIERMC, Altitude, Date:Qualite, AvisExpertCourt, AvisExpert, Especes)
+    select(Stations, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes)
   }
   
   if(expertise == FALSE){
     IPR <-
       IPR %>% 
-      select(Stations, CodeSIERMC, Altitude, Date:Especes)
+      select(Stations, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes)
   }
   
   ##### Sorties des résultats traités au format Excel #####

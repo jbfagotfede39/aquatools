@@ -18,6 +18,7 @@ Cette fonction permet d'exporter les résultats IPR de pêche
 }
 \examples{
 poissons.IPR("SOR10-2", "2015-05-19")
+poissons.IPR("SOR10-2", "2015-05-19", expertise = FALSE)
 }
 \keyword{poissons}
 
