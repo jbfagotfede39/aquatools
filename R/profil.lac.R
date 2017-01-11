@@ -64,7 +64,7 @@ profil.lac<-function(PC,param="O2mg"){
   gg <- gg + geom_point(stat="identity")
   gg <- gg + geom_line(linetype="dashed")
   gg <- gg + scale_color_manual(
-    values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2","#D55E00"),
+    values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"),
     name="Date")
   gg <- gg + labs(x = "Profondeur (m)", y = expression(pH~(unité~pH))) # Pour changer le titre
   gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
