@@ -13,10 +13,10 @@
 #' chronique.periode(Data, "2015-02-04 11:00:00", "2015-02-04 14:00:00")
 
 ##### TODO LIST #####
-# Des valeurs pré et post semblent être enlevées en trop
+# 
 #####################
 
-chronique.periode <- function(x = Data, deb = "2011-07-13 14:00:00", fin = "2014-07-13 14:00:00")
+chronique.periode <- function(x = Data, deb = "", fin = "")
 
 {
 
@@ -51,7 +51,7 @@ if (nchar(deb) != 0 & nchar(fin) != 0){
 }
   
   #deb = ""; fin = "2014-07-13 14:00:00"
-  #deb = "2014-07-13 14:00:00"; fin = ""
+  #deb = "2013-12-05 09:00:00"; fin = ""
   #deb = "2011-07-13 14:00:00"; fin = "2014-07-13 14:00:00"
   
   #x <- Mesures
