@@ -4,7 +4,7 @@
 \alias{poissons.operations}
 \title{Listing des opérations pour une station}
 \usage{
-poissons.operations(station = "SOR10-2")
+poissons.operations(station = "")
 }
 \arguments{
 \item{station}{Code de la station}
@@ -13,6 +13,7 @@ poissons.operations(station = "SOR10-2")
 Cette fonction permet de lister les différentes opérations pour une station donnée
 }
 \examples{
+poissons.operations()
 poissons.operations("SOR10-2")
 }
 \keyword{poissons}

@@ -43,16 +43,22 @@ poissons.PV <- function(
   pv_lots$date_pv <- format(pv_lots$date_pv, "%Y-%m-%d")
   
   ## Simplification ##
-  pv_lots <- 
-    pv_lots %>%
-    filter(codeRDT == ecosysteme) %>% 
-    rename(Date = date_pv) %>% 
-    arrange(desc(Date))
+  # Travail sur un seul écosystème
+  if(nchar(ecosysteme) != 0){
+    pv_lots <- 
+      pv_lots %>%
+      filter(codeRDT == ecosysteme) %>% 
+      rename(Date = date_pv) %>% 
+      arrange(desc(Date))}
   
-  ##### Sorties des résultats traités au format Excel #####
-  
-  #write.xlsx(x = IPR, file = paste0(station, "_", date, "_IPR.xlsx"),
-  #           sheetName = paste0(station, " ", date), row.names = F)
+  # Travail sur l'ensemble des écosystèmes
+  if(nchar(ecosysteme) == 0){
+    pv_lots <- 
+      pv_lots %>%
+      #filter(codeRDT == ecosysteme) %>% 
+      rename(Date = date_pv) %>% 
+      arrange(desc(Date))}
+
   
   return(pv_lots)
   
