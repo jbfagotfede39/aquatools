@@ -7,7 +7,7 @@
 poissons.captures(station = "SOR10-2", date = "2015-05-19")
 }
 \description{
-Récupère les données de captures de poissons d'une opération à partir de Maxifish dans un dataframe
+Récupère les données de captures de poissons d'une opération
 }
 \examples{
 poissons.captures("SOR10-2", "2015-05-19")

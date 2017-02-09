@@ -1,6 +1,6 @@
 #' Extraction des données de captures de poissons pour une opération
 #'
-#' Récupère les données de captures de poissons d'une opération à partir de Maxifish dans un dataframe
+#' Récupère les données de captures de poissons d'une opération
 #' @keywords donnees
 #' @import dplyr RSQLite DBI lubridate
 #' @export

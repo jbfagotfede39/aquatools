@@ -36,12 +36,12 @@ poissons.stations <- function(
     stop("Attention : nom de station absent de la base de données")
     
     # filtrage en tant que tel 
-  station <-
+    Stations <-
     Stations %>% 
     filter(Nom == station)}
   
   ## Extraction de toutes les stations si aucune spécifiée ##
-  if(nchar(station) == 0) {
-  station <- Stations}
+  
+  return(Stations)
   
 } # Fin de la fonction
