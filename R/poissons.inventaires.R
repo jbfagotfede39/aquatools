@@ -58,4 +58,6 @@ poissons.inventaires <- function(
       #filter(Nom == station) %>% 
       dplyr::rename(Stations = Nom, Dates = DateDebut)}
   
+  return(Inventaires)
+  
 } # Fin de la fonction

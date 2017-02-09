@@ -58,5 +58,7 @@ poissons.operations <- function(
       select(Nom, DateDebut.x) %>% 
       #filter(Nom == station) %>% 
       dplyr::rename(Stations = Nom, Dates = DateDebut.x)}
-    
+
+  return(Operations)
+  
 } # Fin de la fonction
