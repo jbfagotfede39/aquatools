@@ -13,4 +13,3 @@ Permet de mettre bout à bout des données temporelles
 synthese <- chronique.regroupement()
 }
 \keyword{donnees}
-

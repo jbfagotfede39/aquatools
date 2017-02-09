@@ -13,4 +13,3 @@ Cette fonction est un résumé des données
 resume(data)
 }
 \keyword{Données}
-

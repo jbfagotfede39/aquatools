@@ -16,4 +16,3 @@ Cette fonction permet de compléter les données de systématique des MI
 MI.systematique(data)
 }
 \keyword{MI}
-

@@ -13,4 +13,3 @@ Récupère les données de captures de poissons d'une opération à partir de Ma
 poissons.captures("SOR10-2", "2015-05-19")
 }
 \keyword{donnees}
-

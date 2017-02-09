@@ -28,4 +28,3 @@ chronique.validation(data, 21, 0, 1.5)
 chronique.validation(data, 21, 0, 1.5, 3600)
 chronique.validation(DataToAdd, ValMax = 1080, ValMin = 1040, ValEcart = 10, TempsDiff = 4)
 }
-

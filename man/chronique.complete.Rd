@@ -16,4 +16,3 @@ Cette fonction permet de compléter les chroniques présentant des valeurs manqu
 chronique.complete(data)
 }
 \keyword{chronique}
-

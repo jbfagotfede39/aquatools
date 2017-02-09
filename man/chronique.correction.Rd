@@ -20,4 +20,3 @@ Permet de corriger des données brutes de chronique présentant des valeurs aber
 chronique.correction(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cValeur = 985.3, cTypeMesure = "Piézométrie", cNvelleValeur = 700)
 }
 \keyword{chronique}
-

@@ -16,4 +16,3 @@ Cette fonction permet de sauvegarder les bases de données de la fédération
 \examples{
 BDD.sauvegarde(Type = "Chroniques")
 }
-

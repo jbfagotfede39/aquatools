@@ -13,4 +13,3 @@ Calcule, à partir d'une jeu de données de captures, les poids attendus pour de
 poissons.poids(Captures)
 }
 \keyword{donnees}
-

@@ -41,4 +41,3 @@ chronique.figure(data = mesdonnees, legendeY = "Température (°C)", duree = "Co
 chronique.figure(data = tableaudonnee, Titre=nom, legendeY = "Température (°C)", save=T, format=".png")
 }
 \keyword{chronique}
-

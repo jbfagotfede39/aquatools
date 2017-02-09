@@ -13,4 +13,3 @@ Récupère les données de captures d'une opération de suivi MI
 MI.captures("VAL37-4", "2013-07-22")
 }
 \keyword{donnees}
-

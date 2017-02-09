@@ -16,4 +16,3 @@ Reformatage les paramètres physico-chimiques avec les noms uniformisés, les co
 PC.parametres(data)
 }
 \keyword{donnees}
-

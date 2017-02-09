@@ -16,4 +16,3 @@ Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque
 formatage.annee.biologique(data)
 }
 \keyword{donnees}
-

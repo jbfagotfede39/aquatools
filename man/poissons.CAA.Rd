@@ -13,4 +13,3 @@ Cette fonction permet de créer des comparaisons entre les espèces attendues et
 poissons.CAA(poissonsvue)
 }
 \keyword{poissons}
-

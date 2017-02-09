@@ -13,4 +13,3 @@ Récupère les données de résultats d'une opération dans Maxifish pour les me
 poissons.resultats("SOR10-2", "2015-05-19")
 }
 \keyword{donnees}
-

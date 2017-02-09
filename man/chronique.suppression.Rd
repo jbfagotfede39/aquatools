@@ -22,4 +22,3 @@ Permet de supprimer des données brutes de chronique présentant des valeurs abe
 chronique.suppression(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cTypeMesure = "Thermie", cValeur = 15, cValidation = "Validé")
 }
 \keyword{chronique}
-

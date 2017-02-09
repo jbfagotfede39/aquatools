@@ -23,4 +23,3 @@ Operations <-
   Operations \%>\%
   select(match(NomsColonnes,names(.)))
 }
-

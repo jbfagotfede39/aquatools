@@ -16,4 +16,3 @@ Cette fonction permet de formater les données pour les ajouter aux bases de don
 BDD.format(data)
 }
 \keyword{data}
-

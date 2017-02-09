@@ -16,4 +16,3 @@ Cette fonction permet de vérifier la présence des taxons de MI
 MI.systematique.presence(data)
 }
 \keyword{MI}
-

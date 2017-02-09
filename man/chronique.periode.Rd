@@ -20,4 +20,3 @@ chronique.periode(Data, ,"2015-02-04 14:00:00")
 chronique.periode(Data, "2015-02-04 11:00:00", "2015-02-04 14:00:00")
 }
 \keyword{chronique}
-

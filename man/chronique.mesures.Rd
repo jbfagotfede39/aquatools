@@ -16,4 +16,3 @@ chronique.mesures("DRO6-8", "Thermie", "2013")
 chronique.mesures("GCLzhaval", "Piézométrie", "2015", Validé = F)
 }
 \keyword{chronique}
-

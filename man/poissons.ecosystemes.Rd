@@ -17,4 +17,3 @@ listeCE <- poissons.ecosystemes()
 listeCE <- poissons.ecosystemes("Valouse")
 }
 \keyword{poissons}
-

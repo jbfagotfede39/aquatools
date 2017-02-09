@@ -13,4 +13,3 @@ Récupère l'ensemble des données de résultats de Maxifish dans un dataframe
 poissons.resultats.BDD()
 }
 \keyword{donnees}
-

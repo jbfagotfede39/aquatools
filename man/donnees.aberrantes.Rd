@@ -13,4 +13,3 @@ Cette fonction est une aide à la détection de données aberrantes dans une chr
 donnees.aberrantes(data)
 }
 \keyword{Données}
-

@@ -18,4 +18,3 @@ Cette fonction permet d'exporter les résultats bruts et élaborés de pêche au
 poissons.brut("SOR10-2", "2015-05-19")
 }
 \keyword{poissons}
-

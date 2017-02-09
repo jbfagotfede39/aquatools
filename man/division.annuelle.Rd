@@ -13,4 +13,3 @@ Permet de diviser une longue chronique temporelle en séries annuelles à partir
 division.annuelle()
 }
 \keyword{donnees}
-

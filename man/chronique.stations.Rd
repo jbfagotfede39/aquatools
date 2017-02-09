@@ -24,4 +24,3 @@ chronique.stations("Lons-le-Saunier","Commune")
 chronique.stations("39","Département")
 }
 \keyword{stations}
-

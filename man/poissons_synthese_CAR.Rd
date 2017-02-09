@@ -16,4 +16,3 @@ This function allows you to express your love of cats.
 poissons_synthese_CAR()
 }
 \keyword{cats}
-

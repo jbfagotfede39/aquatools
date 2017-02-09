@@ -25,4 +25,3 @@ Cette fonction permet de calculer des paramètres clés sur des chroniques de te
 thermie.analyse("DRO14-8","2013",jour=tab[,1],temp=tab[,3],tempmin=4,tempmax=19,tempmaxextreme=25,pasdetemps=1)
 }
 \keyword{température}
-

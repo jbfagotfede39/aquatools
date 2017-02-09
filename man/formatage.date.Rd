@@ -17,4 +17,3 @@ formatage.date()
 formatage.date(style = "ydm")
 }
 \keyword{donnees}
-

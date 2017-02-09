@@ -13,4 +13,3 @@ Ajout des codes SANDRE et du nom du taxon de rang inférieur (espèce -> genre -
 MI.SANDRE(data)
 }
 \keyword{donnees}
-

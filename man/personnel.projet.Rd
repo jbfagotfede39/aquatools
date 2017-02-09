@@ -13,4 +13,3 @@ Extrait au format excel les données plus ou moins détaillées des coûts du pe
 personnel.projet("Étude Leue")
 }
 \keyword{personnel}
-

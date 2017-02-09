@@ -13,4 +13,3 @@ Récupère l'ensemble des données de captures de poissons de Maxifish dans un d
 poissons.captures.BDD()
 }
 \keyword{donnees}
-

@@ -13,4 +13,3 @@ Récupère l'ensemble des données de référence des espèces de Multifish
 poissons.especes()
 }
 \keyword{donnees}
-

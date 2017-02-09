@@ -18,4 +18,3 @@ Cette fonction permet d'exporter les avis à dire d'expert des opérations de su
 poissons.expertise("SOR10-2", "2015-05-19")
 }
 \keyword{poissons}
-

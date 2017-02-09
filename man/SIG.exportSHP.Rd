@@ -24,4 +24,3 @@ SIG.exportSHP(Stations, "Stations$XL93", "Stations$YL93", "Export_stations")
 }
 \keyword{poissons}
 \keyword{stations}
-

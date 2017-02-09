@@ -17,4 +17,3 @@ poissons.operations()
 poissons.operations("SOR10-2")
 }
 \keyword{poissons}
-

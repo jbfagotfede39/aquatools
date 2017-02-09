@@ -17,4 +17,3 @@ Stations <- poissons.stations()
 Station <- poissons.stations("SOR10-2")
 }
 \keyword{stations}
-

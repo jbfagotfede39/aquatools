@@ -17,4 +17,3 @@ poissons.PV()
 poissons.PV("ROU")
 }
 \keyword{poissons}
-

@@ -20,4 +20,3 @@ chronique.suivi("DRO14-2", Type = "Station")
 chronique.suivi("2015-10-23", Type = "Date")
 chronique.suivi("9759803", Type = "Sonde")
 }
-

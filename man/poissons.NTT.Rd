@@ -13,4 +13,3 @@ Cette fonction permet de calculer les Niveaux Typologiques Théoriques à partir
 poissons.NTT(station)
 }
 \keyword{poissons}
-

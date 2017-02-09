@@ -16,4 +16,3 @@ Cette fonction permet de corriger des codes erronés des données de MI
 MI.nettoyage(data)
 }
 \keyword{MI}
-

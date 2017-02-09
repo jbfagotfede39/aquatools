@@ -16,4 +16,3 @@ Cette fonction permet d'exporter automatiquement les stations des différentes b
 BDD.SIG()
 }
 \keyword{data}
-

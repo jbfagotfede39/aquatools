@@ -16,4 +16,3 @@ Cette fonction permet de visualiser les chroniques existantes
 chronique.duree(Mesures)
 }
 \keyword{chronique}
-

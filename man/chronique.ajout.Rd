@@ -29,4 +29,3 @@ Permet d'ajouter des données brutes de chronique présentant des valeurs aberra
 chronique.ajout(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnité = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")
 }
 \keyword{chronique}
-

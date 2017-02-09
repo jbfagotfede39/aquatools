@@ -16,4 +16,3 @@ Cette fonction permet de charger les bases de données de la fédération
 \examples{
 BDD.ouverture(Type = "Chroniques")
 }
-
