@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: person("Jean-Baptiste", "Fagot", email = "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Description: What the package does (paragraph)
 Depends:
@@ -16,4 +16,4 @@ License: What license is it under?
 URL: https://github.com/jbfagotfede39/Aquatools
 BugReports: https://github.com/jbfagotfede39/Aquatools/issues
 LazyData: true
-RoxygenNote: 6.0.0
+RoxygenNote: 6.0.1
