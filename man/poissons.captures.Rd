@@ -4,12 +4,21 @@
 \alias{poissons.captures}
 \title{Extraction des données de captures de poissons pour une opération}
 \usage{
-poissons.captures(station = "SOR10-2", date = "2015-05-19")
+poissons.captures(station = "", date = "", codeCapture = FALSE)
+}
+\arguments{
+\item{station}{CodeRDT de la station}
+
+\item{date}{Date de l'opération}
+
+\item{codeCapture}{Affichage du CodeCapture - \code{FALSE} (par défault)}
 }
 \description{
 Récupère les données de captures de poissons d'une opération
 }
 \examples{
+poissons.captures()
 poissons.captures("SOR10-2", "2015-05-19")
+poissons.captures("SOR10-2", "2015-05-19",codeCapture=T)
 }
 \keyword{donnees}
