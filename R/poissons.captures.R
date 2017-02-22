@@ -5,17 +5,21 @@
 #' @param station CodeRDT de la station
 #' @param date Date de l'opération
 #' @param codeCapture Affichage du CodeCapture - \code{FALSE} (par défault) 
+#' @param codePlacette Affichage du CodePlacette - \code{FALSE} (par défault) 
+#' @param codeOperation Affichage du CodeOperation - \code{FALSE} (par défault) 
 #' @import dplyr RSQLite DBI lubridate
 #' @export
 #' @examples
 #' poissons.captures()
 #' poissons.captures("SOR10-2", "2015-05-19")
-#' poissons.captures("SOR10-2", "2015-05-19",codeCapture=T)
+#' poissons.captures("SOR10-2", "2015-05-19",codePlacette=T)
 
 poissons.captures <- function(  
   station="",
   date="",
-  codeCapture = FALSE)
+  codeCapture = FALSE,
+  codePlacette = FALSE,
+  codeOperation = FALSE)
 {
   
 #library("RSQLite");library("dplyr")
@@ -60,15 +64,45 @@ if(nchar(station) == 0 & nchar(date) != 0){
 # On garde captures identiques si les deux paramètres sont vides pour avoir toute la base de données
 
 ##### Simplification #####
-if(codeCapture == FALSE){ # Si on ne veut pas le CodeCapture
+if(codeCapture == FALSE & codePlacette == FALSE & codeOperation == FALSE){
 Captures <- 
   Captures %>%
    select(Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
 
-if(codeCapture == TRUE){ # Si on veut le CodeCapture
+if(codeCapture == FALSE & codePlacette == FALSE & codeOperation == TRUE){
+  Captures <- 
+    Captures %>%
+    select(CodeOperation, Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
+
+if(codeCapture == FALSE & codePlacette == TRUE & codeOperation == FALSE){
+  Captures <- 
+    Captures %>%
+    select(CodePlacette, Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
+
+if(codeCapture == FALSE & codePlacette == TRUE & codeOperation == TRUE){
+  Captures <- 
+    Captures %>%
+    select(CodePlacette, CodeOperation, Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
+
+if(codeCapture == TRUE & codePlacette == FALSE & codeOperation == FALSE){
   Captures <- 
     Captures %>%
     select(CodeCapture, Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
+
+if(codeCapture == TRUE & codePlacette == FALSE & codeOperation == TRUE){
+  Captures <- 
+    Captures %>%
+    select(CodeCapture, CodeOperation, Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
+
+if(codeCapture == TRUE & codePlacette == TRUE & codeOperation == FALSE){
+  Captures <- 
+    Captures %>%
+    select(CodeCapture, CodePlacette, Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
+
+if(codeCapture == TRUE & codePlacette == TRUE & codeOperation == TRUE){
+  Captures <- 
+    Captures %>%
+    select(CodeCapture, CodePlacette, CodeOperation, Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)}
 
 ##### Calcul d'une colonne taille (avec la taille moyenne pour les lots) #####
 Captures <- 
