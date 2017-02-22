@@ -44,10 +44,13 @@ Captures <-
   select(Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids)
 
 ##### Calcul d'une colonne taille (avec la taille moyenne pour les lots) #####
-Captures$TailleMoy <- rowMeans(Captures[,5:6]) # Afin de calculer la taille moyenne pour les lots
-for (i in 1:length(Captures$Nombre)){
-  if (Captures$Nombre[i] == 1) Captures$TailleMoy[i] <- Captures$TailleMaximum[i] else Captures$TailleMoy[i] <- Captures$TailleMoy[i]
-} # Afin de compléter les tailles pour les poissons individuels
+Captures <- 
+Captures %>% 
+  rowwise() %>% # groupement par ligne
+  mutate(TailleMoy = as.integer(mean(c(TailleMinimum,TailleMaximum)))) %>% # Afin de calculer la taille moyenne pour les lots
+  ungroup() %>% # Afin d'enlever le groupement par ligne lié à rowwise
+  mutate(TailleMoy = case_when(.$Nombre == 1 ~ .$TailleMaximum,
+                               .$Nombre != 1 ~ .$TailleMoy))# Afin de compléter les tailles pour les poissons individuels
 
 ##### Nettoyage des 0 #####
 Captures[Captures == 0] <- ""
