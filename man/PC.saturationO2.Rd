@@ -7,7 +7,7 @@
 PC.saturationO2(data)
 }
 \arguments{
-\item{data}{Jeu de données (contenant une colonne Thermie et une colonne Oxygénation)}
+\item{data}{Jeu de données (contenant une colonne Thermie et une colonne Oxygenation)}
 }
 \description{
 Cette fonction permet de calculer des saturations en oxygène à partir des chroniques de mesures de concentration et de température de l'eau

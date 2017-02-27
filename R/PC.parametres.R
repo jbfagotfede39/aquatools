@@ -39,7 +39,6 @@ data$ParametreSANDRE[data$Parametre == "T"] <- "1301"
 data$UniteNom[data$Parametre == "T"] <- "°C"
 data$UniteSANDRE[data$Parametre == "T"] <- "27"
 data$ParametreNom[data$Parametre == "T"] <- "Température"
-data$UniteSANDRE[data$Parametre == "Température"] <- "27"
 
 data$ParametreSANDRE[data$Parametre == "ph"] <- "1302"
 data$UniteNom[data$Parametre == "ph"] <- "unité pH"
