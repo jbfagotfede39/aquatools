@@ -29,38 +29,38 @@ personnel.projet <- function(
   if(dim(RecapTpsW %>% filter(Identification == projet))[1] == 0) stop("Pas de données regroupées pour ce projet")
   
   ##### Extraction des données de synthèse par poste ####
-  SynthèsePoste <- 
+  SynthesePoste <- 
     RecapTpsW %>% 
     filter(Identification == projet) %>% 
     select(Identification:Jours)
-    arrange(Détail,Poste)
+    arrange(Detail,Poste)
   
   ##### Extraction des données de synthèse par personnel ####
-  SynthèsePersonnel <- 
+  SynthesePersonnel <- 
     TpsW %>%
     filter(Identification == projet) %>% 
     group_by(Identification, Personnel) %>%
     summarise(Journées = sum(Temps))
   
-  SynthèsePersonnel <- as.data.frame(SynthèsePersonnel)
+  SynthesePersonnel <- as.data.frame(SynthesePersonnel)
   
   ##### Extraction des données détaillées par personnel ####
-  Détail <- 
+  Detail <- 
     TpsW %>% 
     filter(Identification == projet) %>% 
-    select(Personnel, Date, Poste, Statut, Identification, Détail, CE, Temps) %>% 
+    select(Personnel, Date, Poste, Statut, Identification, Detail, CE, Temps) %>% 
     arrange(Personnel, Date)
   
-  Détail$Date <- as.character(Détail$Date)
+  Detail$Date <- as.character(Detail$Date)
   
   ##### Écriture du fichier excel #####
   tempsprojet <- createWorkbook()
-  feuilleSynthèsePersonnel <- createSheet(wb=tempsprojet, sheetName="SynthèsePersonnel")
-  feuilleSynthèsePoste <- createSheet(wb=tempsprojet, sheetName="SynthèsePoste")
-  feuilleDétail <- createSheet(wb=tempsprojet, sheetName="Détail")
-  addDataFrame(x=SynthèsePersonnel, sheet=feuilleSynthèsePersonnel, row.names=FALSE)
-  addDataFrame(x=SynthèsePoste, sheet=feuilleSynthèsePoste, row.names=FALSE)
-  addDataFrame(x=Détail, sheet=feuilleDétail, row.names=FALSE)
+  feuilleSynthesePersonnel <- createSheet(wb=tempsprojet, sheetName="SynthèsePersonnel")
+  feuilleSynthesePoste <- createSheet(wb=tempsprojet, sheetName="SynthèsePoste")
+  feuilleDetail <- createSheet(wb=tempsprojet, sheetName="Détail")
+  addDataFrame(x=SynthesePersonnel, sheet=feuilleSynthesePersonnel, row.names=FALSE)
+  addDataFrame(x=SynthesePoste, sheet=feuilleSynthesePoste, row.names=FALSE)
+  addDataFrame(x=Detail, sheet=feuilleDetail, row.names=FALSE)
   saveWorkbook(tempsprojet, paste0(format(now(), format="%Y-%m-%d"), "_", projet, "_récapitulatif_coût_personnel.xlsx"))
   
 } # Fin de la fonction

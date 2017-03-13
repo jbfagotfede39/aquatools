@@ -25,22 +25,22 @@ troncon.recode <- function(troncon = data)
   if("heterogen2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(HétérogénéitéNote = heterogen2)}
+      rename(HeterogeneiteNote = heterogen2)}
 
   if("attractiv2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(AttractivitéNote = attractiv2)}
+      rename(AttractiviteNote = attractiv2)}
   
   if("connectiv2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(ConnectivitéNote = connectiv2)}
+      rename(ConnectiviteNote = connectiv2)}
   
   if("stab2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(StabilitéNote = stab2)}
+      rename(StabiliteNote = stab2)}
   
   # Attribution des classes #
   tronconbis <-
@@ -51,27 +51,27 @@ troncon.recode <- function(troncon = data)
                                    .$ScoreNote < 1500 & .$ScoreNote >= 400  ~ "D",
                                    .$ScoreNote < 400 ~ "E")
     ) %>% 
-    mutate(HétérogénéitéClasse = case_when(.$HétérogénéitéNote >= 50 ~ "A",
-                                .$HétérogénéitéNote < 50 & .$HétérogénéitéNote >= 40  ~ "B",
-                                .$HétérogénéitéNote < 40 & .$HétérogénéitéNote >= 28  ~ "C",
-                                .$HétérogénéitéNote < 28 & .$HétérogénéitéNote >= 14  ~ "D",
-                                .$HétérogénéitéNote < 14 ~ "E")
+    mutate(HeterogeneiteClasse = case_when(.$HeterogeneiteNote >= 50 ~ "A",
+                                .$HeterogeneiteNote < 50 & .$HeterogeneiteNote >= 40  ~ "B",
+                                .$HeterogeneiteNote < 40 & .$HeterogeneiteNote >= 28  ~ "C",
+                                .$HeterogeneiteNote < 28 & .$HeterogeneiteNote >= 14  ~ "D",
+                                .$HeterogeneiteNote < 14 ~ "E")
     ) %>% 
-    mutate(AttractivitéClasse = case_when(.$AttractivitéNote >= 45 ~ "A",
-                                           .$AttractivitéNote < 45 & .$AttractivitéNote >= 34  ~ "B",
-                                           .$AttractivitéNote < 34 & .$AttractivitéNote >= 23  ~ "C",
-                                           .$AttractivitéNote < 23 & .$AttractivitéNote >= 11  ~ "D",
-                                           .$AttractivitéNote < 11 ~ "E")
+    mutate(AttractiviteClasse = case_when(.$AttractiviteNote >= 45 ~ "A",
+                                           .$AttractiviteNote < 45 & .$AttractiviteNote >= 34  ~ "B",
+                                           .$AttractiviteNote < 34 & .$AttractiviteNote >= 23  ~ "C",
+                                           .$AttractiviteNote < 23 & .$AttractiviteNote >= 11  ~ "D",
+                                           .$AttractiviteNote < 11 ~ "E")
     ) %>% 
-    mutate(ConnectivitéClasse = case_when(.$ConnectivitéNote >= 65 ~ "A",
-                                          .$ConnectivitéNote < 65 & .$ConnectivitéNote >= 49  ~ "B",
-                                          .$ConnectivitéNote < 49 & .$ConnectivitéNote >= 33  ~ "C",
-                                          .$ConnectivitéNote < 33 & .$ConnectivitéNote >= 16  ~ "D",
-                                          .$ConnectivitéNote < 16 ~ "E")
+    mutate(ConnectiviteClasse = case_when(.$ConnectiviteNote >= 65 ~ "A",
+                                          .$ConnectiviteNote < 65 & .$ConnectiviteNote >= 49  ~ "B",
+                                          .$ConnectiviteNote < 49 & .$ConnectiviteNote >= 33  ~ "C",
+                                          .$ConnectiviteNote < 33 & .$ConnectiviteNote >= 16  ~ "D",
+                                          .$ConnectiviteNote < 16 ~ "E")
     ) %>% 
-    mutate(StabilitéClasse = case_when(.$StabilitéNote >= 10 ~ "A",
-                                          .$StabilitéNote < 10 & .$StabilitéNote >= -10  ~ "B",
-                                          .$StabilitéNote < -10 & .$StabilitéNote >= -25  ~ "C",
-                                          .$StabilitéNote < -25 & .$StabilitéNote >= -60  ~ "D")
+    mutate(StabiliteClasse = case_when(.$StabiliteNote >= 10 ~ "A",
+                                          .$StabiliteNote < 10 & .$StabiliteNote >= -10  ~ "B",
+                                          .$StabiliteNote < -10 & .$StabiliteNote >= -25  ~ "C",
+                                          .$StabiliteNote < -25 & .$StabiliteNote >= -60  ~ "D")
     )
 }

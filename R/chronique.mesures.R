@@ -7,13 +7,13 @@
 #' @examples
 #' chronique.mesures("HER0-6", "Thermie") 
 #' chronique.mesures("DRO6-8", "Thermie", "2013")
-#' chronique.mesures("GCLzhaval", "Piézométrie", "2015", Validé = F)
+#' chronique.mesures("GCLzhaval", "Piézométrie", "2015", Valide = F)
 
 chronique.mesures <- function(  
   CodeStation ="",
   Type = c("Thermie", "Piézométrie", "Hydrologie", "O2", "Pluviométrie"),
   annee="",
-  Validé = T)
+  Valide = T)
 {
   
   # library("DBI");library("dplyr");library("lubridate");library("RSQLite");library("stringr")
@@ -34,7 +34,7 @@ Mesures <- dbReadTable(db, "Mesures")
 
 ##### Filtrage des données #####
 ## Exclusion des données rejetées ##
-if(Validé == T)
+if(Valide == T)
 Mesures <-
   Mesures %>% 
   filter(Validation == "Validé")

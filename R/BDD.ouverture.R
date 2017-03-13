@@ -3,7 +3,6 @@
 #' Cette fonction permet de charger les bases de données de la fédération
 #' 
 #' @param Type Type de base de données
-#' @keywords 
 #' @import dplyr DBI RSQLite
 #' @export
 #' @examples

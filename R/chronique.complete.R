@@ -20,7 +20,7 @@ chronique.complete <- function(
 ##### Mise au format des données #####
 
 if(length(unique(data$CodeRDT)) == 1) CodeRDT <- unique(data$CodeRDT) else stop("Différentes stations dans le data")
-if(length(unique(data$Unité)) == 1) Unité <- unique(data$Unité) else stop("Différentes unités dans le data")
+if(length(unique(data$Unite)) == 1) Unite <- unique(data$Unite) else stop("Différentes unités dans le data")
 if(length(unique(data$TypeMesure)) == 1) TypeMesure <- unique(data$TypeMesure) else stop("Différents types de mesure dans le data")
 if(length(unique(data$Validation)) == 1) Validation <- unique(data$Validation) else warning("Différents statuts de validation dans le data")
 
@@ -40,13 +40,13 @@ ValeurBrutNA$Capteur <- as.character(NA)
 ValeurBrutNA$Date <- as.character(ValeurBrutNA$Date)
 ValeurBrutNA$Heure <- as.character(NA)
 ValeurBrutNA$Valeur <- as.numeric(NA)
-ValeurBrutNA$Unité <- as.character(NA)
+ValeurBrutNA$Unite <- as.character(NA)
 ValeurBrutNA$TypeMesure <- as.character(NA)
 ValeurBrutNA$Validation <- "Validé"
 ValeurBrutNA$ModeAcquisition <- as.character(NA)
 ValeurBrutNA <- 
   ValeurBrutNA %>% 
-  select(MesureID, CodeRDT, Capteur, Date, Heure, Valeur, Unité, TypeMesure, Validation, ModeAcquisition)
+  select(MesureID, CodeRDT, Capteur, Date, Heure, Valeur, Unite, TypeMesure, Validation, ModeAcquisition)
 
 data <-
   data %>% 
@@ -62,7 +62,7 @@ data <-
   complete(Date, Heure) 
 
 data$CodeRDT <- CodeRDT
-data$Unité <- Unité
+data$Unite <- Unite
 data$TypeMesure <- TypeMesure
 #data$Validation <- Validation
 data$Validation[is.na(data$Validation)] <- "Validé"
@@ -71,7 +71,7 @@ data <-
   data %>% 
   mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
   filter(Time >= min, Time <= max) %>% 
-  select(MesureID, CodeRDT, Capteur, Date, Heure, Valeur, Unité, TypeMesure, Validation, ModeAcquisition)
+  select(MesureID, CodeRDT, Capteur, Date, Heure, Valeur, Unite, TypeMesure, Validation, ModeAcquisition)
 
 return(data)
 

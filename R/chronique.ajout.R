@@ -6,7 +6,7 @@
 #' @param cCapteur
 #' @param cDate
 #' @param cHeure
-#' @param cUnité \code{°C} (par défault)
+#' @param cUnite \code{°C} (par défault)
 #' @param cTypeMesure \code{Thermie} (par défault)
 #' @param cNvelleValeur Valeur à ajouter
 #' @param cValidation \code{Validé} (par défault)
@@ -15,12 +15,12 @@
 #' @import dplyr lubridate stringr
 #' @export
 #' @examples
-#' chronique.ajout(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnité = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")
+#' chronique.ajout(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnite = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")
 
-chronique.ajout <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnité = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")
+chronique.ajout <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnite = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")
 {
   
-  #cCodeRDT <- "BONbaro"; cCapteur <- "P0352"; cDate <- "2014-12-27"; cHeure <- "19:00:00"; cUnité = "°C"; cTypeMesure <- "Thermie"; cNvelleValeur <- 15; cValidation <- "Validé"; cModeAcquisition <- "Estimé"
+  #cCodeRDT <- "BONbaro"; cCapteur <- "P0352"; cDate <- "2014-12-27"; cHeure <- "19:00:00"; cUnite = "°C"; cTypeMesure <- "Thermie"; cNvelleValeur <- 15; cValidation <- "Validé"; cModeAcquisition <- "Estimé"
   #data <- DataToAdd
   
   ##### Transformation des formats #####
@@ -35,7 +35,7 @@ chronique.ajout <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDat
   LigneAjout$Capteur <- cCapteur
   LigneAjout$Date <- cDate
   LigneAjout$Heure <- cHeure
-  LigneAjout$Unité <- cUnité
+  LigneAjout$Unite <- cUnite
   LigneAjout$TypeMesure <- cTypeMesure
   LigneAjout$Valeur <- as.numeric(cNvelleValeur)
   LigneAjout$Validation <- cValidation

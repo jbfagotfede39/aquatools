@@ -49,7 +49,7 @@ chronique.validation <- function(data, ValMax = 21, ValMin = 0, ValEcart = 1, Te
     levels(as.factor(verif$Date)) # faire la différence entre ce vecteur et les min et max de ensemble
   
   # Nombre de jours cohérent avec les dates minimales et maximales (au cas où il manque une journée complète) #
-  if (class(data$Date) != "Date") data$Date <- ymd(data$Date)
+  if(class(data$Date) != "Date") data$Date <- ymd(data$Date)
   if(max(data$Date) - min(data$Date) == nlevels(as.factor(data$Date)) - 1) c <- "Pas de journée complète manquante" else c <- "Journée complète manquante"
 
   # Sélection des données supérieures à une valeur donnée ValeurMax #

@@ -8,7 +8,7 @@
 #' @export
 #' @examples
 #' chronique.suivi("CG39", Type = "MO")
-#' chronique.suivi("JB-Stéphane", Type = "Opérateurs")
+#' chronique.suivi("JB-Stéphane", Type = "Operateurs")
 #' chronique.suivi("DRO14-2", Type = "Station")
 #' chronique.suivi("2015-10-23", Type = "Date")
 #' chronique.suivi("9759803", Type = "Sonde")
@@ -18,7 +18,7 @@
 #####################
 
 chronique.suivi <- function(x = "ORA2-7", 
-                          Type = c("MO", "Opérateurs", "Station", "Date", "Sonde")
+                          Type = c("MO", "Operateurs", "Station", "Date", "Sonde")
                           )
 {
 
@@ -39,17 +39,17 @@ chronique.suivi <- function(x = "ORA2-7",
     Vue <-
   SuiviTerrain %>% 
     filter(MO == x) %>% 
-    #filter(Opérateurs == x) %>% 
+    #filter(Operateurs == x) %>% 
     #filter(CodeRDT == x) %>% 
     #filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
     arrange(desc(Date))
   
-  if(Type == "Opérateurs")
+  if(Type == "Operateurs")
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
-    filter(Opérateurs == x) %>% 
+    filter(Operateurs == x) %>% 
     #filter(CodeRDT == x) %>% 
     #filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
@@ -59,7 +59,7 @@ chronique.suivi <- function(x = "ORA2-7",
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
-    #filter(Opérateurs == x) %>% 
+    #filter(Operateurs == x) %>% 
     filter(CodeRDT == x) %>% 
     #filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
@@ -69,7 +69,7 @@ chronique.suivi <- function(x = "ORA2-7",
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
-    #filter(Opérateurs == x) %>% 
+    #filter(Operateurs == x) %>% 
     #filter(CodeRDT == x) %>% 
     filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
@@ -79,7 +79,7 @@ chronique.suivi <- function(x = "ORA2-7",
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
-    #filter(Opérateurs == x) %>% 
+    #filter(Operateurs == x) %>% 
     #filter(CodeRDT == x) %>% 
     #filter(Date == x) %>% 
     filter(Capteur == x) %>% 
