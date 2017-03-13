@@ -39,6 +39,7 @@ data$ParametreSANDRE[data$Parametre == "T"] <- "1301"
 data$UniteNom[data$Parametre == "T"] <- "°C"
 data$UniteSANDRE[data$Parametre == "T"] <- "27"
 data$ParametreNom[data$Parametre == "T"] <- "Température"
+data$UniteSANDRE[data$Parametre == "Température"] <- "27"
 
 data$ParametreSANDRE[data$Parametre == "ph"] <- "1302"
 data$UniteNom[data$Parametre == "ph"] <- "unité pH"
@@ -204,6 +205,112 @@ data$UniteSANDRE[data$Parametre == "Carbone organique dissous"] <- "163"
 data$UniteSANDRE[data$Parametre == "Carbone organique total"] <- "163"
 
 data$UniteSANDRE[data$Parametre == "Carbone organique"] <- "163"
+
+
+#### PARAMETRES VALENTIN ####
+
+data$ParametreSANDRE[data$Parametre == "SiO2"] <- "1348"
+data$UniteNom[data$Parametre == "SiO2"] <- "mg(SIO2)/L"
+data$UniteSANDRE[data$Parametre == "SiO2"] <- "273"
+data$ParametreNom[data$Parametre == "SiO2"] <- "Silice"
+
+data$ParametreSANDRE[data$Parametre == "Fer total"] <- "1393"
+data$UniteNom[data$Parametre == "Fer total"] <- "ppb"
+data$UniteSANDRE[data$Parametre == "Fer total"] <- "478"
+data$ParametreNom[data$Parametre == "Fer total"] <- "Fer total"
+
+data$UniteNom[data$Parametre == "Chlorophylle a"] <- "µg/L"
+data$UniteNom[data$Parametre == "Chlorophylle b"] <- "µg/L"
+data$UniteNom[data$Parametre == "Chlorophylle c"] <- "µg/L"
+data$ParametreNom[data$Parametre == "Chlorophylle a"] <- "Chlorophylle a"
+data$ParametreNom[data$Parametre == "Chlorophylle b"] <- "Chlorophylle b"
+data$ParametreNom[data$Parametre == "Chlorophylle c"] <- "Chlorophylle c"
+data$UniteSANDRE[data$Parametre == "Chlorophylle a"] <- "133"
+data$UniteSANDRE[data$Parametre == "Chlorophylle b"] <- "133"
+data$UniteSANDRE[data$Parametre == "Chlorophylle c"] <- "133"
+
+data$ParametreNom[data$Parametre == "Chlorophylle a active"] <- "Chlorophylle a active"
+
+data$ParametreNom[data$Parametre == "Pheopigments"] <- "Pheopigments"
+data$ParametreSANDRE[data$Parametre == "Pheopigments"] <-"1436"
+data$UniteNom[data$Parametre == "Pheopigments"] <-"mg/L"
+data$UniteSANDRE[data$Parametre == "Pheopigments"] <- "133"
+
+data$ParametreNom[data$Parametre == "Carotenoides"] <- "Carotenoides"
+data$ParametreSANDRE[data$Parametre == "Carotenoides"] <-"1436"
+data$UniteNom[data$Parametre == "Carotenoides"] <-"mg/L"
+data$UniteSANDRE[data$Parametre == "Carotenoides"] <- "133"
+
+data$ParametreNom[data$Parametre == "PsurB"] <- "P/B"
+
+data$UniteSANDRE[data$Parametre == "P tot"] <- "177"
+data$ParametreNom[data$Parametre == "P tot"]<- "Phosphore total"
+data$ParametreSANDRE[data$Parametre == "P tot"] <- "1350"
+data$UniteNom[data$Parametre == "P tot"] <- "mg(P)/L"
+
+data$ParametreSANDRE[data$Parametre == "Fer tot"] <- "1393"
+data$UniteSANDRE[data$Parametre == "Fer tot"] <- "309"
+data$UniteNom[data$Parametre == "Fer tot"] <- "mg(Fe)/L"
+data$ParametreNom[data$Parametre == "Fer tot"] <- "Fer total"
+
+data$ParametreNom[data$Parametre == "Cl"]<- "Chlorures"
+data$ParametreSANDRE[data$Parametre == "Cl"]<- "1337"
+data$UniteNom[data$Parametre == "Cl"]<- "mg(Cl)/L"
+data$UniteSANDRE[data$Parametre == "Cl"]<- "162"
+
+data$ParametreNom[data$Parametre == "MeS"]<-"MeS"
+data$ParametreSANDRE[data$Parametre == "MeS"]<- "1305"
+data$UniteNom[data$Parametre == "MeS"]<-"mg(MS)/L"
+data$UniteSANDRE[data$Parametre == "MeS"] <- "162"
+
+data$ParametreNom[data$Parametre == "COD"]<- "Carbone organique dissous"
+data$ParametreSANDRE[data$Parametre == "COD"]<- "7804"
+data$UniteNom[data$Parametre == "COD"]<- "mg(COD)/L"
+data$UniteSANDRE[data$Parametre == "COD"] <- "163"
+
+data$ParametreNom[data$Parametre == "COT"]<- "Carbone organique Total"
+data$ParametreSANDRE[data$Parametre == "COT"]<- "1841"
+data$UniteNom[data$Parametre == "COT"]<- "mg(COT)/L"
+data$UniteSANDRE[data$Parametre == "COT"] <- "163"
+
+data$ParametreNom[data$Parametre == "N tot"]<-"Azote total"
+data$ParametreSANDRE[data$Parametre == "N tot"]<- "6018"
+data$UniteNom[data$Parametre == "N tot"]<- "mg(N)/L"
+data$UniteSANDRE[data$Parametre == "N tot"] <- "162"
+
+data$ParametreSANDRE[data$Parametre == "DBO5"] <- "1313"
+data$ParametreNom[data$Parametre == "DBO5"] <- "Demande Biologique en Oxygene en 5 jours (DBO5)"
+data$UniteNom[data$Parametre == "DBO5"]<- "mg(O2)/L"
+data$UniteSANDRE[data$Parametre == "DBO5"] <- "175"
+
+
+data$UniteSANDRE[data$Parametre == "Mg"] <- "320"
+data$ParametreSANDRE[data$Parametre == "Mg"] <- "1372"
+data$UniteNom[data$Parametre == "Mg"] <- "mg(Mg)/L"
+data$ParametreNom[data$Parametre == "Mg"] <- "Magnesium"
+
+data$ParametreNom[data$Parametre == "MeS volatiles"]<-"Matiere en suspension volatiles"
+data$ParametreSANDRE[data$Parametre == "MeS volatiles"]<-"1434"
+data$UniteNom[data$Parametre == "MeS volatiles"]<-"mg/L"
+data$UniteSANDRE[data$Parametre == "MeS volatiles"]<-"162"
+
+data$ParametreNom[data$Parametre == "MeS minerales"]<-"Matiere en suspension minerales"
+data$ParametreSANDRE[data$Parametre == "MeS minerales"]<-"6048"
+data$UniteNom[data$Parametre == "MeS minerales"]<-"mg/L"
+data$UniteSANDRE[data$Parametre == "MeS minerales"]<-"162"
+
+data$ParametreNom[data$Parametre == "CaMg"] <- "Calcium et Magnesium"
+data$UniteNom[data$Parametre == "CaMg"]<- "mg(CaMg)/L"
+data$UniteSANDRE[data$Parametre == "CaMg"]<-"162"
+
+data$ParametreNom[data$Parametre == "PheosurChla"]<- "Rapport Pheopigments sur Chl a"
+
+data$ParametreNom[data$Parametre == "DCO"]<- "Demande chimique en oxygene"
+data$ParametreSANDRE[data$Parametre == "DCO"]<- "1314"
+data$UniteSANDRE[data$Parametre == "DCO"] <- "162"
+data$UniteNom[data$Parametre == "DCO"]<- "mg(O2)/L"
+
+
 
 ##### Vérification de paramètres absents #####
 
