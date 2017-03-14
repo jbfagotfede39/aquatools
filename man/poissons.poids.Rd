@@ -12,6 +12,4 @@ Calcule, à partir d'une jeu de données de captures, les poids attendus pour de
 \examples{
 poissons.poids(Captures)
 }
-\keyword{#@import}
-\keyword{FSA}
 \keyword{donnees}

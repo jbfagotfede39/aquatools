@@ -2,7 +2,7 @@
 #'
 #' Calcule, à partir d'une jeu de données de captures, les poids attendus pour des tailles données
 #' @keywords donnees
-#' #@import FSA
+#' @import FSA
 #' @import car 
 #' @import magrittr 
 #' @import dplyr
