@@ -6,12 +6,24 @@ Description: What the package does (paragraph)
 Depends:
     R (>= 3.0.3)
 Imports:
+    car,
+    DBI,
     dplyr,
-    reshape2,
-    xlsx,
     fmsb,
+    FSA,
     ggplot2,
-    RSQLite
+    knitr,
+    lubridate,
+    magrittr,
+    RcppRoll,
+    reshape2,
+    RSQLite,
+    rgdal,
+    rvest,
+    sp,
+    stringr,
+    tidyverse,
+    xlsx
 License: What license is it under?
 URL: https://github.com/jbfagotfede39/Aquatools
 BugReports: https://github.com/jbfagotfede39/Aquatools/issues

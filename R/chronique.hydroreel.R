@@ -7,7 +7,7 @@
 #' @import lubridate
 #' @import rvest
 #' @import stringr
-#' @import tidyverse
+#' @import dplyr
 #' @export
 #' @examples
 #' chronique.hydroreel(Station)
