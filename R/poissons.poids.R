@@ -2,7 +2,7 @@
 #'
 #' Calcule, à partir d'une jeu de données de captures, les poids attendus pour des tailles données
 #' @keywords donnees
-#' @import FSA
+#' #@import FSA
 #' @import car 
 #' @import magrittr 
 #' @import dplyr
@@ -39,7 +39,7 @@ lens <- seq(from = limites[1], by = 25, length = (limites[2]-limites[1])/25+1)
   
 nd <- data.frame(logL=log10(lens))  # df of log(lengths)
 plogW <- predict(fit1,nd,interval="prediction") # Permet d'obtenir l'enveloppe afin de deviner de futures valeurs
-cf <- logbtcf(fit1,10) # correction factor
+cf <- FSA::logbtcf(fit1,10) # correction factor
 
 estimations <- data.frame(lens, cf*10^plogW) # Dataframe contenant les poids pour une longueur donnée, avec l'intervalle de confiance à 95 %
 estimations <-
