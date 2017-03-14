@@ -20,8 +20,8 @@
 
 chronique.hydroreel <- function(Station)
 {
-  # Station = 186
-  # Station = 38
+  # Station = 185
+  # Station = 435
   # Station = listeStations[1]
   
   # Collecte de la page
@@ -60,12 +60,12 @@ chronique.hydroreel <- function(Station)
   Valeur <- stringr::str_extract(complet, "([0-9]{4}.[0-9])") # On cherche une valeur de débit à 4 chiffres
   if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{4})") # Si celle d'avant est vide, on cherche une valeur de débit à 4 chiffres sans virgule
   if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{3}.[0-9])") # Si celle d'avant est vide, on cherche une valeur de débit à 3 chiffres
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 3 chiffres sans virgule
   if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 3 //// Dernier
+  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 3 //// Dernier
+  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 3 chiffres sans virgule
   if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{2})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 2
   if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{1})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 1
   #if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{0})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres sans virgule
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 3 //// Dernier
   if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{2})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 2  
   if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{1})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 1 
   #if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{0})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 0

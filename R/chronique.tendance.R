@@ -19,7 +19,7 @@ chronique.tendance <- function(
 {
   
   ##### -------------- A FAIRE -------------- #####
-  # Ajout de la dernière valeur afin de pouvoir la comparer à une valeur de référence
+  # 
   # 
   # -------------- A FAIRE -------------- #
 
@@ -31,10 +31,17 @@ Analyse <-
   data %>% 
   mutate(Datefine = ymd_hms(paste(Date,Heure,"_"))) %>% 
   arrange(desc(CodeRDT,Datefine)) %>% 
-  mutate(Difference = Valeur - lead(Valeur)) %>% 
-  group_by(CodeRDT) %>% 
+  mutate(Difference = lead(Valeur) - Valeur) %>% 
+  group_by(CodeRDT) %>%
   top_n(n = N, wt = Datefine) %>% 
-  summarise(Moy = mean(Difference)) %>% 
-  mutate(n = N)
+  #summarise(Moy = mean(Difference, na.rm = T)) %>% Recherche de la moyenne des valeurs de différence -> moins juste
+  summarise(Difference = first(Difference), # Recherche de la première valeur de différence
+            Valeur = last(Valeur), # Affichage de la dernière valeur mesurée
+            DateValeur = last(Date), # Date de la dernière valeur mesurée
+            HeureValeur = as.character(last(Heure)), # Heure de la dernière valeur mesurée
+            DateDifference = first(Date), # Date de la dernière valeur de différence valide
+            HeureDifference = as.character(first(Heure))) %>% # Heure de la dernière valeur de différence valide
+  mutate(n = N) %>% # Affichage du nombre d'itération afin de juger de l'intensité de la tendance
+  mutate(DiffSurQ = Difference/Valeur) # Rapport entre la différence de débit et le débit en lui-même (intensité)
   
 } # Fin de la fonction
