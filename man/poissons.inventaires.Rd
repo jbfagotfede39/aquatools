@@ -4,10 +4,12 @@
 \alias{poissons.inventaires}
 \title{Listing des inventaires pour une station}
 \usage{
-poissons.inventaires(station = "")
+poissons.inventaires(station = "", all = FALSE)
 }
 \arguments{
 \item{station}{Code de la station}
+
+\item{all}{Affichage de tous les paramètres de la table - \code{FALSE} (par défault)}
 }
 \description{
 Cette fonction permet de lister les différents inventaires pour une station donnée ou l'ensemble de la BDD
@@ -15,5 +17,6 @@ Cette fonction permet de lister les différents inventaires pour une station don
 \examples{
 poissons.inventaires()
 poissons.inventaires("SOR10-2")
+poissons.inventaires(all=T)
 }
 \keyword{poissons}

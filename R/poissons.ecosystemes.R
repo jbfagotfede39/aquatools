@@ -4,7 +4,9 @@
 #' 
 #' @param Nom de l'écosystème
 #' @keywords poissons
-#' @import dplyr RSQLite DBI
+#' @import dplyr
+#' @import RSQLite
+#' @import DBI
 #' @export
 #' @examples
 #' listeCE <- poissons.ecosystemes()
@@ -15,7 +17,7 @@
 #####################
 
 poissons.ecosystemes <- function(
-  ecosysteme="SURAN")
+  ecosysteme="")
 {
   
   
@@ -32,8 +34,7 @@ poissons.ecosystemes <- function(
   ## Extraction des données de l'écosystème si un est spécifié ##
   if(nchar(ecosysteme) != 0) {
     # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
-    if(dim(Ecosystemes %>% filter(Nomecosysteme == ecosysteme)
-    )[1] == 0) 
+    if(dim(Ecosystemes %>% filter(Nomecosysteme == ecosysteme))[1] == 0) 
       stop("Attention : nom de l'écosystème absent de la base de données")
     
     # filtrage en tant que tel 

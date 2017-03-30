@@ -4,7 +4,7 @@
 \alias{poissons.ecosystemes}
 \title{Extraction de données de stations}
 \usage{
-poissons.ecosystemes(ecosysteme = "SURAN")
+poissons.ecosystemes(ecosysteme = "")
 }
 \arguments{
 \item{Nom}{de l'écosystème}

@@ -4,16 +4,23 @@
 \alias{poissons.operations}
 \title{Listing des opérations pour une station}
 \usage{
-poissons.operations(station = "")
+poissons.operations(station = "", CodeOperation = FALSE, all = FALSE)
 }
 \arguments{
 \item{station}{Code de la station}
+
+\item{CodeOperation}{Affichage du CodeOperation - \code{FALSE} (par défault)}
+
+\item{all}{Affichage de tous les paramètres de la table - \code{FALSE} (par défault)}
 }
 \description{
 Cette fonction permet de lister les différentes opérations pour une station donnée
 }
 \examples{
 poissons.operations()
+poissons.operations(CodeOperation = TRUE)
 poissons.operations("SOR10-2")
+poissons.operations("SOR10-2", CodeOperation = TRUE)
+poissons.operations("SOR10-2", all = TRUE)
 }
 \keyword{poissons}

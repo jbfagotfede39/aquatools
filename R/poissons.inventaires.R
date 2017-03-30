@@ -3,19 +3,22 @@
 #' Cette fonction permet de lister les différents inventaires pour une station donnée ou l'ensemble de la BDD
 #' 
 #' @param station Code de la station
+#' @param all Affichage de tous les paramètres de la table - \code{FALSE} (par défault) 
 #' @keywords poissons
 #' @import dplyr RSQLite DBI lubridate
 #' @export
 #' @examples
 #' poissons.inventaires()
 #' poissons.inventaires("SOR10-2")
+#' poissons.inventaires(all=T)
 
 ##### TODO LIST #####
 # 
 #####################
 
 poissons.inventaires <- function(
-  station="")
+  station="",
+  all=FALSE)
 {
   
   ## Ouverture de la BDD ##
@@ -43,18 +46,32 @@ poissons.inventaires <- function(
   
   ## Simplification ##
   # Travail sur une seule station
-  if(nchar(station) != 0){
+  if(nchar(station) != 0 & all == F){
     Inventaires <- 
       Inventaires %>%
       select(Nom, DateDebut) %>% 
       filter(Nom == station) %>% 
       dplyr::rename(Stations = Nom, Dates = DateDebut)}
   
+  if(nchar(station) != 0 & all == T){
+    Inventaires <- 
+      Inventaires %>%
+      #select(Nom, DateDebut) %>% 
+      filter(Nom == station) %>% 
+      dplyr::rename(Stations = Nom, Dates = DateDebut)}
+  
   # Travail sur l'ensemble des opérations
-  if(nchar(station) == 0){
+  if(nchar(station) == 0 & all == F){
     Inventaires <- 
       Inventaires %>%
       select(Nom, DateDebut) %>% 
+      #filter(Nom == station) %>% 
+      dplyr::rename(Stations = Nom, Dates = DateDebut)}
+  
+  if(nchar(station) == 0 & all == T){
+    Inventaires <- 
+      Inventaires %>%
+      #select(Nom, DateDebut) %>% 
       #filter(Nom == station) %>% 
       dplyr::rename(Stations = Nom, Dates = DateDebut)}
   
