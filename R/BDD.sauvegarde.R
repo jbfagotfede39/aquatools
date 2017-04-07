@@ -22,19 +22,19 @@ BDD.sauvegarde <- function(
   ## Poissons ##
 
   ## Chroniques ##
-  if(Type == "Chroniques" & file.exists("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
-  if(Type == "Chroniques" & file.exists("/Volumes/Fixe-FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/hubiC/Données/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Volumes/Fixe-FD39/hubiC/Données/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
+  if(Type == "Chroniques" & file.exists("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Users/imac27/NAS-DATA/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
+  if(Type == "Chroniques" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite", paste0("/Volumes/Fixe-FD39/NAS-DATA/Chroniques/Archives_BDD_Chroniques/BDD_Chroniques-",now(),".sqlite"))
   
   ## Physico-chimie ##
-  if(Type == "Physico-chimie" & file.exists("/Users/imac27/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Physico-chimie/Archives_BDD_FD39/BDD_Physico-chimie_FD39-",now(),".sqlite"))
-  if(Type == "Physico-chimie" & file.exists("/Volumes/Fixe-FD39/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/hubiC/Données/Physico-chimie/BDD_Physico-chimie_FD39.sqlite", paste0("/Volumes/Fixe-FD39/hubiC/Données/Physico-chimie/Archives_BDD_FD39/BDD_Physico-chimie_FD39-",now(),".sqlite"))
+  if(Type == "Physico-chimie" & file.exists("/Users/imac27/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) file.copy("/Users/imac27/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite", paste0("/Users/imac27/NAS-DATA/Physico-chimie/Archives_BDD_FD39/BDD_Physico-chimie_FD39-",now(),".sqlite"))
+  if(Type == "Physico-chimie" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite", paste0("/Volumes/Fixe-FD39/NAS-DATA/Physico-chimie/Archives_BDD_FD39/BDD_Physico-chimie_FD39-",now(),".sqlite"))
   
   ## Macroinvertébrés ##
-  if(Type == "Macroinvertébrés" & file.exists("/Users/imac27/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite", paste0("/Users/imac27/hubiC/Données/Macroinvertébrés/Archives_BDD_MI_FD39/BDD_MI_FD39-",now(),".sqlite"))
-  if(Type == "Macroinvertébrés" & file.exists("/Volumes/Fixe-FD39/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/hubiC/Données/Macroinvertébrés/BDD_MI_FD39.sqlite", paste0("/Volumes/Fixe-FD39/hubiC/Données/Macroinvertébrés/Archives_BDD_MI_FD39/BDD_Macroinvertébrés_FD39-",now(),".sqlite"))
+  if(Type == "Macroinvertébrés" & file.exists("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) file.copy("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite", paste0("/Users/imac27/NAS-DATA/Macroinvertébrés/Archives_BDD_MI_FD39/BDD_MI_FD39-",now(),".sqlite"))
+  if(Type == "Macroinvertébrés" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite", paste0("/Volumes/Fixe-FD39/NAS-DATA/Macroinvertébrés/Archives_BDD_MI_FD39/BDD_Macroinvertébrés_FD39-",now(),".sqlite"))
   
   ## Temps de travail ##
-  if(Type == "Temps de travail" & file.exists("/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) file.copy("/Users/imac27/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite", paste0("/Users/imac27/hubiC/FD39/Activité/Temps de travail/Archives_BDD_FD39/BDD_Tps_travail_FD39-",now(),".sqlite"))
-  if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/hubiC/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite", paste0("/Volumes/Fixe-FD39/hubiC/FD39/Activité/Temps de travail/Archives_BDD_FD39/BDD_Tps_travail_FD39-",now(),".sqlite"))
+  if(Type == "Temps de travail" & file.exists("/Users/imac27/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) file.copy("/Users/imac27/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite", paste0("/Users/imac27/NAS-FD/Activité/Temps de travail/Archives_BDD_FD39/BDD_Tps_travail_FD39-",now(),".sqlite"))
+  if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) file.copy("/Volumes/Fixe-FD39/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite", paste0("/Volumes/Fixe-FD39/NAS-FD/Activité/Temps de travail/Archives_BDD_FD39/BDD_Tps_travail_FD39-",now(),".sqlite"))
   
 } # Fin de la fonction
