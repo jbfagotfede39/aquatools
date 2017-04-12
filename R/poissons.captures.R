@@ -114,7 +114,8 @@ Captures %>%
                                .$Nombre != 1 ~ .$TailleMoy))# Afin de compléter les tailles pour les poissons individuels
 
 ##### Nettoyage des 0 #####
-Captures[Captures == 0] <- ""
+if(dim(Captures)[1] != 0) Captures[Captures == 0] <- ""
+if(dim(Captures)[1] == 0) warning("Aucune capture correspondante")
 
 return(Captures)
 } # Fin de la fonction
