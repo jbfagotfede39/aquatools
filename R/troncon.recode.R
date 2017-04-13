@@ -49,13 +49,6 @@ troncon.recode <- function(troncon = data)
   if(class(troncon$ConnectiviteNote) == "factor") troncon$ConnectiviteNote <- as.numeric(levels(troncon$ConnectiviteNote))[troncon$ConnectiviteNote]
   if(class(troncon$StabiliteNote) == "factor") troncon$StabiliteNote <- as.numeric(levels(troncon$StabiliteNote))[troncon$StabiliteNote]
   
-  # Ré-encodage #
-  if(class(troncon$ScoreNote) == factor) troncon$ScoreNote <- as.numeric(levels(troncon$ScoreNote))[troncon$ScoreNote]
-  if(class(troncon$HeterogeneiteNote) == factor) troncon$HeterogeneiteNote <- as.numeric(levels(troncon$HeterogeneiteNote))[troncon$HeterogeneiteNote]
-  if(class(troncon$AttractiviteNote) == factor) troncon$AttractiviteNote <- as.numeric(levels(troncon$AttractiviteNote))[troncon$AttractiviteNote]
-  if(class(troncon$ConnectiviteNote) == factor) troncon$ConnectiviteNote <- as.numeric(levels(troncon$ConnectiviteNote))[troncon$ConnectiviteNote]
-  if(class(troncon$StabiliteNote) == factor) troncon$StabiliteNote <- as.numeric(levels(troncon$StabiliteNote))[troncon$StabiliteNote]
-  
   # Attribution des classes #
   tronconbis <-
     troncon %>% 
