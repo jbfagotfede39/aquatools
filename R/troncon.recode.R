@@ -20,27 +20,34 @@ troncon.recode <- function(troncon = data)
   if("score2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(ScoreNote = score2)}
+      dplyr::rename(ScoreNote = score2)}
     
   if("heterogen2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(HeterogeneiteNote = heterogen2)}
+      dplyr::rename(HeterogeneiteNote = heterogen2)}
 
   if("attractiv2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(AttractiviteNote = attractiv2)}
+      dplyr::rename(AttractiviteNote = attractiv2)}
   
   if("connectiv2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(ConnectiviteNote = connectiv2)}
+      dplyr::rename(ConnectiviteNote = connectiv2)}
   
   if("stab2" %in% names(troncon)){
     troncon <-
       troncon %>%
-      rename(StabiliteNote = stab2)}
+      dplyr::rename(StabiliteNote = stab2)}
+  
+  # Ré-encodage #
+  if(class(troncon$ScoreNote) == "factor") troncon$ScoreNote <- as.numeric(levels(troncon$ScoreNote))[troncon$ScoreNote]
+  if(class(troncon$HeterogeneiteNote) == "factor") troncon$HeterogeneiteNote <- as.numeric(levels(troncon$HeterogeneiteNote))[troncon$HeterogeneiteNote]
+  if(class(troncon$AttractiviteNote) == "factor") troncon$AttractiviteNote <- as.numeric(levels(troncon$AttractiviteNote))[troncon$AttractiviteNote]
+  if(class(troncon$ConnectiviteNote) == "factor") troncon$ConnectiviteNote <- as.numeric(levels(troncon$ConnectiviteNote))[troncon$ConnectiviteNote]
+  if(class(troncon$StabiliteNote) == "factor") troncon$StabiliteNote <- as.numeric(levels(troncon$StabiliteNote))[troncon$StabiliteNote]
   
   # Attribution des classes #
   tronconbis <-
