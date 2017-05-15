@@ -9,7 +9,8 @@
 #' BDD.ouverture(Type = "Chroniques")
 
 ##### TODO LIST #####
-# 
+# my_db <- src_sqlite("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")
+# head(tbl(my_db,"SuiviTerrain"), 10) %>% collect() 
 #####################
 
 BDD.ouverture <- function(

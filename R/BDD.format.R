@@ -4,13 +4,15 @@
 #' 
 #' @param data Chronique à valider
 #' @keywords data
-#' @import dplyr DBI stringr
+#' @import dplyr
+#' @import stringr
+#' @import lubridate
 #' @export
 #' @examples
 #' BDD.format(data)
 
 ###### À faire #####
-# 
+# N'aller chercher que les 5 premières lignes de chaque table pour gagner du temps
 ####################
 
 BDD.format <- function(data)
@@ -84,6 +86,7 @@ BDD.format <- function(data)
     # Travail sur les heures #
     data$Heure <- str_replace(data$Heure, "h", ":") # On remplace le h par :
     data$Heure <- if(all(str_count(data$Heure, ":") == 1)) str_c(data$Heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
+    data$Heure <- format(ymd_hms(paste(data$Date,"-",data$Heure)), format="%H:%M:%S")
     
     # Travail sur les valeurs manuelles #
     data <- data %>% mutate(Valeur = ifelse(Valeur == "-", NA, Valeur)) # On met des NA pour les valeurs absentes
@@ -91,6 +94,14 @@ BDD.format <- function(data)
     
     # Transformation des numéros de capteurs
     data$Capteur <- str_replace(data$Capteur, "\\..*", "") # On supprime d'éventuels .0 à la fin
+    
+    # Transformation des actions
+    data$Action <- dplyr::recode(data$Action,
+                                 "disparue" = "Disparue",
+                                 "releve" = "Relève",
+                                 "relève" = "Relève",
+                                 "pose" = "Pose"
+    )
     
     # Transformation des formats
     data$SuiviTerrainID <- as.integer(data$SuiviTerrainID)
