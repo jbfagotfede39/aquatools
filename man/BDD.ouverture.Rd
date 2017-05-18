@@ -8,11 +8,15 @@ BDD.ouverture(Type = c("Chroniques", "Poissons", "Macroinvertébrés",
   "Physico-chimie", "Temps de travail"))
 }
 \arguments{
-\item{Type}{Type de base de données}
+\item{Type}{Type de base de données. Chroniques par défaut}
 }
 \description{
 Cette fonction permet de charger les bases de données de la fédération
 }
 \examples{
-BDD.ouverture(Type = "Chroniques")
+BDD.ouverture()
+BDD.ouverture(Type = "Poissons")
+db <- BDD.ouverture()
+db <- BDD.ouverture(Type = "Poissons")
+head(tbl(db,"SuiviTerrain"), 10) \%>\% collect()
 }

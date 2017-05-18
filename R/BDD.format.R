@@ -12,7 +12,7 @@
 #' BDD.format(data)
 
 ###### À faire #####
-# N'aller chercher que les 5 premières lignes de chaque table pour gagner du temps
+# 
 ####################
 
 BDD.format <- function(data)
@@ -22,9 +22,9 @@ BDD.format <- function(data)
   db <- BDD.ouverture("Macroinvertébrés")
   
   ## Récupération des données ##
-  HabitatsReference <- dbReadTable(db, "HabitatsReference")
-  Prelevements <- dbReadTable(db, "Prelevements")
-  Captures <- dbReadTable(db, "Captures")
+  HabitatsReference <- head(tbl(db,"HabitatsReference"), 10) %>% collect()
+  Prelevements <- head(tbl(db,"Prelevements"), 10) %>% collect()
+  Captures <- head(tbl(db,"Captures"), 10) %>% collect()
   
   # Travail sur les prélèvements #
   if(all(colnames(data) %in% colnames(Prelevements))) {
@@ -48,7 +48,7 @@ BDD.format <- function(data)
     data$Effectif <- as.integer(data$Effectif)
     
     # Ajout des ID
-    data$CaptureID <- row_number(data$PrelevementID) + max(Captures$CaptureID) # Pour incrémenter les CaptureID à partir du dernier
+    data$CaptureID <- row_number(data$PrelevementID) + as.numeric(tbl(db,"Captures") %>% summarise(max = max(CaptureID)) %>% collect()) # Pour incrémenter les CaptureID à partir du dernier
   }
   
   ###### Chroniques ######
@@ -56,10 +56,11 @@ BDD.format <- function(data)
   db <- BDD.ouverture("Chroniques")
   
   ## Récupération des données ##
-  Stations <- dbReadTable(db, "Stations")
-  Capteurs <- dbReadTable(db, "Capteurs")
-  SuiviTerrain <- dbReadTable(db, "SuiviTerrain")
-  Mesures <- dbReadTable(db, "Mesures")
+  Stations <- head(tbl(db,"Stations"), 10) %>% collect()
+  Capteurs <- head(tbl(db,"Capteurs"), 10) %>% collect()
+  SuiviBDD <- head(tbl(db,"SuiviBDD"), 10) %>% collect()
+  SuiviTerrain <- head(tbl(db,"SuiviTerrain"), 10) %>% collect()
+  Mesures <- head(tbl(db,"Mesures"), 10) %>% collect()
   
   # Mesures #
   if(all(colnames(data) %in% colnames(Mesures))) {
@@ -72,8 +73,8 @@ BDD.format <- function(data)
     data$Date <- as.character(data$Date)
     
     # Ajout des ID
-    data$MesureID <- row_number(data$Valeur) + max(Mesures$MesureID) # Pour incrémenter les CaptureID à partir du dernier
-    if(dim(filter(data, is.na(MesureID)))[1] > 0 & dim(filter(data, is.na(Validation)))[1] == 0) data$MesureID <- row_number(data$Validation) + max(Mesures$MesureID)
+    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
+    if(dim(filter(data, is.na(MesureID)))[1] > 0 & dim(filter(data, is.na(Validation)))[1] == 0) data$MesureID <- row_number(data$Validation) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID)) %>% collect())
     if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
   }
   
@@ -108,7 +109,7 @@ BDD.format <- function(data)
     data$Date <- as.character(data$Date)
     
     # Ajout des ID
-    data$SuiviTerrainID <- row_number(data$CodeRDT) + max(SuiviTerrain$SuiviTerrainID) # Pour incrémenter les CaptureID à partir du dernier
+    data$SuiviTerrainID <- row_number(data$CodeRDT) + as.numeric(tbl(db,"SuiviTerrain") %>% summarise(max = max(SuiviTerrainID)) %>% collect()) # Pour incrémenter les SuiviTerrainID à partir du dernier
   }
 
   ##### Commun #####
