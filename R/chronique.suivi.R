@@ -3,7 +3,6 @@
 #' Cette fonction permet d'extraire des données de suivi de terrain
 #' 
 #' @param Type Type de donnée de suivi
-#' @keywords 
 #' @import DBI dplyr lubridate
 #' @export
 #' @examples
