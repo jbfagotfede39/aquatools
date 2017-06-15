@@ -112,6 +112,9 @@ BDD.format <- function(data)
     data$SuiviTerrainID <- row_number(data$CodeRDT) + as.numeric(tbl(db,"SuiviTerrain") %>% summarise(max = max(SuiviTerrainID)) %>% collect()) # Pour incrémenter les SuiviTerrainID à partir du dernier
   }
 
+    # Vérification des types d'action
+    if(dim(filter(data, Action != "Disparue"|Action != "Pose"|Action != "Dépose"|Action != "Relève"))[1] > 0) stop("Action de type inconnu")
+  
   ##### Commun #####
 data <- as.data.frame(data)
 

@@ -4,7 +4,10 @@
 #' 
 #' @param data Chronique à valider
 #' @keywords data
-#' @import dplyr DBI lubridate
+#' @import DBI
+#' @import dbplyr
+#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' BDD.SIG()
@@ -19,7 +22,7 @@ BDD.SIG <- function()
 
   ###### Chroniques ######
   db <- BDD.ouverture("Chroniques")
-  Stations <- dbReadTable(db, "Stations")
+  Stations <- tbl(db,"Stations") %>% collect()
   Stations <- Stations %>% filter(!is.na(XL93))
   
   if(file.exists("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T){
@@ -40,7 +43,7 @@ BDD.SIG <- function()
   
   ###### Poissons ######
   db <- BDD.ouverture("Poissons")
-  Stations <- dbReadTable(db, "Stations")
+  Stations <- tbl(db,"Stations") %>% collect()
   Stations <- Stations %>% filter(TypeLambert == 'L93')
   
     if(file.exists("/Users/imac27/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T){
@@ -61,7 +64,7 @@ BDD.SIG <- function()
   
   ###### Physico-chimie ######
   db <- BDD.ouverture("Physico-chimie")
-  Stations <- dbReadTable(db, "Operations")
+  Stations <- tbl(db,"Operations") %>% collect()
   Stations <- Stations %>% filter(!is.na(XL93))
   
   if(file.exists("/Users/imac27/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T){

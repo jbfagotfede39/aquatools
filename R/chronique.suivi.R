@@ -3,7 +3,8 @@
 #' Cette fonction permet d'extraire des données de suivi de terrain
 #' 
 #' @param Type Type de donnée de suivi
-#' @import DBI dplyr lubridate
+#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.suivi("CG39", Type = "MO")
@@ -13,7 +14,7 @@
 #' chronique.suivi("9759803", Type = "Sonde")
 
 ##### TODO LIST #####
-# 
+# Pour l'instant requête globale, mais transformer pour faire requêtes spécifiques à la demande
 #####################
 
 chronique.suivi <- function(x = "ORA2-7", 
@@ -28,13 +29,13 @@ chronique.suivi <- function(x = "ORA2-7",
   db <- BDD.ouverture(Type = "Chroniques")
   
   ## Chargement des données ##
-  SuiviTerrain <- dbReadTable(db, "SuiviTerrain")
+  SuiviTerrain <- tbl(db,"SuiviTerrain") %>% collect()
   
   ## Formatage ##
   SuiviTerrain$Date <- ymd(SuiviTerrain$Date)
   
-  ## x en tant que telle
-  if(Type == "MO") 
+  ## x en tant que tel
+  if(Type == "MO") {
     Vue <-
   SuiviTerrain %>% 
     filter(MO == x) %>% 
@@ -43,8 +44,9 @@ chronique.suivi <- function(x = "ORA2-7",
     #filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
     arrange(desc(Date))
+  }
   
-  if(Type == "Operateurs")
+  if(Type == "Operateurs") {
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
@@ -53,8 +55,9 @@ chronique.suivi <- function(x = "ORA2-7",
     #filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
     arrange(desc(Date))
+  }
   
-  if(Type == "Station") 
+  if(Type == "Station") {
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
@@ -63,8 +66,9 @@ chronique.suivi <- function(x = "ORA2-7",
     #filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
     arrange(desc(Date))
+  }
   
-  if(Type == "Date") 
+  if(Type == "Date") {
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
@@ -73,8 +77,9 @@ chronique.suivi <- function(x = "ORA2-7",
     filter(Date == x) %>% 
     #filter(Capteur == x) %>% 
     arrange(desc(Date))
+  }
   
-  if(Type == "Sonde") 
+  if(Type == "Sonde") {
     Vue <-
     SuiviTerrain %>% 
     #filter(MO == x) %>% 
@@ -83,6 +88,7 @@ chronique.suivi <- function(x = "ORA2-7",
     #filter(Date == x) %>% 
     filter(Capteur == x) %>% 
     arrange(desc(Date))
+  }
   
   ## Affichage des résultats ##
   return(Vue)

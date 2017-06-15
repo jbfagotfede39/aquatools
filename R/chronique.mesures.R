@@ -2,7 +2,11 @@
 #'
 #' Permet d'extraire les données de chronique d'une station
 #' @keywords chronique
-#' @import DBI dplyr lubridate RSQLite stringr
+#' @import DBI
+#' @import dplyr
+#' @import lubridate 
+#' @import RSQLite 
+#' @import stringr
 #' @export
 #' @examples
 #' chronique.mesures("HER0-6", "Thermie") 
