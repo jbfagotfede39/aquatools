@@ -27,7 +27,7 @@ profil.lac<-function(PC,param="O2mg"){
   ggO2 <- ggO2 + scale_color_manual(
     values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"),
     name="Date")
-  ggO2 <- ggO2 + labs(x = "Profondeur (m)", y = expression(Oxygène~dissous~(mg~O[2]/L))) # Pour changer le titre
+  ggO2 <- ggO2 + labs(x = "Profondeur (m)", y = expression(Oxygene~dissous~(mg~O[2]/L))) # Pour changer le titre
   ggO2 <- ggO2 + coord_flip() # pour inverser l'affichage des X et des Y
   ggO2 <- ggO2 + theme_bw()
   ggO2
@@ -40,7 +40,7 @@ profil.lac<-function(PC,param="O2mg"){
   gg <- gg + scale_color_manual(
     values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"),
     name="Date")
-  gg <- gg + labs(x = "Profondeur (m)", y = expression(Oxygène~dissous~("%"~saturation~O[2]/L))) # Pour changer le titre
+  gg <- gg + labs(x = "Profondeur (m)", y = expression(Oxygene~dissous~("%"~saturation~O[2]/L))) # Pour changer le titre
   gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
   gg <- gg + theme_bw()
   gg
