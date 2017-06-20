@@ -5,7 +5,7 @@
 #' @param data Chronique à valider
 #' @keywords data
 #' @import DBI
-#' @import dbplyr
+#' @import dplyr
 #' @import lubridate
 #' @import tidyverse
 #' @export
