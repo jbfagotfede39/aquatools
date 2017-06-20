@@ -53,7 +53,7 @@ profil.lac<-function(PC,param="O2mg"){
   gg <- gg + scale_color_manual(
     values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"),
     name="Date")
-  gg <- gg + labs(x = "Profondeur (m)", y = expression(Conductivité~corrigée~à~25~degree*C~(paste(mu,S)))) # Pour changer le titre
+  gg <- gg + labs(x = "Profondeur (m)", y = expression(Conductivite~corrigée~à~25~degree*C~(paste(mu,S)))) # Pour changer le titre
   gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
   gg <- gg + theme_bw()
   gg
@@ -79,7 +79,7 @@ profil.lac<-function(PC,param="O2mg"){
   gg <- gg + scale_color_manual(
     values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"),
     name="Date")
-  gg <- gg + labs(x = "Profondeur (m)", y = expression(Température~(degree*C))) # Pour changer le titre
+  gg <- gg + labs(x = "Profondeur (m)", y = expression(Temperature~(degree*C))) # Pour changer le titre
   gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
   gg <- gg + theme_bw()
   gg
