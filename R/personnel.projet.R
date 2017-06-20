@@ -40,7 +40,7 @@ personnel.projet <- function(
     TpsW %>%
     filter(Identification == projet) %>% 
     group_by(Identification, Personnel) %>%
-    summarise(Journées = sum(Temps))
+    summarise(Journees = sum(Temps))
   
   SynthesePersonnel <- as.data.frame(SynthesePersonnel)
   
