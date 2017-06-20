@@ -42,7 +42,7 @@ poissons.expertise <- function(
     Operations %>%
     filter(Nom == station, DateDebut.x == date) %>% 
     rename(Station = Nom, Date = DateDebut.x, Etat = AvisExpertCourt.x, Details = AvisExpert.x) %>% 
-    select(Station, Date, État, Details) %>% 
+    select(Station, Date, Etat, Details) %>% 
     arrange(Station)
   
   # Test si plusieurs résultats #
