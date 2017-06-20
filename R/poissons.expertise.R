@@ -41,7 +41,7 @@ poissons.expertise <- function(
   Operations <- 
     Operations %>%
     filter(Nom == station, DateDebut.x == date) %>% 
-    rename(Station = Nom, Date = DateDebut.x, État = AvisExpertCourt.x, Details = AvisExpert.x) %>% 
+    rename(Station = Nom, Date = DateDebut.x, Etat = AvisExpertCourt.x, Details = AvisExpert.x) %>% 
     select(Station, Date, État, Details) %>% 
     arrange(Station)
   
