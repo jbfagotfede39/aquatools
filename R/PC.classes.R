@@ -9,11 +9,11 @@
 #' @import reshape2
 #' @export
 #' @examples
-#' PC.ClasseQualites(PC)
-#' PC.ClasseQualites(PC,Referentiel="NV")
-#' PC.ClasseQualites(PC,Referentiel="SEQ-EAU")
-#' PC.ClasseQualites(PC,Referentiel="Quebec")
-#' #' PC.ClasseQualites(PC,Referentiel="SEQ-EAU",Categorie = 2)
+#' PC.classes(PC)
+#' PC.classes(PC,Referentiel="NV")
+#' PC.classes(PC,Referentiel="SEQ-EAU")
+#' PC.classes(PC,Referentiel="Quebec")
+#' PC.classes(PC,Referentiel="SEQ-EAU",Categorie = 2)
 
 ##### TODO LIST #####
 # Si mise à jour des paramètres :
@@ -42,14 +42,14 @@ PC.classes <- function(
   
   ##### Chargement des Referentiels #####
   data(Seuils_PC) # Pour charger les seuils de qualité
-
-  ## Connexion à la BDD ##
-  db <- BDD.ouverture(Type = "Physico-chimie")
-  
-  ## Récupération des données ##
-  PC <- tbl(db,"PC") %>% collect()
-  PC <- tbl(db,"PC") %>% collect(n = Inf)
-  
+# 
+#   ## Connexion à la BDD ##
+#   db <- BDD.ouverture(Type = "Physico-chimie")
+#   
+#   ## Récupération des données ##
+#   PC <- tbl(db,"PC") %>% collect()
+#   PC <- tbl(db,"PC") %>% collect(n = Inf)
+#   
 ###### Nisbet et Verneaux #####
 if(Referentiel == "NV") {
   

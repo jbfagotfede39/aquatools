@@ -11,7 +11,7 @@
 #' stations.DistSource(data)
 
 ##### TODO LIST #####
-# 
+# [A-Z]* doit fonctionner, plus simple que trois lignes...
 #####################
 
 stations.DistSource <- function(

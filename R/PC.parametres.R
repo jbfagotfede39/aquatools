@@ -2,7 +2,7 @@
 #'
 #' Reformatage les paramètres physico-chimiques avec les noms uniformisés, les codes SANDRE et les unités
 #' 
-#' @param data Jeu de données contenant une colonne Parametre
+#' @param data Jeu de données contenant une colonne Parametre ou ParametreNom
 #' @keywords donnees
 #' @import tidyverse
 #' @export
@@ -17,13 +17,16 @@ PC.parametres <- function(data)
 # Nécessité d'arrondir ? Oui mais compliqué car il ne faut pas faire les mêmes arrondis en fonction des paramètres...
 #####################
 
+  ## Recherche si les colonnes existent, sinon création
+  if(!"ParametreSANDRE" %in% colnames(data)) data$ParametreSANDRE <- ""
+  if(!"UniteNom" %in% colnames(data)) data$UniteNom <- ""
+  if(!"UniteSANDRE" %in% colnames(data)) data$UniteSANDRE <- ""
+  if(!"ParametreNom" %in% colnames(data)) data$ParametreNom <- ""
   
-##### Paramètres génériques #####
-if(!"ParametreSANDRE" %in% colnames(data)) data$ParametreSANDRE <- ""
-if(!"UniteNom" %in% colnames(data)) data$UniteNom <- ""
-if(!"UniteSANDRE" %in% colnames(data)) data$UniteSANDRE <- ""
-if(!"ParametreNom" %in% colnames(data)) data$ParametreNom <- ""
+  ## Si entrée avec une colonne ParametreNom, renommage temporaire en Parametre ##
+  if(!"Parametre" %in% colnames(data)) data$Parametre <- data$ParametreNom
 
+##### Paramètres génériques #####
 data$ParametreSANDRE[data$Parametre == "Débit"] <- "1420"
 data$UniteNom[data$Parametre == "Débit"] <- "m3/s"
 data$UniteSANDRE[data$Parametre == "Débit"] <- "117"

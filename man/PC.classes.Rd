@@ -17,9 +17,9 @@ PC.classes(PC, Referentiel = c("NV", "SEQ-EAU", "Quebec"), Categorie = 1)
 Cette fonction permet d'attribuer des classes de qualité à des valeurs physico-chimiques
 }
 \examples{
-PC.ClasseQualites(PC)
-PC.ClasseQualites(PC,Referentiel="NV")
-PC.ClasseQualites(PC,Referentiel="SEQ-EAU")
-PC.ClasseQualites(PC,Referentiel="Quebec")
-#' PC.ClasseQualites(PC,Referentiel="SEQ-EAU",Categorie = 2)
+PC.classes(PC)
+PC.classes(PC,Referentiel="NV")
+PC.classes(PC,Referentiel="SEQ-EAU")
+PC.classes(PC,Referentiel="Quebec")
+PC.classes(PC,Referentiel="SEQ-EAU",Categorie = 2)
 }

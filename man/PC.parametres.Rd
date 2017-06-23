@@ -7,7 +7,7 @@
 PC.parametres(data)
 }
 \arguments{
-\item{data}{Jeu de données contenant une colonne Parametre}
+\item{data}{Jeu de données contenant une colonne Parametre ou ParametreNom}
 }
 \description{
 Reformatage les paramètres physico-chimiques avec les noms uniformisés, les codes SANDRE et les unités

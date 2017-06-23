@@ -26,10 +26,10 @@ formatage.abreviation <- function(){
 
   #### Import ####
   if(file.exists("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymes.tex")
-  if(file.exists("/Volumes/Fixe-FD39/Google Drive/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymes.tex")
+  if(file.exists("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymes.tex")
   
   if(file.exists("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymesCE.tex")
-  if(file.exists("/Volumes/Fixe-FD39/Google Drive/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymesCE.tex")
+  if(file.exists("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymesCE.tex")
   
   #### Transformation en dataframe ####
   acronymes <- as.tbl(as.data.frame(acronymes))
