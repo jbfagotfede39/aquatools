@@ -4,15 +4,18 @@
 \alias{stations.ecosysteme}
 \title{Listage des stations d'un cours d'eau}
 \usage{
-stations.ecosysteme(ecosysteme = "Ain")
+stations.ecosysteme(ecosysteme = "Ain", shp = F)
 }
 \arguments{
+\item{shp}{Si \code{FALSE} (par défault), n'exporte pas de shp dans le répertoire courant.}
+
 \item{Nom}{du cours d'eau}
 }
 \description{
-Cette fonction permet de lister les stations d'un cours d'eau donné
+Cette fonction permet de lister les stations d'un cours d'eau donné dans les BDD poisson et chronique
 }
 \examples{
 stations.ecosysteme("Ain")
+stations.ecosysteme("Ain", shp=T)
 }
 \keyword{stations}
