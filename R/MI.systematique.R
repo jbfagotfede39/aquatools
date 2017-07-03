@@ -20,15 +20,15 @@ MI.systematique <- function(data)
   db <- BDD.ouverture("Macroinvertébrés")
   
   ## Récupération des données ##
-  HabitatsReference <- dbReadTable(db, "HabitatsReference")
-  Prelevements <- dbReadTable(db, "Prelevements")
-  Captures <- dbReadTable(db, "Captures")
-  EspecesReference <- dbReadTable(db, "EspecesReference")
-  GenresReference <- dbReadTable(db, "GenresReference")
-  SousFamillesReference <- dbReadTable(db, "SousFamillesReference")
-  FamillesReference <- dbReadTable(db, "FamillesReference")
-  OrdresReference <- dbReadTable(db, "OrdresReference")
-
+  HabitatsReference <- tbl(db,"HabitatsReference") %>% collect(n = Inf)
+  Prelevements <- tbl(db,"Prelevements") %>% collect(n = Inf)
+  Captures <- tbl(db,"Captures") %>% collect(n = Inf)
+  EspecesReference <- tbl(db,"EspecesReference") %>% collect(n = Inf)
+  GenresReference <- tbl(db,"GenresReference") %>% collect(n = Inf)
+  SousFamillesReference <- tbl(db,"SousFamillesReference") %>% collect(n = Inf)
+  FamillesReference <- tbl(db,"FamillesReference") %>% collect(n = Inf)
+  OrdresReference <- tbl(db,"OrdresReference") %>% collect(n = Inf)
+  
   # Assemblage des morceaux de systématique
   Systematique <- full_join(EspecesReference, GenresReference, "GenreID")
   Systematique <- bind_rows(Systematique, Systematique %>% filter(!is.na(Espece)) %>% select(3:9))

@@ -21,12 +21,8 @@ stations.ecosysteme <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  #Operations <- dbReadTable(db, "Operations")
-  #IPR <- dbReadTable(db, "IPRs")
-  #Inventaires <- dbReadTable(db, "Inventaires")
-  Stations <- dbReadTable(db, "Stations")
-  Ecosystemes <- dbReadTable(db, "Ecosystemes")
+  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
+  Ecosystemes <- tbl(db,"Ecosystemes") %>% collect(n = Inf)
   
   ## Extraction des afférences ##
   # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
@@ -45,7 +41,8 @@ stations.ecosysteme <- function(
   # Recherche des stations qui ont un Codeecosysteme = à ce Codeecosysteme
   Stations <-
     Stations %>% 
-    filter(Codeecosysteme == ecosysteme[,1]) %>% 
+    filter(Codeecosysteme == as.character(ecosysteme[,1])) %>% 
+    #filter(Codeecosysteme == ecosysteme[,1]) %>% # Ancienne version
     select(Nom)
   
   

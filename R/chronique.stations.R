@@ -31,7 +31,7 @@ chronique.stations <- function(x = "CD39",
   db <- BDD.ouverture()
   
   ## Chargement des données ##
-  Stations <- dbReadTable(db, "Stations")
+  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
   
   ## x en tant que telle
   if(Recherche == "MO") 

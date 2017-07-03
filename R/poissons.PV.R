@@ -25,14 +25,9 @@ poissons.PV <- function(
   #dbListTables(db)
   
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  #Operations <- dbReadTable(db, "Operations") %>% select(Codeoperation, AvisExpertCourt, AvisExpert)
-  #IPR <- dbReadTable(db, "IPRs")
-  #Inventaires <- dbReadTable(db, "Inventaires")
-  #Stations <- dbReadTable(db, "Stations")
-  Ecosystemes <- dbReadTable(db, "Ecosystemes")
-  pv_lots <- dbReadTable(db, "pv_lots")
-  pv_pvs <- dbReadTable(db, "pv_pvs")
+  Ecosystemes <- tbl(db,"Ecosystemes") %>% collect(n = Inf)
+  pv_lots <- tbl(db,"pv_lots") %>% collect(n = Inf)
+  pv_pvs <- tbl(db,"pv_pvs") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   pv_lots <- left_join(pv_lots, Ecosystemes, by = c("codeecosysteme" = "Codeecosysteme")) #

@@ -22,11 +22,7 @@ poissons.stations <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  #Operations <- dbReadTable(db, "Operations")
-  #IPR <- dbReadTable(db, "IPRs")
-  #Inventaires <- dbReadTable(db, "Inventaires")
-  Stations <- dbReadTable(db, "Stations")
+  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
   
   ## Extraction des données de la station si une est spécifiée ##
   if(nchar(station) != 0) {

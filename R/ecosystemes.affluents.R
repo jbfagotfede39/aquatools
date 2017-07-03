@@ -21,12 +21,7 @@ ecosystemes.affluents <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  #Operations <- dbReadTable(db, "Operations")
-  #IPR <- dbReadTable(db, "IPRs")
-  #Inventaires <- dbReadTable(db, "Inventaires")
-  #Stations <- dbReadTable(db, "Stations")
-  Ecosystemes <- dbReadTable(db, "Ecosystemes")
+  Ecosystemes <- tbl(db,"Ecosystemes") %>% collect(n = Inf)
   
   ## Extraction des afférences ##
   # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #

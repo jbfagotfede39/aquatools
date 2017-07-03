@@ -20,9 +20,9 @@ MI.nettoyage <- function(data)
 db <- BDD.ouverture("Macroinvertébrés")
   
   ## Récupération des données ##
-HabitatsReference <- dbReadTable(db, "HabitatsReference")
-Prelevements <- dbReadTable(db, "Prelevements")
-Captures <- dbReadTable(db, "Captures")
+HabitatsReference <- tbl(db,"HabitatsReference") %>% collect(n = Inf)
+Prelevements <- tbl(db,"Prelevements") %>% collect(n = Inf)
+Captures <- tbl(db,"Captures") %>% collect(n = Inf)
 
 ##### Travail sur les prélèvements #####
 if(all(colnames(data) %in% colnames(Prelevements))) {

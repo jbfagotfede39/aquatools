@@ -18,8 +18,8 @@ personnel.projet <- function(
   db <- BDD.ouverture(Type = "Temps de travail")
   
   ## Récupération des données ##
-  TpsW <- dbReadTable(db, "TempsDeTravail")
-  RecapTpsW <- dbReadTable(db, "RecapTempsDeTravail")
+  TpsW <- tbl(db,"TempsDeTravail") %>% collect(n = Inf)
+  RecapTpsW <- tbl(db,"RecapTempsDeTravail") %>% collect(n = Inf)
   
   ##### Transformation des formats #####
   TpsW$Date <- ymd(TpsW$Date)

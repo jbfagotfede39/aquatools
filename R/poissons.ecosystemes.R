@@ -25,11 +25,7 @@ poissons.ecosystemes <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  #Operations <- dbReadTable(db, "Operations")
-  #Inventaires <- dbReadTable(db, "Inventaires")
-  #Stations <- dbReadTable(db, "Stations")
-  Ecosystemes <- dbReadTable(db, "Ecosystemes")
+  Ecosystemes <- tbl(db,"Ecosystemes") %>% collect(n = Inf)
   
   ## Extraction des données de l'écosystème si un est spécifié ##
   if(nchar(ecosysteme) != 0) {

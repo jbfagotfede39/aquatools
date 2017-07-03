@@ -20,16 +20,9 @@ MI.captures <- function(
   #BDD.sauvegarde("Macroinvertébrés")
   
   ##### Récupération des données #####
-  Operations <- dbReadTable(db, "Operations")
-  Prelevements <- dbReadTable(db, "Prelevements")
-  Captures <- dbReadTable(db, "Captures")
-  
-  #HabitatsReference <- dbReadTable(db, "HabitatsReference")
-  #EspecesReference <- dbReadTable(db, "EspecesReference")
-  #GenresReference <- dbReadTable(db, "GenresReference")
-  #SousFamillesReference <- dbReadTable(db, "SousFamillesReference")
-  #FamillesReference <- dbReadTable(db, "FamillesReference")
-  #OrdresReference <- dbReadTable(db, "OrdresReference")
+  Operations <- tbl(db,"Operations") %>% collect(n = Inf)
+  Prelevements <- tbl(db,"Prelevements") %>% collect(n = Inf)
+  Captures <- tbl(db,"Captures") %>% collect(n = Inf)
   
   ##### Synthèse des données #####
   Prelevements <- merge(Prelevements, Operations, by = c("OperationID"))

@@ -23,11 +23,9 @@ poissons.expertise <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  Operations <- dbReadTable(db, "Operations")
-  #IPR <- dbReadTable(db, "IPRs")
-  Inventaires <- dbReadTable(db, "Inventaires")
-  Stations <- dbReadTable(db, "Stations")
+  Operations <- tbl(db,"Operations") %>% collect(n = Inf)
+  Inventaires <- tbl(db,"Inventaires") %>% collect(n = Inf)
+  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   Operations <- merge(Operations, Inventaires, by = c("CodeInventaire"))

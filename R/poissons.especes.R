@@ -15,13 +15,7 @@ poissons.especes <- function(){
   db <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
-  #Resultats <- dbReadTable(db, "Resultats")
-  #Operations <- dbReadTable(db, "Operations")
-  #Inventaires <- dbReadTable(db, "Inventaires")
-  #Stations <- dbReadTable(db, "Stations")
-  #Ecosystemes <- dbReadTable(db, "Ecosystemes")
-  #Communes <- dbReadTable(db, "Communes")
-  Especes <- dbReadTable(db, "Especes")
+  Especes <- tbl(db,"Especes") %>% collect(n = Inf)
   
   return(Especes)
 } # Fin de la fonction

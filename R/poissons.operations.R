@@ -28,12 +28,11 @@ poissons.operations <- function(
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
   db <- BDD.ouverture(Type = "Poissons")
-  #dbListTables(db)
+
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  Operations <- dbReadTable(db, "Operations")
-  Inventaires <- dbReadTable(db, "Inventaires")
-  Stations <- dbReadTable(db, "Stations")
+  Operations <- tbl(db,"Operations") %>% collect(n = Inf)
+  Inventaires <- tbl(db,"Inventaires") %>% collect(n = Inf)
+  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))

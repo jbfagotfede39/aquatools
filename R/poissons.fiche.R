@@ -20,7 +20,7 @@ poissons.fiche <- function(
 if(commentaires == FALSE) fileName <- system.file("extdata", "ModeleRenduPeche.Rnw", package = "aquatools") else fileName <- system.file("extdata", "ModeleRenduPecheCommente.Rnw", package = "aquatools")
 ModeleRenduPeche <- readChar(fileName, file.info(fileName)$size)
 
-date <- ymd(date)
+date <- as.character(ymd(date))
 #datejolie <- ymd_hms(date)
 #datejolie <- paste(day(datejolie), month(datejolie), year(datejolie),sep="-")
 

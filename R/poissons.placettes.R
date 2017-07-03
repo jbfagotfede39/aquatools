@@ -25,13 +25,12 @@ poissons.placettes <- function(
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
   db <- BDD.ouverture(Type = "Poissons")
-  #dbListTables(db)
+ 
   ## Récupération des données ##
-  #Captures <- dbReadTable(db, "Captures")
-  Placettes <- dbReadTable(db, "Placettes")
-  Operations <- dbReadTable(db, "Operations")
-  Inventaires <- dbReadTable(db, "Inventaires")
-  Stations <- dbReadTable(db, "Stations")
+  Placettes <- tbl(db,"Placettes") %>% collect(n = Inf)
+  Operations <- tbl(db,"Operations") %>% collect(n = Inf)
+  Inventaires <- tbl(db,"Inventaires") %>% collect(n = Inf)
+  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))
