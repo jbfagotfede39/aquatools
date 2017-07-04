@@ -110,10 +110,30 @@ BDD.format <- function(data)
     
     # Ajout des ID
     data$SuiviTerrainID <- row_number(data$CodeRDT) + as.numeric(tbl(db,"SuiviTerrain") %>% summarise(max = max(SuiviTerrainID)) %>% collect()) # Pour incrémenter les SuiviTerrainID à partir du dernier
-  }
 
     # Vérification des types d'action
     if(dim(filter(data, Action != "Disparue"|Action != "Pose"|Action != "Dépose"|Action != "Relève"))[1] > 0) stop("Action de type inconnu")
+  }
+  
+  ##### PC #####
+  ## Connexion à la BDD ##
+  db <- BDD.ouverture("Physico-chimie")
+  
+  ## Récupération des données ##
+  PC <- head(tbl(db,"PC"), 10) %>% collect()
+  Operations <- head(tbl(db,"Operations"), 10) %>% collect()
+  SuiviBDD <- head(tbl(db,"SuiviBDD"), 10) %>% collect()
+  
+  ## Travail sur les mesures de PC ##
+  if(all(colnames(data) %in% colnames(PC))) {
+    
+    # Transformation des formats
+    data$Date <- as.character(data$Date) # Car sinon transformation automatique des formats de date
+    
+    # Ajout des ID
+    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"PC") %>% summarise(max = max(MesureID)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
+    if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
+  }
   
   ##### Commun #####
 data <- as.data.frame(data)

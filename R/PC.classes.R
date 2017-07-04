@@ -17,13 +17,13 @@
 
 ##### TODO LIST #####
 # Si mise à jour des paramètres :
-# library(readxl);library(tidyverse);data <- read_excel("data/Seuils_PC_V3.xlsx");save(data,file="data/Seuils_PC.RData")
+# library(readxl);library(tidyverse);data <- read_excel("data/Seuils_PC_V4.xlsx");save(data,file="data/Seuils_PC.RData")
 # PC <- PC %>% filter(SupportSANDRE == 6)
 # PCsave <- PC
 # library(readxl);library(tidyverse);library(reshape2);library(aquatools);data(Seuils_PC);Categorie = 1
 # load("data/Seuils_PC.RData")
 # 
-# Ajout d'un filtre si inférieur au seuil de détection avec commentaire en fonction de la valeur de ce seuil/toxicité
+# Ajout d'un filtre si inférieur au seuil de detection avec commentaire en fonction de la valeur de ce seuil/toxicité
 # Notion d'unité : à faire avec la clé : parametre-Matrice-Unite
 # Option permettant différentes sorties (couleurs/valeurs etc.) = Ajout d'une option permettant de choisir le mode de sortie (en l'état avec 2 colonnes de + ou bien différents types de matrices de synthèse (valeurs, ClasseQualite, couleurs) comme dans fichier PC_V3.R)
 # Complément base de données (ETM SEQ-Eau et Québec ok)
@@ -77,7 +77,7 @@ if(Referentiel == "NV") {
                                             .$Valeur >= .$`Maximum-5` & .$Valeur < .$`Maximum-6` ~ "Classe 6",
                                             .$Valeur >= .$`Maximum-6` & .$Valeur < .$`Maximum-7` ~ "Classe 7",
                                             .$Valeur >= .$`Minimum-8` ~ "Classe 8",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1312-3", # Pour le cas où SANDRE 1312 <-> 6 cas
@@ -87,7 +87,7 @@ if(Referentiel == "NV") {
                                             .$Valeur >= .$`Minimum-3` & .$Valeur < .$`Minimum-2` ~ "Classe 3",
                                             .$Valeur >= .$`Minimum-2` & .$Valeur < .$`Minimum-1` ~ "Classe 2",
                                             .$Valeur >= .$`Minimum-1` ~ "Classe 1",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1313-3", # Pour le cas où SANDRE 1313 <-> 4 cas
@@ -95,14 +95,14 @@ if(Referentiel == "NV") {
                                             .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
                                             .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
                                             .$Valeur >= .$`Minimum-4` ~ "Classe 4",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1335-3", # Pour le cas où SANDRE 1335 <-> 3 cas
                                   case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
                                             .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Minimum-3` ~ "Classe 2",
                                             .$Valeur >= .$`Minimum-3` ~ "Classe 3",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1337-3" | Cl == "1338-3" , # Pour le cas où SANDRE 1337 et 1338 <-> 7 cas
@@ -113,7 +113,7 @@ if(Referentiel == "NV") {
                                             .$Valeur >= .$`Maximum-4` & .$Valeur < .$`Maximum-5` ~ "Classe 5",
                                             .$Valeur >= .$`Maximum-5` & .$Valeur < .$`Maximum-6` ~ "Classe 6",
                                             .$Valeur >= .$`Minimum-7` ~ "Classe 7",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1339-3", # Pour le cas où SANDRE 1339 <-> 4 cas
@@ -121,7 +121,7 @@ if(Referentiel == "NV") {
                                             .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
                                             .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
                                             .$Valeur >= .$`Minimum-4` ~ "Classe 4",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1333-3" | Cl == "1340-3" , # Pour le cas où SANDRE 1333 et 1340 <-> 6 cas
@@ -131,11 +131,11 @@ if(Referentiel == "NV") {
                                             .$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-4` ~ "Classe 4",
                                             .$Valeur >= .$`Maximum-4` & .$Valeur < .$`Maximum-5` ~ "Classe 5",
                                             .$Valeur >= .$`Minimum-6` ~ "Classe 6",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(CodeRemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
-    mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil détection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de détection 
+    mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
     select(-(`Maximum-1`:`Minimum-8`), -Cl) %>% 
     mutate(Couleur = case_when(.$ClasseQualite == "Classe 1" ~ "Bleu",
                                .$ClasseQualite == "Classe 2" ~ "Vert",
@@ -145,9 +145,9 @@ if(Referentiel == "NV") {
                                .$ClasseQualite == "Classe 6" ~ "Rouge",
                                .$ClasseQualite == "Classe 7" ~ "Violet",
                                .$ClasseQualite == "Classe 8" ~ "Noir",
-                               .$ClasseQualite == "< seuil détection" ~ "Gris clair",
-                               .$ClasseQualite == "< seuil quantification" ~ "Gris foncé",
-                               TRUE ~ "Non évalué"))  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                               .$ClasseQualite == "< seuil detection" ~ "Gris clair",
+                               .$ClasseQualite == "< seuil quantification" ~ "Gris",
+                               TRUE ~ "Pas de classe"))  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
 }
   
 ###### SEQ-EAU #####
@@ -156,8 +156,8 @@ if(Referentiel == "SEQ-EAU") {
   ## Création des seuils ##
   Seuils <- 
     data %>% 
-    filter(Referentiel == "SEQ-Eau par altération" & ParametreSANDRE != "1301") %>% 
-    bind_rows(filter(data, Referentiel == "SEQ-Eau par altération" & ParametreSANDRE_condition == 2 & Valeur_condition == Categorie)) %>% 
+    filter(Referentiel == "SEQ-Eau par alteration" & ParametreSANDRE != "1301") %>% 
+    bind_rows(filter(data, Referentiel == "SEQ-Eau par alteration" & ParametreSANDRE_condition == 2 & Valeur_condition == Categorie)) %>% 
     tidyr::unite(Seuil, c(Seuil, ClasseQualite), remove=T, sep = "-") %>% 
     dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
     tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-")
@@ -176,7 +176,7 @@ if(Referentiel == "SEQ-EAU") {
                                      .$Valeur >= .$`Maximum-3` ~ "Classe 4", # S'il n'existe que 3 limites
                                      #.$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-Classe 4` ~ "Classe 4", # S'il existe 4 limites
                                      #.$Valeur >= .$`Maximum-4` ~ "Classe 5", # S'il existe 4 limites
-                                     TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                     TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                            ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(!is.na(`Maximum-4`), # Pour le cas où il y a 4 seuils
@@ -186,7 +186,7 @@ if(Referentiel == "SEQ-EAU") {
                                      #.$Valeur >= .$`Maximum-3` ~ "Classe 4", # S'il n'existe que 3 limites
                                      .$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-4` ~ "Classe 4", # S'il existe 4 limites
                                      .$Valeur >= .$`Maximum-4` ~ "Classe 5", # S'il existe 4 limites
-                                     TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                     TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                            ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1311-3" | Cl == "1312-3", # Pour le cas où il y a 4 seuils mais seulement pour 1311 et 1312 (car par minimum et non par maximum)
@@ -195,20 +195,20 @@ if(Referentiel == "SEQ-EAU") {
                                             .$Valeur >= .$`Minimum-3` & .$Valeur < .$`Minimum-2` ~ "Classe 3",
                                             .$Valeur >= .$`Minimum-2` & .$Valeur < .$`Minimum-1` ~ "Classe 2",
                                             .$Valeur >= .$`Minimum-1` ~ "Classe 1",
-                                            TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(CodeRemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
-    mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil détection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de détection 
+    mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
     select(-(`Maximum-1`:`Minimum-4`), -Cl) %>% 
     mutate(Couleur = case_when(.$ClasseQualite == "Classe 1" ~ "Bleu",
                                .$ClasseQualite == "Classe 2" ~ "Vert",
                                .$ClasseQualite == "Classe 3" ~ "Jaune",
                                .$ClasseQualite == "Classe 4" ~ "Orange",
                                .$ClasseQualite == "Classe 5" ~ "Rouge",
-                               .$ClasseQualite == "< seuil détection" ~ "Gris clair",
-                               .$ClasseQualite == "< seuil quantification" ~ "Gris foncé",
-                               TRUE ~ "Non évalué"))  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                               .$ClasseQualite == "< seuil detection" ~ "Gris clair",
+                               .$ClasseQualite == "< seuil quantification" ~ "Gris",
+                               TRUE ~ "Pas de classe"))  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
 }
 
 ###### Sédiments Québec #####
@@ -218,7 +218,7 @@ if(Referentiel == "Quebec") {
   ## Création des seuils ##
 Seuils <- 
   data %>% 
-  filter(Referentiel == "Critères pour l'évaluation de la qualité des sédiments au Québec") %>% 
+  filter(Referentiel == "Criteres pour l'evaluation de la qualite des sediments au Quebec") %>% 
   tidyr::unite(Seuil, c(Seuil, ClasseQualite), remove=T, sep = "-") %>% 
   dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
   tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-")
@@ -231,38 +231,38 @@ ClasseQualites <-
   mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
   mutate(ClasseQualite = NA) %>% 
   mutate(ClasseQualite = ifelse(is.na(`Minimum-CEF`) & is.na(`Minimum-CEP`) & is.na(`Minimum-CER`) & is.na(`Minimum-CSE`), # Pour le cas où il y a 1 seuil
-                             case_when(.$Valeur < .$`Minimum-CEO` ~ "< Concentration d’effets occasionnels",
-                                       #.$Valeur >= .$`Minimum-CER` & .$Valeur < .$`Minimum-CSE` ~ "Concentration d’effets rares",
+                             case_when(.$Valeur < .$`Minimum-CEO` ~ "< Concentration effets occasionnels",
+                                       #.$Valeur >= .$`Minimum-CER` & .$Valeur < .$`Minimum-CSE` ~ "Concentration effets rares",
                                        #.$Valeur >= .$`Minimum-CSE` & .$Valeur < .$`Minimum-CEO` ~ "Concentration seuil produisant un effet",
-                                       .$Valeur >= .$`Minimum-CEO` ~ "Concentration d’effets occasionnels",
+                                       .$Valeur >= .$`Minimum-CEO` ~ "Concentration effets occasionnels",
                                        #.$Valeur >= .$`Minimum-CEP` & .$Valeur < .$`Minimum-CEF` ~ "Concentration produisant un effet probable",
-                                       #.$Valeur >= .$`Minimum-CEF` ~ "Concentration d’effets fréquents",
-                                       TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                       #.$Valeur >= .$`Minimum-CEF` ~ "Concentration effets frequents",
+                                       TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                              ClasseQualite)
   ) %>% 
   mutate(ClasseQualite = ifelse(!is.na(`Minimum-CEF`), # Pour le cas où il y a 5 seuils
                              case_when(.$Valeur < .$`Minimum-CER` ~ "Concentration sans effet",
-                                       .$Valeur >= .$`Minimum-CER` & .$Valeur < .$`Minimum-CSE` ~ "Concentration d’effets rares",
+                                       .$Valeur >= .$`Minimum-CER` & .$Valeur < .$`Minimum-CSE` ~ "Concentration effets rares",
                                        .$Valeur >= .$`Minimum-CSE` & .$Valeur < .$`Minimum-CEO` ~ "Concentration seuil produisant un effet",
-                                       .$Valeur >= .$`Minimum-CEO` & .$Valeur < .$`Minimum-CEP` ~ "Concentration d’effets occasionnels",
+                                       .$Valeur >= .$`Minimum-CEO` & .$Valeur < .$`Minimum-CEP` ~ "Concentration effets occasionnels",
                                        .$Valeur >= .$`Minimum-CEP` & .$Valeur < .$`Minimum-CEF` ~ "Concentration produisant un effet probable",
-                                       .$Valeur >= .$`Minimum-CEF` ~ "Concentration d’effets fréquents",
-                                       TRUE ~ "Non évalué"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                       .$Valeur >= .$`Minimum-CEF` ~ "Concentration effets frequents",
+                                       TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                              ClasseQualite)
       ) %>% 
   mutate(ClasseQualite = ifelse(CodeRemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
-  mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil détection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de détection 
+  mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
   select(-(`Minimum-CEF`:`Minimum-CSE`), -Cl) %>% 
   mutate(Couleur = case_when(.$ClasseQualite == "Concentration sans effet" ~ "Bleu",
-                                 .$ClasseQualite == "Concentration d’effets rares" ~ "Vert",
+                                 .$ClasseQualite == "Concentration effets rares" ~ "Vert",
                                  .$ClasseQualite == "Concentration seuil produisant un effet" ~ "Jaune",
-                                 .$ClasseQualite == "Concentration d’effets occasionnels" ~ "Orange",
+                                 .$ClasseQualite == "Concentration effets occasionnels" ~ "Orange",
                                  .$ClasseQualite == "Concentration produisant un effet probable" ~ "Rouge",
-                                 .$ClasseQualite == "Concentration d’effets fréquents" ~ "Violet",
-                                 .$ClasseQualite == "< seuil détection" ~ "Gris clair",
-                                 .$ClasseQualite == "< seuil quantification" ~ "Gris foncé",
-                                 .$ClasseQualite == "< Concentration d’effets occasionnels" ~ "Vert clair",
-                                 TRUE ~ "Non évalué"))  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                 .$ClasseQualite == "Concentration effets frequents" ~ "Violet",
+                                 .$ClasseQualite == "< seuil detection" ~ "Gris clair",
+                                 .$ClasseQualite == "< seuil quantification" ~ "Gris",
+                                 .$ClasseQualite == "< Concentration effets occasionnels" ~ "Vert clair",
+                                 TRUE ~ "Pas de classe"))  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
     
 }
 
