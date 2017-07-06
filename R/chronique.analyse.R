@@ -44,9 +44,9 @@ chronique.analyse <- function(
   ##### Mise au format des données #####
   
   ## Transformation du format des dates
-  data$Date <- as.Date(data$Date,format="%Y-%m-%d")
   data <-
     data %>% 
+    mutate(Date = ymd(Date)) %>% 
     mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
     filter(is.na(Valeur) == F) %>% 
     arrange(Time)

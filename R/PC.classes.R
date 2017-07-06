@@ -17,7 +17,7 @@
 
 ##### TODO LIST #####
 # Si mise à jour des paramètres :
-# library(readxl);library(tidyverse);data <- read_excel("data/Seuils_PC_V4.xlsx");save(data,file="data/Seuils_PC.RData")
+# library(readxl);library(tidyverse);data <- read_excel("data/Seuils_PC_V5.xlsx");save(data,file="data/Seuils_PC.RData")
 # PC <- PC %>% filter(SupportSANDRE == 6)
 # PCsave <- PC
 # library(readxl);library(tidyverse);library(reshape2);library(aquatools);data(Seuils_PC);Categorie = 1
@@ -28,6 +28,7 @@
 # Option permettant différentes sorties (couleurs/valeurs etc.) = Ajout d'une option permettant de choisir le mode de sortie (en l'état avec 2 colonnes de + ou bien différents types de matrices de synthèse (valeurs, ClasseQualite, couleurs) comme dans fichier PC_V3.R)
 # Complément base de données (ETM SEQ-Eau et Québec ok)
 # Intégration base de données seuils dans base de données PC
+# Il faudrait qu'il n'y ait pas de NA dans les colonnes ClasseQualite et Referentiel suite au traitement
 #####################
 
 PC.classes <- function(
@@ -157,17 +158,45 @@ if(Referentiel == "SEQ-EAU") {
   Seuils <- 
     data %>% 
     filter(Referentiel == "SEQ-Eau par alteration" & ParametreSANDRE != "1301") %>% 
-    bind_rows(filter(data, Referentiel == "SEQ-Eau par alteration" & ParametreSANDRE_condition == 2 & Valeur_condition == Categorie)) %>% 
+    filter(!(SupportSANDRE == 3 & (ParametreSANDRE == "1382" | ParametreSANDRE == "1383" | ParametreSANDRE == "1386" | ParametreSANDRE == "1388" | ParametreSANDRE == "1389" | ParametreSANDRE == "1392"))) %>% # Afin d'éliminer certains ETM car dépendants de la dureté donc traitement à part
+    bind_rows(filter(data, Referentiel == "SEQ-Eau par alteration" & (ParametreSANDRE_condition == 2 & Valeur_condition == Categorie))) %>% 
     tidyr::unite(Seuil, c(Seuil, ClasseQualite), remove=T, sep = "-") %>% 
     dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
     tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-")
   
+  ## Calcul de la dureté par operation ##
+  Durete <-
+    PC %>% 
+    filter(ParametreSANDRE == "1345") %>% 
+    distinct(CodeRDT, Date, Valeur) %>% 
+    rename(Durete = Valeur)
+  PC <-
+    PC %>% 
+    left_join(Durete)
+  
+  # Seuils dureté pour cuivre
+  SeuilsETMH2O <-
+    data %>% 
+    filter(SupportSANDRE == 3 & (ParametreSANDRE == "1382" | ParametreSANDRE == "1383" | ParametreSANDRE == "1386" | ParametreSANDRE == "1388" | ParametreSANDRE == "1389" | ParametreSANDRE == "1392")) %>% # Afin de ne considérer que certains métaux sur l'eau
+    mutate(Durete = case_when(Seuil_condition == "Maximum" & Valeur_condition == 5 ~ "DureteFaible",
+                                     Seuil_condition == "Maximum" & Valeur_condition == 20 ~ "DureteMoyenne",
+                                     Seuil_condition == "Minimum" & Valeur_condition == 20 ~ "DureteForte")
+    ) %>% 
+    tidyr::unite(Seuil, c(Durete, Seuil, ClasseQualite), remove=T, sep = "-") %>% 
+    dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
+    tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-") %>% 
+    rename(Referentie = Referentiel)
+
   ## Attribution des classes de qualité ##
   ClasseQualites <-
     PC %>% 
     tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=F, sep = "-") %>% 
     left_join(Seuils, by = c("Cl" = "Cl")) %>% 
+    left_join(SeuilsETMH2O, by = c("Cl" = "Cl")) %>% # Afin de coller les seuils de qualité pour les ETM qui sont fonction de la dureté
+    mutate(Referentiel = ifelse(is.na(Referentie), Referentiel, Referentie)) %>% # Afin de remettre la colonne référentiel en une seule commune aux deux jeux de données de seuils
+    select(-Referentie) %>% # Afin d'effacer la colonne temporaire
     mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
+    mutate(Durete = as.numeric( sub(",", ".", Durete))) %>% 
     mutate(ClasseQualite = NA) %>% 
     mutate(ClasseQualite = ifelse(is.na(`Maximum-4`) & !is.na(`Maximum-1`), # Pour le cas où il n'y a que 3 seuils - Avec exclusion des na en max-1 pour 1311 et 1312 traités ensuite
                            case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
@@ -198,9 +227,29 @@ if(Referentiel == "SEQ-EAU") {
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
+    mutate(ClasseQualite = ifelse(Cl == "1382-3" | Cl == "1383-3" | Cl == "1386-3" | Cl == "1388-3" | Cl == "1389-3" | Cl == "1392-3", # Pour le cas où il y a 4 seuils mais seulement pour quelques ETM
+                                  case_when(Durete < 5 & Valeur < `DureteFaible-Maximum-1` ~ "Classe 1",
+                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-1` & Valeur < `DureteFaible-Maximum-2` ~ "Classe 2",
+                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-2` & Valeur < `DureteFaible-Maximum-3` ~ "Classe 3",
+                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-3` & Valeur < `DureteFaible-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
+                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                                            Durete >= 5 & Durete < 20 & Valeur < `DureteMoyenne-Maximum-1` ~ "Classe 1",
+                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-1` & Valeur < `DureteMoyenne-Maximum-2` ~ "Classe 2",
+                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-2` & Valeur < `DureteMoyenne-Maximum-3` ~ "Classe 3",
+                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-3` & Valeur < `DureteMoyenne-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
+                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                                            Durete > 20 & Valeur < `DureteForte-Maximum-1` ~ "Classe 1",
+                                            Durete > 20 & Valeur >= `DureteForte-Maximum-1` & Valeur < `DureteForte-Maximum-2` ~ "Classe 2",
+                                            Durete > 20 & Valeur >= `DureteForte-Maximum-2` & Valeur < `DureteForte-Maximum-3` ~ "Classe 3",
+                                            Durete > 20 & Valeur >= `DureteForte-Maximum-3` & Valeur < `DureteForte-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
+                                            Durete > 20 & Valeur >= `DureteForte-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                                            is.na(Durete) ~ "Pas de durete",
+                                            TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
+                                  ClasseQualite)
+    ) %>%
     mutate(ClasseQualite = ifelse(CodeRemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
     mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
-    select(-(`Maximum-1`:`Minimum-4`), -Cl) %>% 
+    select(-(`Maximum-1`:`Minimum-4`), -Cl, -Durete,-(`DureteFaible-Maximum-1`:`DureteMoyenne-Maximum-4`)) %>% 
     mutate(Couleur = case_when(.$ClasseQualite == "Classe 1" ~ "Bleu",
                                .$ClasseQualite == "Classe 2" ~ "Vert",
                                .$ClasseQualite == "Classe 3" ~ "Jaune",

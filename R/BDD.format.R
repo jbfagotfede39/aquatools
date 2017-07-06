@@ -85,9 +85,11 @@ BDD.format <- function(data)
     data$CodeRDT <- str_replace(data$CodeRDT, " ", "") # On efface les espaces en trop dans les noms de station
     
     # Travail sur les heures #
+    if(all(!is.na(data$Heure))){ # Afin de n'appliquer les commandes que dans le cas où il n'y a pas que des NA dans les heures
     data$Heure <- str_replace(data$Heure, "h", ":") # On remplace le h par :
     data$Heure <- if(all(str_count(data$Heure, ":") == 1)) str_c(data$Heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
-    data$Heure <- format(ymd_hms(paste(data$Date,"-",data$Heure)), format="%H:%M:%S")
+    data$Heure <- format(ymd_hms(paste(data$Date,"-",data$Heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
+    }
     
     # Travail sur les valeurs manuelles #
     data <- data %>% mutate(Valeur = ifelse(Valeur == "-", NA, Valeur)) # On met des NA pour les valeurs absentes
@@ -112,7 +114,7 @@ BDD.format <- function(data)
     data$SuiviTerrainID <- row_number(data$CodeRDT) + as.numeric(tbl(db,"SuiviTerrain") %>% summarise(max = max(SuiviTerrainID)) %>% collect()) # Pour incrémenter les SuiviTerrainID à partir du dernier
 
     # Vérification des types d'action
-    if(dim(filter(data, Action != "Disparue"|Action != "Pose"|Action != "Dépose"|Action != "Relève"))[1] > 0) stop("Action de type inconnu")
+    if(dim(filter(data, !(Action == "Disparue"|Action == "Pose"|Action == "Dépose"|Action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
   }
   
   ##### PC #####
