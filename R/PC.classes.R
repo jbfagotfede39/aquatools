@@ -164,14 +164,15 @@ if(Referentiel == "SEQ-EAU") {
     dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
     tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-")
   
-  ## Calcul de la dureté par operation ##
+  # Calcul de la dureté par operation ##
   Durete <-
-    PC %>% 
-    filter(ParametreSANDRE == "1345") %>% 
-    distinct(CodeRDT, Date, Valeur) %>% 
+    PC %>%
+    filter(ParametreSANDRE == "1345") %>%
+    mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>%
+    distinct(CodeRDT, Date, Valeur) %>%
     rename(Durete = Valeur)
   PC <-
-    PC %>% 
+    PC %>%
     left_join(Durete)
   
   # Seuils dureté pour cuivre
@@ -196,7 +197,7 @@ if(Referentiel == "SEQ-EAU") {
     mutate(Referentiel = ifelse(is.na(Referentie), Referentiel, Referentie)) %>% # Afin de remettre la colonne référentiel en une seule commune aux deux jeux de données de seuils
     select(-Referentie) %>% # Afin d'effacer la colonne temporaire
     mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
-    mutate(Durete = as.numeric( sub(",", ".", Durete))) %>% 
+    #mutate(Durete = as.numeric( sub(",", ".", Durete))) %>% 
     mutate(ClasseQualite = NA) %>% 
     mutate(ClasseQualite = ifelse(is.na(`Maximum-4`) & !is.na(`Maximum-1`), # Pour le cas où il n'y a que 3 seuils - Avec exclusion des na en max-1 pour 1311 et 1312 traités ensuite
                            case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
@@ -257,6 +258,7 @@ if(Referentiel == "SEQ-EAU") {
                                .$ClasseQualite == "Classe 5" ~ "Rouge",
                                .$ClasseQualite == "< seuil detection" ~ "Gris clair",
                                .$ClasseQualite == "< seuil quantification" ~ "Gris",
+                               .$ClasseQualite == "Pas de durete" ~ "Pas de classe",
                                TRUE ~ "Pas de classe"))  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
 }
 
