@@ -4,15 +4,18 @@
 \alias{MI.nettoyage}
 \title{Nettoyage des données de MI}
 \usage{
-MI.nettoyage(data)
+MI.nettoyage(data, larve = F)
 }
 \arguments{
 \item{data}{Chronique à valider}
+
+\item{larve}{Si \code{FALSE} (par défault), n'ajoute pas le stade larvaire si non complété}
 }
 \description{
 Cette fonction permet de corriger des codes erronés des données de MI
 }
 \examples{
 MI.nettoyage(data)
+MI.nettoyage(data, larve = T)
 }
 \keyword{MI}

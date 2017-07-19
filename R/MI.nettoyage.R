@@ -3,17 +3,21 @@
 #' Cette fonction permet de corriger des codes erronés des données de MI
 #' 
 #' @param data Chronique à valider
+#' @param larve Si \code{FALSE} (par défault), n'ajoute pas le stade larvaire si non complété
 #' @keywords MI
 #' @import dplyr DBI stringr
 #' @export
 #' @examples
 #' MI.nettoyage(data)
+#' MI.nettoyage(data, larve = T)
 
 ###### À faire #####
 # Ré-écriture de noms de taxons qui n'existent plus, avec ancien nom indiqué en remarque
 ####################
 
-MI.nettoyage <- function(data)
+MI.nettoyage <- function(
+  data,
+  larve = F)
 {
 
   ## Connexion à la BDD ##
@@ -21,8 +25,19 @@ db <- BDD.ouverture("Macroinvertébrés")
   
   ## Récupération des données ##
 HabitatsReference <- tbl(db,"HabitatsReference") %>% collect(n = Inf)
+Habitats <- tbl(db,"Habitats") %>% collect(n = Inf)
 Prelevements <- tbl(db,"Prelevements") %>% collect(n = Inf)
 Captures <- tbl(db,"Captures") %>% collect(n = Inf)
+
+##### Travail sur les habitats #####
+if(all(colnames(data) %in% colnames(Habitats))) {
+  # DomMarg #
+  data$DomMarg[data$DomMarg == "marginal représentatif (M)"] <- "Marginal représentatif"
+  data$DomMarg[data$DomMarg == "Marginal"] <- "Marginal représentatif"
+  data$DomMarg[data$DomMarg == "dominant (D)"] <- "Dominant"
+  data$DomMarg[data$DomMarg == "D"] <- "Dominant"
+  data$DomMarg[data$DomMarg == "M"] <- "Marginal représentatif"
+}
 
 ##### Travail sur les prélèvements #####
 if(all(colnames(data) %in% colnames(Prelevements))) {
@@ -57,13 +72,14 @@ if(all(colnames(data) %in% colnames(Captures))) {
   # Nettoyage des taxons sans effectif #
   data <- 
     data %>% 
-    filter(!is.na(Effectif))
+    filter(!is.na(Abondance))
   
   # Ajout du stade larvaire si non ajouté #
-  data$Stade[is.na(data$Stade)] <- "Larve"
+  if(larve == T) data$Stade[is.na(data$Stade)] <- "Larve"
   
   # Nettoyage des fautes de saisie #
   data$Taxon <- str_trim(data$Taxon) # Pour enlever les espaces de début et de fin de taxon
+  data$Taxon <- str_to_title(data$Taxon) # Mise en majuscule du premier caractère
   data$Taxon[data$Taxon == "Anthomyiidae"] <- "Anthomyidae"
   data$Taxon[data$Taxon == "Bythinia"] <- "Bithynia"
   data$Taxon[data$Taxon == "Cloeon"] <- "Cloëon"

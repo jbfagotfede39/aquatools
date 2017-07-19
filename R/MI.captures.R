@@ -37,8 +37,14 @@ MI.captures <- function(
     Captures %>% 
     filter(CodeRDT == station, Date == date) %>%
     arrange(NumEchCommun)
-  #str(Captures)
-  #Captures %>% filter(Date == date)
-  #Captures %>% filter(CodeRDT == station)
+  
+  if(dim(Captures)[1] == 0){
+  Captures <-
+    Captures %>% 
+    filter(CodeSIE == station, Date == date) %>%
+    arrange(NumEchCommun)
+  }
+
   return(Captures)
+  
 } # Fin de la fonction
