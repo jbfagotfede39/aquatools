@@ -103,15 +103,22 @@ chronique.analyse <- function(
   ## Calcul V Moymax 7 et 30 J ##
   ValRemarqPeriodesMobiles <-
     ValJours %>% 
-    filter(complete.cases(.)) %>% 
+    filter(!is.na(VMM30j)) %>% 
     summarise(
-      VMaxMoy7J = max(VMM7j, na.rm = T),
-      DateDebutTMaxMoy7J = Date[VMM7j == max(VMM7j, na.rm = T)] -6,
-      DateFinTMaxMoy7J = Date[VMM7j == max(VMM7j, na.rm = T)],
-      VMaxMoy30J = max(VMM30j, na.rm = T),
-      DateDebutTMaxMoy30J = Date[VMM30j == max(VMM30j, na.rm = T)] -29,
-      DateFinTMaxMoy30J = Date[VMM30j == max(VMM30j, na.rm = T)]
+      VMaxMoy30J = max(VMM30j),
+      DateDebutTMaxMoy30J = Date[VMM30j == max(VMM30j)] -29,
+      DateFinTMaxMoy30J = Date[VMM30j == max(VMM30j)]
+    ) 
+    
+  ValRemarqPeriodesMobiles <-
+    ValJours %>% 
+    filter(!is.na(VMM7j)) %>% 
+    summarise(
+      VMaxMoy7J = max(VMM7j),
+      DateDebutTMaxMoy7J = Date[VMM7j == max(VMM7j)] -6,
+      DateFinTMaxMoy7J = Date[VMM7j == max(VMM7j)]
     ) %>% 
+    bind_cols(ValRemarqPeriodesMobiles) %>% 
     mutate(VMaxMoy7J = round(VMaxMoy7J,1)) %>% 
     mutate(VMaxMoy30J = round(VMaxMoy30J,1))
   
