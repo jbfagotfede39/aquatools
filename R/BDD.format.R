@@ -45,7 +45,7 @@ BDD.format <- function(data)
     # Transformation des formats
     data$CaptureID <- as.integer(data$CaptureID)
     data$PrelevementID <- as.integer(data$PrelevementID)
-    data$Effectif <- as.integer(data$Effectif)
+    data$Abondance <- as.integer(data$Abondance)
     
     # Ajout des ID
     data$CaptureID <- row_number(data$PrelevementID) + as.numeric(tbl(db,"Captures") %>% summarise(max = max(CaptureID)) %>% collect()) # Pour incrémenter les CaptureID à partir du dernier

@@ -43,6 +43,7 @@ if(all(colnames(data) %in% colnames(Habitats))) {
 if(all(colnames(data) %in% colnames(Prelevements))) {
   # Substrats #
 data$HabitatAbrevSub[data$HabitatAbrevSub == "BRYO"] <- "BRY"
+data$HabitatAbrevSub[data$HabitatAbrevSub == "ROC"] <- "DAL"
 data$HabitatAbrevSub[data$HabitatAbrevSub == "SUB LIGN"] <- "CHV"
 data$HabitatAbrevSub[data$HabitatAbrevSub == "BRC"] <- "CHV"
 data$HabitatAbrevSub[data$HabitatAbrevSub == "VAS"] <- "FIN"
@@ -80,20 +81,44 @@ if(all(colnames(data) %in% colnames(Captures))) {
   # Nettoyage des fautes de saisie #
   data$Taxon <- str_trim(data$Taxon) # Pour enlever les espaces de début et de fin de taxon
   data$Taxon <- str_to_title(data$Taxon) # Mise en majuscule du premier caractère
+  data$Taxon[data$Taxon == "Achete"] <- "Achètes"
   data$Taxon[data$Taxon == "Anthomyiidae"] <- "Anthomyidae"
+  data$Taxon[data$Taxon == "Ancylus Fluviatilis"] <- "Ancylus fluviatilis"
+  data$Taxon[data$Taxon == "Aplexa Hypnorum"] <- "Aplexa hypnorum"
+  data$Taxon[data$Taxon == "Autre Baetidae"] <- "Baetidae"
+  data$Taxon[data$Taxon == "Autre Limnephilinae"] <- "Limnephilinae"
+  data$Taxon[data$Taxon == "Bathyomphalus Contortus"] <- "Bathyomphalus contortus"
+  data$Taxon[data$Taxon == "Blepharecidae"] <- "Blephariceridae"
   data$Taxon[data$Taxon == "Bythinia"] <- "Bithynia"
   data$Taxon[data$Taxon == "Cloeon"] <- "Cloëon"
+  data$Taxon[data$Taxon == "Coléoptère"] <- "Coléoptères"
   data$Taxon[data$Taxon == "Conchostracés"] <- "Conchostraca"
   data$Taxon[data$Taxon == "Cordulegastridae"] <- "Cordulegasteridae"
+  data$Taxon[data$Taxon == "Diptère"] <- "Diptères"
   data$Taxon[data$Taxon == "Elodes"] <- "Helodes"
+  data$Taxon[data$Taxon == "Ephémeroptère"] <- "Éphéméroptères"
+  data$Taxon[data$Taxon == "Galba Truncatula"] <- "Galba truncatula"
+  data$Taxon[data$Taxon == "Gastéropode"] <- "Gastéropodes"
   data$Taxon[data$Taxon == "Glossossoma"] <- "Glossosoma"
+  data$Taxon[data$Taxon == "Haementeria Costata"] <- "Haementeria costata"
+  data$Taxon[data$Taxon == "Haprophlebia"] <- "Habrophlebia"
+  data$Taxon[data$Taxon == "Hydracarien"] <- "Hydracarina"
   data$Taxon[data$Taxon == "Hydracariens"] <- "Hydracarina"
+  data$Taxon[data$Taxon == "Lepidostoma Hirtum"] <- "Lepidostoma hirtum"
+  data$Taxon[data$Taxon == "Limonidae"] <- "Limoniidae"
+  data$Taxon[data$Taxon == "Nématocère"] <- "Diptères"
   data$Taxon[data$Taxon == "Oligochetes"] <- "Oligochaeta"
   data$Taxon[data$Taxon == "Oligochètes"] <- "Oligochaeta"
   data$Taxon[data$Taxon == "Onichogomphus"] <- "Onychogomphus"
+  data$Taxon[data$Taxon == "Piscicola Geometra"] <- "Piscicola geometra"
+  data$Taxon[data$Taxon == "Plécoptère"] <- "Plécoptères"
   data$Taxon[data$Taxon == "Polymitarcidae"] <- "Polymitarcyidae"
   data$Taxon[data$Taxon == "Procleon"] <- "Procloeon"
+  data$Taxon[data$Taxon == "Procloëon Bifidum"] <- "Procloeon bifidum"
+  data$Taxon[data$Taxon == "Protonemoura"] <- "Protonemura"
   data$Taxon[data$Taxon == "Psychomia"] <- "Psychomyia"
+  data$Taxon[data$Taxon == "Tidones"] <- "Tinodes"
+  data$Taxon[data$Taxon == "Trichoptère"] <- "Trichoptères"
 }
 
   return(data)

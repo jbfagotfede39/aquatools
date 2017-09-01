@@ -25,9 +25,18 @@ MI.captures <- function(
   Captures <- tbl(db,"Captures") %>% collect(n = Inf)
   
   ##### Synthèse des données #####
-  Prelevements <- merge(Prelevements, Operations, by = c("OperationID"))
-  Captures <- merge(Captures, Prelevements, by = c("PrelevementID"))
+  Prelevements <- left_join(Prelevements, Operations, by = c("OperationID"))
 
+  CapturesTemp1 <- Captures %>% filter(!is.na(PrelevementID)) %>% select(-OperationID) %>% left_join(Prelevements, by = c("PrelevementID"))
+  CapturesTemp2 <- Captures %>% filter(is.na(PrelevementID)) %>% left_join(Operations, by = "OperationID")
+  Captures <- 
+    CapturesTemp1 %>% 
+    bind_rows(CapturesTemp2) %>% 
+    mutate(PhaseDCE = ifelse(VolumeAbondance == "Phase A", "A", PhaseDCE)) %>% 
+    mutate(PhaseDCE = ifelse(VolumeAbondance == "Phase B", "B", PhaseDCE)) %>% 
+    mutate(PhaseDCE = ifelse(VolumeAbondance == "Phase C", "C", PhaseDCE))
+
+  
   ##### Transformation des formats de dates
   Captures$Date <- ymd(Captures$Date)
   date <- ymd(date)
