@@ -8,6 +8,7 @@
 #' @import tidyverse lubridate
 #' @export
 #' @examples
+#' stations.ecosysteme()
 #' stations.ecosysteme("Ain")
 #' stations.ecosysteme("Ain", shp=T)
 
@@ -19,7 +20,7 @@
 #####################
 
 stations.ecosysteme <- function(
-  ecosysteme="Ain",
+  ecosysteme="",
   shp = F)
 {
   
@@ -32,6 +33,8 @@ stations.ecosysteme <- function(
 
   # Recherche des stations qui ont un Codeecosysteme = à ce Codeecosysteme et transformation
   Code <- as.character(Ecosystemes[1,1])
+  
+  if(nchar(ecosysteme) != 0){
   StationsPoissons <- 
     tbl(db,"Stations") %>% 
     filter(Codeecosysteme == Code) %>% 
@@ -39,18 +42,38 @@ stations.ecosysteme <- function(
     rename(X = XLambert) %>% 
     rename(Y = YLambert) %>% 
     rename(TypeCoord = TypeLambert) %>% 
-    mutate(Poisson = "Oui")
+    mutate(Poisson = "Oui")}
+  
+  if(nchar(ecosysteme) == 0){
+    StationsPoissons <- 
+      tbl(db,"Stations") %>% 
+      #filter(Codeecosysteme == Code) %>% 
+      collect() %>% 
+      rename(X = XLambert) %>% 
+      rename(Y = YLambert) %>% 
+      rename(TypeCoord = TypeLambert) %>% 
+      mutate(Poisson = "Oui")}
 
   #### Base chronique ####
   ## Ouverture de la BDD ##
   db <- BDD.ouverture(Type = "Chroniques")
   
   ## Récupération des données de l'écosystème ##
-  StationsChroniques <- tbl(db,"Stations") %>% 
+  if(nchar(ecosysteme) != 0){
+  StationsChroniques <- 
+    tbl(db,"Stations") %>% 
     filter(Milieu == ecosysteme) %>% 
     collect() %>% 
     rename(Nom = CodeRDT) %>% 
-    mutate(Chronique = "Oui")
+    mutate(Chronique = "Oui")}
+  
+  if(nchar(ecosysteme) == 0){
+    StationsChroniques <- 
+      tbl(db,"Stations") %>% 
+      #filter(Milieu == ecosysteme) %>% 
+      collect() %>% 
+      rename(Nom = CodeRDT) %>% 
+      mutate(Chronique = "Oui")}
   
   #### Synthèse ####
   Synthese <- 
