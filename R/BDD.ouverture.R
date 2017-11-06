@@ -47,8 +47,8 @@ if(Type == "Physico-chimie" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Physico-c
 if(Type == "Physico-chimie" & file.exists("/Users/adrienlavigne/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) db <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite")
 
 ## Temps de travail ##
-if(Type == "Temps de travail" & file.exists("/Users/imac27/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
-if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- src_sqlite("/Volumes/Fixe-FD39/NAS-FD/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
+if(Type == "Temps de travail" & file.exists("/Users/imac27/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
+if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- src_sqlite("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
 
 return(db)
 
