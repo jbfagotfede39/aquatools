@@ -1,0 +1,65 @@
+#' Calcul initial des coûts de projet
+#'
+#' Cette fonction permet de calculer les coûts d'un projet au moment de son montage. Elle s'appuie sur le format saisi dans la table RecapTpsW et réalise les conversions à partir des volumes unitaires, et ordonne les sujets
+#' 
+#' @param NomProjet Nom du dataframe contenant les données "attendues" à traiter, dans le format de RecapTpsW
+#' @import dplyr stringr
+#' @export
+#' @examples
+#' RecapDataToAdd <- projet.calculInitial(NomProjet)
+
+##### TODO LIST #####
+# Il faudrait que la ligne     dplyr::union(RecapTpsW %>% filter(Projet %in% distinct(NomProjet, Projet)) %>% filter(Programmation == "Attendu") %>% filter(MOE != "FJPPMA")) %>% 
+# travaille directement à partir du dataframe d'entrée contenant tout le projet et ne retourne pas ds RecapTpsW issu de la BDD (si on veut travailler à partir d'un dataframe non issu de la BDD - brouillon par exemple)
+#####################
+
+projet.calculInitial <- function(
+  NomProjet
+)
+{
+  #### Vérifications ####
+  if(dim(NomProjet)[1] == 0) stop("Saisir un dataframe en entrée")
+  if(dim(distinct(NomProjet, Projet))[1] != 1) stop("Plusieurs projets dans le dataframe d'entrée")
+  if(dim(distinct(NomProjet, Programmation))[1] != 1) stop("Plusieurs statuts de programmation dans le dataframe d'entrée")
+  
+  db <- BDD.ouverture(Type = "Temps de travail")
+  TpsW <- tbl(db, "TempsDeTravail") %>% collect(n = 1000)
+  RecapTpsW <- tbl(db, "RecapTempsDeTravail") %>% filter(Projet %in% NomProjet$Projet) %>% collect(n = Inf)
+  CoutAnnuel <- tbl(db, "CoutAnnuel") %>% collect(n = Inf) %>% arrange(Poste)
+  CoutTypePrestation <- tbl(db, "CoutTypePrestation") %>% collect(n = Inf)
+  Poste <- tbl(db, "Poste") %>% collect(n = Inf) %>% arrange(Poste)
+  Projets <- tbl(db, "Projets") %>% collect(n = Inf) %>% arrange(Etat,DateLancement)
+  SuiviBDD <- tbl(db, "SuiviBDD") %>% collect(n = Inf)
+  TypologiePrestation <- tbl(db, "TypologiePrestation") %>% collect(n = Inf)
+  
+  if(all(colnames(NomProjet) != colnames(RecapTpsW))) stop("Dataframe d'entrée différent de RecapTpsW")
+  
+  ##### Préparation ####
+  NomProjet <-
+    NomProjet %>% 
+    filter(MOE == "FJPPMA")
+  
+  ##### Calculs ####
+  RecapDataToAdd <-
+    NomProjet %>% 
+    bind_rows(filter(CoutTypePrestation, CoutTypePrestation$Prestation %in% NomProjet$Detail) %>% rename (Detail = Prestation) %>% rename (Jours = Temps) %>% select(-CoutTypePrestationID)) %>% 
+    select(-CoutJournalier) %>% 
+    left_join(CoutAnnuel %>% filter(Annee == year(now())) %>% filter(Type == "Estimé N-1") %>% select(Poste, CoutJournalierMajore) %>% rename(CoutJournalier = CoutJournalierMajore), by = "Poste") %>% 
+    mutate(Programmation = ifelse(dim(distinct(NomProjet, Programmation))[1] == 1, as.character(distinct(NomProjet, Programmation)), "STOP")) %>% 
+    mutate(NatureOutil = ifelse(dim(distinct(NomProjet, NatureOutil))[1] == 1, as.character(distinct(NomProjet, NatureOutil)), "STOP")) %>% 
+    mutate(MOE = ifelse(dim(distinct(NomProjet, MOE))[1] == 1, as.character(distinct(NomProjet, MOE)), "STOP")) %>% 
+    mutate(Projet = ifelse(dim(distinct(NomProjet, Projet))[1] == 1, as.character(distinct(NomProjet, Projet)), "STOP")) %>% 
+    filter(!(!is.na(Quantite) & is.na(CoutJournalier) & is.na(Jours) & is.na(Argent))) %>% 
+    mutate(Argent = ifelse(is.na(Argent), Jours * CoutJournalier, Argent)) %>% 
+    dplyr::union(RecapTpsW %>% filter(Projet %in% distinct(NomProjet, Projet)) %>% filter(Programmation == "Attendu") %>% filter(MOE != "FJPPMA")) %>% 
+    select(match(colnames(RecapTpsW),names(.))) %>% 
+    mutate(CodeTache = NA) %>% 
+    left_join(TypologiePrestation %>% select(-PrestationID, -Groupe) %>% rename(Detail = Prestation), by = "Detail") %>% 
+    arrange(Ordre, Detail, MOE, desc(Poste)) %>% 
+    select(-Ordre)
+  
+  if(length(which(RecapDataToAdd == "STOP")) != 0) stop("Problème : vérification nécessaire")
+  
+return(RecapDataToAdd)
+
+} # Fin de la fonction
