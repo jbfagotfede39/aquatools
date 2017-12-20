@@ -4,23 +4,25 @@
 \alias{poissons.operations}
 \title{Listing des opérations pour une station}
 \usage{
-poissons.operations(station = "", CodeOperation = FALSE, all = FALSE)
+poissons.operations(ListeStations, CodeOperation = FALSE,
+  Sortie = c("Simple", "Propre", "Complet"))
 }
 \arguments{
-\item{station}{Code de la station}
+\item{ListeStations}{Dataframe contenant un colonne "Nom" avec le code de la station (RHJ)}
 
 \item{CodeOperation}{Affichage du CodeOperation - \code{FALSE} (par défault)}
 
-\item{all}{Affichage de tous les paramètres de la table - \code{FALSE} (par défault)}
+\item{Sortie}{Forme du dataframe de sortie - \code{Simple} (par défault), \code{Propre} (format diffusable, avec stations) ou \code{Complet} (tous les champs)}
 }
 \description{
-Cette fonction permet de lister les différentes opérations pour une station donnée
+Cette fonction permet de lister les différentes opérations pour une liste donnée de stations
 }
 \examples{
 poissons.operations()
 poissons.operations(CodeOperation = TRUE)
 poissons.operations("SOR10-2")
 poissons.operations("SOR10-2", CodeOperation = TRUE)
-poissons.operations("SOR10-2", all = TRUE)
+poissons.operations("SOR10-2", Sortie = Propre)
+poissons.operations("SOR10-2", Sortie = Complet)
 }
 \keyword{poissons}
