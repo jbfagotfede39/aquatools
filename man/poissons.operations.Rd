@@ -4,8 +4,8 @@
 \alias{poissons.operations}
 \title{Listing des opérations pour une station}
 \usage{
-poissons.operations(ListeStations, CodeOperation = FALSE,
-  Sortie = c("Simple", "Propre", "Complet"))
+poissons.operations(ListeStations = data.frame(Nom = character(0)),
+  CodeOperation = FALSE, Sortie = c("Simple", "Propre", "Complet"))
 }
 \arguments{
 \item{ListeStations}{Dataframe contenant un colonne "Nom" avec le code de la station (RHJ)}
@@ -20,9 +20,9 @@ Cette fonction permet de lister les différentes opérations pour une liste donn
 \examples{
 poissons.operations()
 poissons.operations(CodeOperation = TRUE)
-poissons.operations("SOR10-2")
-poissons.operations("SOR10-2", CodeOperation = TRUE)
-poissons.operations("SOR10-2", Sortie = Propre)
-poissons.operations("SOR10-2", Sortie = Complet)
+poissons.operations(data.frame(Nom = "SOR10-2"))
+poissons.operations(data.frame(Nom = "SOR10-2"), CodeOperation = TRUE)
+poissons.operations(listeStations, Sortie = Propre)
+poissons.operations(data.frame(Nom = "SOR10-2"), Sortie = Complet)
 }
 \keyword{poissons}

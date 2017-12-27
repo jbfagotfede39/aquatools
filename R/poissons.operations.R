@@ -11,17 +11,17 @@
 #' @examples
 #' poissons.operations()
 #' poissons.operations(CodeOperation = TRUE)
-#' poissons.operations("SOR10-2")
-#' poissons.operations("SOR10-2", CodeOperation = TRUE)
-#' poissons.operations("SOR10-2", Sortie = Propre)
-#' poissons.operations("SOR10-2", Sortie = Complet)
+#' poissons.operations(data.frame(Nom = "SOR10-2"))
+#' poissons.operations(data.frame(Nom = "SOR10-2"), CodeOperation = TRUE)
+#' poissons.operations(listeStations, Sortie = Propre)
+#' poissons.operations(data.frame(Nom = "SOR10-2"), Sortie = Complet)
 
 ##### TODO LIST #####
 # 
 #####################
 
 poissons.operations <- function(
-  ListeStations,
+  ListeStations = data.frame(Nom = character(0)),
   CodeOperation = FALSE,
   Sortie = c("Simple","Propre","Complet")
 )

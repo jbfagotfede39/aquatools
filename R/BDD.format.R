@@ -23,8 +23,16 @@ BDD.format <- function(data)
   
   ## Récupération des données ##
   HabitatsReference <- head(tbl(db,"HabitatsReference"), 10) %>% collect()
+  Habitats <- head(tbl(db,"Habitats"), 10) %>% collect()
   Prelevements <- head(tbl(db,"Prelevements"), 10) %>% collect()
   Captures <- head(tbl(db,"Captures"), 10) %>% collect()
+  
+  # Travail sur les habitats #
+  if(all(colnames(data) %in% colnames(Habitats))) {
+    
+    # Ajout des ID
+    data$HabitatID <- row_number(data$OperationID) + as.numeric(tbl(db,"Habitats") %>% summarise(max = max(HabitatID)) %>% collect()) # Pour incrémenter les HabitatID à partir du dernier
+  }
   
   # Travail sur les prélèvements #
   if(all(colnames(data) %in% colnames(Prelevements))) {
@@ -38,7 +46,7 @@ BDD.format <- function(data)
     data$PrelevementID <- row_number(data$OperationID) + max(Prelevements$PrelevementID) # Pour incrémenter les MesureID à partir du dernier
   }
   
-# Travail sur les captures #
+  # Travail sur les captures #
   
   if(all(colnames(data) %in% colnames(Captures))) {
 

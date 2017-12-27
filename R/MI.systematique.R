@@ -60,6 +60,10 @@ MI.systematique <- function(data)
     
     data <- distinct(data)
     
+    data <-
+      data %>% 
+      mutate(FamilleSensIBGN = ifelse(!is.na(Famille), Famille, Ordre))
+    
   #}
   
   return(data)

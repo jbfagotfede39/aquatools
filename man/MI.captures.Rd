@@ -4,12 +4,19 @@
 \alias{MI.captures}
 \title{Extraction des données des captures de MI}
 \usage{
-MI.captures(station = "VAL37-4", date = "2013-07-22")
+MI.captures(listeOperations = data.frame(Station = character(0), Date =
+  character(0)))
+}
+\arguments{
+\item{listeOperations}{Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"}
 }
 \description{
 Récupère les données de captures d'une opération de suivi MI
 }
 \examples{
-MI.captures("VAL37-4", "2013-07-22")
+MI.captures()
+MI.captures(listeOperations)
+MI.captures(data.frame(Station = "BFE1-8", Date = ymd("2014-05-20")))
+MI.captures(data.frame(Station = "06084000", Date = ymd("2014-05-20")))
 }
 \keyword{donnees}
