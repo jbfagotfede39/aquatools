@@ -72,8 +72,8 @@ Resultats <- poissons.resultats.BDD() # Avec Aquatools
 Resultats$DateDebut.x <- ymd_hms(Resultats$DateDebut.x)
 Resultats$DateDebut.x <- format(Resultats$DateDebut.x, "%Y-%m-%d")
 @
-
-\includegraphics[width=0.15\textwidth]{FD39.png} 
+\IfFileExists{/Users/imac27/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}{\includegraphics[width=0.15\textwidth]{/Users/imac27/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}}{\includegraphics[width=0.15\textwidth]{/Volumes/Fixe-FD39/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}}
+%\includegraphics[width=0.15\textwidth]{FD39.png} 
 
 <<parametres, results='asis', fig.show='hold'>>=
 Parametres <-
