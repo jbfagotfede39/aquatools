@@ -9,8 +9,7 @@
 #' RecapDataToAdd <- projet.calculInitial(NomProjet)
 
 ##### TODO LIST #####
-# Il faudrait que la ligne     dplyr::union(RecapTpsW %>% filter(Projet %in% distinct(NomProjet, Projet)) %>% filter(Programmation == "Attendu") %>% filter(MOE != "FJPPMA")) %>% 
-# travaille directement à partir du dataframe d'entrée contenant tout le projet et ne retourne pas ds RecapTpsW issu de la BDD (si on veut travailler à partir d'un dataframe non issu de la BDD - brouillon par exemple)
+# 
 #####################
 
 projet.calculInitial <- function(
@@ -33,25 +32,26 @@ projet.calculInitial <- function(
   TypologiePrestation <- tbl(db, "TypologiePrestation") %>% collect(n = Inf)
   
   if(all(colnames(NomProjet) != colnames(RecapTpsW))) stop("Dataframe d'entrée différent de RecapTpsW")
+  if(CoutAnnuel %>% filter(Annee == year(now())) %>% filter(Type == "Estimé N-1") %>% select(Poste, CoutJournalierMajore) %>% nrow() == 0) stop(paste0("Pas de coûts annuels estimés pour l'année ",year(now())))
   
   ##### Préparation ####
-  NomProjet <-
+  NomProjetFJPPMA <-
     NomProjet %>% 
     filter(MOE == "FJPPMA")
   
   ##### Calculs ####
   RecapDataToAdd <-
-    NomProjet %>% 
-    bind_rows(filter(CoutTypePrestation, CoutTypePrestation$Prestation %in% NomProjet$Detail) %>% rename (Detail = Prestation) %>% rename (Jours = Temps) %>% select(-CoutTypePrestationID)) %>% 
+    NomProjetFJPPMA %>% 
+    bind_rows(filter(CoutTypePrestation, CoutTypePrestation$Prestation %in% NomProjetFJPPMA$Detail) %>% rename (Detail = Prestation) %>% rename (Jours = Temps) %>% select(-CoutTypePrestationID)) %>% 
     select(-CoutJournalier) %>% 
     left_join(CoutAnnuel %>% filter(Annee == year(now())) %>% filter(Type == "Estimé N-1") %>% select(Poste, CoutJournalierMajore) %>% rename(CoutJournalier = CoutJournalierMajore), by = "Poste") %>% 
-    mutate(Programmation = ifelse(dim(distinct(NomProjet, Programmation))[1] == 1, as.character(distinct(NomProjet, Programmation)), "STOP")) %>% 
-    mutate(NatureOutil = ifelse(dim(distinct(NomProjet, NatureOutil))[1] == 1, as.character(distinct(NomProjet, NatureOutil)), "STOP")) %>% 
-    mutate(MOE = ifelse(dim(distinct(NomProjet, MOE))[1] == 1, as.character(distinct(NomProjet, MOE)), "STOP")) %>% 
-    mutate(Projet = ifelse(dim(distinct(NomProjet, Projet))[1] == 1, as.character(distinct(NomProjet, Projet)), "STOP")) %>% 
+    mutate(Programmation = ifelse(dim(distinct(NomProjetFJPPMA, Programmation))[1] == 1, as.character(distinct(NomProjetFJPPMA, Programmation)), "STOP")) %>% 
+    mutate(NatureOutil = ifelse(dim(distinct(NomProjetFJPPMA, NatureOutil))[1] == 1, as.character(distinct(NomProjetFJPPMA, NatureOutil)), "STOP")) %>% 
+    mutate(MOE = ifelse(dim(distinct(NomProjetFJPPMA, MOE))[1] == 1, as.character(distinct(NomProjetFJPPMA, MOE)), "STOP")) %>% 
+    mutate(Projet = ifelse(dim(distinct(NomProjetFJPPMA, Projet))[1] == 1, as.character(distinct(NomProjetFJPPMA, Projet)), "STOP")) %>% 
     filter(!(!is.na(Quantite) & is.na(CoutJournalier) & is.na(Jours) & is.na(Argent))) %>% 
     mutate(Argent = ifelse(is.na(Argent), Jours * CoutJournalier, Argent)) %>% 
-    dplyr::union(RecapTpsW %>% filter(Projet %in% distinct(NomProjet, Projet)) %>% filter(Programmation == "Attendu") %>% filter(MOE != "FJPPMA")) %>% 
+    dplyr::union(NomProjet %>% filter(Programmation == "Attendu") %>% filter(MOE != "FJPPMA")) %>% 
     select(match(colnames(RecapTpsW),names(.))) %>% 
     mutate(CodeTache = NA) %>% 
     left_join(TypologiePrestation %>% select(-PrestationID, -Groupe) %>% rename(Detail = Prestation), by = "Detail") %>% 
