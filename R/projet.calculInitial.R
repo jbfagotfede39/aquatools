@@ -42,19 +42,24 @@ projet.calculInitial <- function(
   ##### Calculs ####
   RecapDataToAdd <-
     NomProjetFJPPMA %>% 
-    bind_rows(filter(CoutTypePrestation, CoutTypePrestation$Prestation %in% NomProjetFJPPMA$Detail) %>% rename (Detail = Prestation) %>% rename (Jours = Temps) %>% select(-CoutTypePrestationID)) %>% 
-    select(-CoutJournalier) %>% 
-    left_join(CoutAnnuel %>% filter(Annee == year(now())) %>% filter(Type == "Estimé N-1") %>% select(Poste, CoutJournalierMajore) %>% rename(CoutJournalier = CoutJournalierMajore), by = "Poste") %>% 
+    bind_rows(filter(CoutTypePrestation, CoutTypePrestation$Prestation %in% NomProjetFJPPMA$Detail) %>% rename (Detail = Prestation) %>% rename (Jours = Temps) %>% select(-CoutTypePrestationID) %>% left_join(NomProjetFJPPMA %>% filter(is.na(Argent)) %>% select(Detail, Quantite), by = "Detail")) %>%
+    left_join(CoutAnnuel %>% filter(Annee == year(now())) %>% filter(Type == "Estimé N-1") %>% select(Poste, CoutJournalierMajore) %>% rename(CoutUnitaire = CoutJournalierMajore), by = "Poste") %>%
+    mutate(CoutUnitaire = ifelse(is.na(CoutUnitaire.x), CoutUnitaire.y, CoutUnitaire.x)) %>%
+    select(-CoutUnitaire.x,-CoutUnitaire.y) %>% 
     mutate(Programmation = ifelse(dim(distinct(NomProjetFJPPMA, Programmation))[1] == 1, as.character(distinct(NomProjetFJPPMA, Programmation)), "STOP")) %>% 
     mutate(NatureOutil = ifelse(dim(distinct(NomProjetFJPPMA, NatureOutil))[1] == 1, as.character(distinct(NomProjetFJPPMA, NatureOutil)), "STOP")) %>% 
     mutate(MOE = ifelse(dim(distinct(NomProjetFJPPMA, MOE))[1] == 1, as.character(distinct(NomProjetFJPPMA, MOE)), "STOP")) %>% 
     mutate(Projet = ifelse(dim(distinct(NomProjetFJPPMA, Projet))[1] == 1, as.character(distinct(NomProjetFJPPMA, Projet)), "STOP")) %>% 
-    filter(!(!is.na(Quantite) & is.na(CoutJournalier) & is.na(Jours) & is.na(Argent))) %>% 
-    mutate(Argent = ifelse(is.na(Argent), Jours * CoutJournalier, Argent)) %>% 
+    filter(!(!is.na(Quantite) & is.na(CoutUnitaire) & is.na(Jours) & is.na(Argent))) %>%
+    mutate(QuantitePersonnel = ifelse(is.na(Argent) & is.na(QuantitePersonnel) & !is.na(Jours), 1, QuantitePersonnel)) %>% # Si Argent et QuantitePersonnel vides et Jours rempli, alors un seul bonhomme
+    mutate(Argent = ifelse(is.na(Argent), Jours * CoutUnitaire * QuantitePersonnel * Quantite, Argent)) %>% # pour les tâches avec quantité
+    mutate(Argent = ifelse(is.na(Argent), Jours * CoutUnitaire * QuantitePersonnel, Argent)) %>% # pour les tâches sans quantité
+    mutate(Argent = ifelse(is.na(Argent), Quantite * CoutUnitaire, Argent)) %>% # pour les objets sans personnel
     dplyr::union(NomProjet %>% filter(Programmation == "Attendu") %>% filter(MOE != "FJPPMA")) %>% 
     select(match(colnames(RecapTpsW),names(.))) %>% 
     mutate(CodeTache = NA) %>% 
     left_join(TypologiePrestation %>% select(-PrestationID, -Groupe) %>% rename(Detail = Prestation), by = "Detail") %>% 
+    mutate(Argent = round(Argent,2)) %>% 
     arrange(Ordre, Detail, MOE, desc(Poste)) %>% 
     select(-Ordre)
   
