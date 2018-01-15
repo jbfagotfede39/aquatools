@@ -14,5 +14,6 @@ Cette fonction permet de retrouver automatique l'adresse d'un fichier entre l'or
 }
 \examples{
 adresse.switch("NAS-JB/Études/2014_Les Rousses/Résultats/Poissons/ResultatsRoussestotal-28janvier2015.xlsx")
+adresse.switch("NAS-DATA/Poissons/PDPG/Stations PDPG_V1.xlsx")
 fish <- read_excel(adresse.switch("NAS-JB/Études/2014_Les Rousses/Résultats/Poissons/ResultatsRoussestotal-28janvier2015.xlsx"), sheet = 2)
 }
