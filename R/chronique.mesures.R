@@ -14,59 +14,53 @@
 #' chronique.mesures("GCLzhaval", "Piézométrie", "2015", Valide = F)
 
 chronique.mesures <- function(  
-  CodeStation ="",
+  CodeStation = character(0),
   Type = c("Thermie", "Piézométrie", "Hydrologie", "O2", "Pluviométrie"),
-  annee="",
+  annee = numeric(0),
   Valide = T)
 {
   
   # library("DBI");library("dplyr");library("lubridate");library("RSQLite");library("stringr")
   # CodeStation ="GCLzhaval";Type="Piézométrie";annee="2015"
   
-## Évaluation des choix
-  Type <- match.arg(Type)
-  
+#### Évaluation des choix ####
+Type <- match.arg(Type)
+if(nchar(as.character(CodeStation)) == 0) 
+  stop("Attention : pas de station spécifiée")
 
 ##### Connexion à la BDD #####
 db <- BDD.ouverture(Type = "Chroniques")
-  
-## Récupération des données ##
-#Stations <- dbReadTable(db, "Stations")
-Mesures <- dbReadTable(db, "Mesures")
-#ResultatsAnnuels <- dbReadTable(db, "ResultatsAnnuels")
-#SuiviTerrain <- dbReadTable(db, "SuiviTerrain")
 
-##### Filtrage des données #####
-## Exclusion des données rejetées ##
-if(Valide == T)
-Mesures <-
-  Mesures %>% 
-  filter(Validation == "Validé")
-
-## Station ##
-Mesures <-
-  Mesures %>% 
-  filter(CodeRDT == CodeStation)
-
-## TypeMesure ##
-Mesures <-
-  Mesures %>% 
-  filter(TypeMesure == Type)
-
-## Période ##
-if(annee != "") {
-Mesures$Date <- ymd(Mesures$Date)
-
-Datefin <- ymd(str_c(annee, "-09-30"))
-Datedebut <- Datefin - years(1) + days(1)
-
-Mesures <-
-Mesures %>% 
-  filter(Date >= Datedebut & Date < Datefin + days(1))
+##### Collecte des données #####
+if(Valide == F){
+  Mesures <- 
+    tbl(db,"Mesures") %>% 
+    filter(TypeMesure == Type) %>% 
+    filter(CodeRDT == as.character(CodeStation)) %>% 
+    #filter(Validation == "Validé") %>% 
+    collect()
 }
 
+if(Valide == T){
+  Mesures <- tbl(db,"Mesures") %>% 
+    filter(TypeMesure == Type) %>% 
+    filter(CodeRDT == as.character(CodeStation)) %>% 
+    filter(Validation == "Validé") %>% 
+    collect()
+}
+
+##### Filtrage en fonction de la période #####
+if(nchar(as.character(annee)) != 0){
+  Mesures <-
+    Mesures %>% 
+    formatage.annee.biologique() %>% 
+    filter(AnneeBiol == as.character(annee))
+}
+
+##### Mise en forme #####
 Mesures <- Mesures %>% arrange(Date, Heure)
 
+##### Sortie #####
 return(Mesures)
 
 } # Fin de la fonction

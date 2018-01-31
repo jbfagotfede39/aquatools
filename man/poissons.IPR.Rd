@@ -4,12 +4,11 @@
 \alias{poissons.IPR}
 \title{Exportation des IPR}
 \usage{
-poissons.IPR(station = "LEU15-2", date = "2013-10-22", expertise = TRUE)
+poissons.IPR(ListeOperations = data.frame(Station = character(0), Date =
+  character(0)), expertise = TRUE)
 }
 \arguments{
-\item{station}{Code de la station}
-
-\item{date}{Date de la pêche}
+\item{ListeOperations}{Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"}
 
 \item{expertise}{\code{TRUE} par défault}
 }
@@ -17,7 +16,8 @@ poissons.IPR(station = "LEU15-2", date = "2013-10-22", expertise = TRUE)
 Cette fonction permet d'exporter les résultats IPR de pêche
 }
 \examples{
-poissons.IPR("SOR10-2", "2015-05-19")
-poissons.IPR("SOR10-2", "2015-05-19", expertise = FALSE)
+poissons.IPR()
+poissons.IPR(data.frame(Station = "SOR10-2", Date = "2012-11-03"))
+poissons.IPR(data.frame(Station = "SOR10-2", Date = "2012-11-03"), expertise = FALSE)
 }
 \keyword{poissons}

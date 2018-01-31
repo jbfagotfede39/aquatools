@@ -106,8 +106,8 @@ chronique.analyse <- function(
     filter(!is.na(VMM30j)) %>% 
     summarise(
       VMaxMoy30J = max(VMM30j),
-      DateDebutTMaxMoy30J = Date[VMM30j == max(VMM30j)] -29,
-      DateFinTMaxMoy30J = Date[VMM30j == max(VMM30j)]
+      DateDebutVMaxMoy30J = Date[VMM30j == max(VMM30j)] -29,
+      DateFinVMaxMoy30J = Date[VMM30j == max(VMM30j)]
     ) 
     
   ValRemarqPeriodesMobiles <-
@@ -115,8 +115,8 @@ chronique.analyse <- function(
     filter(!is.na(VMM7j)) %>% 
     summarise(
       VMaxMoy7J = max(VMM7j),
-      DateDebutTMaxMoy7J = Date[VMM7j == max(VMM7j)] -6,
-      DateFinTMaxMoy7J = Date[VMM7j == max(VMM7j)]
+      DateDebutVMaxMoy7J = Date[VMM7j == max(VMM7j)] -6,
+      DateFinVMaxMoy7J = Date[VMM7j == max(VMM7j)]
     ) %>% 
     bind_cols(ValRemarqPeriodesMobiles) %>% 
     mutate(VMaxMoy7J = round(VMaxMoy7J,1)) %>% 
@@ -125,7 +125,7 @@ chronique.analyse <- function(
   if(ValRemarqPeriodesMobiles$VMaxMoy7J < ValRemarqPeriodesMobiles$VMaxMoy30J) stop("Pb dans calcul Vmm")
 
   ## Extraction de l'année du VMM ##
-  AnneeVMM <- year(ValRemarqPeriodesMobiles$DateFinTMaxMoy30J)
+  AnneeVMM <- year(ValRemarqPeriodesMobiles$DateFinVMaxMoy30J)
   
   ##### Dépassement de valeurs seuils #### 
   # On peut calculer si chaque valeur est dans quel intervalle (normal, max-MaxExtrem, > MaxExtrem, etc.)
@@ -167,7 +167,7 @@ chronique.analyse <- function(
   NbJOK <- dim(ValJours %>% filter(N == Nref))[1]
   
   #### Sortie des résultats ####
-  Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, CodeRDT, Annee, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutTMaxMoy7J, ValRemarqPeriodesMobiles$DateFinTMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutTMaxMoy30J, ValRemarqPeriodesMobiles$DateFinTMaxMoy30J) 
+  Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, CodeRDT, Annee, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J) 
   
   
 } # Fin de la fonction

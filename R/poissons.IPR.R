@@ -2,15 +2,15 @@
 #'
 #' Cette fonction permet d'exporter les résultats IPR de pêche
 #' 
-#' @param station Code de la station
-#' @param date Date de la pêche
+#' @param ListeOperations Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"
 #' @param expertise \code{TRUE} par défault
 #' @keywords poissons
-#' @import dplyr DBI RSQLite xlsx lubridate
+#' @import dplyr DBI RSQLite lubridate
 #' @export
 #' @examples
-#' poissons.IPR("SOR10-2", "2015-05-19")
-#' poissons.IPR("SOR10-2", "2015-05-19", expertise = FALSE)
+#' poissons.IPR()
+#' poissons.IPR(data.frame(Station = "SOR10-2", Date = "2012-11-03"))
+#' poissons.IPR(data.frame(Station = "SOR10-2", Date = "2012-11-03"), expertise = FALSE)
 
 ##### TODO LIST #####
 
@@ -19,8 +19,7 @@
 #library(aquatools);library(dplyr);library(lubridate);library(RSQLite)
 
 poissons.IPR <- function(
-  station="LEU15-2",
-  date="2013-10-22",
+  ListeOperations = data.frame(Station = character(0), Date = character(0)),
   expertise=TRUE)
 {
   
@@ -34,8 +33,8 @@ poissons.IPR <- function(
   
   ## Synthèse des données ##
   IPR <- left_join(IPR, Operations, by = c("CodeOperation" = "Codeoperation"))
-  IPR <- merge(IPR, Stations, by = c("CodeStation"))
-  
+  IPR <- left_join(IPR, Stations, by = c("CodeStation"))
+
   ## Format de dates ##
   IPR$DateIPR <- ymd_hms(IPR$DateIPR)
   IPR$DateIPR <- format(IPR$DateIPR, "%Y-%m-%d")
@@ -43,31 +42,38 @@ poissons.IPR <- function(
   ## Simplification ##
   IPR <- 
     IPR %>%
-    select(1:44,51,77) %>% # Pour nettoyage
-    select(-(1:2), -(4:6)) %>% # Pour nettoyage
-    select(39,41,40,1:35) %>% # Pour remettre le nom de la station en premier
-    #select(38,40,39,1:34) %>% # Pour remettre le nom de la station en premier
-    filter(Nom == station, DateIPR == date) %>% 
-    rename(Stations = Nom, Date = DateIPR) %>% 
-    arrange(Stations)
+    rename(Station = Nom, Date = DateIPR) %>% 
+    arrange(Station, Date)
   
-  if(expertise == TRUE){
+  # Travail sur toutes les opérations #
+  if(dim(ListeOperations)[1] == 0 & expertise == TRUE){
   IPR <-
     IPR %>% 
-    select(Stations, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes)
+    select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes)
   }
   
-  if(expertise == FALSE){
+  if(dim(ListeOperations)[1] == 0 & expertise == FALSE){
     IPR <-
       IPR %>% 
-      select(Stations, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes)
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes)
   }
   
-  ##### Sorties des résultats traités au format Excel #####
+  # Travail sur quelques opérations #
+  if(dim(ListeOperations)[1] != 0 & expertise == TRUE){
+    IPR <-
+      IPR %>% 
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes) %>% 
+      filter(Station %in% ListeOperations$Station & Date %in% ListeOperations$Date)
+  }
   
-  #write.xlsx(x = IPR, file = paste0(station, "_", date, "_IPR.xlsx"),
-  #           sheetName = paste0(station, " ", date), row.names = F)
+  if(dim(ListeOperations)[1] != 0 & expertise == FALSE){
+    IPR <-
+      IPR %>% 
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes) %>% 
+      filter(Station %in% ListeOperations$Station & Date %in% ListeOperations$Date)
+  }
   
+  # Rendu du résultat #
   return(IPR)
   
 } # Fin de la fonction

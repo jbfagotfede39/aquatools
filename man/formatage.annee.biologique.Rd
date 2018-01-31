@@ -10,7 +10,7 @@ formatage.annee.biologique(data)
 \item{data}{Jeu de données contenant une colonne Date au format Date}
 }
 \description{
-Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année)
+Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne AnneeBiol
 }
 \examples{
 formatage.annee.biologique(data)

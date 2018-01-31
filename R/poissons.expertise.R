@@ -1,22 +1,18 @@
 #' Exportation des avis à dire d'expert
 #'
-#' Cette fonction permet d'exporter les avis à dire d'expert des opérations de suivi piscicole
-#' 
-#' @param station Code de la station
-#' @param date Date de la pêche
+#' @param ListeOperations Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"
 #' @keywords poissons
 #' @import dplyr RSQLite lubridate
 #' @export
 #' @examples
-#' poissons.expertise("SOR10-2", "2015-05-19")
+#' poissons.expertise(data.frame(Station = "SOR10-2", Date = "2012-11-03"))
 
 ##### TODO LIST #####
 
 #####################
 
 poissons.expertise <- function(
-  station="SOR10-2",
-  date="2015-05-19")
+  ListeOperations = data.frame(Station = character(0), Date = character(0)))
 {
   
   ## Ouverture de la BDD ##
@@ -38,8 +34,8 @@ poissons.expertise <- function(
   ## Simplification ##
   Operations <- 
     Operations %>%
-    filter(Nom == station, DateDebut.x == date) %>% 
     rename(Station = Nom, Date = DateDebut.x, Etat = AvisExpertCourt.x, Details = AvisExpert.x) %>% 
+    filter(Station %in% ListeOperations$Station & Date %in% ListeOperations$Date) %>% 
     select(Station, Date, Etat, Details) %>% 
     arrange(Station)
   
@@ -49,7 +45,7 @@ poissons.expertise <- function(
     stop("Attention : pas d'opération dans la base de données")
   
   if(dim(Operations)[1] > 1) 
-    stop("Attention : plusieurs opérations dans la base de données")
+    warning("Attention : plusieurs opérations dans la base de données")
   
   ## Sortie ##
   return(Operations)
