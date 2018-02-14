@@ -127,6 +127,43 @@ chronique.analyse <- function(
   ## Extraction de l'année du VMM ##
   AnneeVMM <- year(ValRemarqPeriodesMobiles$DateFinVMaxMoy30J)
   
+  ##### Degrés-jours #####
+  ## Degrés-jours descendant (TRF) ##
+  RefValeurInf <- 12
+  RefDegJours <- 800
+
+  DegresJoursTRF <-
+    ValJours %>% 
+    mutate(TestValeurInf = ifelse(VMoyJ < RefValeurInf, 1, NA)) %>% # identification de la journée passant sous une valeur repère
+    filter(!is.na(TestValeurInf)) %>% 
+    mutate(DegJours = cumsum(VMoyJ)) %>% 
+    summarise(
+      DateDebutDegresJours = Date[first(TestValeurInf)],
+      DateFinDegresJours = first(Date[DegJours > RefDegJours])
+    ) %>%
+    mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>% 
+    mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>% 
+    mutate(NbJDegresJours = as.numeric(DateFinDegresJours - DateDebutDegresJours))
+  
+  ## Degrés-jours montants (OBR) ##
+  RefValeurSup <- 9
+  RefDegJours <- 270
+  
+  DegresJoursAutreEsp <-
+    ValJours %>% 
+    mutate(TestValeurSup = ifelse(VMoyJ > RefValeurSup, 1, NA)) %>% # identification de la journée passant sous une valeur repère
+    filter(Date > paste0(year(last(Date)),"-02-01")) %>% # 29 mars
+    filter(!is.na(TestValeurSup)) %>% 
+    #View()
+    mutate(DegJours = cumsum(VMoyJ)) %>% 
+    summarise(
+      DateDebutDegresJours = Date[first(TestValeurSup)],
+      DateFinDegresJours = first(Date[DegJours > RefDegJours])
+    ) %>%
+    mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>% 
+    mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>% 
+    mutate(NbJDegresJours = as.numeric(DateFinDegresJours - DateDebutDegresJours))
+  
   ##### Dépassement de valeurs seuils #### 
   # On peut calculer si chaque valeur est dans quel intervalle (normal, max-MaxExtrem, > MaxExtrem, etc.)
   # Puis on décompte la durée et le nombre d'épisode : mais comment les regrouper par ensemble
@@ -167,7 +204,7 @@ chronique.analyse <- function(
   NbJOK <- dim(ValJours %>% filter(N == Nref))[1]
   
   #### Sortie des résultats ####
-  Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, CodeRDT, Annee, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J) 
+  Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, CodeRDT, Annee, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J, DegresJoursTRF$DateDebutDegresJours, DegresJoursTRF$DateFinDegresJours, DegresJoursTRF$NbJDegresJours, DegresJoursAutreEsp$DateDebutDegresJours, DegresJoursAutreEsp$DateFinDegresJours, DegresJoursAutreEsp$NbJDegresJours) 
   
   
 } # Fin de la fonction
