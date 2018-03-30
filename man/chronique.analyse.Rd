@@ -4,13 +4,9 @@
 \alias{chronique.analyse}
 \title{Analyse de chroniques}
 \usage{
-chronique.analyse(CodeRDT = "", Annee = "", data = data, pasdetemps = 1)
+chronique.analyse(data = data, pasdetemps = 1)
 }
 \arguments{
-\item{CodeRDT}{Nom de la station}
-
-\item{Annee}{Année du suivi}
-
 \item{data}{Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur}
 
 \item{pasdetemps}{Indique le pas de temps entre chaque mesure : 1 pour une heure (1 par défaut)}
@@ -35,8 +31,7 @@ valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche p
 Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)
 }
 \examples{
-chronique.figure(data)
-chronique.figure(data = mesdonnees, legendeY = "Température (°C)", duree = "Complet")
-chronique.figure(data = tableaudonnee, Titre=nom, legendeY = "Température (°C)", save=T, format=".png")
+chronique.analyse("ANG0-4", 2016, data, pasdetemps = 1)
+chronique.analyse(as.character(Stations[i,2]), Annee, data, pasdetemps = 1)
 }
 \keyword{chronique}

@@ -1,7 +1,7 @@
 #' Calcul des NTT
 #'
-#' Cette fonction permet de calculer les Niveaux Typologiques Théoriques à partir d'un dataframe issu de poissons.stations()
-#' @param Données
+#' Cette fonction permet de calculer les Niveaux Typologiques Théoriques
+#' @param Données Dataframe issu de poissons.stations()
 #' @keywords poissons
 #' @export
 #' @import dplyr

@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.42
+Version: 0.0.43
 Authors@R: person("Jean-Baptiste", "Fagot", email = "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Description: What the package does (paragraph)
 Depends:

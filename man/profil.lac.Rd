@@ -7,9 +7,15 @@
 profil.lac(PC, param = "O2mg")
 }
 \arguments{
-\item{O2mg}{}
+\item{O2mg}{Pour réaliser un profil de concentration en oxygène dissous}
 
-\item{Cond}{}
+\item{O2pourc}{Pour réaliser un profil de saturation en oxygène dissous}
+
+\item{Cond}{Pour réaliser un profil de conductivité}
+
+\item{ph}{Pour réaliser un profil de pH}
+
+\item{temp}{Pour réaliser un profil de température}
 }
 \description{
 Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques

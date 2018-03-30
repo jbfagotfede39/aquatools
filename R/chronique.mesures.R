@@ -50,7 +50,7 @@ if(Valide == T){
 }
 
 ##### Filtrage en fonction de la période #####
-if(nchar(as.character(annee)) != 0){
+if(length(as.character(annee)) != 0){
   Mesures <-
     Mesures %>% 
     formatage.annee.biologique() %>% 

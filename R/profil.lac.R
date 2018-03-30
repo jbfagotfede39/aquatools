@@ -1,11 +1,11 @@
 #' Création de profils verticaux lacustres
 #'
 #' Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques
-#' @param O2mg 
-#' @param O2pourc
-#' @param Cond 
-#' @param ph
-#' @param temp
+#' @param O2mg Pour réaliser un profil de concentration en oxygène dissous
+#' @param O2pourc Pour réaliser un profil de saturation en oxygène dissous
+#' @param Cond Pour réaliser un profil de conductivité
+#' @param ph Pour réaliser un profil de pH
+#' @param temp Pour réaliser un profil de température
 #' @export
 #' @import ggplot2
 #' @examples

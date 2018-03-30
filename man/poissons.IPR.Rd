@@ -17,6 +17,7 @@ Cette fonction permet d'exporter les résultats IPR de pêche
 }
 \examples{
 poissons.IPR()
+poissons.IPR(listeOperations)
 poissons.IPR(data.frame(Station = "SOR10-2", Date = "2012-11-03"))
 poissons.IPR(data.frame(Station = "SOR10-2", Date = "2012-11-03"), expertise = FALSE)
 }

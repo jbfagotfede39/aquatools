@@ -2,8 +2,6 @@
 #'
 #' Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)
 #' 
-#' @param CodeRDT Nom de la station
-#' @param Annee Année du suivi
 #' @param data Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur
 #' @param Titre Titre du graphique (vide par défaut)
 #' @param legendeY Défini le texte de la légende de l'axe Y (Température (°C) par défaut)
@@ -21,13 +19,10 @@
 #' @import RcppRoll
 #' @export
 #' @examples
-#' chronique.figure(data)
-#' chronique.figure(data = mesdonnees, legendeY = "Température (°C)", duree = "Complet")
-#' chronique.figure(data = tableaudonnee, Titre=nom, legendeY = "Température (°C)", save=T, format=".png")
+#' chronique.analyse("ANG0-4", 2016, data, pasdetemps = 1)
+#' chronique.analyse(as.character(Stations[i,2]), Annee, data, pasdetemps = 1)
 
 chronique.analyse <- function(
-  CodeRDT="",
-  Annee="",
   data = data,
   pasdetemps = 1
   )
@@ -40,6 +35,7 @@ chronique.analyse <- function(
   # -------------- A FAIRE -------------- #
   #data <- DataTravail
   #data <- DataToAdd
+  #data <- Mesures
   
   ##### Mise au format des données #####
   
@@ -50,6 +46,19 @@ chronique.analyse <- function(
     mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
     filter(is.na(Valeur) == F) %>% 
     arrange(Time)
+
+  ##### Contexte de la chronique #####
+  Contexte <- 
+    data %>% 
+    distinct(CodeRDT)
+  if(length(Contexte) != 1) stop("Différentes stations dans la chronique à analyser")
+  
+  Contexte <- 
+    data %>% 
+    summarise(
+      Annee = median(year(Date))
+    ) %>% 
+    bind_cols(Contexte)
 
   ##### Valeurs instantanées remarquables #####
   ValRemarqInstant <-
@@ -204,7 +213,7 @@ chronique.analyse <- function(
   NbJOK <- dim(ValJours %>% filter(N == Nref))[1]
   
   #### Sortie des résultats ####
-  Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, CodeRDT, Annee, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J, DegresJoursTRF$DateDebutDegresJours, DegresJoursTRF$DateFinDegresJours, DegresJoursTRF$NbJDegresJours, DegresJoursAutreEsp$DateDebutDegresJours, DegresJoursAutreEsp$DateFinDegresJours, DegresJoursAutreEsp$NbJDegresJours) 
+  Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, Contexte$CodeRDT, Contexte$Annee, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J, DegresJoursTRF$DateDebutDegresJours, DegresJoursTRF$DateFinDegresJours, DegresJoursTRF$NbJDegresJours, DegresJoursAutreEsp$DateDebutDegresJours, DegresJoursAutreEsp$DateFinDegresJours, DegresJoursAutreEsp$NbJDegresJours) 
   
   
 } # Fin de la fonction

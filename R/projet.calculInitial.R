@@ -55,6 +55,8 @@ projet.calculInitial <- function(
     mutate(Argent = ifelse(is.na(Argent), Jours * CoutUnitaire * QuantitePersonnel * Quantite, Argent)) %>% # pour les tâches avec quantité
     mutate(Argent = ifelse(is.na(Argent), Jours * CoutUnitaire * QuantitePersonnel, Argent)) %>% # pour les tâches sans quantité
     mutate(Argent = ifelse(is.na(Argent), Quantite * CoutUnitaire, Argent)) %>% # pour les objets sans personnel
+    mutate(Temps = ifelse(!is.na(Jours) & !is.na(Quantite) & !is.na(QuantitePersonnel), Jours * Quantite * QuantitePersonnel, NA)) %>% 
+    mutate(Temps = ifelse(!is.na(Jours) & is.na(Quantite) & !is.na(QuantitePersonnel), Jours * QuantitePersonnel, Temps)) %>% 
     dplyr::union(NomProjet %>% filter(Programmation == "Attendu") %>% filter(MOE != "FJPPMA")) %>% 
     select(match(colnames(RecapTpsW),names(.))) %>% 
     mutate(CodeTache = NA) %>% 

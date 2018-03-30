@@ -6,8 +6,11 @@
 \usage{
 poissons.NTT(station)
 }
+\arguments{
+\item{Données}{Dataframe issu de poissons.stations()}
+}
 \description{
-Cette fonction permet de calculer les Niveaux Typologiques Théoriques à partir d'un dataframe issu de poissons.stations()
+Cette fonction permet de calculer les Niveaux Typologiques Théoriques
 }
 \examples{
 poissons.NTT(station)
