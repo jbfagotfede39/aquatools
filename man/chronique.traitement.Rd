@@ -15,5 +15,6 @@ Permet d'exécuter plusieurs opérations de traitement des données de chronique
 \examples{
 chronique.traitement(data)
 DataTravail <- chronique.mesures("SUR0-9", "Thermie") \%>\% chronique.traitement()
+DataTravail <- tbl(db,"Mesures") \%>\% filter(CodeRDT == "DOU393-2" | CodeRDT == "DOU394-5") \%>\% collect() \%>\% chronique.traitement()
 }
 \keyword{chronique}

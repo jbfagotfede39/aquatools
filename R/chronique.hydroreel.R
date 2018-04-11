@@ -31,7 +31,7 @@ chronique.hydroreel <- function(Station)
   # Parse HTML
   complet <-
     hh %>%
-    html_nodes(".cadre") %>%
+    html_nodes("div h5") %>%
     `[[`(2) %>% 
     html_text()
 
@@ -39,7 +39,7 @@ chronique.hydroreel <- function(Station)
   if(is.na(strsplit(complet, "(m3/s)")[[1]][2])){
     complet <-
       hh %>% 
-      html_nodes(".cadre") %>% 
+      html_nodes("div h5") %>% 
       .[[3]] %>% # Ligne modifiée : on prend le cadre de dessous pour ne pas considérer les hauteurs d'eau
       html_text()
   }
