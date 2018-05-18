@@ -6,6 +6,7 @@
 #' @import DBI
 #' @import dplyr
 #' @import lubridate 
+#' @import rgdal
 #' @import RSQLite 
 #' @import stringr
 #' @export
@@ -20,17 +21,31 @@ chronique.traitement <- function(
 {
 
 ##### -------------- A FAIRE -------------- #####
-# PARVENIR À faire fonctionner tout à la suite car ce n'est actuellement pas le cas
-# Voir pour faire disparaître le message d'erreur lors de l'export des figures de plusieurs stations
-# Voir pour faire disparaître le message d'erreur lors de l'export des données de plusieurs stations
-# Ajouter export données synthèse stationnelle
 # Export lexique
-# Faire pour que les différents fichiers se rangent tout seuls dans des répertoires propres (par année par station ou en vrac) : créer une convention de nommage
+# Créer un applet qui demande le nom du projet et qui nomme ensuite en conséquence les fichiers et le répertoire principal
 # -------------- A FAIRE -------------- #  
 
 #### Évaluation des choix ####
 
+#### Vérification des répertoires ####
+if(file.exists("./Sorties/") == FALSE){
+  dir.create("./Sorties/", showWarnings = FALSE, recursive = FALSE)
+  dir.create("./Sorties/Vues/", showWarnings = FALSE, recursive = FALSE)
+  dir.create("./Sorties/Données/", showWarnings = FALSE, recursive = FALSE)
+}
+
+if(file.exists("./Sorties/") == TRUE & file.exists("./Sorties/Données/") == FALSE){
+    dir.create("./Sorties/Données/", showWarnings = FALSE, recursive = FALSE)
+}
+
+if(file.exists("./Sorties/") == TRUE & file.exists("./Sorties/SIG/") == FALSE){
+  dir.create("./Sorties/SIG/", showWarnings = FALSE, recursive = FALSE)
+}
   
+if(file.exists("./Sorties/") == TRUE & file.exists("./Sorties/Vues/") == FALSE){
+  dir.create("./Sorties/Vues/", showWarnings = FALSE, recursive = FALSE)
+}
+
 #### Préparation des données ####
 data <-
   data %>% 
@@ -48,24 +63,60 @@ DataTravail <-
   ungroup()
 
 ##### Sorties graphiques #####
+## Chronique complète ##
 data %>%
   group_by(CodeRDT, AnneeBiol) %>%
-  do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$CodeRDT))), duree = "Complet", legendeY = "Température (°C)", save=T, format=".png")) %>% 
+  #do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$CodeRDT))), duree = "Complet", legendeY = "Température (°C)", save=T, format=".png")) %>% # Fonctionne uniquement si une seule année
+  do({chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$CodeRDT))," - ",unique(unlist(.$AnneeBiol)))), duree = "Complet", legendeY = "Température (°C)", save=T, format=".png") # Fonctionne si plusieurs années
+    distinct(., CodeRDT, AnneeBiol) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
+    }) %>%
   ungroup()
 
-# data %>%
-#   group_by(CodeRDT, AnneeBiol) %>%
-#   do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$CodeRDT))), duree = "Relatif", legendeY = "Température (°C)", save=T, format=".png")) %>% 
-#   ungroup()
+## Chronique incomplète ##
+data %>%
+  group_by(CodeRDT, AnneeBiol) %>%
+  #do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$CodeRDT))), duree = "Relatif", legendeY = "Température (°C)", save=T, format=".png")) %>% # Fonctionne uniquement si une seule année
+  do({chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$CodeRDT))," - ",unique(unlist(.$AnneeBiol)))), duree = "Relatif", legendeY = "Température (°C)", save=T, format=".png") # Fonctionne si plusieurs années
+    distinct(., CodeRDT, AnneeBiol) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
+    }) %>%
+  ungroup()
 
 ##### Sorties agrégées #####
 data %>% 
   group_by(CodeRDT) %>% 
-  do(chronique.agregation(data = ., export = T)) %>% # applique la fonction à chaque station pour chaque année
+  do({chronique.agregation(data = ., export = T)
+    distinct(., CodeRDT) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
+    }) %>% # applique la fonction à chaque station pour chaque année
   #purrr::map(chronique.agregation(data = ., export = T)) # applique la fonction à chaque station pour chaque année
   ungroup()
 
-##### Sortie #####
+##### Sortie stations #####
+listeStations <- data %>% distinct(CodeRDT)
+db <- BDD.ouverture()
+listeStations <- tbl(db,"Stations") %>% filter(CodeRDT %in% listeStations$CodeRDT) %>% collect() %>% select(CodeRDT:Departement, X:TypeCoord, Fonctionnement:ReseauThermie)
+
+## Excel ##
+openxlsx::write.xlsx(Stations, file = paste0("./Sorties/", format(now(), format="%Y-%m-%d"), "_Stations.xlsx"))
+
+## Shapefile ##
+Stations <- listeStations %>% filter(TypeCoord == "L93")
+coordinates(Stations) <- ~X+Y # Permet de créer un SpatialPointsDataFrame à partir d'un dataframe Data contenant les coordonnées dans les colonnes XLambert et YLambert
+proj4string(Stations) <- CRS("+init=epsg:2154") # Définition de la projection, ici pour Lambert 93
+setCPLConfigOption("SHAPE_ENCODING", "UTF-8") # Afin de définir l'encodage en UT8
+writeOGR(Stations, ".", paste0("./Sorties/SIG/", format(now(), format="%Y-%m-%d"), "_Stations"), driver="ESRI Shapefile", layer_options= c(encoding= "UTF-8"), overwrite_layer=T)
+
+##### Sortie résultats élaborés #####
+## Excel ##
+openxlsx::write.xlsx(DataTravail, file = paste0("./Sorties/", format(now(), format="%Y-%m-%d"), "_Résultats_calculés.xlsx"))
+
+## Shapefile ##
+Stations <- listeStations %>% filter(TypeCoord == "L93")
+DataTravailSIG <- Stations %>% left_join(DataTravail %>% mutate(intervalMax = as.numeric(sub(",", ".", intervalMax))), by = "CodeRDT")
+coordinates(DataTravailSIG) <- ~X+Y # Permet de créer un SpatialPointsDataFrame à partir d'un dataframe Data contenant les coordonnées dans les colonnes XLambert et YLambert
+proj4string(DataTravailSIG) <- CRS("+init=epsg:2154") # Définition de la projection, ici pour Lambert 93
+setCPLConfigOption("SHAPE_ENCODING", "UTF-8") # Afin de définir l'encodage en UT8
+writeOGR(DataTravailSIG, ".", paste0("./Sorties/SIG/", format(now(), format="%Y-%m-%d"), "_Résultats"), driver="ESRI Shapefile", layer_options= c(encoding= "UTF-8"), overwrite_layer=T)
+
 return(DataTravail)
 
 } # Fin de la fonction

@@ -107,7 +107,7 @@ if(export == FALSE){
 ## Export vers xlsx ##
 if(export == TRUE){
   l <- list(ValInstantanees = ValInstantanees, ValJours = ValJours, ValMois = ValMois, ValAnneeBiol = ValAnneeBiol)
-  openxlsx::write.xlsx(l, file = paste0(Contexte$CodeRDT, "_données.xlsx"))
+  openxlsx::write.xlsx(l, file = paste0("./Sorties/Données/",Contexte$CodeRDT, "_données.xlsx"))
 }
 
 } # Fin de la fonction

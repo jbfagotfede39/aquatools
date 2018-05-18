@@ -103,10 +103,10 @@ chronique.analyse <- function(
       VMoyJMedPer = round(median(VMoyJ),1),
       VMoyJMoyPer = round(mean(VMoyJ),1),
       VMoyJMaxPer = round(max(VMoyJ),1),
-      DateVMoyJMaxPer = Date[VMoyJ == max(VMoyJ)],
+      DateVMoyJMaxPer = Date[VMoyJ == max(VMoyJ)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
       AmplitudeVMoyJPer = VMoyJMaxPer-VMoyJMinPer,
       VarVMoyJ = round(var(VMoyJ),2)
-    ) 
+    )
   
   ##### Valeurs sur périodes mobiles #### 
   ## Calcul V Moymax 7 et 30 J ##

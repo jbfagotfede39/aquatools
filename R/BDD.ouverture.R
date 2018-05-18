@@ -26,15 +26,15 @@ BDD.ouverture <- function(
 ## Connexion à la BDD ##
 drv <- dbDriver("SQLite")
 
+if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "MacBookJB"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <- "Adrien"}
+if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien"){UtilisateurFD <- "Adrien"}
+
 ## Chroniques ##
 if(Type == "Chroniques" & file.exists("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")
 if(Type == "Chroniques" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- src_sqlite("/Volumes/Fixe-FD39/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")
 if(Type == "Chroniques" & file.exists("/Users/adrienlavigne/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) db <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")
-
-## Poissons ##
-if(Type == "Poissons" & file.exists("/Users/imac27/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
-if(Type == "Poissons" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Volumes/Fixe-FD39/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
-if(Type == "Poissons" & file.exists("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
 
 ## Macroinvertébrés ##
 if(Type == "Macroinvertébrés" & file.exists("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite")
@@ -49,6 +49,25 @@ if(Type == "Physico-chimie" & file.exists("/Users/adrienlavigne/NAS-DATA/Physico
 ## Temps de travail ##
 if(Type == "Temps de travail" & file.exists("/Users/imac27/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
 if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) db <- src_sqlite("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
+
+## Poissons ##
+# if(Type == "Poissons" & file.exists("/Users/imac27/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
+# if(Type == "Poissons" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Volumes/Fixe-FD39/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
+# if(Type == "Poissons" & file.exists("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
+
+if(Type == "Poissons" & strsplit(strsplit(system('ping -c 1 -W 200 192.168.1.2',intern=T)[2], "time=")[[1]][2], " ms")[[1]][1] < 600){
+  db <- dbConnect("PostgreSQL", dbname = "multifish",
+                  host = '192.168.1.2',
+                  port = 5432,
+                  user = UtilisateurFD,
+                  .rs.askForPassword(UtilisateurFD))
+  }else{
+  db <- dbConnect("PostgreSQL", dbname = "multifish",
+                  host = '80.11.169.205',
+                  port = 5432,
+                  user = UtilisateurFD,
+                  .rs.askForPassword(UtilisateurFD))
+  }
 
 return(db)
 

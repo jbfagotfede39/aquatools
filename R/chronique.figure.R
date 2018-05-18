@@ -105,7 +105,7 @@ data.label <- data.frame(
 if(duree == "Relatif"){
   plotrelatif
   if(save==T){ggsave(file=paste("Sorties/Vues/relatif_",Titre,format,sep=""))}
-  return(plotrelatif)
+  if(save==F){return(plotrelatif)}
 }
 
 ##### Plot temps absolu sur une année ####
@@ -154,7 +154,7 @@ if(length(unique(format(syntjour$Date,"%Y"))) == 2){
 if(duree == "Complet"){
   plotabsolu
   if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",Titre,format,sep=""))}
-  return(plotabsolu)
+  if(save==F){return(plotabsolu)}
 }
 
 } # Fin de la fonction
