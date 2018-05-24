@@ -4,6 +4,7 @@
 #' 
 #' @param Type Type de base de données. Chroniques par défaut
 #' @import dplyr
+#' @import RPostgreSQL
 #' @export
 #' @examples
 #' BDD.ouverture()
