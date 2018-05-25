@@ -26,8 +26,8 @@ poissons.inventaires <- function(
   db <- BDD.ouverture(Type = "Poissons")
 
   ## Récupération des données ##
-  Inventaires <- tbl(db,"Inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
+  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(db,"stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))

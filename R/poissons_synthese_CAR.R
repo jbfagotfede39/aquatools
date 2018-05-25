@@ -12,12 +12,12 @@ poissons_synthese_CAR <- function(poissons){
 
 
 ##### Calcul du minimum entre CAP et CAN pour obtenir CAR #####
-poissons$CAR<-apply(poissons[,(ncol(poissons)-1):ncol(poissons)], 1, min)
+poissons$CAR <- apply(poissons[,(ncol(poissons)-1):ncol(poissons)], 1, min)
 
 ##### Extraction des CAR #####
-poissonsCAR<-select(poissons,
+poissonsCAR <- select(poissons,
                     Station,Date,ESPECE,CAR)
-poissonsCAR<-filter(poissonsCAR, ESPECE != "TOTAL") # inutile car on pourrait les recalculer ensuite à la demande
+poissonsCAR <- filter(poissonsCAR, ESPECE != "TOTAL") # inutile car on pourrait les recalculer ensuite à la demande
 
 ##### Création d'une matrice des CAR par espèce par station #####
 
@@ -25,7 +25,7 @@ melt(poissonsCAR, id.vars=c("Station","Date","ESPECE")) %>%
   dcast(Station + Date ~ ESPECE)
 
 ##### Calcul du nombe d'espèce par station #####
-matriceCAR<- poissonsCAR %>% 
+matriceCAR <- poissonsCAR %>% 
   group_by(Station) %>% 
   summarise( ESPECE = n()) %>%
   inner_join(matriceCAR, by='Station') # Permet de coller le résultat dans le tableau global

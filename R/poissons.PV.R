@@ -25,7 +25,7 @@ poissons.PV <- function(
   #dbListTables(db)
   
   ## Récupération des données ##
-  Ecosystemes <- tbl(db,"Ecosystemes") %>% collect(n = Inf)
+  Ecosystemes <- tbl(db,"ecosystemes") %>% collect(n = Inf)
   pv_lots <- tbl(db,"pv_lots") %>% collect(n = Inf)
   pv_pvs <- tbl(db,"pv_pvs") %>% collect(n = Inf)
   

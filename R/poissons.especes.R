@@ -15,7 +15,7 @@ poissons.especes <- function(){
   db <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
-  Especes <- tbl(db,"Especes") %>% collect(n = Inf)
+  Especes <- tbl(db,"especes") %>% collect(n = Inf)
   
   return(Especes)
 } # Fin de la fonction

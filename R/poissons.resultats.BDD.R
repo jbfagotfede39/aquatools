@@ -23,17 +23,17 @@ poissons.resultats.BDD <- function(){
   Communes <- tbl(db,"communes") %>% collect(n = Inf)
   
   ##### Synthèse des données #####
-  Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))
-  Operations <- merge(Operations, Inventaires, by = c("CodeInventaire"))
-  Resultats <- merge(Resultats, Operations, by = c("Codeoperation"))
+  Inventaires <- left_join(Inventaires, Stations, by = c("codestation"))
+  Operations <- left_join(Operations, Inventaires, by = c("codeinventaire"))
+  Resultats <- left_join(Resultats, Operations, by = c("codeoperation"))
   
   ##### Renommage des colonnes observations #####
-  Ecosystemes <- dplyr::rename(Ecosystemes, ObservationsEcosysteme = Observations)
+  Ecosystemes <- dplyr::rename(Ecosystemes, ObservationsEcosysteme = observations)
   
   ##### Remplacement des codes communes et écosystèmes #####
-  Resultats <- merge(Resultats, Ecosystemes, by = c("Codeecosysteme"))
-  Communes <- select(Communes, CodeCommune, Commune)
-  Resultats <- merge(Resultats, Communes, by = c("CodeCommune"))
+  Resultats <- left_join(Resultats, Ecosystemes, by = c("codeecosysteme.x" = "codeecosysteme"))
+  Communes <- Communes %>% select(codecommune, commune)
+  Resultats <- left_join(Resultats, Communes, by = c("codecommune"))
   
   ##### Simplification #####
 #  Resultats <- 

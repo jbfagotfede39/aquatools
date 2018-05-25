@@ -19,12 +19,12 @@ poissons.resultats <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
-  Resultats <- tbl(db,"Resultats") %>% collect(n = Inf)
-  Operations <- tbl(db,"Operations") %>% collect(n = Inf)
-  Inventaires <- tbl(db,"Inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
-  Ecosystemes <- tbl(db,"Ecosystemes") %>% collect(n = Inf)
-  Communes <- tbl(db,"Communes") %>% collect(n = Inf)
+  Resultats <- tbl(db,"resultats") %>% collect(n = Inf)
+  Operations <- tbl(db,"operations") %>% collect(n = Inf)
+  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(db,"stations") %>% collect(n = Inf)
+  Ecosystemes <- tbl(db,"ecosystemes") %>% collect(n = Inf)
+  Communes <- tbl(db,"communes") %>% collect(n = Inf)
   
   ## Renommage des colonnes Observations ##
   Resultats <- Resultats %>% rename(ObservationsResultats = Observations)

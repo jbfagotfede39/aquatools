@@ -28,9 +28,9 @@ poissons.IPR <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  Operations <- tbl(db,"Operations") %>% collect(n = Inf) %>% select(Codeoperation, AvisExpertCourt, AvisExpert)
-  Stations <- tbl(db,"Stations") %>% collect(n = Inf)
-  IPR <- tbl(db,"IPRs") %>% collect(n = Inf)
+  Operations <- tbl(db,"operations") %>% collect(n = Inf) %>% select(Codeoperation, AvisExpertCourt, AvisExpert)
+  Stations <- tbl(db,"stations") %>% collect(n = Inf)
+  IPR <- tbl(db,"iprs") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   IPR <- left_join(IPR, Operations, by = c("CodeOperation" = "Codeoperation"))
