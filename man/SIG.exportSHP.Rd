@@ -4,23 +4,18 @@
 \alias{SIG.exportSHP}
 \title{Export de données en shp}
 \usage{
-SIG.exportSHP(Data = Stations, a = Stations$XL93, b = Stations$YL93,
-  nomfichier = "Export_stations")
+SIG.exportSHP(Data = Stations, nomfichier = "Export_stations.shp")
 }
 \arguments{
 \item{Data}{Dataframe à exporter}
 
 \item{nomfichier}{Nom du fichier de sortie}
-
-\item{XLambert}{Colonne des X}
-
-\item{YLambert}{Colonne des Y}
 }
 \description{
-Cette fonction permet d'exporter un shapefile en Lambert 93
+Cette fonction permet d'exporter un dataframe (avec deux colonnes X et Y) dans un shapefile en Lambert 93
 }
 \examples{
-SIG.exportSHP(Stations, "Stations$XL93", "Stations$YL93", "Export_stations")
+SIG.exportSHP(Stations, "Export_stations.shp")
 }
 \keyword{poissons}
 \keyword{stations}

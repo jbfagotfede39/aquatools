@@ -29,29 +29,29 @@ stations.ecosysteme <- function(
   db <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données de l'écosystème ##
-  Ecosystemes <- tbl(db,"Ecosystemes") %>% filter(Nomecosysteme == ecosysteme) %>% collect() 
+  Ecosystemes <- tbl(db,"ecosystemes") %>% filter(nomecosysteme == ecosysteme) %>% collect() 
 
   # Recherche des stations qui ont un Codeecosysteme = à ce Codeecosysteme et transformation
   Code <- as.character(Ecosystemes[1,1])
   
   if(nchar(ecosysteme) != 0){
   StationsPoissons <- 
-    tbl(db,"Stations") %>% 
-    filter(Codeecosysteme == Code) %>% 
+    tbl(db,"stations") %>% 
+    filter(codeecosysteme == Code) %>% 
     collect() %>% 
-    rename(X = XLambert) %>% 
-    rename(Y = YLambert) %>% 
-    rename(TypeCoord = TypeLambert) %>% 
+    rename(X = xlambert) %>% 
+    rename(Y = ylambert) %>% 
+    rename(TypeCoord = typelambert) %>% 
     mutate(Poisson = "Oui")}
   
   if(nchar(ecosysteme) == 0){
     StationsPoissons <- 
-      tbl(db,"Stations") %>% 
-      #filter(Codeecosysteme == Code) %>% 
+      tbl(db,"stations") %>% 
+      #filter(codeecosysteme == Code) %>% 
       collect() %>% 
-      rename(X = XLambert) %>% 
-      rename(Y = YLambert) %>% 
-      rename(TypeCoord = TypeLambert) %>% 
+      rename(X = xlambert) %>% 
+      rename(Y = ylambert) %>% 
+      rename(TypeCoord = typelambert) %>% 
       mutate(Poisson = "Oui")}
 
   #### Base chronique ####
@@ -78,7 +78,7 @@ stations.ecosysteme <- function(
   #### Synthèse ####
   Synthese <- 
     StationsPoissons %>% 
-    full_join(StationsChroniques) %>% 
+    full_join(StationsChroniques, by = c("X", "Y", "TypeCoord")) %>% 
     select(Nom, X, Y, TypeCoord, Poisson, Chronique) %>% 
     filter(TypeCoord == "L93") %>% arrange(Nom)
   
@@ -94,7 +94,7 @@ stations.ecosysteme <- function(
   
   # Export shp
   if(shp == T){
-    SIG.exportSHP(Synthese, Synthese$X, Synthese$Y, paste0(format(now(), format="%Y-%m-%d"),"_",ecosysteme,"_Export_stations"))
+    SIG.exportSHP(Synthese, paste0(format(now(), format="%Y-%m-%d"),"_",ecosysteme,"_Export_stations.shp"))
   }
   
 } # Fin de la fonction
