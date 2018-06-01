@@ -26,17 +26,18 @@ stations.ecosysteme <- function(
   
   #### Base poissons ####
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données de l'écosystème ##
-  Ecosystemes <- tbl(db,"ecosystemes") %>% filter(nomecosysteme == ecosysteme) %>% collect() 
+  if(nchar(ecosysteme) != 0){Ecosystemes <- tbl(dbP,"ecosystemes") %>% filter(nomecosysteme == ecosysteme) %>% collect()}
+  if(nchar(ecosysteme) == 0){Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect()}
 
   # Recherche des stations qui ont un Codeecosysteme = à ce Codeecosysteme et transformation
   Code <- as.character(Ecosystemes[1,1])
   
   if(nchar(ecosysteme) != 0){
   StationsPoissons <- 
-    tbl(db,"stations") %>% 
+    tbl(dbP,"stations") %>% 
     filter(codeecosysteme == Code) %>% 
     collect() %>% 
     rename(X = xlambert) %>% 
@@ -46,7 +47,7 @@ stations.ecosysteme <- function(
   
   if(nchar(ecosysteme) == 0){
     StationsPoissons <- 
-      tbl(db,"stations") %>% 
+      tbl(dbP,"stations") %>% 
       #filter(codeecosysteme == Code) %>% 
       collect() %>% 
       rename(X = xlambert) %>% 
@@ -56,12 +57,12 @@ stations.ecosysteme <- function(
 
   #### Base chronique ####
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Chroniques")
+  dbC <- BDD.ouverture(Type = "Chroniques")
   
   ## Récupération des données de l'écosystème ##
   if(nchar(ecosysteme) != 0){
   StationsChroniques <- 
-    tbl(db,"Stations") %>% 
+    tbl(dbC,"Stations") %>% 
     filter(Milieu == ecosysteme) %>% 
     collect() %>% 
     rename(Nom = CodeRDT) %>% 
@@ -69,7 +70,7 @@ stations.ecosysteme <- function(
   
   if(nchar(ecosysteme) == 0){
     StationsChroniques <- 
-      tbl(db,"Stations") %>% 
+      tbl(dbC,"Stations") %>% 
       #filter(Milieu == ecosysteme) %>% 
       collect() %>% 
       rename(Nom = CodeRDT) %>% 
