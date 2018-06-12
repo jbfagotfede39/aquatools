@@ -25,19 +25,25 @@
 formatage.abreviation <- function(){
 
   #### Import ####
-  if(file.exists("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymes.tex")
-  if(file.exists("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymes.tex")
+  if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymes.tex")
+  if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymes.tex")
   
-  if(file.exists("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/imac27/Google Drive/Outils/Informatique/Latex/acronymesCE.tex")
-  if(file.exists("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/jean-baptistefagot_FD39/Google Drive/Outils/Informatique/Latex/acronymesCE.tex")
+  if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex") == T) acronymesEsp <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex")
+  if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex") == T) acronymesEsp <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex")
+  
+  if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex")
+  if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex")
   
   #### Transformation en dataframe ####
-  acronymes <- as.tbl(as.data.frame(acronymes))
-  acronymesCE <- as.tbl(as.data.frame(acronymesCE))
+  acronymes <- as.tbl(as.data.frame(acronymes)) %>% mutate(Type = "Autre")
+  acronymesEsp <- as.tbl(as.data.frame(acronymesEsp)) %>% mutate(Type = "Espèce")
+  acronymesCE <- as.tbl(as.data.frame(acronymesCE)) %>% mutate(Type = "Écosystème")
   
   #### Fusion des deux morceaux ####
   acronymes <- 
-    acronymes %>% bind_rows(rename(acronymesCE, acronymes = acronymesCE))
+    acronymes %>% 
+    bind_rows(rename(acronymesCE, acronymes = acronymesCE)) %>% 
+    bind_rows(rename(acronymesEsp, acronymes = acronymesEsp))
   
   #### Filtrage des valeurs commentées (%) ####
   acronymes <- 
@@ -48,19 +54,17 @@ formatage.abreviation <- function(){
   #### Mise en deux colonnes ####
   Acronyme <- gsub(".*\\}\\{(.*)\\}\\{.*", "\\1", acronymes$Complet)
   Definition <- gsub(".*\\}\\{(.*)\\}$", "\\1", acronymes$Complet)
-  acronymes <- data.frame(Acronyme, Definition)
+  Type <- acronymes$Type
+  acronymes <- data.frame(Acronyme, Definition, Type, stringsAsFactors = FALSE)
   
-  #### Fusion avec le tableau d'appel #### (avec nom de variable de la colonne = col, mais ne fonctionne pas en l'état)
-  # NomsColonnes <- colnames(data)
-  # data <- 
-  #   data %>% 
-  #   left_join(acronymes, by = c(as.name(col) = "Acronyme")) %>% 
-  #   select(-col) %>% 
-  #   rename([[col]] = Definition)
-  # data[[col]]
-  # data <-
-  #   data %>%
-  #   select(match(NomsColonnes,names(.)))
+  #### Nettoyage ####
+  rm(Acronyme)
+  rm(Definition)
+  rm(Type)
+  
+  acronymes <- 
+    acronymes %>% 
+    filter(Acronyme != "")
   
   #### Retour du tableau complet ####
   return(acronymes)

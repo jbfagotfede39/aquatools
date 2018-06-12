@@ -16,13 +16,13 @@
 # Rajouter le choix de l'écosystème avec les codes (avec recherche dans le champ observation) et de même avec le code de la masse d'eau, avec un interrupteur disant où la fonction doit chercher initialement. Le reste du code reste identique.
 # Option pour chercher les stations des afférences
 # Si aucune capture sur la station poisson, indiquer comme type de données "autre"
+# Ajouter pour la PC une jointure avec les coordonnées géographiques des stations SANDRE
 # Rajouter les sorties des stations IAM, MI et PC
 #####################
 
 stations.ecosysteme <- function(
   ecosysteme="",
-  shp = F)
-{
+  shp = F){
   
   #### Base poissons ####
   ## Ouverture de la BDD ##
@@ -76,12 +76,59 @@ stations.ecosysteme <- function(
       rename(Nom = CodeRDT) %>% 
       mutate(Chronique = "Oui")}
   
+  #### Base physico-chimie ####
+  ## Ouverture de la BDD ##
+  dbPC <- BDD.ouverture(Type = "Physico-chimie")
+  
+  ## Collecte des stations pour les mesures
+  StationsPC <-
+  dbPC %>% 
+    tbl("PC") %>% 
+    distinct(CodeRDT,StationSANDRE) %>% 
+    collect() %>% 
+    left_join(dbPC %>% tbl("Operations") %>% distinct(CodeRDT,StationSANDRE) %>% collect(), by = "CodeRDT") %>% 
+    filter(!(is.na(StationSANDRE.x) & is.na(StationSANDRE.y))) %>% 
+    mutate(StationSANDRE = ifelse(is.na(StationSANDRE.x), StationSANDRE.y, StationSANDRE.x)) %>% 
+    mutate(StationSANDREVerif = ifelse(StationSANDRE.x == StationSANDRE.y, "Ok", "Problème")) 
+  
+  if(length(which(StationsPC == "Problème")) != 0) stop("Problème de doublon")
+  
+  # Ensemble des stations # 
+  StationsPC <-
+    StationsPC %>% 
+    distinct(CodeRDT,StationSANDRE) %>% 
+    separate(CodeRDT, c("MilieuTemporaire", "fin"), sep = " A ", remove = F) # Séparation du nom en deux parties
+
+  # Travail sur les stations sans CodeRDT
+  StationsPC2 <-
+    StationsPC %>% 
+    filter(!is.na(fin)) %>% 
+    bind_rows(StationsPC %>% filter(is.na(fin)) %>% stations.CodeRDT(DistSource = F))
+
+  # Travail sur les stations avec CodeRDT
+acronymes <- formatage.abreviation() %>% filter(Type == "Écosystème")
+
+  StationsPC <-
+    StationsPC2 %>% 
+    filter(is.na(CodeEcos)) %>% # On prend ceux qui n'ont pas de codeRDT
+    full_join(StationsPC2 %>% filter(!is.na(CodeEcos)) %>% left_join(acronymes, by = c(CodeEcos = "Acronyme")), by = c("CodeRDT", "MilieuTemporaire", "fin", "StationSANDRE", "CodeEcos")) %>% # on fusionne avec ceux qui en ont un et avec la traduction
+    mutate(Milieu = ifelse(is.na(Definition), MilieuTemporaire, Definition)) %>% 
+    select(CodeRDT, StationSANDRE, Milieu) %>% 
+    mutate(PC = "Oui")
+  
+  ## Récupération des données de l'écosystème ##
+  if(nchar(ecosysteme) != 0){
+    StationsPC <- 
+      StationsPC %>% 
+      filter(Milieu == ecosysteme)}
+  
   #### Synthèse ####
   Synthese <- 
     StationsPoissons %>% 
-    full_join(StationsChroniques, by = c("X", "Y", "TypeCoord")) %>% 
+    rename(Nom = nom) %>% 
+    full_join(StationsChroniques, by = c("Nom", "X", "Y", "TypeCoord")) %>% 
     select(Nom, X, Y, TypeCoord, Poisson, Chronique) %>% 
-    filter(TypeCoord == "L93") %>% arrange(Nom)
+    arrange(Nom)
   
   # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
   if(dim(Synthese)[1] == 0) 
@@ -92,10 +139,9 @@ stations.ecosysteme <- function(
     return(Synthese)
   }
 
-  
   # Export shp
   if(shp == T){
-    SIG.exportSHP(Synthese, paste0(format(now(), format="%Y-%m-%d"),"_",ecosysteme,"_Export_stations.shp"))
+    SIG.exportSHP(Synthese %>% filter(TypeCoord == "L93"), paste0(format(now(), format="%Y-%m-%d"),"_",ecosysteme,"_Export_stations.shp"))
   }
   
 } # Fin de la fonction

@@ -32,25 +32,25 @@ poissons.operations <- function(
   
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
 
   ## Récupération des données ##
-  Operations <- tbl(db,"operations") %>% collect(n = Inf)
-  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
+  Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
+  Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
-  Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))
-  Operations <- merge(Operations, Inventaires, by = c("CodeInventaire"))
+  Inventaires <- merge(Inventaires, Stations, by = c("codestation"))
+  Operations <- merge(Operations, Inventaires, by = c("codeinventaire"))
   
   ## Format de Date ##
-  Operations$DateDebut.x <- ymd_hms(Operations$DateDebut.x)
-  Operations$DateDebut.x <- format(Operations$DateDebut.x, "%Y-%m-%d")
+  Operations$DateDebut.x <- ymd(Operations$datedebut.x)
+  Operations$DateDebut.x <- format(Operations$datedebut.x, "%Y-%m-%d")
   
   ## Extraction des stations ##
   # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
   
-  if(dim(Operations %>% filter(Nom %in% ListeStations$Nom))[1] == 0 & dim(ListeStations)[1] != 0)
+  if(dim(Operations %>% filter(nom %in% ListeStations$Nom))[1] == 0 & dim(ListeStations)[1] != 0)
     warning("Attention : station(s) absente(s) des opérations de la base de données")
   
   ## Simplification ##
@@ -58,88 +58,88 @@ poissons.operations <- function(
   if(dim(ListeStations)[1] != 0 & CodeOperation == F & Sortie == "Simple"){
     Operations <- 
       Operations %>%
-    select(Nom, DateDebut.x) %>% 
-    filter(Nom %in% ListeStations$Nom) %>% 
-    dplyr::rename(Station = Nom, Date = DateDebut.x) %>% 
+    select(nom, datedebut.x) %>% 
+    filter(nom %in% ListeStations$Nom) %>% 
+    dplyr::rename(Station = nom, Date = datedebut.x) %>% 
     arrange(Station, Date)}
   
   if(dim(ListeStations)[1] != 0 & CodeOperation == F & Sortie == "Propre"){
     Operations <- 
       Operations %>%
-      filter(Nom %in% ListeStations$Nom) %>% 
-      select(Nom, Limiteamont, DateDebut.x, Modeechantillonnage, XLambert, YLambert, TypeLambert) %>% 
-      dplyr::rename(Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      filter(nom %in% ListeStations$Nom) %>% 
+      select(nom, limiteamont, datedebut.x, modeechantillonnage, xlambert, ylambert, typelambert) %>% 
+      dplyr::rename(Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] != 0 & CodeOperation == F & Sortie == "Complet"){
     Operations <- 
       Operations %>%
-      filter(Nom %in% ListeStations$Nom) %>% 
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      filter(nom %in% ListeStations$Nom) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}  
   
   if(dim(ListeStations)[1] != 0 & CodeOperation == T & Sortie == "Simple"){
     Operations <- 
       Operations %>%
-      select(Nom, DateDebut.x, Codeoperation) %>% 
+      select(nom, datedebut.x, codeoperation) %>% 
       filter(Nom %in% ListeStations$Nom) %>% 
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] != 0 & CodeOperation == T & Sortie == "Propre"){
     Operations <- 
       Operations %>%
-      filter(Nom %in% ListeStations$Nom) %>% 
-      select(Codeoperation, Nom, Limiteamont, DateDebut.x, Modeechantillonnage, XLambert, YLambert, TypeLambert) %>% 
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      filter(nom %in% ListeStations$Nom) %>% 
+      select(codeoperation, nom, limiteamont, datedebut.x, modeechantillonnage, xlambert, ylambert, typelambert) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] != 0 & CodeOperation == T & Sortie == "Complet"){
     Operations <- 
       Operations %>%
-      filter(Nom %in% ListeStations$Nom) %>% 
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      filter(nom %in% ListeStations$Nom) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
   
   # Travail sur l'ensemble des stations
   if(dim(ListeStations)[1] == 0 & CodeOperation == F & Sortie == "Simple"){
     Operations <- 
       Operations %>%
-      select(Nom, DateDebut.x) %>% 
-      dplyr::rename(Station = Nom, Date = DateDebut.x) %>% 
+      select(nom, datedebut.x) %>% 
+      dplyr::rename(Station = nom, Date = datedebut.x) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] == 0 & CodeOperation == F & Sortie == "Propre"){
     Operations <- 
       Operations %>%
-      select(Nom, Limiteamont, DateDebut.x, Modeechantillonnage, XLambert, YLambert, TypeLambert) %>% 
-      dplyr::rename(Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      select(nom, limiteamont, datedebut.x, modeechantillonnage, xlambert, ylambert, typelambert) %>% 
+      dplyr::rename(Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] == 0 & CodeOperation == F & Sortie == "Complet"){
     Operations <- 
       Operations %>%
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] == 0 & CodeOperation == T & Sortie == "Simple"){
     Operations <- 
       Operations %>%
-      select(Nom, DateDebut.x, Codeoperation) %>% 
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x) %>% 
+      select(nom, datedebut.x, codeoperation) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] == 0 & CodeOperation == T & Sortie == "Propre"){
     Operations <- 
       Operations %>%
-      select(Codeoperation, Nom, Limiteamont, DateDebut.x, Modeechantillonnage, XLambert, YLambert, TypeLambert) %>% 
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      select(codeoperation, nom, limiteamont, datedebut.x, modeechantillonnage, xlambert, ylambert, typelambert) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
   
   if(dim(ListeStations)[1] == 0 & CodeOperation == T & Sortie == "Complet"){
     Operations <- 
       Operations %>%
-      dplyr::rename(CodeOperation = Codeoperation, Station = Nom, Date = DateDebut.x, X = XLambert, Y = YLambert, TypeCoord = TypeLambert) %>% 
+      dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
 
   return(Operations)
