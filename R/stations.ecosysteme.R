@@ -97,30 +97,14 @@ stations.ecosysteme <- function(
   StationsPC <-
     StationsPC %>% 
     distinct(CodeRDT,StationSANDRE) %>% 
-    separate(CodeRDT, c("MilieuTemporaire", "fin"), sep = " A ", remove = F) # Séparation du nom en deux parties
-
-  # Travail sur les stations sans CodeRDT
-  StationsPC2 <-
-    StationsPC %>% 
-    filter(!is.na(fin)) %>% 
-    bind_rows(StationsPC %>% filter(is.na(fin)) %>% stations.CodeRDT(DistSource = F))
-
-  # Travail sur les stations avec CodeRDT
-acronymes <- formatage.abreviation() %>% filter(Type == "Écosystème")
-
-  StationsPC <-
-    StationsPC2 %>% 
-    filter(is.na(CodeEcos)) %>% # On prend ceux qui n'ont pas de codeRDT
-    full_join(StationsPC2 %>% filter(!is.na(CodeEcos)) %>% left_join(acronymes, by = c(CodeEcos = "Acronyme")), by = c("CodeRDT", "MilieuTemporaire", "fin", "StationSANDRE", "CodeEcos")) %>% # on fusionne avec ceux qui en ont un et avec la traduction
-    mutate(Milieu = ifelse(is.na(Definition), MilieuTemporaire, Definition)) %>% 
-    select(CodeRDT, StationSANDRE, Milieu) %>% 
+    rename(Nom = CodeRDT) %>% 
     mutate(PC = "Oui")
   
   ## Récupération des données de l'écosystème ##
-  if(nchar(ecosysteme) != 0){
-    StationsPC <- 
-      StationsPC %>% 
-      filter(Milieu == ecosysteme)}
+  # if(nchar(ecosysteme) != 0){
+  #   StationsPC <- 
+  #     StationsPC %>% 
+  #     filter(Milieu == ecosysteme)}
   
   #### Synthèse ####
   Synthese <- 
@@ -128,7 +112,37 @@ acronymes <- formatage.abreviation() %>% filter(Type == "Écosystème")
     rename(Nom = nom) %>% 
     full_join(StationsChroniques, by = c("Nom", "X", "Y", "TypeCoord")) %>% 
     select(Nom, X, Y, TypeCoord, Poisson, Chronique) %>% 
+    full_join(StationsPC %>% select(Nom, PC), by = c("Nom")) %>% 
     arrange(Nom)
+  
+  #### Amélioration de la sortie ####
+  Synthese <- 
+    Synthese %>% 
+    rename(CodeRDT = Nom) %>% 
+    separate(CodeRDT, c("MilieuTemporaire", "fin"), sep = " A ", remove = F) # Séparation du nom en deux parties
+  
+  # Travail sur les stations sans CodeRDT
+  Synthese2 <-
+    Synthese %>% 
+    filter(!is.na(fin)) %>% 
+    bind_rows(Synthese %>% filter(is.na(fin)) %>% stations.CodeRDT(DistSource = F))
+  
+  # Travail sur les stations avec CodeRDT
+  acronymes <- formatage.abreviation() %>% filter(Type == "Écosystème")
+  
+  Synthese <-
+    Synthese2 %>% 
+    filter(is.na(CodeEcos)) %>% # On prend ceux qui n'ont pas de codeRDT
+    full_join(Synthese2 %>% filter(!is.na(CodeEcos)) %>% left_join(acronymes, by = c(CodeEcos = "Acronyme")), by = c("CodeRDT", "MilieuTemporaire", "fin", "X", "Y", "TypeCoord", "Poisson", "Chronique", "PC", "CodeEcos")) %>% # on fusionne avec ceux qui en ont un et avec la traduction
+    mutate(Milieu = ifelse(is.na(Definition), MilieuTemporaire, Definition)) %>% 
+    select(CodeRDT, Milieu, X:PC) %>% 
+    rename(Nom = CodeRDT)
+  
+  #### Filtrage ####
+  if(nchar(ecosysteme) != 0){
+    Synthese <-
+      Synthese %>%
+      filter(tolower(Milieu) == tolower(ecosysteme))}
   
   # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
   if(dim(Synthese)[1] == 0) 
