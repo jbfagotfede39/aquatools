@@ -25,26 +25,27 @@ poissons.IPR <- function(
 {
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  Operations <- tbl(db,"operations") %>% collect(n = Inf) %>% select(Codeoperation, AvisExpertCourt, AvisExpert)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
-  IPR <- tbl(db,"iprs") %>% collect(n = Inf)
+  Operations <- tbl(dbP,"operations") %>% collect(n = Inf) %>% select(codeoperation, avisexpertcourt, avisexpert)
+  Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
+  IPR <- tbl(dbP,"iprs") %>% collect(n = Inf)
   
   ## Synthèse des données ##
-  IPR <- left_join(IPR, Operations, by = c("CodeOperation" = "Codeoperation"))
-  IPR <- left_join(IPR, Stations, by = c("CodeStation"))
+  IPR <- left_join(IPR, Operations, by = c("codeoperation" = "codeoperation"))
+  IPR <- left_join(IPR, Stations, by = c("codestation"))
 
   ## Format de dates ##
-  IPR$DateIPR <- ymd_hms(IPR$DateIPR)
-  IPR$DateIPR <- format(IPR$DateIPR, "%Y-%m-%d")
+  IPR$dateipr <- ymd(IPR$dateipr)
+  IPR$dateipr <- format(IPR$dateipr, "%Y-%m-%d")
   
   ## Simplification ##
   IPR <- 
     IPR %>%
-    rename(Station = Nom, Date = DateIPR) %>% 
-    arrange(Station, Date)
+    rename(Station = nom, Date = dateipr) %>% 
+    arrange(Station, Date) %>% 
+    rename(CodeSIERMC = codesiermc, Altitude = altitude, Classe = classe, Score = score, Qualite = qualite, AvisExpertCourt = avisexpertcourt, AvisExpert = avisexpert, Especes = especes)
   
   # Travail sur toutes les opérations #
   if(dim(ListeOperations)[1] == 0 & expertise == TRUE){
@@ -61,20 +62,25 @@ poissons.IPR <- function(
   
   # Travail sur quelques opérations #
   if(dim(ListeOperations)[1] != 0 & expertise == TRUE){
+    ListeOperations <- ListeOperations %>% mutate(Cle = paste0(Station, " - ", Date))
     IPR <-
       IPR %>% 
-      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes) %>% 
-      filter(Station %in% ListeOperations$Station & Date %in% ListeOperations$Date)
+      mutate(Cle = paste0(Station, " - ", Date)) %>% 
+      filter(Cle %in% ListeOperations$Cle) %>% 
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes)
   }
   
   if(dim(ListeOperations)[1] != 0 & expertise == FALSE){
+    ListeOperations <- ListeOperations %>% mutate(Cle = paste0(Station, " - ", Date))
     IPR <-
       IPR %>% 
-      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes) %>% 
-      filter(Station %in% ListeOperations$Station & Date %in% ListeOperations$Date)
+      mutate(Cle = paste0(Station, " - ", Date)) %>% 
+      filter(Cle %in% ListeOperations$Cle) %>% 
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes)
   }
   
   # Rendu du résultat #
   return(IPR)
+  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

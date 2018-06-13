@@ -39,9 +39,9 @@ if(Type == "Chroniques" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Chroniques/BD
 if(Type == "Chroniques" & file.exists("/Users/adrienlavigne/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) dbC <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")
 
 ## Macroinvertébrés ##
-if(Type == "Macroinvertébrés" & file.exists("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) dbM <- src_sqlite("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite")
-if(Type == "Macroinvertébrés" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) dbM <- src_sqlite("/Volumes/Fixe-FD39/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite")
-if(Type == "Macroinvertébrés" & file.exists("/Users/adrienlavigne/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) dbM <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite")
+if(Type == "Macroinvertébrés" & file.exists("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) dbMI <- src_sqlite("/Users/imac27/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite")
+if(Type == "Macroinvertébrés" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) dbMI <- src_sqlite("/Volumes/Fixe-FD39/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite")
+if(Type == "Macroinvertébrés" & file.exists("/Users/adrienlavigne/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite") == T) dbMI <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Macroinvertébrés/BDD_MI_FD39.sqlite")
 
 ## Physico-chimie ##
 if(Type == "Physico-chimie" & file.exists("/Users/imac27/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite") == T) dbPC <- src_sqlite("/Users/imac27/NAS-DATA/Physico-chimie/BDD_Physico-chimie_FD39.sqlite")
@@ -78,7 +78,7 @@ if(Type == "Poissons"){
 }
 
 if(Type == "Chroniques"){return(dbC)}
-if(Type == "Macroinvertébrés"){return(dbM)}
+if(Type == "Macroinvertébrés"){return(dbMI)}
 if(Type == "Physico-chimie"){return(dbPC)}
 if(Type == "Temps de travail"){return(dbTW)}
 if(Type == "Poissons"){return(dbP)}

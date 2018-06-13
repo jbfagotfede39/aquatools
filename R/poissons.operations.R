@@ -143,5 +143,6 @@ poissons.operations <- function(
       arrange(Station, Date)}
 
   return(Operations)
+  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction
