@@ -11,6 +11,7 @@
 #' @examples
 #' stations.CodeRDT(data)
 #' stations.CodeRDT(data, DistSource = F)
+#' arrange(CodeRDT, Date) %>% stations.CodeRDT(DistSource = F)
 
 ##### TODO LIST #####
 # [A-Z]* doit fonctionner, plus simple que trois lignes...

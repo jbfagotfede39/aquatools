@@ -1,21 +1,38 @@
-#' Mise en acronymes des écosystèmes
+#' Mise en acronymes des écosystèmes ou inversement
 #'
-#' Cette fonction permet de mettre en acronymes des noms d'écosystèmes
+#' Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
 #' @export
-#' @import tidyverse stringr
+#' @import stringr
+#' @import tidyverse
 #' @examples
-#' formatage.ecosysteme(data$Station)
-#' PC$CodeRDT <- formatage.ecosysteme(PC$CodeRDT)
+#' formatage.ecosysteme(data$Station, Type = "Simplification")
+#' PC$CodeRDT <- formatage.ecosysteme(PC$CodeRDT, Type = "Simplification")
+#' data %>% stations.CodeRDT(DistSource = F) %>% formatage.ecosysteme(Type = "Expansion")
 
 ##### TODO LIST #####
-# 
+# La mise en acronymes devrait moyennement fonctionner, car se basait précédemment que sur une colonne
 #####################
 
 formatage.ecosysteme <- function(
-  acronymes=data$Station
+  acronymes = data,
+  Type = c("Simplification", "Expansion")
   )
   {
-  
+
+  ## Évaluation des choix
+  Type <- match.arg(Type)
+
+  ##### Expansion #####
+if(Type == "Expansion"){
+acronymes <-
+  acronymes %>% 
+  left_join(formatage.abreviation() %>% filter(Type == "Écosystème"), by = c(CodeEcos = "Acronyme")) %>% 
+  select(-Type, -CodeEcos) %>% 
+  rename(Ecosysteme = Definition)
+}
+
+  ##### Simplification #####
+if(Type == "Simplification"){
   #### Mise en minuscule ####
   # Afin de s'affranchir des problèmes de casse
   acronymes <-
@@ -71,8 +88,9 @@ acronymes[str_detect(acronymes, "vouglans")] <- "VOU"
 
   #### Test de complétude ####
   if(all(grepl("^[[:upper:]]+$", acronymes)) != T) warning(paste0("Certain(s) cas non traité(s) : ",unique(acronymes[!grepl("^[[:upper:]]+$", acronymes)])))
-
-  #### Retour du tableau complet ####
-  return(acronymes)
+}
+  
+#### Retour du tableau complet ####
+return(acronymes)
   
 } # Fin de la fonction

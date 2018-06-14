@@ -4,7 +4,10 @@
 #' @param DataTravail Dataframe contenant les données de captures issues de MI.indices()
 #' @param Sortie Forme du dataframe de sortie - \code{indices} (par défault), \code{listefaunistiqueGlobale}, \code{listefaunistiqueMAG20}, \code{listefaunistiqueDCEPrelevement}, \code{listefaunistiqueDCEPhase}, \code{listefaunistiqueDCEequivalentIBGN}, \code{listefaunistiqueIBGN}
 #' @keywords donnees
-#' @import dplyr RSQLite DBI lubridate
+#' @import dplyr 
+#' @import RSQLite
+#' @import DBI
+#' @import lubridate
 #' @export
 #' @examples
 #' MI.indices(DataTravail)
@@ -37,9 +40,9 @@ MI.indices <- function(
   indices <-
     DataTravail %>% 
     filter(!is.na(Abondance)) %>% 
-    rename(GIIBGN = 'GI-IBGN.x') %>% 
+    rename(GIIBGNcomplet = 'GI-IBGN.x') %>% 
     rename(GICB2 = 'GI-CB2.x') %>% 
-    left_join(., DataTravail %>% filter(!is.na(Abondance)) %>% group_by(CodeRHJ, Date, Ordre, FamilleSensIBGN) %>% summarise(TotalIBGN = sum(na.omit(Abondance[IBGN == "Oui"]))) %>% filter(TotalIBGN != 0) %>% mutate(EtatGI = case_when(
+    left_join(., DataTravail %>% filter(!is.na(Abondance)) %>% group_by(CodeRHJ, Date, Ordre, FamilleSensIBGN) %>% summarise(TotalIBGN = sum(na.omit(Abondance[IBGN == "Oui"]))) %>% filter(TotalIBGN != 0) %>% mutate(EtatGIIBGN = case_when(
                                                                                                                                                                                                    TotalIBGN >= 3 & FamilleSensIBGN == "Perlodidae" ~ "GIIBGNOK",
                                                                                                                                                                                                    TotalIBGN >= 3 & FamilleSensIBGN == "Chloroperlidae" ~ "GIIBGNOK",
                                                                                                                                                                                                    TotalIBGN >= 3 & FamilleSensIBGN == "Perlidae" ~ "GIIBGNOK",
@@ -80,9 +83,52 @@ MI.indices <- function(
               by = c("Ordre", "CodeRHJ", "Date", "FamilleSensIBGN")
     ) %>% 
     ungroup() %>% 
-    mutate(EtatGI = ifelse(is.na(EtatGI), "GIIBGNpasOK", EtatGI)) %>% 
+    left_join(., DataTravail %>% filter(!is.na(Abondance)) %>% group_by(CodeRHJ, Date, Ordre, FamilleSensIBGN) %>% summarise(TotalEqIBGN = sum(na.omit(Abondance[PhaseDCE == "A" | PhaseDCE == "B"]))) %>% filter(TotalEqIBGN != 0) %>% mutate(EtatGIEqIBGN = case_when(
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Perlodidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Chloroperlidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Perlidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Taeniopterygidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Brachycentridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Capniidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Odontoceridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Aeshnidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Beraeidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Goeridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Glossosomatidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Leptophlebiidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Leuctridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Ephemeridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Sericostomatidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Nemouridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Heptageniidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Polymitarcyidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Hydroptilidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Polycentropodidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Rhyacophilidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Psychomyiidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Ephemerellidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Limnephilidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Aphelocheiridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Hydropsychidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Elmidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Gammaridae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Caenidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Baetidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Chironomidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Asellidae" ~ "GIIBGNOK",
+      TotalEqIBGN >= 10 & FamilleSensIBGN == "Oligochaeta" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & FamilleSensIBGN == "Achètes" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & Ordre == "Gastéropodes" ~ "GIIBGNOK",
+      TotalEqIBGN >= 3 & Ordre == "Bivalves" ~ "GIIBGNOK",
+      TRUE ~ "GIIBGNpasOK")),
+      by = c("Ordre", "CodeRHJ", "Date", "FamilleSensIBGN")
+    ) %>%
+    ungroup() %>% 
+    mutate(EtatGIIBGN = ifelse(is.na(EtatGIIBGN), "GIIBGNpasOK", EtatGIIBGN)) %>% 
     mutate(TotalIBGN = ifelse(is.na(TotalIBGN), 0, TotalIBGN)) %>% 
-    group_by(CodeRHJ, Date) %>% 
+    mutate(EtatGIEqIBGN = ifelse(is.na(EtatGIEqIBGN), "GIIBGNpasOK", EtatGIEqIBGN)) %>% 
+    mutate(TotalEqIBGN = ifelse(is.na(TotalEqIBGN), 0, TotalEqIBGN)) %>% 
+    group_by(CodeRHJ, Date) %>%
     #View()
     summarise(
       TotalMAG20 = sum(Abondance[NumEchMAG20 <= 20]),
@@ -94,9 +140,11 @@ MI.indices <- function(
       TotalPhaseC = sum(na.omit(Abondance[PhaseDCE == "C"])),
       TotalEqIBGN = sum(na.omit(Abondance[PhaseDCE == "A" | PhaseDCE == "B"])),
       TotalIBGN = sum(na.omit(Abondance[IBGN == "Oui"])),
-      GIIBGN = max(na.omit(GIIBGN[IBGN == "Oui" & EtatGI == "GIIBGNOK"])),
+      GIIBGN = max(na.omit(GIIBGNcomplet[IBGN == "Oui" & EtatGIIBGN == "GIIBGNOK"])),
+      GIEqIBGN = max(na.omit(GIIBGNcomplet[(PhaseDCE == "A" & EtatGIEqIBGN == "GIIBGNOK") | (PhaseDCE == "B" & EtatGIEqIBGN == "GIIBGNOK")])),
       #RobustesseIBGN = nth(GIIBGN[IBGN == "Oui" & EtatGI == "GIIBGNOK"], 1 ,order_by = GIIBGN),
       VarieteIBGN = length(unique(FamilleSensIBGN[IBGN == "Oui"])),
+      VarieteEqIBGN = length(unique(FamilleSensIBGN[PhaseDCE == "A" | PhaseDCE == "B"])),
       #GICB2 = max(na.omit(GICB2[IBGN == "Oui"])),
       #VarieteCB2 = length(unique(FamilleSensIBGN[IBGN == "Oui"])),
       VarieteTotale = length(unique(Taxon)),
@@ -233,6 +281,134 @@ MI.indices <- function(
                                 VarieteIBGN <= 9 & VarieteIBGN >= 7 & GIIBGN == 1 ~ 3,
                                 VarieteIBGN <= 6 & VarieteIBGN >= 4 & GIIBGN == 1 ~ 2,
                                 VarieteIBGN <= 3 & VarieteIBGN >= 1 & GIIBGN == 1 ~ 1
+                                )
+           ) %>% 
+    mutate(NoteEqIBGN = case_when(VarieteEqIBGN >= 50 & GIEqIBGN == 9 ~ 20,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 9 ~ 20,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 9 ~ 20,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 9 ~ 19,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 9 ~ 18,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 9 ~ 17,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 9 ~ 16,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 9 ~ 15,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 9 ~ 14,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 9 ~ 13,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 9 ~ 12,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 9 ~ 11,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 9 ~ 10,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 9 ~ 9,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 8 ~ 20,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 8 ~ 20,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 8 ~ 19,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 8 ~ 18,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 8 ~ 17,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 8 ~ 16,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 8 ~ 15,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 8 ~ 14,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 8 ~ 13,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 8 ~ 12,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 8 ~ 11,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 8 ~ 10,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 8 ~ 9,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 8 ~ 8,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 7 ~ 20,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 7 ~ 19,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 7 ~ 18,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 7 ~ 17,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 7 ~ 16,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 7 ~ 15,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 7 ~ 14,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 7 ~ 13,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 7 ~ 12,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 7 ~ 11,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 7 ~ 10,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 7 ~ 9,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 7 ~ 8,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 7 ~ 7,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 6 ~ 19,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 6 ~ 18,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 6 ~ 17,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 6 ~ 16,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 6 ~ 15,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 6 ~ 14,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 6 ~ 13,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 6 ~ 12,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 6 ~ 11,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 6 ~ 10,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 6 ~ 9,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 6 ~ 8,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 6 ~ 7,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 6 ~ 6,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 5 ~ 18,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 5 ~ 17,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 5 ~ 16,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 5 ~ 15,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 5 ~ 14,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 5 ~ 13,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 5 ~ 12,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 5 ~ 11,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 5 ~ 10,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 5 ~ 9,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 5 ~ 8,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 5 ~ 7,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 5 ~ 6,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 5 ~ 5,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 4 ~ 17,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 4 ~ 16,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 4 ~ 15,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 4 ~ 14,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 4 ~ 13,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 4 ~ 12,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 4 ~ 11,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 4 ~ 10,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 4 ~ 9,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 4 ~ 8,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 4 ~ 7,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 4 ~ 6,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 4 ~ 5,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 4 ~ 4,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 3 ~ 16,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 3 ~ 15,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 3 ~ 14,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 3 ~ 13,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 3 ~ 12,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 3 ~ 11,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 3 ~ 10,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 3 ~ 9,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 3 ~ 8,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 3 ~ 7,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 3 ~ 6,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 3 ~ 5,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 3 ~ 4,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 3 ~ 3,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 2 ~ 15,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 2 ~ 14,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 2 ~ 13,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 2 ~ 12,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 2 ~ 11,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 2 ~ 10,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 2 ~ 9,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 2 ~ 8,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 2 ~ 7,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 2 ~ 6,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 2 ~ 5,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 2 ~ 4,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 2 ~ 3,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 2 ~ 2,
+                                VarieteEqIBGN >= 50 & GIEqIBGN == 1 ~ 14,
+                                VarieteEqIBGN <= 49 & VarieteEqIBGN >= 45 & GIEqIBGN == 1 ~ 13,
+                                VarieteEqIBGN <= 44 & VarieteEqIBGN >= 41 & GIEqIBGN == 1 ~ 12,
+                                VarieteEqIBGN <= 40 & VarieteEqIBGN >= 37 & GIEqIBGN == 1 ~ 11,
+                                VarieteEqIBGN <= 36 & VarieteEqIBGN >= 33 & GIEqIBGN == 1 ~ 10,
+                                VarieteEqIBGN <= 32 & VarieteEqIBGN >= 29 & GIEqIBGN == 1 ~ 9,
+                                VarieteEqIBGN <= 28 & VarieteEqIBGN >= 25 & GIEqIBGN == 1 ~ 8,
+                                VarieteEqIBGN <= 24 & VarieteEqIBGN >= 21 & GIEqIBGN == 1 ~ 7,
+                                VarieteEqIBGN <= 20 & VarieteEqIBGN >= 17 & GIEqIBGN == 1 ~ 6,
+                                VarieteEqIBGN <= 16 & VarieteEqIBGN >= 13 & GIEqIBGN == 1 ~ 5,
+                                VarieteEqIBGN <= 12 & VarieteEqIBGN >= 10 & GIEqIBGN == 1 ~ 4,
+                                VarieteEqIBGN <= 9 & VarieteEqIBGN >= 7 & GIEqIBGN == 1 ~ 3,
+                                VarieteEqIBGN <= 6 & VarieteEqIBGN >= 4 & GIEqIBGN == 1 ~ 2,
+                                VarieteEqIBGN <= 3 & VarieteEqIBGN >= 1 & GIEqIBGN == 1 ~ 1
                                 )
            )
     return(indices)

@@ -2,14 +2,16 @@
 % Please edit documentation in R/formatage.ecosysteme.R
 \name{formatage.ecosysteme}
 \alias{formatage.ecosysteme}
-\title{Mise en acronymes des écosystèmes}
+\title{Mise en acronymes des écosystèmes ou inversement}
 \usage{
-formatage.ecosysteme(acronymes = data$Station)
+formatage.ecosysteme(acronymes = data, Type = c("Simplification",
+  "Expansion"))
 }
 \description{
-Cette fonction permet de mettre en acronymes des noms d'écosystèmes
+Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
 }
 \examples{
-formatage.ecosysteme(data$Station)
-PC$CodeRDT <- formatage.ecosysteme(PC$CodeRDT)
+formatage.ecosysteme(data$Station, Type = "Simplification")
+PC$CodeRDT <- formatage.ecosysteme(PC$CodeRDT, Type = "Simplification")
+data \%>\% stations.CodeRDT(DistSource = F) \%>\% formatage.ecosysteme(Type = "Expansion")
 }

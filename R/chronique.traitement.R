@@ -8,6 +8,7 @@
 #' @import lubridate 
 #' @import rgdal
 #' @import RSQLite 
+#' @import sp
 #' @import stringr
 #' @export
 #' @examples

@@ -15,5 +15,11 @@ BV.ComByCoordL93(X = as.numeric(0), Y = as.numeric(0))
 Cette fonction permet de fournir les caractéristiques géographiques d'un point donné (commune, département, région, population, etc.) à partir de la GeoAPI
 }
 \examples{
-BV.ComByCoordL93()
+BV.ComByCoordL93(936722,6603736)
+data \%>\% rowwise() \%>\% mutate(Commune = BV.ComByCoordL93(X,Y) \%>\% select(name) \%>\% as.character())
+data \%>\% rowwise() \%>\% mutate(codeInsee = BV.ComByCoordL93(X,Y) \%>\% select(codeInsee) \%>\% as.character())
+data \%>\% rowwise() \%>\% mutate(Departement = BV.ComByCoordL93(X,Y) \%>\% select(codeDepartement) \%>\% as.character())
+data \%>\% rowwise() \%>\% mutate(Region = BV.ComByCoordL93(X,Y) \%>\% select(codeRegion) \%>\% as.character())
+data \%>\% rowwise() \%>\% mutate(Population = BV.ComByCoordL93(X,Y) \%>\% select(population) \%>\% as.character())
+data \%>\% rowwise() \%>\% mutate(Surface = BV.ComByCoordL93(X,Y) \%>\% select(surface) \%>\% as.character())
 }

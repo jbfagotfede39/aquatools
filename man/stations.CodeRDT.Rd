@@ -17,5 +17,6 @@ Cette fonction permet d'extraire la distance à la source ou le code écosystèm
 \examples{
 stations.CodeRDT(data)
 stations.CodeRDT(data, DistSource = F)
+arrange(CodeRDT, Date) \%>\% stations.CodeRDT(DistSource = F)
 }
 \keyword{stations}
