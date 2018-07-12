@@ -26,20 +26,19 @@ poissons.captures <- function(
   
   
 ## Ouverture de la BDD ##
-db <- BDD.ouverture(Type = "Poissons")
+dbP <- BDD.ouverture(Type = "Poissons")
 
 ##### Récupération des données #####
-Captures <- tbl(db,"captures") %>% collect(n = Inf)
-Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-Stations <- tbl(db,"stations") %>% collect(n = Inf)
+Captures <- tbl(dbP,"captures") %>% collect(n = Inf)
+Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
+Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
 
 ##### Synthèse des données #####
-Captures <- merge(Captures, Inventaires, by = c("CodeInventaire"))
-Captures <- merge(Captures, Stations, by = c("CodeStation"))
+Captures <- merge(Captures, Inventaires, by = c("codeinventaire"))
+Captures <- merge(Captures, Stations, by = c("codestation"))
 
 ##### Transformation des formats de dates
-Captures$DateDebut <- ymd_hms(Captures$DateDebut)
-Captures$DateDebut <- format(Captures$DateDebut, "%Y-%m-%d")
+Captures$DateDebut <- ymd(Captures$DateDebut)-
 
 ##### Filtrage #####
 if(nchar(station) != 0 & nchar(date) != 0){
@@ -117,4 +116,5 @@ if(dim(Captures)[1] != 0) Captures[Captures == 0] <- ""
 if(dim(Captures)[1] == 0) warning("Aucune capture correspondante")
 
 return(Captures)
+DBI::dbDisconnect(dbP)
 } # Fin de la fonction

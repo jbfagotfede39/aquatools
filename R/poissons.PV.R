@@ -4,7 +4,10 @@
 #' 
 #' @param ecosysteme Code de l'écosystème
 #' @keywords poissons
-#' @import dplyr DBI RSQLite lubridate
+#' @import dplyr 
+#' @import DBI 
+#' @import RSQLite
+#' @import lubridate
 #' @export
 #' @examples
 #' poissons.PV()
@@ -21,21 +24,20 @@ poissons.PV <- function(
 {
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   #dbListTables(db)
   
   ## Récupération des données ##
-  Ecosystemes <- tbl(db,"ecosystemes") %>% collect(n = Inf)
-  pv_lots <- tbl(db,"pv_lots") %>% collect(n = Inf)
-  pv_pvs <- tbl(db,"pv_pvs") %>% collect(n = Inf)
+  Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
+  pv_lots <- tbl(dbP,"pv_lots") %>% collect(n = Inf)
+  pv_pvs <- tbl(dbP,"pv_pvs") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   pv_lots <- left_join(pv_lots, Ecosystemes, by = c("codeecosysteme" = "Codeecosysteme")) #
   pv_lots <- left_join(pv_lots, pv_pvs, by = "numero_pv") #
   
   ## Format de dates ##
-  pv_lots$date_pv <- ymd_hms(pv_lots$date_pv)
-  pv_lots$date_pv <- format(pv_lots$date_pv, "%Y-%m-%d")
+  pv_lots$date_pv <- ymd(pv_lots$date_pv)
   
   ## Simplification ##
   # Travail sur un seul écosystème
@@ -56,5 +58,6 @@ poissons.PV <- function(
 
   
   return(pv_lots)
+  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

@@ -16,95 +16,93 @@ poissons.brut <- function(
 {
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  Captures <- tbl(db,"captures") %>% collect(n = Inf)
-  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
+  Captures <- tbl(dbP,"captures") %>% collect(n = Inf)
+  Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
-  Captures <- merge(Captures, Inventaires, by = c("CodeInventaire"))
-  Captures <- merge(Captures, Stations, by = c("CodeStation"))
+  Captures <- merge(Captures, Inventaires, by = c("codeinventaire"))
+  Captures <- merge(Captures, Stations, by = c("codestation"))
   
   ## Format de dates ##
-  Captures$DateDebut <- ymd_hms(Captures$DateDebut)
-  Captures$DateDebut <- format(Captures$DateDebut, "%Y-%m-%d")
+  Captures$datedebut <- ymd(Captures$datedebut)
   
   ## Simplification ##
   Captures <- 
     Captures %>%
-    select(Nom, DateDebut, NumeroDePassage, CodeEspece, TailleMinimum, TailleMaximum, Nombre, Poids) %>% 
-    filter(Nom == station, DateDebut == date) %>% 
-    rename(Station = Nom, Date = DateDebut, Passage = NumeroDePassage, Espece = CodeEspece) %>% 
-    arrange(Passage, Espece, Nombre)
+    select(nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids) %>% 
+    filter(nom == station, datedebut == date) %>% 
+    rename(Station = nom, Date = datedebut, Passage = numerodepassage, Espece = codeespece) %>% 
+    arrange(Passage, Espece, nombre)
   Captures[Captures == 0] <- ""
   
   ##### Sorties des résultats traités au format Excel #####
   Resultats <- poissons.resultats.BDD() # Avec Aquatools
-  Resultats$DateDebut.x <- ymd_hms(Resultats$DateDebut.x)
-  Resultats$DateDebut.x <- format(Resultats$DateDebut.x, "%Y-%m-%d")
+  Resultats$datedebut.x <- ymd(Resultats$datedebut.x)
   
   ## Résultats bruts
   Bruts <-
     Resultats %>%
-    filter(Nom == station, DateDebut.x == date) %>%
-    select(Nom, DateDebut.x, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, NombreTotalCaptures, DensiteNumeriqueBrute, BiomasseTotaleCapturee, DensitePonderaleBrute) %>%
-    arrange(Codeespece)
+    filter(nom == station, datedebut.x == date) %>%
+    select(nom, datedebut.x, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, nombretotalcaptures, densitenumeriquebrute, biomassetotalecapturee, densiteponderalebrute) %>%
+    arrange(codeespece)
   
-  Bruts$DensiteNumeriqueBrute <- round(Bruts$DensiteNumeriqueBrute,1)
-  Bruts$DensitePonderaleBrute <- round(Bruts$DensitePonderaleBrute,1)
+  Bruts$densitenumeriquebrute <- round(Bruts$densitenumeriquebrute,1)
+  Bruts$densiteponderalebrute <- round(Bruts$densiteponderalebrute,1)
   
   temporaire <-
     Bruts %>% 
-    summarise(Codeespece = n(),
-              N_SommeCapturePassage1 = sum(N_SommeCapturePassage1),
-              N_SommeCapturePassage2 = sum(N_SommeCapturePassage2),
-              N_SommeCapturePassage3 = sum(N_SommeCapturePassage3),
-              NombreTotalCaptures = sum(NombreTotalCaptures),
-              DensiteNumeriqueBrute = sum(DensiteNumeriqueBrute),
-              BiomasseTotaleCapturee = sum(BiomasseTotaleCapturee),
-              DensitePonderaleBrute = sum(DensitePonderaleBrute)
+    summarise(codeespece = n(),
+              n_sommecapturepassage1 = sum(n_sommecapturepassage1),
+              n_sommecapturepassage2 = sum(n_sommecapturepassage2),
+              n_sommecapturepassage3 = sum(n_sommecapturepassage3),
+              nombretotalcaptures = sum(nombretotalcaptures),
+              densitenumeriquebrute = sum(densitenumeriquebrute),
+              biomassetotalecapturee = sum(biomassetotalecapturee),
+              densiteponderalebrute = sum(densiteponderalebrute)
     )
-  temporaire$Nom <- "TOTAL"
+  temporaire$nom <- "TOTAL"
   Bruts <- merge(Bruts, temporaire, all=T)
   
   Bruts <- Bruts %>% 
-    select(Nom, DateDebut.x, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, NombreTotalCaptures, DensiteNumeriqueBrute, BiomasseTotaleCapturee, DensitePonderaleBrute) %>%
-    dplyr::rename(Date = DateDebut.x)
+    select(nom, datedebut.x, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, nombretotalcaptures, densitenumeriquebrute, biomassetotalecapturee, densiteponderalebrute) %>%
+    dplyr::rename(Date = datedebut.x)
     colnames(Bruts) <- c("Station", "Date","Espèce","P1","P2","P3","Nb total","Ind/10a", "Biomasse (g)", "g/ha")
   
   ## Résultats élaborés
   Elabores <-
     Resultats %>%
-    filter(Nom == station, DateDebut.x == date) %>%
-    select(Nom, DateDebut.x, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, estimationeffectifNumerique, DensiteNumeriqueestimee, IntervalleConfianceDensiteNum, estimationeffectifPonderal, DensitePonderaleestimee, IntervalleConfianceDensitePond, CoteabondanceNumerique, CoteabondancePonderale) %>%
-    arrange(Codeespece)
+    filter(nom == station, datedebut.x == date) %>%
+    select(nom, datedebut.x, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, estimationeffectifnumerique, densitenumeriqueestimee, intervalleconfiancedensitenum, estimationeffectifponderal, densiteponderaleestimee, intervalleconfiancedensitepond, coteabondancenumerique, coteabondanceponderale) %>%
+    arrange(codeespece)
   
-  Elabores$DensiteNumeriqueestimee <- round(Elabores$DensiteNumeriqueestimee,1)
-  Elabores$IntervalleConfianceDensiteNum <- round(Elabores$IntervalleConfianceDensiteNum,1)
-  Elabores$DensitePonderaleestimee <- round(Elabores$DensitePonderaleestimee,1)
-  Elabores$IntervalleConfianceDensitePond <- round(Elabores$IntervalleConfianceDensitePond,1)
+  Elabores$densitenumeriqueestimee <- round(Elabores$densitenumeriqueestimee,1)
+  Elabores$intervalleconfiancedensitenum <- round(Elabores$intervalleconfiancedensitenum,1)
+  Elabores$densiteponderaleestimee <- round(Elabores$densiteponderaleestimee,1)
+  Elabores$intervalleconfiancedensitepond <- round(Elabores$intervalleconfiancedensitepond,1)
   
   temporaire <-
     Elabores %>% 
-    summarise(Codeespece = n(),
-              N_SommeCapturePassage1 = sum(N_SommeCapturePassage1),
-              N_SommeCapturePassage2 = sum(N_SommeCapturePassage2),
-              N_SommeCapturePassage3 = sum(N_SommeCapturePassage3),
-              estimationeffectifNumerique = sum(estimationeffectifNumerique),
-              DensiteNumeriqueestimee = sum(DensiteNumeriqueestimee),
-              estimationeffectifPonderal = sum(estimationeffectifPonderal),
-              DensitePonderaleestimee = sum(DensitePonderaleestimee)
+    summarise(codeespece = n(),
+              n_sommecapturepassage1 = sum(n_sommecapturepassage1),
+              n_sommecapturepassage2 = sum(n_sommecapturepassage2),
+              n_sommecapturepassage3 = sum(n_sommecapturepassage3),
+              estimationeffectifnumerique = sum(estimationeffectifnumerique),
+              densitenumeriqueestimee = sum(densitenumeriqueestimee),
+              estimationeffectifponderal = sum(estimationeffectifponderal),
+              densiteponderaleestimee = sum(densiteponderaleestimee)
               )
-  temporaire$Nom <- "TOTAL"
+  temporaire$nom <- "TOTAL"
   Elabores <- merge(Elabores, temporaire, all=T)
   
   # Remise en ordre des colonnes et renommage #
   
   Elabores <- Elabores %>% 
-  select(Nom, DateDebut.x, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, estimationeffectifNumerique, DensiteNumeriqueestimee, IntervalleConfianceDensiteNum, estimationeffectifPonderal, DensitePonderaleestimee, IntervalleConfianceDensitePond, CoteabondanceNumerique, CoteabondancePonderale) %>% 
-  dplyr::rename(Date = DateDebut.x)
+  select(nom, datedebut.x, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, estimationeffectifnumerique, densitenumeriqueestimee, intervalleconfiancedensitenum, estimationeffectifponderal, densiteponderaleestimee, intervalleconfiancedensitepond, coteabondancenumerique, coteabondanceponderale) %>% 
+  dplyr::rename(Date = datedebut.x)
   colnames(Elabores)<-c("Station", "Date","Espèce","P1","P2","P3","Effectif estimé","Ind/10a","IC Ind/10a","Biomasse estimée (g)","g/ha","IC g/ha", "CAN", "CAP")
   
   ###### Écriture des fichiers ######
@@ -120,4 +118,5 @@ poissons.brut <- function(
   addDataFrame(x=Elabores, sheet=feuillecalcules, row.names=FALSE)
   saveWorkbook(SortieResultats, paste0(station, "_", date, "_résultats.xlsx"))
   
+  DBI::dbDisconnect(dbP)
 } # Fin de la fonction

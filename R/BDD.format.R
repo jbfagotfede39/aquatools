@@ -96,7 +96,7 @@ BDD.format <- function(data)
     # Travail sur les heures #
     if(all(!is.na(data$Heure))){ # Afin de n'appliquer les commandes que dans le cas où il n'y a pas que des NA dans les heures
     data$Heure <- str_replace(data$Heure, "h", ":") # On remplace le h par :
-    data$Heure <- if(all(str_count(data$Heure, ":") == 1)) str_c(data$Heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
+    if(all(str_count(data$Heure, ":") == 1)) data$Heure <- str_c(data$Heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
     data$Heure <- format(ymd_hms(paste(data$Date,"-",data$Heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
     }
     

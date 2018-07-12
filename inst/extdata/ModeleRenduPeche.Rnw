@@ -69,8 +69,7 @@ library(xtable)
 ##### Importation des données #####
 ## Données poissons ##
 Resultats <- poissons.resultats.BDD() # Avec Aquatools
-Resultats$DateDebut.x <- ymd_hms(Resultats$DateDebut.x)
-Resultats$DateDebut.x <- format(Resultats$DateDebut.x, "%Y-%m-%d")
+Resultats$datedebut.x <- ymd(Resultats$datedebut.x)
 @
 \IfFileExists{/Users/imac27/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}{\includegraphics[width=0.15\textwidth]{/Users/imac27/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}}{\includegraphics[width=0.15\textwidth]{/Volumes/Fixe-FD39/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}}
 %\includegraphics[width=0.15\textwidth]{FD39.png} 
@@ -78,9 +77,9 @@ Resultats$DateDebut.x <- format(Resultats$DateDebut.x, "%Y-%m-%d")
 <<parametres, results='asis', fig.show='hold'>>=
 Parametres <-
 Resultats %>%
-  filter(Nom == "SOR10-2") %>%
-  filter(DateDebut.x == "2015-05-19") %>%
-  select(DateDebut.x, Nomecosysteme, Commune, XLambert, YLambert, Gestionnaire, Nombreanodes, NombreDePassages, LongueurProspectee, LargeurLameeau, Surface, TemperatureEau, OxygenationmgL, OxygenationPourcent, ConductiviteEau, pHEau)
+  filter(nom == "SOR10-2") %>%
+  filter(datedebut.x == "2015-05-19") %>%
+  select(datedebut.x, nomecosysteme, commune, xlambert, ylambert, gestionnaire, nombreanodes, nombredepassages, longueurprospectee, largeurlameeau, surface, temperatureeau, oxygenationmgl, oxygenationpourcent, conductiviteeau, pheau)
 
 Parametres <- unique(Parametres)
 colnames(Parametres) <- c("Date","Cours d'eau","Commune","Coordonnée X","Coordonnée Y","Gestionnaire", "Nombre d'anodes", "Nombre de passages", "Longueur (m)", "Largeur (m)", "Surface (m2)", "Température", "Oxygénation (mg/l)", "Oxygénation (%)", "Conductivité", "pH")
@@ -110,31 +109,31 @@ print(tabParametres,
 ## Résultats bruts
 Bruts <-
 Resultats %>%
-  filter(Nom == "SOR10-2") %>%
-  filter(DateDebut.x == "2015-05-19") %>%
-  select(Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, NombreTotalCaptures, DensiteNumeriqueBrute, BiomasseTotaleCapturee, DensitePonderaleBrute) %>%
-  arrange(Codeespece)
+  filter(nom == "SOR10-2") %>%
+  filter(datedebut.x == "2015-05-19") %>%
+  select(codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, nombretotalcaptures, densitenumeriquebrute, biomassetotalecapturee, densiteponderalebrute) %>%
+  arrange(codeespece)
 
-Bruts$DensiteNumeriqueBrute <- round(Bruts$DensiteNumeriqueBrute,1)
-Bruts$DensitePonderaleBrute <- round(Bruts$DensitePonderaleBrute,1)
+Bruts$densitenumeriquebrute <- round(Bruts$densitenumeriquebrute,1)
+Bruts$densiteponderalebrute <- round(Bruts$densiteponderalebrute,1)
 
 temporaire <-
     Bruts %>% 
-    summarise(Codeespece = n(),
-              N_SommeCapturePassage1 = sum(N_SommeCapturePassage1),
-              N_SommeCapturePassage2 = sum(N_SommeCapturePassage2),
-              N_SommeCapturePassage3 = sum(N_SommeCapturePassage3),
-              NombreTotalCaptures = sum(NombreTotalCaptures),
-              DensiteNumeriqueBrute = sum(DensiteNumeriqueBrute),
-              BiomasseTotaleCapturee = sum(BiomasseTotaleCapturee),
-              DensitePonderaleBrute = sum(DensitePonderaleBrute)
+    summarise(codeespece = n(),
+              n_sommecapturepassage1 = sum(n_sommecapturepassage1),
+              n_sommecapturepassage2 = sum(n_sommecapturepassage2),
+              n_sommecapturepassage3 = sum(n_sommecapturepassage3),
+              nombretotalcaptures = sum(nombretotalcaptures),
+              densitenumeriquebrute = sum(densitenumeriquebrute),
+              biomassetotalecapturee = sum(biomassetotalecapturee),
+              densiteponderalebrute = sum(densiteponderalebrute)
     )
-  temporaire$Nom <- "TOTAL"
+  temporaire$nom <- "TOTAL"
   Bruts <- merge(Bruts, temporaire, all=T)
   
   Bruts <- Bruts %>% 
-    select(Nom, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, NombreTotalCaptures, DensiteNumeriqueBrute, BiomasseTotaleCapturee, DensitePonderaleBrute) %>% 
-    arrange(desc(Nom))
+    select(nom, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, nombretotalcaptures, densitenumeriquebrute, biomassetotalecapturee, densiteponderalebrute) %>% 
+    arrange(desc(nom))
 
 colnames(Bruts)<-c("","Espèce","P1","P2","P3","Nb total","Ind/10a", "Biomasse (g)", "g/ha")
 tabBruts <- xtable(Bruts, caption = "Résultats bruts", label="tabbruts")
@@ -157,34 +156,34 @@ print(tabBruts,
 ## Résultats élaborés
 Elabores <-
 Resultats %>%
-  filter(Nom == "SOR10-2") %>%
-  filter(DateDebut.x == "2015-05-19") %>%
-  select(Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, estimationeffectifNumerique, DensiteNumeriqueestimee, IntervalleConfianceDensiteNum, estimationeffectifPonderal, DensitePonderaleestimee, IntervalleConfianceDensitePond, CoteabondanceNumerique, CoteabondancePonderale) %>%
-  arrange(Codeespece)
+  filter(nom == "SOR10-2") %>%
+  filter(datedebut.x == "2015-05-19") %>%
+  select(codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, estimationeffectifnumerique, densitenumeriqueestimee, intervalleconfiancedensitenum, estimationeffectifponderal, densiteponderaleestimee, intervalleconfiancedensitepond, coteabondancenumerique, coteabondanceponderale) %>%
+  arrange(codeespece)
 
-  Elabores$DensiteNumeriqueestimee <- round(Elabores$DensiteNumeriqueestimee,1)
-  Elabores$IntervalleConfianceDensiteNum <- round(Elabores$IntervalleConfianceDensiteNum,1)
-  Elabores$DensitePonderaleestimee <- round(Elabores$DensitePonderaleestimee,1)
-  Elabores$IntervalleConfianceDensitePond <- round(Elabores$IntervalleConfianceDensitePond,1)
+  Elabores$densitenumeriqueestimee <- round(Elabores$densitenumeriqueestimee,1)
+  Elabores$intervalleconfiancedensitenum <- round(Elabores$intervalleconfiancedensitenum,1)
+  Elabores$densiteponderaleestimee <- round(Elabores$densiteponderaleestimee,1)
+  Elabores$intervalleconfiancedensitepond <- round(Elabores$intervalleconfiancedensitepond,1)
   
  temporaire <-
     Elabores %>% 
-    summarise(Codeespece = n(),
-              N_SommeCapturePassage1 = sum(N_SommeCapturePassage1),
-              N_SommeCapturePassage2 = sum(N_SommeCapturePassage2),
-              N_SommeCapturePassage3 = sum(N_SommeCapturePassage3),
-              estimationeffectifNumerique = sum(estimationeffectifNumerique),
-              DensiteNumeriqueestimee = sum(DensiteNumeriqueestimee),
-              estimationeffectifPonderal = sum(estimationeffectifPonderal),
-              DensitePonderaleestimee = sum(DensitePonderaleestimee)
+    summarise(codeespece = n(),
+              n_sommecapturepassage1 = sum(n_sommecapturepassage1),
+              n_sommecapturepassage2 = sum(n_sommecapturepassage2),
+              n_sommecapturepassage3 = sum(n_sommecapturepassage3),
+              estimationeffectifnumerique = sum(estimationeffectifnumerique),
+              densitenumeriqueestimee = sum(densitenumeriqueestimee),
+              estimationeffectifponderal = sum(estimationeffectifponderal),
+              densiteponderaleestimee = sum(densiteponderaleestimee)
               )
-  temporaire$Nom <- "TOTAL"
+  temporaire$nom <- "TOTAL"
   Elabores <- merge(Elabores, temporaire, all=T)
   
   # Remise en ordre des colonnes et renommage #
   
   Elabores <- Elabores %>% 
-  select(Nom, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, estimationeffectifNumerique, DensiteNumeriqueestimee, IntervalleConfianceDensiteNum, estimationeffectifPonderal, DensitePonderaleestimee, IntervalleConfianceDensitePond, CoteabondanceNumerique, CoteabondancePonderale)
+  select(nom, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, estimationeffectifnumerique, densitenumeriqueestimee, intervalleconfiancedensitenum, estimationeffectifponderal, densiteponderaleestimee, intervalleconfiancedensitepond, coteabondancenumerique, coteabondanceponderale)
 
 colnames(Elabores)<-c("","Espèce","P1","P2","P3","Eff. est.","Ind/10a","IC Ind/10a","Biom. est. (g)","g/ha","IC g/ha", "CAN", "CAP")
 tabElabores <- xtable(Elabores, caption = "Résultats estimés", label="tabelabores")

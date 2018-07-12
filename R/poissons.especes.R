@@ -12,12 +12,13 @@ poissons.especes <- function(){
   #library("RSQLite");library("dplyr")
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
-  Especes <- tbl(db,"especes") %>% collect(n = Inf)
+  Especes <- tbl(dbP,"especes") %>% collect(n = Inf)
   
   return(Especes)
+  DBI::dbDisconnect(dbP)
 } # Fin de la fonction
 
 # Resultats <- poissons.resultats() pour avoir les données en utilisant la fonction

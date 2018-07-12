@@ -16,12 +16,12 @@ poissons.expertise <- function(
 {
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  Operations <- tbl(db,"operations") %>% collect(n = Inf)
-  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
+  Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
+  Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   Operations <- merge(Operations, Inventaires, by = c("CodeInventaire"))
@@ -49,5 +49,6 @@ poissons.expertise <- function(
   
   ## Sortie ##
   return(Operations)
+  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

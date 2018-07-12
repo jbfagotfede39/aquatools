@@ -12,15 +12,15 @@ poissons.resultats.BDD <- function(){
   #library("RSQLite");library("dplyr")
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
-  Resultats <- tbl(db,"resultats") %>% collect(n = Inf)
-  Operations <- tbl(db,"operations") %>% collect(n = Inf)
-  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
-  Ecosystemes <- tbl(db,"ecosystemes") %>% collect(n = Inf)
-  Communes <- tbl(db,"communes") %>% collect(n = Inf)
+  Resultats <- tbl(dbP,"resultats") %>% collect(n = Inf)
+  Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
+  Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
+  Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
+  Communes <- tbl(dbP,"communes") %>% collect(n = Inf)
   
   ##### Synthèse des données #####
   Inventaires <- left_join(Inventaires, Stations, by = c("codestation"))
@@ -41,6 +41,7 @@ poissons.resultats.BDD <- function(){
 #    select(Nom, DateDebut, Codeespece, TailleMinimum, TailleMaximum, Nombre, Poids)
 
   return(Resultats)
+  DBI::dbDisconnect(dbP)
 } # Fin de la fonction
 
 # Resultats <- poissons.resultats() pour avoir les données en utilisant la fonction

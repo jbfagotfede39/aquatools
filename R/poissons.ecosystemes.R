@@ -22,10 +22,10 @@ poissons.ecosystemes <- function(
   
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
-  Ecosystemes <- tbl(db,"ecosystemes") %>% collect(n = Inf)
+  Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
   
   ## Extraction des données de l'écosystème si un est spécifié ##
   if(nchar(ecosysteme) != 0) {
@@ -41,5 +41,7 @@ poissons.ecosystemes <- function(
   ## Extraction de tous les écosystèmes si aucun spécifié ##
   if(nchar(ecosysteme) == 0) {
     ecosysteme <- Ecosystemes}
+  
+  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

@@ -24,13 +24,13 @@ poissons.placettes <- function(
   
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
  
   ## Récupération des données ##
-  Placettes <- tbl(db,"placettes") %>% collect(n = Inf)
-  Operations <- tbl(db,"operations") %>% collect(n = Inf)
-  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
+  Placettes <- tbl(dbP,"placettes") %>% collect(n = Inf)
+  Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
+  Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
   Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))
@@ -81,5 +81,6 @@ poissons.placettes <- function(
     }
   
   return(Placettes)
+  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

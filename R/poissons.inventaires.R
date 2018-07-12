@@ -23,18 +23,17 @@ poissons.inventaires <- function(
   
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
 
   ## Récupération des données ##
-  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
+  Inventaires <- tbl(dbP, "inventaires") %>% collect(n = Inf)
+  Stations <- tbl(dbP, "stations") %>% collect(n = Inf)
   
   ## Synthèse des données ##
-  Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))
+  Inventaires <- merge(Inventaires, Stations, by = c("codestation"))
   
   ## Format de dates ##
-  Inventaires$DateDebut <- ymd_hms(Inventaires$DateDebut)
-  Inventaires$DateDebut <- format(Inventaires$DateDebut, "%Y-%m-%d")
+  Inventaires$DateDebut <- ymd(Inventaires$DateDebut)
   
   ## Extraction des stations ##
   # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
@@ -74,5 +73,6 @@ poissons.inventaires <- function(
       dplyr::rename(Stations = Nom, Dates = DateDebut)}
   
   return(Inventaires)
+  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

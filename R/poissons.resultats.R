@@ -2,7 +2,10 @@
 #'
 #' Récupère les données de résultats d'une opération dans Maxifish pour les mettre dans un dataframe
 #' @keywords donnees
-#' @import dplyr RSQLite DBI lubridate
+#' @import dplyr 
+#' @import RSQLite
+#' @import DBI 
+#' @import lubridate
 #' @export
 #' @examples
 #' poissons.resultats("SOR10-2", "2015-05-19")
@@ -16,15 +19,15 @@ poissons.resultats <- function(
   
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
-  Resultats <- tbl(db,"resultats") %>% collect(n = Inf)
-  Operations <- tbl(db,"operations") %>% collect(n = Inf)
-  Inventaires <- tbl(db,"inventaires") %>% collect(n = Inf)
-  Stations <- tbl(db,"stations") %>% collect(n = Inf)
-  Ecosystemes <- tbl(db,"ecosystemes") %>% collect(n = Inf)
-  Communes <- tbl(db,"communes") %>% collect(n = Inf)
+  Resultats <- tbl(dbP,"resultats") %>% collect(n = Inf)
+  Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
+  Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
+  Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
+  Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
+  Communes <- tbl(dbP,"communes") %>% collect(n = Inf)
   
   ## Renommage des colonnes Observations ##
   Resultats <- Resultats %>% rename(ObservationsResultats = Observations)
@@ -34,30 +37,29 @@ poissons.resultats <- function(
   Communes <- Communes %>% rename(ObservationsCommunes = Observations)
   
   ##### Synthèse des données #####
-  Inventaires <- merge(Inventaires, Stations, by = c("CodeStation"))
-  Operations <- merge(Operations, Inventaires, by = c("CodeInventaire"))
-  Resultats <- merge(Resultats, Operations, by = c("Codeoperation"))
+  Inventaires <- merge(Inventaires, Stations, by = c("codestation"))
+  Operations <- merge(Operations, Inventaires, by = c("codeinventaire"))
+  Resultats <- merge(Resultats, Operations, by = c("codeoperation"))
   
   ##### Remplacement des codes communes et écosystèmes #####
-  Resultats <- merge(Resultats, Ecosystemes, by = c("Codeecosysteme"))
+  Resultats <- merge(Resultats, Ecosystemes, by = c("codeecosysteme"))
   Communes <- select(Communes, CodeCommune, Commune)
-  Resultats <- merge(Resultats, Communes, by = c("CodeCommune"))
+  Resultats <- merge(Resultats, Communes, by = c("codecommune"))
   
   ##### Transformation des formats de dates
-  Resultats$DateDebut.x <- ymd_hms(Resultats$DateDebut.x)
-  Resultats$DateDebut.x <- format(Resultats$DateDebut.x, "%Y-%m-%d")
+  Resultats$datedebut.x <- ymd(Resultats$datedebut.x)
   
   ##### Filtrage #####
   Resultats <-
     Resultats %>% 
-    filter(Nom == station, DateDebut.x == date) %>%
+    filter(nom == station, datedebut.x == date) %>%
     #select(Nom, DateDebut.x, Codeespece, N_SommeCapturePassage1, N_SommeCapturePassage2, N_SommeCapturePassage3, NombreTotalCaptures, DensiteNumeriqueBrute, BiomasseTotaleCapturee, DensitePonderaleBrute) %>%
-    arrange(Codeespece)
+    arrange(codeespece)
   
-  Resultats$DensiteNumeriqueBrute <- round(Resultats$DensiteNumeriqueBrute,1)
-  Resultats$DensitePonderaleBrute <- round(Resultats$DensitePonderaleBrute,1)
-  Resultats$DensiteNumeriqueestimee <- round(Resultats$DensiteNumeriqueestimee,1)
-  Resultats$DensitePonderaleestimee <- round(Resultats$DensitePonderaleestimee,1)
+  Resultats$densitenumeriquebrute <- round(Resultats$densitenumeriquebrute,1)
+  Resultats$densiteponderalebrute <- round(Resultats$densiteponderalebrute,1)
+  Resultats$densitenumeriqueestimee <- round(Resultats$densitenumeriqueestimee,1)
+  Resultats$densiteponderaleestimee <- round(Resultats$densiteponderaleestimee,1)
   
   ##### Simplification #####
 #  Resultats <- 
@@ -65,6 +67,7 @@ poissons.resultats <- function(
 #    select(Nom, DateDebut, Codeespece, TailleMinimum, TailleMaximum, Nombre, Poids)
 
   return(Resultats)
+  DBI::dbDisconnect(dbP)
 } # Fin de la fonction
 
 # Resultats <- poissons.resultats() pour avoir les données en utilisant la fonction
