@@ -32,7 +32,7 @@ chronique.suivi <- function(x = "ORA2-7",
   }
   
   ## Chargement des données ##
-  SuiviTerrain <- tbl(db,"SuiviTerrain") %>% collect()
+  SuiviTerrain <- tbl(dbC,"SuiviTerrain") %>% collect()
   
   ## Formatage ##
   SuiviTerrain$Date <- ymd(SuiviTerrain$Date)

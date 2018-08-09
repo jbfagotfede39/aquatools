@@ -82,15 +82,15 @@ if(Type == "Poissons"){
   }
 }
 
-# if(Type == "Chroniques"){return(dbC)}
-# if(Type == "Macroinvertébrés"){return(dbMI)}
-# if(Type == "Physico-chimie"){return(dbPC)}
-# if(Type == "Temps de travail"){return(dbTW)}
+if(Type == "Chroniques"){return(dbC)}
+if(Type == "Macroinvertébrés"){return(dbMI)}
+if(Type == "Physico-chimie"){return(dbPC)}
+if(Type == "Temps de travail"){return(dbTW)}
 # if(Type == "Poissons"){return(dbP)}
-if(Type == "Chroniques"){assign("dbC", dbP, envir = .GlobalEnv)}
-if(Type == "Macroinvertébrés"){assign("dbMI", dbP, envir = .GlobalEnv)}
-if(Type == "Physico-chimie"){assign("dbPC", dbP, envir = .GlobalEnv)}
-if(Type == "Temps de travail"){assign("dbTW", dbP, envir = .GlobalEnv)}
+# if(Type == "Chroniques"){assign("dbC", dbC, envir = .GlobalEnv)}
+# if(Type == "Macroinvertébrés"){assign("dbMI", dbMI, envir = .GlobalEnv)}
+# if(Type == "Physico-chimie"){assign("dbPC", dbPC, envir = .GlobalEnv)}
+# if(Type == "Temps de travail"){assign("dbTW", dbTW, envir = .GlobalEnv)}
 if(Type == "Poissons"){assign("dbP", dbP, envir = .GlobalEnv)}
 
 } # Fin de la fonction
