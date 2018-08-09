@@ -94,8 +94,8 @@ data %>%
 ##### Sortie stations #####
 listeStations <- data %>% distinct(CodeRDT)
 if(exists("dbC") == FALSE){
-  dbP <- BDD.ouverture(Type = "Chroniques")
-  assign("dbC", dbP, envir = .GlobalEnv)
+  dbC <- BDD.ouverture(Type = "Chroniques")
+  assign("dbC", dbC, envir = .GlobalEnv)
 }
 listeStations <- tbl(dbC,"Stations") %>% filter(CodeRDT %in% listeStations$CodeRDT) %>% collect() %>% select(CodeRDT:Departement, X:TypeCoord, Fonctionnement:ReseauThermie)
 

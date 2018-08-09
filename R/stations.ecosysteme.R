@@ -86,8 +86,8 @@ stations.ecosysteme <- function(
   #### Base physico-chimie ####
   ## Ouverture de la BDD ##
   if(exists("dbPC") == FALSE){
-    dbP <- BDD.ouverture(Type = "Physico-chimie")
-    assign("dbPC", dbP, envir = .GlobalEnv)
+    dbPC <- BDD.ouverture(Type = "Physico-chimie")
+    assign("dbPC", dbPC, envir = .GlobalEnv)
   }
   
   ## Collecte des stations pour les mesures

@@ -29,8 +29,8 @@ chronique.stations <- function(x = "CD39",
   
   ## Connexion à la BDD ##
   if(exists("dbC") == FALSE){
-    dbP <- BDD.ouverture(Type = "Chroniques")
-    assign("dbC", dbP, envir = .GlobalEnv)
+    dbC <- BDD.ouverture(Type = "Chroniques")
+    assign("dbC", dbC, envir = .GlobalEnv)
   }
   
   ## Chargement des données ##

@@ -19,7 +19,7 @@ MI.systematique <- function(data)
   ## Connexion à la BDD ##
   if(exists("dbMI") == FALSE){
     dbP <- BDD.ouverture(Type = "Macroinvertébrés")
-    assign("dbMI", dbP, envir = .GlobalEnv)
+    assign("dbMI", dbMI, envir = .GlobalEnv)
   }
   
   ## Récupération des données ##

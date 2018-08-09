@@ -27,8 +27,8 @@ chronique.suivi <- function(x = "ORA2-7",
   
   ## Connexion à la BDD ##
   if(exists("dbC") == FALSE){
-    dbP <- BDD.ouverture(Type = "Chroniques")
-    assign("dbC", dbP, envir = .GlobalEnv)
+    dbC <- BDD.ouverture(Type = "Chroniques")
+    assign("dbC", dbC, envir = .GlobalEnv)
   }
   
   ## Chargement des données ##

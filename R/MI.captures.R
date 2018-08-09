@@ -17,8 +17,8 @@ MI.captures <- function(
   ##### Connexion à la BDD #####
   ## Connexion à la BDD ##
   if(exists("dbMI") == FALSE){
-    dbP <- BDD.ouverture(Type = "Macroinvertébrés")
-    assign("dbMI", dbP, envir = .GlobalEnv)
+    dbMI <- BDD.ouverture(Type = "Macroinvertébrés")
+    assign("dbMI", dbMI, envir = .GlobalEnv)
   }
   
   ##### Récupération des données #####
