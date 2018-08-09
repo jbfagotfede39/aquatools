@@ -16,7 +16,10 @@ poissons.brut <- function(
 {
   
   ## Ouverture de la BDD ##
-  dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
   
   ## Récupération des données ##
   Captures <- tbl(dbP,"captures") %>% collect(n = Inf)
@@ -117,6 +120,5 @@ poissons.brut <- function(
   addDataFrame(x=Bruts, sheet=feuillebruts, row.names=FALSE)
   addDataFrame(x=Elabores, sheet=feuillecalcules, row.names=FALSE)
   saveWorkbook(SortieResultats, paste0(station, "_", date, "_résultats.xlsx"))
-  
-  DBI::dbDisconnect(dbP)
+
 } # Fin de la fonction

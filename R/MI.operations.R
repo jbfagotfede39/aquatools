@@ -32,19 +32,22 @@ MI.operations <- function(
   
   #### Ouverture de la BDD ####
   ## Connexion à la BDD
-  db <- BDD.ouverture(Type = "Macroinvertébrés")
+  if(exists("dbMI") == FALSE){
+    dbP <- BDD.ouverture(Type = "Macroinvertébrés")
+    assign("dbMI", dbP, envir = .GlobalEnv)
+  }
 
   #### Récupération des données ####
-  Operations <- tbl(db,"Operations") %>% collect(n = Inf)
-  Captures <- tbl(db,"Captures") %>% collect(n = Inf)
-  Prelevements <- tbl(db,"Prelevements") %>% collect(n = Inf)
-  Habitats <- tbl(db,"Habitats") %>% collect(n = Inf)
-  HabitatsReference <- tbl(db,"HabitatsReference") %>% collect(n = Inf)
-  EspecesReference <- tbl(db,"EspecesReference") %>% collect(n = Inf)
-  GenresReference <- tbl(db,"GenresReference") %>% collect(n = Inf)
-  SousFamillesReference <- tbl(db,"SousFamillesReference") %>% collect(n = Inf)
-  FamillesReference <- tbl(db,"FamillesReference") %>% collect(n = Inf)
-  OrdresReference <- tbl(db,"OrdresReference") %>% collect(n = Inf)
+  Operations <- tbl(dbMI,"Operations") %>% collect(n = Inf)
+  Captures <- tbl(dbMI,"Captures") %>% collect(n = Inf)
+  Prelevements <- tbl(dbMI,"Prelevements") %>% collect(n = Inf)
+  Habitats <- tbl(dbMI,"Habitats") %>% collect(n = Inf)
+  HabitatsReference <- tbl(dbMI,"HabitatsReference") %>% collect(n = Inf)
+  EspecesReference <- tbl(dbMI,"EspecesReference") %>% collect(n = Inf)
+  GenresReference <- tbl(dbMI,"GenresReference") %>% collect(n = Inf)
+  SousFamillesReference <- tbl(dbMI,"SousFamillesReference") %>% collect(n = Inf)
+  FamillesReference <- tbl(dbMI,"FamillesReference") %>% collect(n = Inf)
+  OrdresReference <- tbl(dbMI,"OrdresReference") %>% collect(n = Inf)
   
   Habitats$Recouvrement <- as.numeric(sub(",", ".", Habitats$Recouvrement))
   

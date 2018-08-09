@@ -93,8 +93,11 @@ data %>%
 
 ##### Sortie stations #####
 listeStations <- data %>% distinct(CodeRDT)
-db <- BDD.ouverture()
-listeStations <- tbl(db,"Stations") %>% filter(CodeRDT %in% listeStations$CodeRDT) %>% collect() %>% select(CodeRDT:Departement, X:TypeCoord, Fonctionnement:ReseauThermie)
+if(exists("dbC") == FALSE){
+  dbP <- BDD.ouverture(Type = "Chroniques")
+  assign("dbC", dbP, envir = .GlobalEnv)
+}
+listeStations <- tbl(dbC,"Stations") %>% filter(CodeRDT %in% listeStations$CodeRDT) %>% collect() %>% select(CodeRDT:Departement, X:TypeCoord, Fonctionnement:ReseauThermie)
 
 ## Excel ##
 openxlsx::write.xlsx(Stations, file = paste0("./Sorties/", format(now(), format="%Y-%m-%d"), "_Stations.xlsx"))

@@ -32,7 +32,10 @@ poissons.operations <- function(
   
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
-  dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
 
   ## Récupération des données ##
   Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
@@ -143,6 +146,5 @@ poissons.operations <- function(
       arrange(Station, Date)}
 
   return(Operations)
-  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

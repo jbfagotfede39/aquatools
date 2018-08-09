@@ -26,7 +26,10 @@ chronique.suivi <- function(x = "ORA2-7",
   Type <- match.arg(Type)
   
   ## Connexion à la BDD ##
-  db <- BDD.ouverture(Type = "Chroniques")
+  if(exists("dbC") == FALSE){
+    dbP <- BDD.ouverture(Type = "Chroniques")
+    assign("dbC", dbP, envir = .GlobalEnv)
+  }
   
   ## Chargement des données ##
   SuiviTerrain <- tbl(db,"SuiviTerrain") %>% collect()

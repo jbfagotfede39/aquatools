@@ -24,7 +24,10 @@ poissons.placettes <- function(
   
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
-  dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
  
   ## Récupération des données ##
   Placettes <- tbl(dbP,"placettes") %>% collect(n = Inf)
@@ -81,6 +84,5 @@ poissons.placettes <- function(
     }
   
   return(Placettes)
-  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

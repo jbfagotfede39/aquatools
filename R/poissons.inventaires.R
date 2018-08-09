@@ -23,7 +23,10 @@ poissons.inventaires <- function(
   
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
-  dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
 
   ## Récupération des données ##
   Inventaires <- tbl(dbP, "inventaires") %>% collect(n = Inf)
@@ -73,6 +76,5 @@ poissons.inventaires <- function(
       dplyr::rename(Stations = Nom, Dates = DateDebut)}
   
   return(Inventaires)
-  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

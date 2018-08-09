@@ -26,7 +26,10 @@ poissons.captures <- function(
   
   
 ## Ouverture de la BDD ##
-dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
 
 ##### Récupération des données #####
 Captures <- tbl(dbP,"captures") %>% collect(n = Inf)
@@ -116,5 +119,4 @@ if(dim(Captures)[1] != 0) Captures[Captures == 0] <- ""
 if(dim(Captures)[1] == 0) warning("Aucune capture correspondante")
 
 return(Captures)
-DBI::dbDisconnect(dbP)
 } # Fin de la fonction

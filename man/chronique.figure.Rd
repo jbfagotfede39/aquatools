@@ -4,9 +4,9 @@
 \alias{chronique.figure}
 \title{Représentation de chroniques}
 \usage{
-chronique.figure(data = data, Titre = "", legendeY = "Température (°C)",
-  duree = "Complet", Vmm30j = F, Vminmax = T, Ymin = 0, Ymax = NA,
-  save = F, format = ".png")
+chronique.figure(data = data, Titre = "",
+  legendeY = "Température (°C)", duree = "Complet", Vmm30j = F,
+  Vminmax = T, Ymin = 0, Ymax = NA, save = F, format = ".png")
 }
 \arguments{
 \item{Titre}{Titre du graphique (vide par défaut)}

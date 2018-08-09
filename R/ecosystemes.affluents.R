@@ -18,30 +18,33 @@ ecosystemes.affluents <- function(
 {
   
   ## Ouverture de la BDD ##
-  db <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
   
   ## Récupération des données ##
-  Ecosystemes <- tbl(db,"Ecosystemes") %>% collect(n = Inf)
+  Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
   
   ## Extraction des afférences ##
   # Test si le nom existe bien, sinon message d'erreur et arrêt de la fonction #
 
-if(dim(Ecosystemes %>% filter(Nomecosysteme == ecosysteme)
+if(dim(Ecosystemes %>% filter(nomecosysteme == ecosysteme)
        )[1] == 0) 
   stop("Attention : nom d'écosystème absent de la base de données")
   
 EcosystemeRecherche <-
   Ecosystemes %>% 
-  filter(Nomecosysteme == ecosysteme)
+  filter(nomecosysteme == ecosysteme)
 
   # Extraction du Codeecosysteme du CE qui nous concerne
 #EcosystemeRecherche[,1]
 
-  # Recherche des cours d'eau qui ont un Codeaffluent = à ce Codeecosysteme
+  # Recherche des cours d'eau qui ont un codeaffluent = à ce Codeecosysteme
 EcosystemeRechercheV2 <-
   EcosystemeRecherche %>% 
   full_join(Ecosystemes %>% 
-  filter(Codeaffluent == EcosystemeRecherche[,1])
+  filter(codeaffluent == EcosystemeRecherche[,1])
   )
 
 # 1ère itération pour remonter d'un niveau
@@ -51,7 +54,7 @@ for(i in 1:dim(EcosystemeRechercheV2)[1]){
 EcosystemeRechercheV3 <-
   EcosystemeRechercheV3 %>% 
   full_join(Ecosystemes %>% 
-              filter(Codeaffluent == EcosystemeRechercheV2$Codeecosysteme[i])
+              filter(codeaffluent == EcosystemeRechercheV2$Codeecosysteme[i])
   )
 }
 
@@ -61,7 +64,7 @@ for(i in 1:dim(EcosystemeRechercheV3)[1]){
   EcosystemeRechercheV4 <-
     EcosystemeRechercheV4 %>% 
     full_join(Ecosystemes %>% 
-                filter(Codeaffluent == EcosystemeRechercheV3$Codeecosysteme[i])
+                filter(codeaffluent == EcosystemeRechercheV3$Codeecosysteme[i])
     )
 }
 
@@ -71,7 +74,7 @@ for(i in 1:dim(EcosystemeRechercheV4)[1]){
   EcosystemeRechercheV5 <-
     EcosystemeRechercheV5 %>% 
     full_join(Ecosystemes %>% 
-                filter(Codeaffluent == EcosystemeRechercheV4$Codeecosysteme[i])
+                filter(codeaffluent == EcosystemeRechercheV4$Codeecosysteme[i])
     )
 }
 
@@ -81,7 +84,7 @@ for(i in 1:dim(EcosystemeRechercheV5)[1]){
   EcosystemeRechercheV6 <-
     EcosystemeRechercheV6 %>% 
     full_join(Ecosystemes %>% 
-                filter(Codeaffluent == EcosystemeRechercheV5$Codeecosysteme[i])
+                filter(codeaffluent == EcosystemeRechercheV5$Codeecosysteme[i])
     )
 }
   

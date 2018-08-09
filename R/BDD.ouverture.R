@@ -58,14 +58,17 @@ if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/FD39/Acti
 # if(Type == "Poissons" & file.exists("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
 
 if(Type == "Poissons"){
-  #if(strsplit(strsplit(system('ping -c 1 -W 200 192.168.1.2',intern=T)[2], "time=")[[1]][2], " ms")[[1]][1] < 600){
+  if(exists("motdepasse") == FALSE){
+    motdepasse <- rstudioapi::askForPassword(UtilisateurFD)
+    }
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
                        dbname = "multifish",
                        host = '192.168.1.2',
                        port = 5432,
                        user = UtilisateurFD,
-                       .rs.askForPassword(UtilisateurFD)
+                       password = motdepasse
+                       #.rs.askForPassword(UtilisateurFD)
                        )
   }else{
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
@@ -73,15 +76,21 @@ if(Type == "Poissons"){
                        host = '80.11.169.205',
                        port = 5432,
                        user = UtilisateurFD,
-                       .rs.askForPassword(UtilisateurFD)
+                       password = motdepasse
+                       #.rs.askForPassword(UtilisateurFD)
                        )
   }
 }
 
-if(Type == "Chroniques"){return(dbC)}
-if(Type == "Macroinvertébrés"){return(dbMI)}
-if(Type == "Physico-chimie"){return(dbPC)}
-if(Type == "Temps de travail"){return(dbTW)}
-if(Type == "Poissons"){return(dbP)}
+# if(Type == "Chroniques"){return(dbC)}
+# if(Type == "Macroinvertébrés"){return(dbMI)}
+# if(Type == "Physico-chimie"){return(dbPC)}
+# if(Type == "Temps de travail"){return(dbTW)}
+# if(Type == "Poissons"){return(dbP)}
+if(Type == "Chroniques"){assign("dbC", dbP, envir = .GlobalEnv)}
+if(Type == "Macroinvertébrés"){assign("dbMI", dbP, envir = .GlobalEnv)}
+if(Type == "Physico-chimie"){assign("dbPC", dbP, envir = .GlobalEnv)}
+if(Type == "Temps de travail"){assign("dbTW", dbP, envir = .GlobalEnv)}
+if(Type == "Poissons"){assign("dbP", dbP, envir = .GlobalEnv)}
 
 } # Fin de la fonction

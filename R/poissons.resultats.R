@@ -19,7 +19,10 @@ poissons.resultats <- function(
   
   
   ## Ouverture de la BDD ##
-  dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
   
   ##### Récupération des données #####
   Resultats <- tbl(dbP,"resultats") %>% collect(n = Inf)
@@ -67,7 +70,6 @@ poissons.resultats <- function(
 #    select(Nom, DateDebut, Codeespece, TailleMinimum, TailleMaximum, Nombre, Poids)
 
   return(Resultats)
-  DBI::dbDisconnect(dbP)
 } # Fin de la fonction
 
 # Resultats <- poissons.resultats() pour avoir les données en utilisant la fonction

@@ -6,8 +6,8 @@
 \usage{
 chronique.ajout(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
   cDate = "2014-12-27", cHeure = "19:00:00", cUnite = "°C",
-  cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé",
-  cModeAcquisition = "Estimé")
+  cTypeMesure = "Thermie", cNvelleValeur = 15,
+  cValidation = "Validé", cModeAcquisition = "Estimé")
 }
 \arguments{
 \item{data}{Chronique à modifier}

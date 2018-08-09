@@ -4,8 +4,9 @@
 \alias{thermie.analyse}
 \title{Calcul de paramètres clés sur des chroniques de température}
 \usage{
-thermie.analyse(CodeRDT = "", Annee = "", jour = tab[, 1], temp = tab[,
-  3], tempmin = 4, tempmax = 19, tempmaxextreme = 25, pasdetemps = 1)
+thermie.analyse(CodeRDT = "", Annee = "", jour = tab[, 1],
+  temp = tab[, 3], tempmin = 4, tempmax = 19, tempmaxextreme = 25,
+  pasdetemps = 1)
 }
 \arguments{
 \item{CodeRDT}{Nom de la station}

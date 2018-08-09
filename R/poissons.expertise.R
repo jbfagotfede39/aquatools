@@ -16,7 +16,10 @@ poissons.expertise <- function(
 {
   
   ## Ouverture de la BDD ##
-  dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
   
   ## Récupération des données ##
   Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
@@ -49,6 +52,5 @@ poissons.expertise <- function(
   
   ## Sortie ##
   return(Operations)
-  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

@@ -16,13 +16,15 @@ MI.captures <- function(
 {
   ##### Connexion à la BDD #####
   ## Connexion à la BDD ##
-  db <- BDD.ouverture("Macroinvertébrés")
-  #BDD.sauvegarde("Macroinvertébrés")
+  if(exists("dbMI") == FALSE){
+    dbP <- BDD.ouverture(Type = "Macroinvertébrés")
+    assign("dbMI", dbP, envir = .GlobalEnv)
+  }
   
   ##### Récupération des données #####
-  Operations <- tbl(db,"Operations") %>% collect(n = Inf)
-  Prelevements <- tbl(db,"Prelevements") %>% collect(n = Inf)
-  Captures <- tbl(db,"Captures") %>% collect(n = Inf)
+  Operations <- tbl(dbMI,"Operations") %>% collect(n = Inf)
+  Prelevements <- tbl(dbMI,"Prelevements") %>% collect(n = Inf)
+  Captures <- tbl(dbMI,"Captures") %>% collect(n = Inf)
   
   ##### Synthèse des données #####
   Prelevements <- left_join(Prelevements, Operations, by = c("OperationID"))

@@ -24,7 +24,10 @@ poissons.PV <- function(
 {
   
   ## Ouverture de la BDD ##
-  dbP <- BDD.ouverture(Type = "Poissons")
+  if(exists("dbP") == FALSE){
+    dbP <- BDD.ouverture(Type = "Poissons")
+    assign("dbP", dbP, envir = .GlobalEnv)
+  }
   #dbListTables(db)
   
   ## Récupération des données ##
@@ -58,6 +61,5 @@ poissons.PV <- function(
 
   
   return(pv_lots)
-  DBI::dbDisconnect(dbP)
   
 } # Fin de la fonction

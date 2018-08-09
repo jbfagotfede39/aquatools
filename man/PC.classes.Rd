@@ -4,7 +4,8 @@
 \alias{PC.classes}
 \title{Attribution de classes de qualité}
 \usage{
-PC.classes(PC, Referentiel = c("NV", "SEQ-EAU", "Quebec"), Categorie = 1)
+PC.classes(PC, Referentiel = c("NV", "SEQ-EAU", "Quebec"),
+  Categorie = 1)
 }
 \arguments{
 \item{PC}{Jeu de données}

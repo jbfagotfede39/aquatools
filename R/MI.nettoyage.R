@@ -21,13 +21,16 @@ MI.nettoyage <- function(
 {
 
   ## Connexion à la BDD ##
-db <- BDD.ouverture("Macroinvertébrés")
+  if(exists("dbMI") == FALSE){
+    dbP <- BDD.ouverture(Type = "Macroinvertébrés")
+    assign("dbMI", dbP, envir = .GlobalEnv)
+  }
   
   ## Récupération des données ##
-HabitatsReference <- tbl(db,"HabitatsReference") %>% collect(n = Inf)
-Habitats <- tbl(db,"Habitats") %>% collect(n = Inf)
-Prelevements <- tbl(db,"Prelevements") %>% collect(n = Inf)
-Captures <- tbl(db,"Captures") %>% collect(n = Inf)
+HabitatsReference <- tbl(dbMI,"HabitatsReference") %>% collect(n = Inf)
+Habitats <- tbl(dbMI,"Habitats") %>% collect(n = Inf)
+Prelevements <- tbl(dbMI,"Prelevements") %>% collect(n = Inf)
+Captures <- tbl(dbMI,"Captures") %>% collect(n = Inf)
 
 ##### Travail sur les habitats #####
 if(all(colnames(data) %in% colnames(Habitats))) {

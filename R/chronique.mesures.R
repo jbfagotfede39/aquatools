@@ -29,12 +29,15 @@ if(nchar(as.character(CodeStation)) == 0)
   stop("Attention : pas de station spécifiée")
 
 ##### Connexion à la BDD #####
-db <- BDD.ouverture(Type = "Chroniques")
+if(exists("dbC") == FALSE){
+  dbP <- BDD.ouverture(Type = "Chroniques")
+  assign("dbC", dbP, envir = .GlobalEnv)
+}
 
 ##### Collecte des données #####
 if(Valide == F){
   Mesures <- 
-    tbl(db,"Mesures") %>% 
+    tbl(dbC,"Mesures") %>% 
     filter(TypeMesure == Type) %>% 
     filter(CodeRDT == as.character(CodeStation)) %>% 
     #filter(Validation == "Validé") %>% 
@@ -42,7 +45,7 @@ if(Valide == F){
 }
 
 if(Valide == T){
-  Mesures <- tbl(db,"Mesures") %>% 
+  Mesures <- tbl(dbC,"Mesures") %>% 
     filter(TypeMesure == Type) %>% 
     filter(CodeRDT == as.character(CodeStation)) %>% 
     filter(Validation == "Validé") %>% 
