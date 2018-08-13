@@ -3,6 +3,7 @@
 #' Cette fonction permet de charger les bases de données de la fédération
 #' 
 #' @param Type Type de base de données. Chroniques par défaut
+#' @import dbplyr
 #' @import dplyr
 #' @import RPostgreSQL
 #' @export
