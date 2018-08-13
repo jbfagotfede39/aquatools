@@ -1,10 +1,10 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.62
+Version: 0.0.63
 Authors@R: person("Jean-Baptiste", "Fagot", email = "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Description: aquatools contains multiple tools to treat French freshwater data
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.5.0)
 Imports:
     car,
     DBI,
