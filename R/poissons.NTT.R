@@ -13,11 +13,15 @@
 ##### -------------- A FAIRE -------------- #####
 
 poissons.NTT <- function(station){
-  T1<-0.55*station$TemperatureMax-4.34
-  T2<-1.17*log(station$DistanceSource*station$Durete*0.01)+1.5
-  T3<-1.75*log(100*station$SectionMouillee/(station$Pente*station$LargeurLitMineur*station$LargeurLitMineur))+3.92
-  NTT<-0.45*T1+0.3*T2+0.25*T3
-  NTT<-round(NTT,2)
-  station<-mutate(station,NTT) # Afin de rajouter le NTT au bout de la base de données initiale
-  station<-arrange(station,Nom)
+  station <- 
+    station %>% 
+    mutate(T1 = 0.55*station$temperaturemax-4.34) %>% 
+    mutate(T2 = 1.17*log(station$distancesource*station$durete*0.01)+1.5) %>% 
+    mutate(T3 = 1.75*log(100*station$sectionmouillee/(station$pente*station$largeurlitmineur*station$largeurlitmineur))+3.92) %>% 
+    mutate(NTT = round(0.45*T1+0.3*T2+0.25*T3,2)) %>% 
+    mutate(NTTarrondi = round(NTT * 2) / 2) %>% 
+    arrange(nom)
+  
+return(station)
+  
 }

@@ -32,7 +32,7 @@ BDD.format <- function(data)
   if(all(colnames(data) %in% colnames(Habitats))) {
     
     # Ajout des ID
-    data$HabitatID <- row_number(data$OperationID) + as.numeric(tbl(db,"Habitats") %>% summarise(max = max(HabitatID)) %>% collect()) # Pour incrémenter les HabitatID à partir du dernier
+    data$HabitatID <- row_number(data$OperationID) + as.numeric(tbl(db,"Habitats") %>% summarise(max = max(HabitatID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les HabitatID à partir du dernier
   }
   
   # Travail sur les prélèvements #
@@ -44,7 +44,7 @@ BDD.format <- function(data)
     data$NumEchCommun <- as.integer(data$NumEchCommun)
     
     # Ajout des ID
-    data$PrelevementID <- row_number(data$OperationID) + max(Prelevements$PrelevementID) # Pour incrémenter les MesureID à partir du dernier
+    data$PrelevementID <- row_number(data$OperationID) + max(Prelevements$PrelevementID, na.rm = TRUE) # Pour incrémenter les MesureID à partir du dernier
   }
   
   # Travail sur les captures #
@@ -57,7 +57,7 @@ BDD.format <- function(data)
     data$Abondance <- as.integer(data$Abondance)
     
     # Ajout des ID
-    data$CaptureID <- row_number(data$PrelevementID) + as.numeric(tbl(db,"Captures") %>% summarise(max = max(CaptureID)) %>% collect()) # Pour incrémenter les CaptureID à partir du dernier
+    data$CaptureID <- row_number(data$PrelevementID) + as.numeric(tbl(db,"Captures") %>% summarise(max = max(CaptureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les CaptureID à partir du dernier
   }
   
   ###### Chroniques ######
@@ -82,8 +82,8 @@ BDD.format <- function(data)
     data$Date <- as.character(data$Date)
     
     # Ajout des ID
-    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
-    if(dim(filter(data, is.na(MesureID)))[1] > 0 & dim(filter(data, is.na(Validation)))[1] == 0) data$MesureID <- row_number(data$Validation) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID)) %>% collect())
+    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
+    if(dim(filter(data, is.na(MesureID)))[1] > 0 & dim(filter(data, is.na(Validation)))[1] == 0) data$MesureID <- row_number(data$Validation) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect())
     if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
   }
   
@@ -120,7 +120,7 @@ BDD.format <- function(data)
     data$Date <- as.character(data$Date)
     
     # Ajout des ID
-    data$SuiviTerrainID <- row_number(data$CodeRDT) + as.numeric(tbl(db,"SuiviTerrain") %>% summarise(max = max(SuiviTerrainID)) %>% collect()) # Pour incrémenter les SuiviTerrainID à partir du dernier
+    data$SuiviTerrainID <- row_number(data$CodeRDT) + as.numeric(tbl(db,"SuiviTerrain") %>% summarise(max = max(SuiviTerrainID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les SuiviTerrainID à partir du dernier
 
     # Vérification des types d'action
     if(dim(filter(data, !(Action == "Disparue"|Action == "Pose"|Action == "Dépose"|Action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
@@ -142,7 +142,7 @@ BDD.format <- function(data)
     data$Date <- as.character(data$Date) # Car sinon transformation automatique des formats de date
     
     # Ajout des ID
-    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"PC") %>% summarise(max = max(MesureID)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
+    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"PC") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
     if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
   }
   
