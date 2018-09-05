@@ -61,7 +61,7 @@ if(Type == "Poissons"){
                        host = '192.168.1.2',
                        port = 5432,
                        user = UtilisateurFD,
-                       password = keyring::key_get("192.168.1.2")
+                       password = keyring::key_get("Multifish")
                        )
   }else{
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
@@ -69,7 +69,7 @@ if(Type == "Poissons"){
                        host = '80.11.169.205',
                        port = 5432,
                        user = UtilisateurFD,
-                       password = keyring::key_get("192.168.1.2")
+                       password = keyring::key_get("Multifish")
                        )
   }
 }
