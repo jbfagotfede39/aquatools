@@ -27,10 +27,8 @@ stations.ecosysteme <- function(
   
   #### Base poissons ####
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  ## Ouverture de la BDD ##
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données de l'écosystème ##
   if(nchar(ecosysteme) != 0){Ecosystemes <- tbl(dbP,"ecosystemes") %>% filter(nomecosysteme == ecosysteme) %>% collect()}
@@ -61,10 +59,7 @@ stations.ecosysteme <- function(
 
   #### Base chronique ####
   ## Ouverture de la BDD ##
-  if(exists("dbC") == FALSE){
-    dbP <- BDD.ouverture(Type = "Chroniques")
-    assign("dbC", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Chroniques")
   
   ## Récupération des données de l'écosystème ##
   if(nchar(ecosysteme) != 0){
@@ -83,12 +78,12 @@ stations.ecosysteme <- function(
       rename(Nom = CodeRDT) %>% 
       mutate(Chronique = "Oui")}
   
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
+  
   #### Base physico-chimie ####
   ## Ouverture de la BDD ##
-  if(exists("dbPC") == FALSE){
-    dbPC <- BDD.ouverture(Type = "Physico-chimie")
-    assign("dbPC", dbPC, envir = .GlobalEnv)
-  }
+  dbPC <- BDD.ouverture(Type = "Physico-chimie")
   
   ## Collecte des stations pour les mesures
   StationsPC <-

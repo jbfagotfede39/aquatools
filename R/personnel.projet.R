@@ -15,14 +15,14 @@ personnel.projet <- function(
   
   ##### Récupération des données #####
   ## Connexion à la BDD ##
-  if(exists("dbTW") == FALSE){
-    dbTW <- BDD.ouverture(Type = "Temps de travail")
-    assign("dbTW", dbTW, envir = .GlobalEnv)
-  }
+  dbTW <- BDD.ouverture(Type = "Temps de travail")
   
   ## Récupération des données ##
   TpsW <- tbl(dbTW,"TempsDeTravail") %>% collect(n = Inf)
   RecapTpsW <- tbl(dbTW,"RecapTempsDeTravail") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbTW)
   
   ##### Transformation des formats #####
   TpsW$Date <- ymd(TpsW$Date)

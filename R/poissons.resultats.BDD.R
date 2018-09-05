@@ -12,10 +12,7 @@ poissons.resultats.BDD <- function(){
   #library("RSQLite");library("dplyr")
   
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
   Resultats <- tbl(dbP,"resultats") %>% collect(n = Inf)
@@ -24,6 +21,9 @@ poissons.resultats.BDD <- function(){
   Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
   Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
   Communes <- tbl(dbP,"communes") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
   
   ##### Synthèse des données #####
   Inventaires <- left_join(Inventaires, Stations, by = c("codestation"))

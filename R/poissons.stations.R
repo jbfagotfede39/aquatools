@@ -19,13 +19,13 @@ poissons.stations <- function(
 {
   
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
   Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
   
   ## Extraction des données de la station si une est spécifiée ##
   if(nchar(station) != 0) {

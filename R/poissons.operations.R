@@ -32,15 +32,15 @@ poissons.operations <- function(
   
   ## Ouverture de la BDD ##
   ## Connexion à la BDD
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Poissons")
 
   ## Récupération des données ##
   Operations <- tbl(dbP,"operations") %>% collect(n = Inf)
   Inventaires <- tbl(dbP,"inventaires") %>% collect(n = Inf)
   Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
   
   ## Synthèse des données ##
   Inventaires <- merge(Inventaires, Stations, by = c("codestation"))

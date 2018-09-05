@@ -93,10 +93,8 @@ data %>%
 
 ##### Sortie stations #####
 listeStations <- data %>% distinct(CodeRDT)
-if(exists("dbC") == FALSE){
-  dbC <- BDD.ouverture(Type = "Chroniques")
-  assign("dbC", dbC, envir = .GlobalEnv)
-}
+## Connexion à la BDD ##
+dbC <- BDD.ouverture(Type = "Chroniques")
 listeStations <- tbl(dbC,"Stations") %>% filter(CodeRDT %in% listeStations$CodeRDT) %>% collect() %>% select(CodeRDT:Departement, X:TypeCoord, Fonctionnement:ReseauThermie)
 
 ## Excel ##

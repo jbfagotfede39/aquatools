@@ -17,10 +17,7 @@ MI.systematique.presence <- function(data)
 {
   
   ## Connexion à la BDD ##
-  if(exists("dbMI") == FALSE){
-    dbP <- BDD.ouverture(Type = "Macroinvertébrés")
-    assign("dbMI", dbMI, envir = .GlobalEnv)
-  }
+  dbMI <- BDD.ouverture(Type = "Macroinvertébrés")
   
   ## Récupération des données ##
   HabitatsReference <- tbl(dbMI,"HabitatsReference") %>% collect(n = Inf)
@@ -30,6 +27,9 @@ MI.systematique.presence <- function(data)
   SousFamillesReference <- tbl(dbMI,"SousFamillesReference") %>% collect(n = Inf)
   FamillesReference <- tbl(dbMI,"FamillesReference") %>% collect(n = Inf)
   OrdresReference <- tbl(dbMI,"OrdresReference") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbMI)
   
   # Assemblage des morceaux de systématique
   Systematique <- full_join(EspecesReference, GenresReference, "GenreID")

@@ -20,12 +20,8 @@ poissons.ecosystemes <- function(
   ecosysteme="")
 {
   
-  
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
   Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)

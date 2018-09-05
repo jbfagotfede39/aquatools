@@ -14,15 +14,8 @@ poissons.resultats <- function(
   station="SOR10-2",
   date="2015-05-19")
   {
-  
-  #library("RSQLite");library("dplyr")
-  
-  
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
   Resultats <- tbl(dbP,"resultats") %>% collect(n = Inf)
@@ -31,6 +24,9 @@ poissons.resultats <- function(
   Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
   Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
   Communes <- tbl(dbP,"communes") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
   
   ## Renommage des colonnes Observations ##
   Resultats <- Resultats %>% rename(ObservationsResultats = Observations)

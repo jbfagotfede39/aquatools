@@ -28,10 +28,8 @@ chronique.stations <- function(x = "CD39",
   Recherche <- match.arg(Recherche)
   
   ## Connexion à la BDD ##
-  if(exists("dbC") == FALSE){
-    dbC <- BDD.ouverture(Type = "Chroniques")
-    assign("dbC", dbC, envir = .GlobalEnv)
-  }
+  dbC <- BDD.ouverture(Type = "Chroniques")
+
   
   ## Chargement des données ##
   Stations <- tbl(dbC,"Stations") %>% collect(n = Inf)

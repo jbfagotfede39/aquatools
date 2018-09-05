@@ -9,18 +9,14 @@
 
 poissons.especes <- function(){
   
-  #library("RSQLite");library("dplyr")
-  
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ##### Récupération des données #####
   Especes <- tbl(dbP,"especes") %>% collect(n = Inf)
   
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
+  
   return(Especes)
 } # Fin de la fonction
-
-# Resultats <- poissons.resultats() pour avoir les données en utilisant la fonction

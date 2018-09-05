@@ -24,16 +24,15 @@ poissons.PV <- function(
 {
   
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
-  #dbListTables(db)
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
   Ecosystemes <- tbl(dbP,"ecosystemes") %>% collect(n = Inf)
   pv_lots <- tbl(dbP,"pv_lots") %>% collect(n = Inf)
   pv_pvs <- tbl(dbP,"pv_pvs") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
   
   ## Synthèse des données ##
   pv_lots <- left_join(pv_lots, Ecosystemes, by = c("codeecosysteme" = "Codeecosysteme")) #

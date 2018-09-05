@@ -25,15 +25,15 @@ poissons.IPR <- function(
 {
   
   ## Ouverture de la BDD ##
-  if(exists("dbP") == FALSE){
-    dbP <- BDD.ouverture(Type = "Poissons")
-    assign("dbP", dbP, envir = .GlobalEnv)
-  }
+  dbP <- BDD.ouverture(Type = "Poissons")
   
   ## Récupération des données ##
   Operations <- tbl(dbP,"operations") %>% collect(n = Inf) %>% select(codeoperation, avisexpertcourt, avisexpert)
   Stations <- tbl(dbP,"stations") %>% collect(n = Inf)
   IPR <- tbl(dbP,"iprs") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
   
   ## Synthèse des données ##
   IPR <- left_join(IPR, Operations, by = c("codeoperation" = "codeoperation"))

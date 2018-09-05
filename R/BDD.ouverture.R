@@ -5,6 +5,7 @@
 #' @param Type Type de base de données. Chroniques par défaut
 #' @import dbplyr
 #' @import dplyr
+#' @import keyring
 #' @import RPostgreSQL
 #' @export
 #' @examples
@@ -53,23 +54,14 @@ if(Type == "Physico-chimie" & file.exists("/Users/adrienlavigne/NAS-DATA/Physico
 if(Type == "Temps de travail" & file.exists("/Users/imac27/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) dbTW <- src_sqlite("/Users/imac27/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
 if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) dbTW <- src_sqlite("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
 
-## Poissons ##
-# if(Type == "Poissons" & file.exists("/Users/imac27/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Users/imac27/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
-# if(Type == "Poissons" & file.exists("/Volumes/Fixe-FD39/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Volumes/Fixe-FD39/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
-# if(Type == "Poissons" & file.exists("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite") == T) db <- src_sqlite("/Users/adrienlavigne/NAS-DATA/Poissons/Base poisson FD/MaxiFish_V3/multifish - datas.sqlite")
-
 if(Type == "Poissons"){
-  if(exists("motdepasse") == FALSE){
-    motdepasse <- rstudioapi::askForPassword(UtilisateurFD)
-    }
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
                        dbname = "multifish",
                        host = '192.168.1.2',
                        port = 5432,
                        user = UtilisateurFD,
-                       password = motdepasse
-                       #.rs.askForPassword(UtilisateurFD)
+                       password = keyring::key_get("192.168.1.2")
                        )
   }else{
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
@@ -77,8 +69,7 @@ if(Type == "Poissons"){
                        host = '80.11.169.205',
                        port = 5432,
                        user = UtilisateurFD,
-                       password = motdepasse
-                       #.rs.askForPassword(UtilisateurFD)
+                       password = keyring::key_get("192.168.1.2")
                        )
   }
 }
@@ -87,11 +78,6 @@ if(Type == "Chroniques"){return(dbC)}
 if(Type == "Macroinvertébrés"){return(dbMI)}
 if(Type == "Physico-chimie"){return(dbPC)}
 if(Type == "Temps de travail"){return(dbTW)}
-# if(Type == "Poissons"){return(dbP)}
-# if(Type == "Chroniques"){assign("dbC", dbC, envir = .GlobalEnv)}
-# if(Type == "Macroinvertébrés"){assign("dbMI", dbMI, envir = .GlobalEnv)}
-# if(Type == "Physico-chimie"){assign("dbPC", dbPC, envir = .GlobalEnv)}
-# if(Type == "Temps de travail"){assign("dbTW", dbTW, envir = .GlobalEnv)}
-if(Type == "Poissons"){assign("dbP", dbP, envir = .GlobalEnv)}
+if(Type == "Poissons"){return(dbP)}
 
 } # Fin de la fonction

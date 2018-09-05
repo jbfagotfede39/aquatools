@@ -16,15 +16,15 @@ MI.captures <- function(
 {
   ##### Connexion à la BDD #####
   ## Connexion à la BDD ##
-  if(exists("dbMI") == FALSE){
-    dbMI <- BDD.ouverture(Type = "Macroinvertébrés")
-    assign("dbMI", dbMI, envir = .GlobalEnv)
-  }
+  dbMI <- BDD.ouverture(Type = "Macroinvertébrés")
   
   ##### Récupération des données #####
   Operations <- tbl(dbMI,"Operations") %>% collect(n = Inf)
   Prelevements <- tbl(dbMI,"Prelevements") %>% collect(n = Inf)
   Captures <- tbl(dbMI,"Captures") %>% collect(n = Inf)
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbMI)
   
   ##### Synthèse des données #####
   Prelevements <- left_join(Prelevements, Operations, by = c("OperationID"))

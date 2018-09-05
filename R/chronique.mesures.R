@@ -29,10 +29,8 @@ if(nchar(as.character(CodeStation)) == 0)
   stop("Attention : pas de station spécifiée")
 
 ##### Connexion à la BDD #####
-if(exists("dbC") == FALSE){
-  dbC <- BDD.ouverture(Type = "Chroniques")
-  assign("dbC", dbC, envir = .GlobalEnv)
-}
+dbC <- BDD.ouverture(Type = "Chroniques")
+
 
 ##### Collecte des données #####
 if(Valide == F){

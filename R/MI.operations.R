@@ -32,10 +32,7 @@ MI.operations <- function(
   
   #### Ouverture de la BDD ####
   ## Connexion à la BDD
-  if(exists("dbMI") == FALSE){
-    dbMI <- BDD.ouverture(Type = "Macroinvertébrés")
-    assign("dbMI", dbMI, envir = .GlobalEnv)
-  }
+  dbMI <- BDD.ouverture(Type = "Macroinvertébrés")
 
   #### Récupération des données ####
   Operations <- tbl(dbMI,"Operations") %>% collect(n = Inf)
@@ -50,6 +47,9 @@ MI.operations <- function(
   OrdresReference <- tbl(dbMI,"OrdresReference") %>% collect(n = Inf)
   
   Habitats$Recouvrement <- as.numeric(sub(",", ".", Habitats$Recouvrement))
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbMI)
   
   ## Format de Date ##
   Operations$Date <- ymd(Operations$Date)
