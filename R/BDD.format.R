@@ -126,6 +126,22 @@ BDD.format <- function(data)
     if(dim(filter(data, !(Action == "Disparue"|Action == "Pose"|Action == "Dépose"|Action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
   }
   
+  # Résultats #
+  
+  if(length(colnames(data)) > 22) {
+    if(colnames(data)[22] == "ValRemarqJours.DateVMoyJMaxPer") {
+      colnames(data) <- 
+        data %>% 
+        colnames() %>% 
+        paste0("chres_",.) %>% 
+        gsub("[[:punct:]]", "_", .) %>% 
+        tolower()
+      data <-
+        data %>% 
+        mutate(chres_aquatoolsversion = packageVersion("aquatools"))
+    }
+  }
+  
   ##### PC #####
   ## Connexion à la BDD ##
   db <- BDD.ouverture("Physico-chimie")

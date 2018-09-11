@@ -4,17 +4,21 @@
 \alias{chronique.traitement}
 \title{Exécuter le traitement de données de chroniques}
 \usage{
-chronique.traitement(data = data)
+chronique.traitement(data = data, export = T)
 }
 \arguments{
 \item{data}{Data.frame issu de chronique.mesures, pouvant contenir différentes stations}
+
+\item{export}{Si \code{TRUE} (par défault), exporte les résultats/figures.  Si \code{FALSE}, ne les exporte pas.}
 }
 \description{
 Permet d'exécuter plusieurs opérations de traitement des données de chronique d'une station
 }
 \examples{
 chronique.traitement(data)
+chronique.traitement(data, export = F)
 DataTravail <- chronique.mesures("SUR0-9", "Thermie") \%>\% chronique.traitement()
+DataTravail <- chronique.mesures("SUR0-9", "Thermie") \%>\% chronique.traitement(., export = F)
 DataTravail <- tbl(db,"Mesures") \%>\% filter(CodeRDT == "DOU393-2" | CodeRDT == "DOU394-5") \%>\% collect() \%>\% chronique.traitement()
 }
 \keyword{chronique}

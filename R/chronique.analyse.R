@@ -99,7 +99,7 @@ chronique.analyse <- function(
     ValJours %>% 
     summarise(
       VMoyJMinPer = round(min(VMoyJ),1),
-      DateVMoyJMinPer = Date[VMoyJ == min(VMoyJ)],
+      DateVMoyJMinPer = Date[VMoyJ == min(VMoyJ)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
       VMoyJMedPer = round(median(VMoyJ),1),
       VMoyJMoyPer = round(mean(VMoyJ),1),
       VMoyJMaxPer = round(max(VMoyJ),1),
@@ -115,8 +115,8 @@ chronique.analyse <- function(
     filter(!is.na(VMM30j)) %>% 
     summarise(
       VMaxMoy30J = max(VMM30j),
-      DateDebutVMaxMoy30J = Date[VMM30j == max(VMM30j)] -29,
-      DateFinVMaxMoy30J = Date[VMM30j == max(VMM30j)]
+      DateDebutVMaxMoy30J = Date[VMM30j == max(VMM30j)][1] -29, # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateFinVMaxMoy30J = Date[VMM30j == max(VMM30j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
     ) 
     
   ValRemarqPeriodesMobiles <-
@@ -124,8 +124,8 @@ chronique.analyse <- function(
     filter(!is.na(VMM7j)) %>% 
     summarise(
       VMaxMoy7J = max(VMM7j),
-      DateDebutVMaxMoy7J = Date[VMM7j == max(VMM7j)] -6,
-      DateFinVMaxMoy7J = Date[VMM7j == max(VMM7j)]
+      DateDebutVMaxMoy7J = Date[VMM7j == max(VMM7j)][1] -6,# le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateFinVMaxMoy7J = Date[VMM7j == max(VMM7j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
     ) %>% 
     bind_cols(ValRemarqPeriodesMobiles) %>% 
     mutate(VMaxMoy7J = round(VMaxMoy7J,1)) %>% 
