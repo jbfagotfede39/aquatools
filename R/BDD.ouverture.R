@@ -20,7 +20,7 @@
 #####################
 
 BDD.ouverture <- function(
-                           Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie", "Temps de travail"))
+                           Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie", "Temps de travail", "Data"))
 {
   
   ## Évaluation des choix
@@ -74,10 +74,33 @@ if(Type == "Poissons"){
   }
 }
 
+if(Type == "Data" & exists("dbD") == FALSE){
+  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
+    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                          dbname = "nas-sig-data",
+                          host = '192.168.1.14',
+                          #host = '80.11.169.205',
+                          port = 5433,
+                          user = UtilisateurFD,
+                          password = keyring::key_get("nas-sig-data")
+    )
+  }else{
+    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                          dbname = "nas-sig-data",
+                          #host = '192.168.1.14',
+                          host = '80.11.169.205',
+                          port = 5433,
+                          user = UtilisateurFD,
+                          password = keyring::key_get("nas-sig-data")
+    )
+  }
+}
+
 if(Type == "Chroniques"){return(dbC)}
 if(Type == "Macroinvertébrés"){return(dbMI)}
 if(Type == "Physico-chimie"){return(dbPC)}
 if(Type == "Temps de travail"){return(dbTW)}
 if(Type == "Poissons"){return(dbP)}
+if(Type == "Data"){return(dbD)}
 
 } # Fin de la fonction

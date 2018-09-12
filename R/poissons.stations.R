@@ -4,7 +4,9 @@
 #' 
 #' @param Nom de la station
 #' @keywords stations
-#' @import DBI dplyr RSQLite
+#' @import DBI 
+#' @import dplyr 
+#' @import RSQLite
 #' @export
 #' @examples
 #' Stations <- poissons.stations()

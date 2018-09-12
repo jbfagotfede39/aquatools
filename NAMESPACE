@@ -3,6 +3,7 @@
 export(BDD.SIG)
 export(BDD.ecriture)
 export(BDD.format)
+export(BDD.listetables)
 export(BDD.ouverture)
 export(BDD.sauvegarde)
 export(BV.ComByCoordL93)
