@@ -14,7 +14,7 @@
 #' poissons.synthese("Présence", "ComCom", "200071595")
 
 ##### TODO LIST #####
-#
+# Ajout de l'échelon cantonal
 #####################
 
 poissons.synthese <- function(
