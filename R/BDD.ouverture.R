@@ -31,6 +31,7 @@ drv <- dbDriver("SQLite")
 
 if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MacBookJB.local"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "MacBookJB"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MBP-de-Adrien"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien"){UtilisateurFD <- "Adrien"}
