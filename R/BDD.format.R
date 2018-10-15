@@ -5,8 +5,9 @@
 #' @param data Chronique à valider
 #' @keywords data
 #' @import dplyr
-#' @import stringr
 #' @import lubridate
+#' @import sf
+#' @import stringr
 #' @export
 #' @examples
 #' BDD.format(data)
@@ -20,19 +21,19 @@ BDD.format <- function(data)
 {
   ###### MI ######
   ## Connexion à la BDD ##
-  db <- BDD.ouverture("Macroinvertébrés")
+  dbMI <- BDD.ouverture("Macroinvertébrés")
   
   ## Récupération des données ##
-  HabitatsReference <- head(tbl(db,"HabitatsReference"), 10) %>% collect()
-  Habitats <- head(tbl(db,"Habitats"), 10) %>% collect()
-  Prelevements <- head(tbl(db,"Prelevements"), 10) %>% collect()
-  Captures <- head(tbl(db,"Captures"), 10) %>% collect()
+  HabitatsReference <- head(tbl(dbMI,"HabitatsReference"), 10) %>% collect()
+  Habitats <- head(tbl(dbMI,"Habitats"), 10) %>% collect()
+  Prelevements <- head(tbl(dbMI,"Prelevements"), 10) %>% collect()
+  Captures <- head(tbl(dbMI,"Captures"), 10) %>% collect()
   
   # Travail sur les habitats #
   if(all(colnames(data) %in% colnames(Habitats))) {
     
     # Ajout des ID
-    data$HabitatID <- row_number(data$OperationID) + as.numeric(tbl(db,"Habitats") %>% summarise(max = max(HabitatID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les HabitatID à partir du dernier
+    data$HabitatID <- row_number(data$OperationID) + as.numeric(tbl(dbMI,"Habitats") %>% summarise(max = max(HabitatID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les HabitatID à partir du dernier
   }
   
   # Travail sur les prélèvements #
@@ -57,19 +58,39 @@ BDD.format <- function(data)
     data$Abondance <- as.integer(data$Abondance)
     
     # Ajout des ID
-    data$CaptureID <- row_number(data$PrelevementID) + as.numeric(tbl(db,"Captures") %>% summarise(max = max(CaptureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les CaptureID à partir du dernier
+    data$CaptureID <- row_number(data$PrelevementID) + as.numeric(tbl(dbMI,"Captures") %>% summarise(max = max(CaptureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les CaptureID à partir du dernier
   }
   
   ###### Chroniques ######
   ## Connexion à la BDD ##
-  db <- BDD.ouverture("Chroniques")
+  dbC <- BDD.ouverture("Chroniques")
+  dbD <- BDD.ouverture("Data")
   
   ## Récupération des données ##
-  Stations <- head(tbl(db,"Stations"), 10) %>% collect()
-  Capteurs <- head(tbl(db,"Capteurs"), 10) %>% collect()
-  SuiviBDD <- head(tbl(db,"SuiviBDD"), 10) %>% collect()
-  SuiviTerrain <- head(tbl(db,"SuiviTerrain"), 10) %>% collect()
-  Mesures <- head(tbl(db,"Mesures"), 10) %>% collect()
+  Stations <- sf::st_read(dbD, query = "select * from fd_developpement.chroniques_stations limit 3;")
+  Capteurs <- head(tbl(dbC,"Capteurs"), 10) %>% collect()
+  SuiviBDD <- head(tbl(dbC,"SuiviBDD"), 10) %>% collect()
+  #SuiviTerrain <- head(tbl(dbD, in_schema("fd_developpement", "chroniques_suiviterrain")), 10) %>% collect()
+  Mesures <- head(tbl(dbC,"Mesures"), 10) %>% collect()
+  SuiviTerrain <- data.frame("id" = c(NA),
+                             "chsvi_mo" = c(NA),
+                             "chsvi_coderhj" = c(NA),
+                             "chsvi_typesuivi" = c(NA),
+                             "chsvi_operateurs" = c(NA),
+                             "chsvi_date" = c(NA),
+                             "chsvi_heure" = c(NA),
+                             "chsvi_capteur" = c(NA),
+                             "chsvi_valeur" = c(NA),
+                             "chsvi_unite" = c(NA),
+                             "chsvi_action" = c(NA),
+                             "chsvi_fonctionnement" = c(NA),
+                             "chsvi_qualite" = c(NA),
+                             "chsvi_actionafaire" = c(NA),
+                             "chsvi_remarques" = c(NA),
+                             #"_modif_utilisateur" = c(NA),
+                             #"_modif_type" = c(NA),
+                             #"_modif_date" = c(NA),
+                             stringsAsFactors = FALSE)
   
   # Mesures #
   if(all(colnames(data) %in% colnames(Mesures))) {
@@ -82,48 +103,55 @@ BDD.format <- function(data)
     data$Date <- as.character(data$Date)
     
     # Ajout des ID
-    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
-    if(dim(filter(data, is.na(MesureID)))[1] > 0 & dim(filter(data, is.na(Validation)))[1] == 0) data$MesureID <- row_number(data$Validation) + as.numeric(tbl(db,"Mesures") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect())
+    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(dbC,"Mesures") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
+    if(dim(filter(data, is.na(MesureID)))[1] > 0 & dim(filter(data, is.na(Validation)))[1] == 0) data$MesureID <- row_number(data$Validation) + as.numeric(tbl(dbC,"Mesures") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect())
     if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
   }
   
   # SuiviTerrain #
-  if(all(colnames(data) %in% colnames(SuiviTerrain))) {
+  if(all(colnames(data %>% select(-('_modif_utilisateur':'_modif_date'))) %in% colnames(SuiviTerrain))) {
     
     # Travail sur les stations #
-    data$CodeRDT <- str_replace(data$CodeRDT, " ", "") # On efface les espaces en trop dans les noms de station
+    data$chsvi_coderhj <- str_replace(data$chsvi_coderhj, " ", "") # On efface les espaces en trop dans les noms de station
     
     # Travail sur les heures #
-    if(all(!is.na(data$Heure))){ # Afin de n'appliquer les commandes que dans le cas où il n'y a pas que des NA dans les heures
-    data$Heure <- str_replace(data$Heure, "h", ":") # On remplace le h par :
-    if(all(str_count(data$Heure, ":") == 1)) data$Heure <- str_c(data$Heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
-    data$Heure <- format(ymd_hms(paste(data$Date,"-",data$Heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
+    if(all(!is.na(data$chsvi_heure))){ # Afin de n'appliquer les commandes que dans le cas où il n'y a pas que des NA dans les heures
+    data$chsvi_heure <- str_replace(data$chsvi_heure, "h", ":") # On remplace le h par :
+    data$chsvi_heure <- str_replace(data$chsvi_heure, "H", ":") # On remplace le H par :
+    if(all(str_count(data$chsvi_heure, ":") == 1)) data$chsvi_heure <- str_c(data$chsvi_heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
+    if(testit::has_warning(ymd(data$chsvi_date)) == TRUE & testit::has_warning(dmy(data$chsvi_date)) == FALSE) data$chsvi_date <- as.character(format(dmy(data$chsvi_date), format="%Y-%m-%d"))
+    data$chsvi_heure <- format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
     }
     
     # Travail sur les valeurs manuelles #
-    data <- data %>% mutate(Valeur = ifelse(Valeur == "-", NA, Valeur)) # On met des NA pour les valeurs absentes
-    data$Valeur <- round(as.numeric(data$Valeur),2) # On arrondi à 1 chiffre après la virgule
+    data$chsvi_valeur <- str_replace(data$chsvi_valeur, "°C", "") # On efface le °C
+    data$chsvi_valeur <- str_replace(data$chsvi_valeur, "°c", "") # On efface le °c
+    data <- data %>% mutate(chsvi_valeur = ifelse(chsvi_valeur == "-", NA, chsvi_valeur)) # On met des NA pour les valeurs absentes
+    data <- data %>% mutate(chsvi_valeur = ifelse(chsvi_valeur == "Impossible", NA, chsvi_valeur)) # On met des NA pour les valeurs absentes
+    if(class(data$chsvi_valeur) == "character") data$chsvi_valeur <- as.numeric(sub(",", ".", data$chsvi_valeur))
+    data$chsvi_valeur <- round(as.numeric(data$chsvi_valeur),2) # On arrondi à 1 chiffre après la virgule
     
     # Transformation des numéros de capteurs
-    data$Capteur <- str_replace(data$Capteur, "\\..*", "") # On supprime d'éventuels .0 à la fin
+    data$chsvi_capteur <- str_replace(data$chsvi_capteur, "\\..*", "") # On supprime d'éventuels .0 à la fin
     
     # Transformation des actions
-    data$Action <- dplyr::recode(data$Action,
+    data$chsvi_action <- dplyr::recode(data$chsvi_action,
                                  "disparue" = "Disparue",
+                                 "Sonde disparue" = "Disparue",
                                  "releve" = "Relève",
                                  "relève" = "Relève",
                                  "pose" = "Pose"
     )
     
     # Transformation des formats
-    data$SuiviTerrainID <- as.integer(data$SuiviTerrainID)
-    data$Date <- as.character(data$Date)
+    data$id <- as.integer(data$id)
+    data$chsvi_date <- as.character(data$chsvi_date)
     
     # Ajout des ID
-    data$SuiviTerrainID <- row_number(data$CodeRDT) + as.numeric(tbl(db,"SuiviTerrain") %>% summarise(max = max(SuiviTerrainID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les SuiviTerrainID à partir du dernier
-
+    data$id <- row_number(data$chsvi_coderhj) + as.numeric(dbGetQuery(dbD, "SELECT MAX(id) FROM fd_developpement.chroniques_suiviterrain;")) # Pour incrémenter les SuiviTerrainID à partir du dernier
+    
     # Vérification des types d'action
-    if(dim(filter(data, !(Action == "Disparue"|Action == "Pose"|Action == "Dépose"|Action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
+    if(dim(filter(data, !(chsvi_action == "Disparue"|chsvi_action == "Pose"|chsvi_action == "Dépose"|chsvi_action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
   }
   
   # Résultats #
@@ -144,12 +172,12 @@ BDD.format <- function(data)
   
   ##### PC #####
   ## Connexion à la BDD ##
-  db <- BDD.ouverture("Physico-chimie")
+  dbPC <- BDD.ouverture("Physico-chimie")
   
   ## Récupération des données ##
-  PC <- head(tbl(db,"PC"), 10) %>% collect()
-  Operations <- head(tbl(db,"Operations"), 10) %>% collect()
-  SuiviBDD <- head(tbl(db,"SuiviBDD"), 10) %>% collect()
+  PC <- head(tbl(dbPC,"PC"), 10) %>% collect()
+  Operations <- head(tbl(dbPC,"Operations"), 10) %>% collect()
+  SuiviBDD <- head(tbl(dbPC,"SuiviBDD"), 10) %>% collect()
   
   ## Travail sur les mesures de PC ##
   if(all(colnames(data) %in% colnames(PC))) {
@@ -158,7 +186,7 @@ BDD.format <- function(data)
     data$Date <- as.character(data$Date) # Car sinon transformation automatique des formats de date
     
     # Ajout des ID
-    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(db,"PC") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
+    data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(dbPC,"PC") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
     if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
   }
   

@@ -59,7 +59,7 @@ stations.ecosysteme <- function(
 
   #### Base chronique ####
   ## Ouverture de la BDD ##
-  dbP <- BDD.ouverture(Type = "Chroniques")
+  dbC <- BDD.ouverture(Type = "Chroniques")
   
   ## Récupération des données de l'écosystème ##
   if(nchar(ecosysteme) != 0){

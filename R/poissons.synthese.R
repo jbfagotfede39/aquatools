@@ -34,7 +34,7 @@ poissons.synthese <- function(
   CommunesMultifish <- tbl(dbP,"communes") %>% collect(n = Inf)
   
   Communes <- 
-    read_excel(adresse.switch("NAS-DATA/Géographie/Toponymie/table-appartenance-geo-communes-18.xlsx"), skip = 5)
+    readxl::read_excel(adresse.switch("NAS-DATA/Géographie/Toponymie/table-appartenance-geo-communes-18.xlsx"), skip = 5)
   
   ## Filtrage des communes ##
 if(Echelle == "Commune"){
@@ -67,15 +67,30 @@ Resultatsbruts <-
   select(coderesultat, everything()) %>% 
   mutate(identifiantbasesource = "Multifish_FJPPMA") %>% 
   left_join(poissons.especes() %>% select(codeespece, nomfrancais, nomlatin, referencefishbase, codesandre, codetaxref), by = "codeespece") %>% 
-  rename(Date = datedebut.y)
+  rename(Date = datedebut.y) %>% 
+  filter(!is.na(coderesultat)) # Pour supprimer les jointures avec les espèces sans codeespece (Hypophthalmichthys molitrix)
 
 ResultatsSynthese <-
   Resultatsbruts %>% 
   reshape2::dcast(codeespece ~ commune, value.var = "noinsee", fun.aggregate = length, fill = NA_real_) %>% # permet d'avoir seulement présence/absence, par le nombre d'occurences
   mutate(codeespece = as.character(codeespece)) %>% 
   mutate_if(is.numeric, funs(ifelse(!is.na(.), 1, .))) %>% # Remplace les valeurs qui ne sont pas des NA par des 1 dans les colonnes numériques
-  left_join(poissons.especes() %>% select(codeespece, nomfrancais, nomlatin, referencefishbase, codesandre, codetaxref, protectioniucnlocal, protectioniucnnational, protectionconventionberne, protectiondirectivehabitatsfaunefloreannexeii, protectionarrete8decembre1988, protectionexogene, protectionnuisible), by = "codeespece") %>% 
-  select(codeespece, nomfrancais, nomlatin, referencefishbase, codesandre, codetaxref, protectioniucnlocal, protectioniucnnational, protectionconventionberne, protectiondirectivehabitatsfaunefloreannexeii, protectionarrete8decembre1988, protectionexogene, protectionnuisible, everything())
+  left_join(poissons.especes() %>% select(codeespece, groupetaxonomique, nomfrancais, nomlatin, referencefishbase, codetaxref, protectioniucnlocal, protectioniucnlocalcritere, protectioniucnnational, protectionconventionberne, protectiondirectivehabitatsfaunefloreannexeii, protectiondirectivehabitatsfaunefloreannexeiv, protectiondirectivehabitatsfaunefloreannexev, znieffdeterminant, znieffdeterminantconditions, protectionarrete8decembre1988, protectionexogene, protectionnuisible), by = "codeespece") %>% 
+  mutate(enjeu = case_when(grepl("EN", protectioniucnlocal) ~ "Très fort",
+                           grepl("EN", protectioniucnnational) ~ "Très fort",
+                           grepl("CR", protectioniucnlocal) ~ "Très fort",
+                           grepl("CR", protectioniucnnational) ~ "Très fort",
+                           protectiondirectivehabitatsfaunefloreannexeii == "true" ~ "Fort",
+                           grepl("VU", protectioniucnlocal) ~ "Fort",
+                           grepl("VU", protectioniucnnational) ~ "Fort",
+                           grepl("DD", protectioniucnlocal) ~ "?? Moyen si reproduction locale",
+                           grepl("DD", protectioniucnnational) ~ "?? Moyen si reproduction locale",
+                           grepl("NT", protectioniucnlocal) ~ "?? Moyen si reproduction locale",
+                           grepl("NT", protectioniucnnational) ~ "?? Moyen si reproduction locale",
+                           grepl("D : déterminant en Franche-Comté", znieffdeterminant) ~ "Moyen",
+                           grepl("d* : déterminant dans certaines conditions", znieffdeterminant) ~ paste0("?? - ",znieffdeterminantconditions))
+         ) %>% # Calcul selon le modèle du SCOT bisontin 09/2018 modèle PLUi CCAPS
+  select(codeespece, groupetaxonomique, nomfrancais, nomlatin, referencefishbase, codetaxref, protectioniucnlocal, protectioniucnlocalcritere, protectioniucnnational, protectionconventionberne, protectiondirectivehabitatsfaunefloreannexeii, protectiondirectivehabitatsfaunefloreannexeiv, protectiondirectivehabitatsfaunefloreannexev, znieffdeterminant, znieffdeterminantconditions, protectionarrete8decembre1988, protectionexogene, protectionnuisible, enjeu, everything())
 }
 
 if(Echelle == "ContextePDPG"){
