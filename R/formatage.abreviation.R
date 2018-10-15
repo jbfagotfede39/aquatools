@@ -25,14 +25,18 @@
 formatage.abreviation <- function(){
 
   #### Import ####
-  if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymes.tex")
-  if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymes.tex")
+  # if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymes.tex")
+  # if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymes.tex") == T) acronymes <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymes.tex")
+  # 
+  # if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex") == T) acronymesEsp <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex")
+  # if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex") == T) acronymesEsp <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex")
+  # 
+  # if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex")
+  # if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex")
   
-  if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex") == T) acronymesEsp <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex")
-  if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex") == T) acronymesEsp <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesEsp.tex")
-  
-  if(file.exists("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/imac27/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex")
-  if(file.exists("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex") == T) acronymesCE <- read_lines("/Users/jean-baptistefagot_FD39/NAS-JB/Outils/Informatique/Latex/acronymesCE.tex")
+  acronymes <- read_lines(adresse.switch("NAS-Outils/Informatique/acronymes.tex"))
+  acronymesEsp <- read_lines(adresse.switch("NAS-Outils/Informatique/acronymesEsp.tex"))
+  acronymesCE <- read_lines(adresse.switch("NAS-Outils/Informatique/acronymesCE.tex"))
   
   #### Transformation en dataframe ####
   acronymes <- as.tbl(as.data.frame(acronymes)) %>% mutate(Type = "Autre")

@@ -124,7 +124,7 @@ stations.ecosysteme <- function(
   Synthese <- 
     Synthese %>% 
     rename(CodeRDT = Nom) %>% 
-    separate(CodeRDT, c("MilieuTemporaire", "fin"), sep = " A ", remove = F) # Séparation du nom en deux parties
+    tidyr::separate(CodeRDT, c("MilieuTemporaire", "fin"), sep = " A ", remove = F) # Séparation du nom en deux parties
   
   # Travail sur les stations sans CodeRDT
   Synthese2 <-
