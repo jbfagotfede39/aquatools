@@ -2,13 +2,14 @@
 #'
 #' Cette fonction permet d'extraire des données de suivi de terrain
 #' 
+#' @name chronique.suivi
 #' @param Type Type de donnée de suivi
 #' @import lubridate
 #' @import tidyverse
 #' @export
 #' @examples
 #' chronique.suivi("CG39", Type = "MO")
-#' chronique.suivi("JB-Stéphane", Type = "Operateurs")
+#' chronique.suivi("JB-Stéphane", Type = "Opérateur")
 #' chronique.suivi("DRO14-2", Type = "Station")
 #' chronique.suivi("2015-10-23", Type = "Date")
 #' chronique.suivi("9759803", Type = "Sonde")
@@ -18,7 +19,7 @@
 #####################
 
 chronique.suivi <- function(x = "ORA2-7", 
-                          Type = c("MO", "Operateurs", "Station", "Date", "Sonde")
+                          Type = c("MO", "Opérateur", "Station", "Date", "Sonde")
                           )
 {
 
@@ -26,68 +27,68 @@ chronique.suivi <- function(x = "ORA2-7",
   Type <- match.arg(Type)
   
   ## Connexion à la BDD ##
-  dbC <- BDD.ouverture(Type = "Chroniques")
+  dbD <- BDD.ouverture("Data")
   
   ## Chargement des données ##
-  SuiviTerrain <- tbl(dbC,"SuiviTerrain") %>% collect()
+  SuiviTerrain <- tbl(dbD, in_schema("fd_production", "chroniques_suiviterrain")) %>% collect(n = Inf) %>% arrange(chsvi_coderhj)
   
   ## Formatage ##
-  SuiviTerrain$Date <- ymd(SuiviTerrain$Date)
+  SuiviTerrain$chsvi_date <- ymd(SuiviTerrain$chsvi_date)
   
   ## x en tant que tel
   if(Type == "MO") {
     Vue <-
   SuiviTerrain %>% 
-    filter(MO == x) %>% 
-    #filter(Operateurs == x) %>% 
-    #filter(CodeRDT == x) %>% 
-    #filter(Date == x) %>% 
-    #filter(Capteur == x) %>% 
-    arrange(desc(Date))
+    filter(chsvi_mo == x) %>% 
+    #filter(chsvi_operateurs == x) %>% 
+    #filter(chsvi_coderhj == x) %>% 
+    #filter(chsvi_date == x) %>% 
+    #filter(chsvi_capteur == x) %>% 
+    arrange(desc(chsvi_date))
   }
   
-  if(Type == "Operateurs") {
+  if(Type == "Opérateur") {
     Vue <-
     SuiviTerrain %>% 
-    #filter(MO == x) %>% 
-    filter(Operateurs == x) %>% 
-    #filter(CodeRDT == x) %>% 
-    #filter(Date == x) %>% 
-    #filter(Capteur == x) %>% 
-    arrange(desc(Date))
+    #filter(chsvi_mo == x) %>% 
+    filter(chsvi_operateurs == x) %>% 
+    #filter(chsvi_coderhj == x) %>% 
+    #filter(chsvi_date == x) %>% 
+    #filter(chsvi_capteur == x) %>% 
+    arrange(desc(chsvi_date))
   }
   
   if(Type == "Station") {
     Vue <-
     SuiviTerrain %>% 
-    #filter(MO == x) %>% 
-    #filter(Operateurs == x) %>% 
-    filter(CodeRDT == x) %>% 
-    #filter(Date == x) %>% 
-    #filter(Capteur == x) %>% 
-    arrange(desc(Date))
+    #filter(chsvi_mo == x) %>% 
+    #filter(chsvi_operateurs == x) %>% 
+    filter(chsvi_coderhj == x) %>% 
+    #filter(chsvi_date == x) %>% 
+    #filter(chsvi_capteur == x) %>% 
+    arrange(desc(chsvi_date))
   }
   
   if(Type == "Date") {
     Vue <-
     SuiviTerrain %>% 
-    #filter(MO == x) %>% 
-    #filter(Operateurs == x) %>% 
-    #filter(CodeRDT == x) %>% 
-    filter(Date == x) %>% 
-    #filter(Capteur == x) %>% 
-    arrange(desc(Date))
+    #filter(chsvi_mo == x) %>% 
+    #filter(chsvi_operateurs == x) %>% 
+    #filter(chsvi_coderhj == x) %>% 
+    filter(chsvi_date == x) %>% 
+    #filter(chsvi_capteur == x) %>% 
+    arrange(desc(chsvi_date))
   }
   
   if(Type == "Sonde") {
     Vue <-
     SuiviTerrain %>% 
-    #filter(MO == x) %>% 
-    #filter(Operateurs == x) %>% 
-    #filter(CodeRDT == x) %>% 
-    #filter(Date == x) %>% 
-    filter(Capteur == x) %>% 
-    arrange(desc(Date))
+    #filter(chsvi_mo == x) %>% 
+    #filter(chsvi_operateurs == x) %>% 
+    #filter(chsvi_coderhj == x) %>% 
+    #filter(chsvi_date == x) %>% 
+    filter(chsvi_capteur == x) %>% 
+    arrange(desc(chsvi_date))
   }
   
   ## Affichage des résultats ##

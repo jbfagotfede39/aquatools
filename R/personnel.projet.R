@@ -1,6 +1,7 @@
 #' Extraction des données de temps de travail par projet
 #'
 #' Extrait au format excel les données plus ou moins détaillées des coûts du personnel par projet
+#' @name personnel.projet
 #' @keywords personnel
 #' @import dplyr RSQLite DBI lubridate xlsx
 #' @export
@@ -16,13 +17,15 @@ personnel.projet <- function(
   ##### Récupération des données #####
   ## Connexion à la BDD ##
   dbTW <- BDD.ouverture(Type = "Temps de travail")
+  dbD <- BDD.ouverture("Data")
   
   ## Récupération des données ##
-  TpsW <- tbl(dbTW,"TempsDeTravail") %>% collect(n = Inf)
+  TpsW <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_detail")) %>% collect(n = Inf)
   RecapTpsW <- tbl(dbTW,"RecapTempsDeTravail") %>% collect(n = Inf)
   
   ## Fermeture de la BDD ##
   DBI::dbDisconnect(dbTW)
+  DBI::dbDisconnect(dbD)
   
   ##### Transformation des formats #####
   TpsW$Date <- ymd(TpsW$Date)
