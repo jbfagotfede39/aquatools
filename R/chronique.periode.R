@@ -1,7 +1,7 @@
 #' Filtrage d'une chronique
 #'
 #' Cette fonction permet de filtrer la période d'intérêt. La valeur de début est l'heure sélectionnée +1, la valeur de fin est strictement inférieure à celle indiquée
-#' 
+#' @name chronique.periode
 #' @param Début Date de début (2015-02-01 14:00:00)
 #' @param Fin Date de fin (2015-02-04 14:00:00)
 #' @keywords chronique

@@ -1,7 +1,7 @@
 #' Recherche de caractéristiques administratives d'un point
 #'
 #' Cette fonction permet de fournir les caractéristiques géographiques d'un point donné (commune, département, région, population, etc.) à partir de la GeoAPI
-#' 
+#' @name BV.ComByCoordL93
 #' @param X Coordonnée X à rechercher (Lambert 93)
 #' @param Y Coordonnée Y à rechercher (Lambert 93)
 #' @import rgeoapi

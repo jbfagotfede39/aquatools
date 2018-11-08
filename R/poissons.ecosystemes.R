@@ -1,7 +1,7 @@
 #' Extraction de données de stations
 #'
 #' Cette fonction permet d'extraire les données complètes de l'ensemble des écosystèmes (par défaut) ou d'un seul
-#' 
+#' @name poissons.ecosystemes
 #' @param Nom de l'écosystème
 #' @keywords poissons
 #' @import dplyr

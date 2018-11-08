@@ -3,9 +3,6 @@
 \name{PC.parametres}
 \alias{PC.parametres}
 \title{Reformatage les paramètres physico-chimiques}
-\usage{
-PC.parametres(data)
-}
 \arguments{
 \item{data}{Jeu de données contenant une colonne Parametre ou ParametreNom}
 }

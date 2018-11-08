@@ -1,7 +1,7 @@
 #' Chroniques existantes
 #'
 #' Cette fonction permet de visualiser les chroniques existantes
-#' 
+#' @name chronique.duree
 #' @param Data Jeu de données issu de la matrice "Mesures" des chroniques
 #' @keywords chronique
 #' @import dplyr lubridate forcats

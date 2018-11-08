@@ -3,10 +3,6 @@
 \name{BDD.ouverture}
 \alias{BDD.ouverture}
 \title{Chargement des bases de données}
-\usage{
-BDD.ouverture(Type = c("Chroniques", "Poissons", "Macroinvertébrés",
-  "Physico-chimie", "Temps de travail", "Data"))
-}
 \arguments{
 \item{Type}{Type de base de données. Chroniques par défaut}
 }

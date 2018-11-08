@@ -3,9 +3,6 @@
 \name{chronique.decalage}
 \alias{chronique.decalage}
 \title{Décalage de données brutes de chronique}
-\usage{
-chronique.decalage(data, decalage = 2598.581)
-}
 \arguments{
 \item{data}{Chronique à modifier, avec un champ Date, un champ Heure et un champ Valeur}
 

@@ -1,7 +1,7 @@
 #' Attribution de classes de qualité
 #'
 #' Cette fonction permet d'attribuer des classes de qualité à des valeurs physico-chimiques
-#' 
+#' @name PC.classes
 #' @param PC Jeu de données
 #' @param Referentiel Referentiel de qualité (NV par défaut)
 #' @param Categorie Catégorie piscicole (1 par défaut)

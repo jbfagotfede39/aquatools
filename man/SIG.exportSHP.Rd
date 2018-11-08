@@ -3,9 +3,6 @@
 \name{SIG.exportSHP}
 \alias{SIG.exportSHP}
 \title{Export de données en shp}
-\usage{
-SIG.exportSHP(Data = Stations, nomfichier = "Export_stations.shp")
-}
 \arguments{
 \item{Data}{Dataframe à exporter}
 

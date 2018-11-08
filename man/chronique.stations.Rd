@@ -3,14 +3,10 @@
 \name{chronique.stations}
 \alias{chronique.stations}
 \title{Listage des stations de chroniques}
-\usage{
-chronique.stations(x = "CD39", Recherche = c("MO", "Milieu", "Bassin",
-  "Sous-bassin", "Commune", "Département"))
-}
 \arguments{
-\item{Recherche}{Type de données recherchées}
-
 \item{Nom}{Nom recherché}
+
+\item{Recherche}{Type de données recherchées}
 }
 \description{
 Cette fonction permet de lister les stations de la BDD Chroniques

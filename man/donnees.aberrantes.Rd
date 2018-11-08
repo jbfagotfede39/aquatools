@@ -3,9 +3,6 @@
 \name{donnees.aberrantes}
 \alias{donnees.aberrantes}
 \title{Détection des données aberrantes}
-\usage{
-donnees.aberrantes(data)
-}
 \description{
 Cette fonction est une aide à la détection de données aberrantes dans une chronique
 }

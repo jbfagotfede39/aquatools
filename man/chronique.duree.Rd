@@ -3,9 +3,6 @@
 \name{chronique.duree}
 \alias{chronique.duree}
 \title{Chroniques existantes}
-\usage{
-chronique.duree(Mesures)
-}
 \arguments{
 \item{Data}{Jeu de données issu de la matrice "Mesures" des chroniques}
 }

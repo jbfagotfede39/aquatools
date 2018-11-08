@@ -1,7 +1,7 @@
 #' Reformatage de dates en année biologique
 #'
 #' Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne AnneeBiol
-#' 
+#' @name formatage.annee.biologique
 #' @param data Jeu de données contenant une colonne Date au format Date
 #' @keywords donnees
 #' @import lubridate

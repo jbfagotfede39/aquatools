@@ -1,7 +1,7 @@
 #' Export de données en shp
 #'
 #' Cette fonction permet d'exporter un dataframe (avec deux colonnes X et Y) dans un shapefile en Lambert 93
-#' 
+#' @name SIG.exportSHP
 #' @param Data Dataframe à exporter
 #' @param nomfichier Nom du fichier de sortie
 #' @keywords stations poissons

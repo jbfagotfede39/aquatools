@@ -3,9 +3,6 @@
 \name{poissons.placettes}
 \alias{poissons.placettes}
 \title{Listing des opérations pour une station}
-\usage{
-poissons.placettes(station = "", complet = FALSE)
-}
 \arguments{
 \item{station}{Code de la station}
 

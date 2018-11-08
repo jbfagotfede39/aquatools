@@ -3,9 +3,6 @@
 \name{poissons.brut}
 \alias{poissons.brut}
 \title{Exportation des résultats bruts de pêche}
-\usage{
-poissons.brut(station = "AIN18-4", date = "2011-09-07")
-}
 \arguments{
 \item{station}{Code de la station}
 

@@ -3,9 +3,6 @@
 \name{poissons.resultats}
 \alias{poissons.resultats}
 \title{Extraction des données des résultats d'une opération}
-\usage{
-poissons.resultats(station = "SOR10-2", date = "2015-05-19")
-}
 \description{
 Récupère les données de résultats d'une opération dans Maxifish pour les mettre dans un dataframe
 }

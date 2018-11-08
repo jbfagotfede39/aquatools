@@ -3,10 +3,6 @@
 \name{poissons.captures}
 \alias{poissons.captures}
 \title{Extraction des données de captures de poissons pour une opération}
-\usage{
-poissons.captures(station = "", date = "", codeCapture = FALSE,
-  codePlacette = FALSE, codeOperation = FALSE)
-}
 \arguments{
 \item{station}{CodeRDT de la station}
 

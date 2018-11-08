@@ -3,9 +3,6 @@
 \name{poissons.resultats.BDD}
 \alias{poissons.resultats.BDD}
 \title{Extraction des données des résultats de Maxifish}
-\usage{
-poissons.resultats.BDD()
-}
 \description{
 Récupère l'ensemble des données de résultats de Maxifish dans un dataframe
 }

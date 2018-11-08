@@ -3,10 +3,6 @@
 \name{poissons.IPR}
 \alias{poissons.IPR}
 \title{Exportation des IPR}
-\usage{
-poissons.IPR(ListeOperations = data.frame(Station = character(0), Date =
-  character(0)), expertise = TRUE)
-}
 \arguments{
 \item{ListeOperations}{Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"}
 

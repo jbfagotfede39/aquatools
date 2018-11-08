@@ -1,7 +1,7 @@
 #' Validation des chroniques
 #'
 #' Cette fonction permet d'obtenir des éléments afin de valider les chroniques
-#' 
+#' @name chronique.validation
 #' @param data Chronique à valider (contenant un champ date défini en tant que tel)
 #' @param ValMax Valeur maximale dont les dépassements sont pris en compte
 #' @param ValMin Valeur maximale dont les dépassements sont pris en compte

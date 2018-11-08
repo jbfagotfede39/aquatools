@@ -1,7 +1,7 @@
 #' Listing des inventaires pour une station
 #'
 #' Cette fonction permet de lister les différents inventaires pour une station donnée ou l'ensemble de la BDD
-#' 
+#' @name poissons.inventaires
 #' @param station Code de la station
 #' @param all Affichage de tous les paramètres de la table - \code{FALSE} (par défault) 
 #' @keywords poissons

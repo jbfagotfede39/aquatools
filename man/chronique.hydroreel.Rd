@@ -3,9 +3,6 @@
 \name{chronique.hydroreel}
 \alias{chronique.hydroreel}
 \title{Collecte de la dernière valeur de débit transmise}
-\usage{
-chronique.hydroreel(Station)
-}
 \arguments{
 \item{station}{Numéro de la station}
 }

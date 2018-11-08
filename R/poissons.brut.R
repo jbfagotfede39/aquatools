@@ -1,7 +1,7 @@
 #' Exportation des résultats bruts de pêche
 #'
 #' Cette fonction permet d'exporter les résultats bruts et élaborés de pêche au format excel
-#' 
+#' @name poissons.brut
 #' @param station Code de la station
 #' @param date Date de la pêche
 #' @keywords poissons

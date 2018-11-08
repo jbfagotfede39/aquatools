@@ -1,7 +1,7 @@
 #' Sauvegarde des bases de données
 #'
 #' Cette fonction permet de sauvegarder les bases de données de la fédération
-#' 
+#' @name BDD.sauvegarde
 #' @param Type Type de base de données
 #' @import lubridate
 #' @export

@@ -3,10 +3,6 @@
 \name{MI.captures}
 \alias{MI.captures}
 \title{Extraction des données des captures de MI}
-\usage{
-MI.captures(listeOperations = data.frame(Station = character(0), Date =
-  character(0)))
-}
 \arguments{
 \item{listeOperations}{Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"}
 }

@@ -3,10 +3,6 @@
 \name{poissons.operations}
 \alias{poissons.operations}
 \title{Listing des opérations pour une station}
-\usage{
-poissons.operations(ListeStations = data.frame(Nom = character(0)),
-  CodeOperation = FALSE, Sortie = c("Simple", "Propre", "Complet"))
-}
 \arguments{
 \item{ListeStations}{Dataframe contenant un colonne "Nom" avec le code de la station (RHJ)}
 

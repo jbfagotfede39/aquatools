@@ -1,7 +1,7 @@
 #' Exportation des IPR
 #'
 #' Cette fonction permet d'exporter les résultats IPR de pêche
-#' 
+#' @name poissons.IPR
 #' @param ListeOperations Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"
 #' @param expertise \code{TRUE} par défault
 #' @keywords poissons

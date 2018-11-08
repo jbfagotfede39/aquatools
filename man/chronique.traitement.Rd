@@ -3,9 +3,6 @@
 \name{chronique.traitement}
 \alias{chronique.traitement}
 \title{Exécuter le traitement de données de chroniques}
-\usage{
-chronique.traitement(data = data, export = T)
-}
 \arguments{
 \item{data}{Data.frame issu de chronique.mesures, pouvant contenir différentes stations}
 

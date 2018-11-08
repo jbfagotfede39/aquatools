@@ -1,6 +1,7 @@
 #' Affichage de graphes piscicoles
 #'
 #' Cette fonction permet de créer des comparaisons entre les espèces attendues et observées. Le jeu de données doit contenir un champ ESPECE, un champ CA et un champ Date.
+#' @name poissons.CAA
 #' @keywords poissons
 #' @export
 #' @import ggplot2

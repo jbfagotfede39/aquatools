@@ -1,6 +1,7 @@
 #' Exécuter le traitement de données de chroniques
 #'
 #' Permet d'exécuter plusieurs opérations de traitement des données de chronique d'une station
+#' @name chronique.traitement
 #' @keywords chronique
 #' @param data Data.frame issu de chronique.mesures, pouvant contenir différentes stations
 #' @param export Si \code{TRUE} (par défault), exporte les résultats/figures.  Si \code{FALSE}, ne les exporte pas.

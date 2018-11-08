@@ -1,6 +1,7 @@
 #' Création de profils verticaux lacustres
 #'
 #' Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques
+#' @name profil.lac
 #' @param O2mg Pour réaliser un profil de concentration en oxygène dissous
 #' @param O2pourc Pour réaliser un profil de saturation en oxygène dissous
 #' @param Cond Pour réaliser un profil de conductivité

@@ -1,6 +1,7 @@
 #' Détection des données aberrantes
 #'
 #' Cette fonction est une aide à la détection de données aberrantes dans une chronique
+#' @name donnees.aberrantes
 #' @param data
 #' @keywords Données
 #' @export

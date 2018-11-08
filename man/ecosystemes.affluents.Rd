@@ -3,9 +3,6 @@
 \name{ecosystemes.affluents}
 \alias{ecosystemes.affluents}
 \title{Listage des affluents}
-\usage{
-ecosystemes.affluents(ecosysteme = "Ain")
-}
 \arguments{
 \item{Nom}{du cours d'eau principal}
 }

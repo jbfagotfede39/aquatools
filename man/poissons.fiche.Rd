@@ -3,10 +3,6 @@
 \name{poissons.fiche}
 \alias{poissons.fiche}
 \title{Création de fiches de résultats de pêche}
-\usage{
-poissons.fiche(station = "AIN18-4", date = "2013-09-27",
-  commentaires = FALSE)
-}
 \arguments{
 \item{station}{Code de la station}
 

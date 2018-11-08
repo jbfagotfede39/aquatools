@@ -1,7 +1,7 @@
 #' Reformatage les paramètres physico-chimiques
 #'
 #' Reformatage les paramètres physico-chimiques avec les noms uniformisés, les codes SANDRE et les unités
-#' 
+#' @name PC.parametres
 #' @param data Jeu de données contenant une colonne Parametre ou ParametreNom
 #' @keywords donnees
 #' @import tidyverse

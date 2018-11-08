@@ -1,6 +1,7 @@
 #' Décalage de données brutes de chronique
 #'
 #' Permet de corriger des données brutes de chronique présentant des valeurs de date et heure aberrantes. ATTENTION : ne gère pas les ID
+#' @name chronique.decalage
 #' @param data Chronique à modifier, avec un champ Date, un champ Heure et un champ Valeur
 #' @param decalage Valeur de décalage à calculer par soustration des deux dates au format lubridate
 #' @keywords chronique

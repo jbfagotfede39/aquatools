@@ -1,7 +1,7 @@
 #' Calcul et regroupement des CAR par espèce par station
 #'
 #' This function allows you to express your love of cats.
-#' @param love Do you love cats? Defaults to TRUE.
+#' @name poissons_synthese_CAR
 #' @keywords cats
 #' @export
 #' @examples

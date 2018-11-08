@@ -3,9 +3,6 @@
 \name{BDD.format}
 \alias{BDD.format}
 \title{Mise au format des données pour ajout BDD}
-\usage{
-BDD.format(data)
-}
 \arguments{
 \item{data}{Chronique à valider}
 }

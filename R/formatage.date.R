@@ -1,7 +1,7 @@
 #' Reformatage de dates
 #'
 #' Reformate les dates par lot de fichiers (répertoire /Regroupement/Bruts vers /Regroupement/) en format "2014-10-10"
-#' 
+#' @name formatage.date
 #' @param style Indique le style en entrée (dmy par défault)
 #' @keywords donnees
 #' @import lubridate

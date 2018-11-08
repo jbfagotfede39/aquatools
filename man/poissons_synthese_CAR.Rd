@@ -3,12 +3,6 @@
 \name{poissons_synthese_CAR}
 \alias{poissons_synthese_CAR}
 \title{Calcul et regroupement des CAR par espèce par station}
-\usage{
-poissons_synthese_CAR(poissons)
-}
-\arguments{
-\item{love}{Do you love cats? Defaults to TRUE.}
-}
 \description{
 This function allows you to express your love of cats.
 }

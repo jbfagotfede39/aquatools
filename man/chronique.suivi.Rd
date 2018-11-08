@@ -3,10 +3,6 @@
 \name{chronique.suivi}
 \alias{chronique.suivi}
 \title{Extraction suivi terrain chroniques}
-\usage{
-chronique.suivi(x = "ORA2-7", Type = c("MO", "Operateurs", "Station",
-  "Date", "Sonde"))
-}
 \arguments{
 \item{Type}{Type de donnée de suivi}
 }
@@ -15,7 +11,7 @@ Cette fonction permet d'extraire des données de suivi de terrain
 }
 \examples{
 chronique.suivi("CG39", Type = "MO")
-chronique.suivi("JB-Stéphane", Type = "Operateurs")
+chronique.suivi("JB-Stéphane", Type = "Opérateur")
 chronique.suivi("DRO14-2", Type = "Station")
 chronique.suivi("2015-10-23", Type = "Date")
 chronique.suivi("9759803", Type = "Sonde")

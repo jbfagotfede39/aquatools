@@ -3,9 +3,6 @@
 \name{formatage.annee.biologique}
 \alias{formatage.annee.biologique}
 \title{Reformatage de dates en année biologique}
-\usage{
-formatage.annee.biologique(data)
-}
 \arguments{
 \item{data}{Jeu de données contenant une colonne Date au format Date}
 }

@@ -1,6 +1,7 @@
 #' Calcul de paramètres clés sur des chroniques de température
 #'
 #' Cette fonction permet de calculer des paramètres clés sur des chroniques de température
+#' @name thermie.analyse
 #' @param CodeRDT Nom de la station
 #' @param Annee Année du suivi
 #' @param jour Colonne du data.frame contenant les dates

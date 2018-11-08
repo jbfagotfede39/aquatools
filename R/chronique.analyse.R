@@ -1,7 +1,7 @@
 #' Analyse de chroniques
 #'
 #' Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)
-#' 
+#' @name chronique.analyse
 #' @param data Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur
 #' @param Titre Titre du graphique (vide par défaut)
 #' @param legendeY Défini le texte de la légende de l'axe Y (Température (°C) par défaut)

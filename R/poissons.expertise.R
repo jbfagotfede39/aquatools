@@ -1,5 +1,5 @@
 #' Exportation des avis à dire d'expert
-#'
+#' @name poissons.expertise
 #' @param ListeOperations Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"
 #' @keywords poissons
 #' @import dplyr RSQLite lubridate

@@ -1,6 +1,7 @@
 #' Mise en acronymes des écosystèmes ou inversement
 #'
 #' Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
+#' @name formatage.ecosysteme
 #' @export
 #' @import stringr
 #' @import tidyverse

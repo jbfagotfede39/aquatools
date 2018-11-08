@@ -1,7 +1,7 @@
 #' Représentation de chroniques
 #'
 #' Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.)
-#' 
+#' @name chronique.figure
 #' @param thermie Data.frame contenant a minima une colonne Date et une colonne Valeur
 #' @param Titre Titre du graphique (vide par défaut)
 #' @param legendeY Défini le texte de la légende de l'axe Y (Température (C))

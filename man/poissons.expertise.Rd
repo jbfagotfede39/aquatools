@@ -3,10 +3,6 @@
 \name{poissons.expertise}
 \alias{poissons.expertise}
 \title{Exportation des avis à dire d'expert}
-\usage{
-poissons.expertise(ListeOperations = data.frame(Station = character(0),
-  Date = character(0)))
-}
 \arguments{
 \item{ListeOperations}{Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"}
 }

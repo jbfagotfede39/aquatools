@@ -3,9 +3,6 @@
 \name{poissons.PV}
 \alias{poissons.PV}
 \title{Exportation des PV}
-\usage{
-poissons.PV(ecosysteme = "")
-}
 \arguments{
 \item{ecosysteme}{Code de l'écosystème}
 }

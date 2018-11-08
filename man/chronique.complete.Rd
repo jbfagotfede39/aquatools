@@ -3,9 +3,6 @@
 \name{chronique.complete}
 \alias{chronique.complete}
 \title{Complément de chroniques}
-\usage{
-chronique.complete(data = data)
-}
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur}
 }

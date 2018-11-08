@@ -1,6 +1,7 @@
 #' Calcul d'indices et de listes de MI
 #'
 #' Calcule d'indices synthétiques à partir de données de captures d'une opération ou plusieurs opérations de suivi MI
+#' @name MI.indices
 #' @param DataTravail Dataframe contenant les données de captures issues de MI.indices()
 #' @param Sortie Forme du dataframe de sortie - \code{indices} (par défault), \code{listefaunistiqueGlobale}, \code{listefaunistiqueMAG20}, \code{listefaunistiqueDCEPrelevement}, \code{listefaunistiqueDCEPhase}, \code{listefaunistiqueDCEequivalentIBGN}, \code{listefaunistiqueIBGN}
 #' @keywords donnees

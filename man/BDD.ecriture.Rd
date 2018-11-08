@@ -3,10 +3,6 @@
 \name{BDD.ecriture}
 \alias{BDD.ecriture}
 \title{Ouverture des bases de données pour écriture}
-\usage{
-BDD.ecriture(Type = c("Chroniques", "Poissons", "Macroinvertébrés",
-  "Physico-chimie", "Temps de travail"))
-}
 \arguments{
 \item{Type}{Type de base de données}
 }

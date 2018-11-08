@@ -1,7 +1,7 @@
 #' Listing des opérations pour une station
 #'
 #' Cette fonction permet de lister les différentes opérations pour une station donnée
-#' 
+#' @name poissons.placettes
 #' @param station Code de la station
 #' @param complet Données simplifiées \code{FALSE} (par défault) ou complètes \code{TRUE}
 #' @keywords poissons

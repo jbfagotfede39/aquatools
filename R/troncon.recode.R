@@ -2,6 +2,7 @@
 #'
 #' Cette fonction permet de recoder les notes brutes du protocole tronçon en classes de qualité
 #' 
+#' @name troncon.recode
 #' @param data Chronique à valider
 #' @keywords data
 #' @import dplyr 

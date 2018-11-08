@@ -1,7 +1,7 @@
 #' Mise au format des données pour ajout BDD
 #'
 #' Cette fonction permet de formater les données pour les ajouter aux bases de données respectives
-#' 
+#' @name BDD.format
 #' @param data Chronique à valider
 #' @keywords data
 #' @import dplyr
@@ -68,7 +68,7 @@ BDD.format <- function(data)
   
   ## Récupération des données ##
   Stations <- sf::st_read(dbD, query = "select * from fd_developpement.chroniques_stations limit 3;")
-  Capteurs <- head(tbl(dbC,"Capteurs"), 10) %>% collect()
+  Capteurs <- tbl(dbC,"Capteurs") %>% collect()
   SuiviBDD <- head(tbl(dbC,"SuiviBDD"), 10) %>% collect()
   #SuiviTerrain <- head(tbl(dbD, in_schema("fd_developpement", "chroniques_suiviterrain")), 10) %>% collect()
   Mesures <- head(tbl(dbC,"Mesures"), 10) %>% collect()
@@ -109,7 +109,8 @@ BDD.format <- function(data)
   }
   
   # SuiviTerrain #
-  if(all(colnames(data %>% select(-('_modif_utilisateur':'_modif_date'))) %in% colnames(SuiviTerrain))) {
+  #if(all(colnames(data %>% select(-('_modif_utilisateur':'_modif_date'))) %in% colnames(SuiviTerrain))) {
+  if(all(colnames(data) %in% colnames(SuiviTerrain))) {
     
     # Travail sur les stations #
     data$chsvi_coderhj <- str_replace(data$chsvi_coderhj, " ", "") # On efface les espaces en trop dans les noms de station
@@ -119,9 +120,12 @@ BDD.format <- function(data)
     data$chsvi_heure <- str_replace(data$chsvi_heure, "h", ":") # On remplace le h par :
     data$chsvi_heure <- str_replace(data$chsvi_heure, "H", ":") # On remplace le H par :
     if(all(str_count(data$chsvi_heure, ":") == 1)) data$chsvi_heure <- str_c(data$chsvi_heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
-    if(testit::has_warning(ymd(data$chsvi_date)) == TRUE & testit::has_warning(dmy(data$chsvi_date)) == FALSE) data$chsvi_date <- as.character(format(dmy(data$chsvi_date), format="%Y-%m-%d"))
-    data$chsvi_heure <- format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
+    if(testit::has_warning(format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S")) == FALSE) data$chsvi_heure <- format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
+    if(testit::has_warning(format(ymd_hms(data$chsvi_heure), format="%H:%M:%S")) == FALSE) data$chsvi_heure <- format(ymd_hms(data$chsvi_heure), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
     }
+    
+    # Travail sur les dates #
+    if(testit::has_warning(ymd(data$chsvi_date)) == TRUE & testit::has_warning(dmy(data$chsvi_date)) == FALSE) data$chsvi_date <- as.character(format(dmy(data$chsvi_date), format="%Y-%m-%d"))
     
     # Travail sur les valeurs manuelles #
     data$chsvi_valeur <- str_replace(data$chsvi_valeur, "°C", "") # On efface le °C
@@ -149,13 +153,18 @@ BDD.format <- function(data)
     
     # Ajout des ID
     data$id <- row_number(data$chsvi_coderhj) + as.numeric(dbGetQuery(dbD, "SELECT MAX(id) FROM fd_developpement.chroniques_suiviterrain;")) # Pour incrémenter les SuiviTerrainID à partir du dernier
+    data <- data %>% arrange(id)
     
     # Vérification des types d'action
     if(dim(filter(data, !(chsvi_action == "Disparue"|chsvi_action == "Pose"|chsvi_action == "Dépose"|chsvi_action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
   }
   
-  # Résultats #
+  # Capteurs #
+  if(all(colnames(data) %in% colnames(Capteurs))) {
+    data$CapteurID <- row_number(data$NumeroCapteur) + max(Capteurs$CapteurID, na.rm = TRUE) # Pour incrémenter les CapteurID à partir du dernier
+  }
   
+  # Résultats #
   if(length(colnames(data)) > 22) {
     if(colnames(data)[22] == "ValRemarqJours.DateVMoyJMaxPer") {
       colnames(data) <- 

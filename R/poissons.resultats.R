@@ -1,6 +1,7 @@
 #' Extraction des données des résultats d'une opération
 #'
 #' Récupère les données de résultats d'une opération dans Maxifish pour les mettre dans un dataframe
+#' @name poissons.resultats
 #' @keywords donnees
 #' @import dplyr 
 #' @import RSQLite

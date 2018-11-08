@@ -3,9 +3,6 @@
 \name{resume}
 \alias{resume}
 \title{Résumé des données}
-\usage{
-resume(data)
-}
 \description{
 Cette fonction est un résumé des données
 }

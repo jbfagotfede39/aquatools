@@ -3,9 +3,6 @@
 \name{division.annuelle}
 \alias{division.annuelle}
 \title{Division en séries annuelles}
-\usage{
-division.annuelle()
-}
 \description{
 Permet de diviser une longue chronique temporelle en séries annuelles à partir du 1 octobre de l'année N-1 jusqu'au 30 septembre de l'année N
 }

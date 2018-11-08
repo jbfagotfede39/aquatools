@@ -3,9 +3,6 @@
 \name{BDD.SIG}
 \alias{BDD.SIG}
 \title{Export BDD vers SIG des stations}
-\usage{
-BDD.SIG()
-}
 \arguments{
 \item{data}{Chronique à valider}
 }

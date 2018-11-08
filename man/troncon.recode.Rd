@@ -3,9 +3,6 @@
 \name{troncon.recode}
 \alias{troncon.recode}
 \title{Recode note protocole tronçon}
-\usage{
-troncon.recode(troncon = data)
-}
 \arguments{
 \item{data}{Chronique à valider}
 }

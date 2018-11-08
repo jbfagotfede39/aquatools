@@ -1,7 +1,7 @@
 #' Listing des opérations (MI) pour une station
 #'
 #' Cette fonction permet de lister les différentes opérations pour une liste donnée de stations
-#' 
+#' @name MI.operations
 #' @param listeStations Dataframe contenant un colonne "Nom" avec le code de la station (RHJ)
 #' @param CodeOperation Affichage du CodeOperation - \code{FALSE} (par défault)
 #' @param Sortie Forme du dataframe de sortie - \code{Simple} (par défault), \code{Propre} (format diffusable, avec stations) ou \code{Complet} (tous les champs)

@@ -3,12 +3,9 @@
 \name{chronique.figure}
 \alias{chronique.figure}
 \title{Représentation de chroniques}
-\usage{
-chronique.figure(data = data, Titre = "",
-  legendeY = "Température (°C)", duree = "Complet", Vmm30j = F,
-  Vminmax = T, Ymin = 0, Ymax = NA, save = F, format = ".png")
-}
 \arguments{
+\item{thermie}{Data.frame contenant a minima une colonne Date et une colonne Valeur}
+
 \item{Titre}{Titre du graphique (vide par défaut)}
 
 \item{legendeY}{Défini le texte de la légende de l'axe Y (Température (C))}
@@ -29,8 +26,6 @@ valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche p
 figures.  Si \code{TRUE}, les enregistre.}
 
 \item{format}{Défini le format d'enregistrement (par défaut .png)}
-
-\item{thermie}{Data.frame contenant a minima une colonne Date et une colonne Valeur}
 }
 \description{
 Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.)

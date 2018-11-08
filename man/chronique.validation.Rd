@@ -3,10 +3,6 @@
 \name{chronique.validation}
 \alias{chronique.validation}
 \title{Validation des chroniques}
-\usage{
-chronique.validation(data, ValMax = 21, ValMin = 0, ValEcart = 1,
-  TempsDiff = 1)
-}
 \arguments{
 \item{data}{Chronique à valider (contenant un champ date défini en tant que tel)}
 

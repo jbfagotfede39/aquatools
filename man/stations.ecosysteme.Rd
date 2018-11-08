@@ -3,13 +3,10 @@
 \name{stations.ecosysteme}
 \alias{stations.ecosysteme}
 \title{Listage des stations d'un cours d'eau}
-\usage{
-stations.ecosysteme(ecosysteme = "", shp = F)
-}
 \arguments{
-\item{shp}{Si \code{FALSE} (par défault), n'exporte pas de shp dans le répertoire courant.}
-
 \item{Nom}{du cours d'eau}
+
+\item{shp}{Si \code{FALSE} (par défault), n'exporte pas de shp dans le répertoire courant.}
 }
 \description{
 Cette fonction permet de lister les stations d'un cours d'eau donné dans les BDD poisson et chronique

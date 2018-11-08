@@ -1,7 +1,7 @@
 #' Création de fiches de résultats de pêche
 #'
 #' Cette fonction permet de créer une fiche de synthèse des résultats de pêche
-#' 
+#' @name poissons.fiche
 #' @param station Code de la station
 #' @param date Date de la pêche
 #' @param commentaires \code{FALSE} par défault

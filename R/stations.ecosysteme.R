@@ -2,6 +2,7 @@
 #'
 #' Cette fonction permet de lister les stations d'un cours d'eau donné dans les BDD poisson et chronique
 #' 
+#' @name stations.ecosysteme
 #' @param Nom du cours d'eau
 #' @param shp Si \code{FALSE} (par défault), n'exporte pas de shp dans le répertoire courant.
 #' @keywords stations

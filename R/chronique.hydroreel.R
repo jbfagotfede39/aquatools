@@ -1,7 +1,7 @@
 #' Collecte de la dernière valeur de débit transmise
 #'
 #' Cette fonction permet d'extraire depuis Hydroréel la dernière valeur mesurée de débit d'une station donnée
-#' 
+#' @name chronique.hydroreel
 #' @param station Numéro de la station
 #' @keywords chronique
 #' @import lubridate

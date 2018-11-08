@@ -3,10 +3,6 @@
 \name{poissons.synthese}
 \alias{poissons.synthese}
 \title{Synthèse des données piscicoles}
-\usage{
-poissons.synthese(Synthese = "Présence", Echelle = c("Commune",
-  "ComCom", "ContextePDPG", "Département"), Territoire = "39")
-}
 \arguments{
 \item{Synthese}{Type de synthèse. Présence par défaut}
 

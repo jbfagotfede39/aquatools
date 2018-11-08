@@ -3,9 +3,6 @@
 \name{BV.ComByCoordL93}
 \alias{BV.ComByCoordL93}
 \title{Recherche de caractéristiques administratives d'un point}
-\usage{
-BV.ComByCoordL93(X = as.numeric(0), Y = as.numeric(0))
-}
 \arguments{
 \item{X}{Coordonnée X à rechercher (Lambert 93)}
 

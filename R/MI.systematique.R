@@ -1,7 +1,7 @@
 #' Complément des données de MI
 #'
 #' Cette fonction permet de compléter les données de systématique des MI
-#' 
+#' @name MI.systematique
 #' @param data Jeu de données à compléter
 #' @keywords MI
 #' @import dplyr DBI

@@ -1,6 +1,7 @@
 #' Extraction des données des résultats de Maxifish
 #'
 #' Récupère l'ensemble des données de résultats de Maxifish dans un dataframe
+#' @name poissons.resultats.BDD
 #' @keywords donnees
 #' @import DBI dplyr RSQLite
 #' @export

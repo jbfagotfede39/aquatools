@@ -3,9 +3,6 @@
 \name{poissons.CAA}
 \alias{poissons.CAA}
 \title{Affichage de graphes piscicoles}
-\usage{
-poissons.CAA(poissonsvue)
-}
 \description{
 Cette fonction permet de créer des comparaisons entre les espèces attendues et observées. Le jeu de données doit contenir un champ ESPECE, un champ CA et un champ Date.
 }

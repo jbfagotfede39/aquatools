@@ -1,7 +1,7 @@
 #' Extraction de données de stations
 #'
 #' Cette fonction permet d'extraire les données complètes de l'ensemble des stations piscicoles (par défaut) ou d'une seule
-#' 
+#' @name poissons.stations
 #' @param Nom de la station
 #' @keywords stations
 #' @import DBI 

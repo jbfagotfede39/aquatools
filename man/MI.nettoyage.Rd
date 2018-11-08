@@ -3,9 +3,6 @@
 \name{MI.nettoyage}
 \alias{MI.nettoyage}
 \title{Nettoyage des données de MI}
-\usage{
-MI.nettoyage(data, larve = F)
-}
 \arguments{
 \item{data}{Chronique à valider}
 

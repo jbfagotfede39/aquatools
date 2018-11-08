@@ -1,6 +1,7 @@
 #' Extraction des données de captures de poissons pour une opération
 #'
 #' Récupère les données de captures de poissons d'une opération
+#' @name poissons.captures
 #' @keywords donnees
 #' @param station CodeRDT de la station
 #' @param date Date de l'opération

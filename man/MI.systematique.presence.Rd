@@ -3,9 +3,6 @@
 \name{MI.systematique.presence}
 \alias{MI.systematique.presence}
 \title{Vérification existence MI}
-\usage{
-MI.systematique.presence(data)
-}
 \arguments{
 \item{data}{Jeu de données à compléter}
 }

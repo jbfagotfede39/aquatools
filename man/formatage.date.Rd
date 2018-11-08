@@ -3,9 +3,6 @@
 \name{formatage.date}
 \alias{formatage.date}
 \title{Reformatage de dates}
-\usage{
-formatage.date(style = "dmy")
-}
 \arguments{
 \item{style}{Indique le style en entrée (dmy par défault)}
 }

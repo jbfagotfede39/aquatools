@@ -1,7 +1,7 @@
 #' Listage des stations de chroniques
 #'
 #' Cette fonction permet de lister les stations de la BDD Chroniques
-#' 
+#' @name chronique.stations
 #' @param Nom Nom recherché
 #' @param Recherche Type de données recherchées
 #' @keywords stations

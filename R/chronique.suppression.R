@@ -1,6 +1,7 @@
 #' Suppression de données brutes de chronique
 #'
 #' Permet de supprimer des données brutes de chronique présentant des valeurs aberrantes. ATTENTION : ne gère pas les ID
+#' @name chronique.suppression
 #' @param data Chronique à modifier
 #' @param cCodeRDT
 #' @param cCapteur

@@ -2,6 +2,7 @@
 #'
 #' Cette fonction permet d'extraire la distance à la source à partir du CodeRDT
 #' 
+#' @name stations.DistSource
 #' @param data Dataframe contenant une colonne CodeRDT
 #' @keywords stations
 #' @import stringr

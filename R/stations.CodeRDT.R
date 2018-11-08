@@ -1,7 +1,7 @@
 #' Extraire la distance à la source ou le code écosystème du CodeRDT
 #'
 #' Cette fonction permet d'extraire la distance à la source ou le code écosystème à partir du CodeRDT
-#' 
+#' @name stations.CodeRDT
 #' @param data Dataframe contenant une colonne CodeRDT
 #' @param DistSource Si \code{T} (par défaut), extrait la distance à la source - Extrait sinon le code de l'écosystème
 #' @keywords stations

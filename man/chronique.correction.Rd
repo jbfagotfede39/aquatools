@@ -3,11 +3,6 @@
 \name{chronique.correction}
 \alias{chronique.correction}
 \title{Correction de données brutes de chronique}
-\usage{
-chronique.correction(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
-  cDate = "2014-12-27", cHeure = "19:00:00", cValeur = 985.3,
-  cTypeMesure = "Piézométrie", cNvelleValeur = 700)
-}
 \arguments{
 \item{data}{Chronique à modifier}
 

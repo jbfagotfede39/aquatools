@@ -1,6 +1,7 @@
 #' Remplacement d'abréviations
 #'
 #' Cette fonction permet d'exporter la définition des acronymes
+#' @name formatage.abreviation
 #' @export
 #' @import tidyverse
 #' @examples

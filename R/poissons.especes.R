@@ -1,6 +1,7 @@
 #' Extraction des données de référence des espèces
 #'
 #' Récupère l'ensemble des données de référence des espèces de Multifish
+#' @name poissons.especes
 #' @keywords donnees
 #' @import DBI dplyr RSQLite
 #' @export

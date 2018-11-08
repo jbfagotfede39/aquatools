@@ -1,7 +1,7 @@
 #' Complément de chroniques
 #'
 #' Cette fonction permet de compléter les chroniques présentant des valeurs manquantes
-#' 
+#' @name chronique.complete
 #' @param data Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur
 #' @keywords chronique
 #' @import lubridate dplyr

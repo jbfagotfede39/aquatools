@@ -1,7 +1,7 @@
 #' Agrégation de chroniques
 #'
 #' Cette fonction permet d'agréger des chroniques de mesures (température, niveaux, etc.)
-#' 
+#' @name chronique.agregation
 #' @param data Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur
 #' @keywords chronique
 #' @import openxlsx

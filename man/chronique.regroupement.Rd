@@ -3,9 +3,6 @@
 \name{chronique.regroupement}
 \alias{chronique.regroupement}
 \title{Regroupement de données temporelles}
-\usage{
-chronique.regroupement()
-}
 \description{
 Permet de mettre bout à bout des données temporelles
 }

@@ -2,6 +2,7 @@
 #'
 #' Cette fonction permet de retrouver automatique l'adresse d'un fichier entre l'ordi portable et l'ordi fixe
 #' 
+#' @name adresse.switch
 #' @param url Adresse du fichier à ouvrir
 #' @export
 #' @examples

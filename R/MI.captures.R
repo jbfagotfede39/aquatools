@@ -1,6 +1,7 @@
 #' Extraction des données des captures de MI
 #'
 #' Récupère les données de captures d'une opération de suivi MI
+#' @name MI.captures
 #' @param listeOperations Dataframe contenant un colonne "Station" avec le code de la station (RHJ) et une colonne "Date"
 #' @keywords donnees
 #' @import dplyr RSQLite DBI lubridate

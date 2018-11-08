@@ -3,9 +3,6 @@
 \name{stations.DistSource}
 \alias{stations.DistSource}
 \title{Extraire la distance à la source du CodeRDT}
-\usage{
-stations.DistSource(data = data)
-}
 \arguments{
 \item{data}{Dataframe contenant une colonne CodeRDT}
 }

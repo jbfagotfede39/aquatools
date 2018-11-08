@@ -1,7 +1,7 @@
 #' Calcul initial des coûts de projet
 #'
 #' Cette fonction permet de calculer les coûts d'un projet au moment de son montage. Elle s'appuie sur le format saisi dans la table RecapTpsW et réalise les conversions à partir des volumes unitaires, et ordonne les sujets
-#' 
+#' @name projet.calculInitial
 #' @param NomProjet Nom du dataframe contenant les données "attendues" à traiter, dans le format de RecapTpsW
 #' @import dplyr stringr
 #' @export

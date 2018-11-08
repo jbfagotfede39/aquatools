@@ -3,9 +3,6 @@
 \name{BDD.listetables}
 \alias{BDD.listetables}
 \title{Chargement des tables et champs de nas-sig-data}
-\usage{
-BDD.listetables()
-}
 \description{
 Cette fonction permet de charger les noms des tables et des champs de la base de donnéesnas-sig-data
 }

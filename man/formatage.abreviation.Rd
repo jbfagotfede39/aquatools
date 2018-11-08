@@ -3,9 +3,6 @@
 \name{formatage.abreviation}
 \alias{formatage.abreviation}
 \title{Remplacement d'abréviations}
-\usage{
-formatage.abreviation()
-}
 \description{
 Cette fonction permet d'exporter la définition des acronymes
 }

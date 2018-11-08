@@ -1,7 +1,7 @@
 #' Ouverture des bases de données pour écriture
 #'
 #' Cette fonction permet de charger les bases de données de la fédération pour écrire dedans
-#' 
+#' @name BDD.ecriture
 #' @param Type Type de base de données
 #' @import dplyr
 #' @import DBI

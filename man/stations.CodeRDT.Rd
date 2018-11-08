@@ -3,9 +3,6 @@
 \name{stations.CodeRDT}
 \alias{stations.CodeRDT}
 \title{Extraire la distance à la source ou le code écosystème du CodeRDT}
-\usage{
-stations.CodeRDT(data = data, DistSource = T)
-}
 \arguments{
 \item{data}{Dataframe contenant une colonne CodeRDT}
 

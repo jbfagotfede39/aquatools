@@ -3,9 +3,6 @@
 \name{projet.calculInitial}
 \alias{projet.calculInitial}
 \title{Calcul initial des coûts de projet}
-\usage{
-projet.calculInitial(NomProjet)
-}
 \arguments{
 \item{NomProjet}{Nom du dataframe contenant les données "attendues" à traiter, dans le format de RecapTpsW}
 }

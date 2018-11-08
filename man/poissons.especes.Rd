@@ -3,9 +3,6 @@
 \name{poissons.especes}
 \alias{poissons.especes}
 \title{Extraction des données de référence des espèces}
-\usage{
-poissons.especes()
-}
 \description{
 Récupère l'ensemble des données de référence des espèces de Multifish
 }

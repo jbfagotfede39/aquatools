@@ -1,7 +1,7 @@
 #' Vérification existence MI
 #'
 #' Cette fonction permet de vérifier la présence des taxons de MI
-#' 
+#' @name MI.systematique.presence
 #' @param data Jeu de données à compléter
 #' @keywords MI
 #' @import dplyr DBI

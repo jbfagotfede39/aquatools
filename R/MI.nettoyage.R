@@ -1,7 +1,7 @@
 #' Nettoyage des données de MI
 #'
 #' Cette fonction permet de corriger des codes erronés des données de MI
-#' 
+#' @name MI.nettoyage
 #' @param data Chronique à valider
 #' @param larve Si \code{FALSE} (par défault), n'ajoute pas le stade larvaire si non complété
 #' @keywords MI

@@ -3,9 +3,6 @@
 \name{profil.lac}
 \alias{profil.lac}
 \title{Création de profils verticaux lacustres}
-\usage{
-profil.lac(PC, param = "O2mg")
-}
 \arguments{
 \item{O2mg}{Pour réaliser un profil de concentration en oxygène dissous}
 

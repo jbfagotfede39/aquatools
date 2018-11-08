@@ -1,7 +1,7 @@
 #' Tendance d'évolution d'une chroniques
 #'
 #' Cette fonction permet d'analyser les tendances d'évolution de chroniques de mesures (température, niveaux, etc.)
-#' 
+#' @name chronique.tendance
 #' @param data Jeu de données
 #' @param N 
 #' @keywords chronique

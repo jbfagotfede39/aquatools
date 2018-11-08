@@ -1,6 +1,7 @@
 #' Résumé des données
 #'
 #' Cette fonction est un résumé des données
+#' @name resume
 #' @param data
 #' @keywords Données
 #' @export

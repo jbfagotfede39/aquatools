@@ -3,10 +3,6 @@
 \name{MI.operations}
 \alias{MI.operations}
 \title{Listing des opérations (MI) pour une station}
-\usage{
-MI.operations(listeStations = data.frame(Nom = character(0)),
-  CodeOperation = F, Sortie = c("Simple", "Propre", "Complet"))
-}
 \arguments{
 \item{listeStations}{Dataframe contenant un colonne "Nom" avec le code de la station (RHJ)}
 

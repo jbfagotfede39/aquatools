@@ -1,6 +1,7 @@
 #' Correction de données brutes de chronique
 #'
 #' Permet de corriger des données brutes de chronique présentant des valeurs aberrantes. ATTENTION : ne gère pas les ID
+#' @name chronique.correction
 #' @param data Chronique à modifier
 #' @param cCodeRDT
 #' @param cCapteur

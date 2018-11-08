@@ -3,9 +3,6 @@
 \name{MI.systematique}
 \alias{MI.systematique}
 \title{Complément des données de MI}
-\usage{
-MI.systematique(data)
-}
 \arguments{
 \item{data}{Jeu de données à compléter}
 }

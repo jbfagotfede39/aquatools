@@ -3,9 +3,6 @@
 \name{adresse.switch}
 \alias{adresse.switch}
 \title{Switcher de localisation de fichier}
-\usage{
-adresse.switch(url = "")
-}
 \arguments{
 \item{url}{Adresse du fichier à ouvrir}
 }

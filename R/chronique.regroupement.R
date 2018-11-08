@@ -1,6 +1,7 @@
 #' Regroupement de données temporelles
 #'
 #' Permet de mettre bout à bout des données temporelles
+#' @name chronique.regroupement
 #' @keywords donnees
 #' @import dplyr
 #' @export

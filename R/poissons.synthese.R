@@ -1,7 +1,7 @@
 #' Synthèse des données piscicoles
 #'
 #' Cette fonction permet de réaliser différentes synthèses des enjeux piscicoles à différentes échelles spatiales (commune, communauté de communes, contexte de PDPG ou département)
-#' 
+#' @name poissons.synthese
 #' @param Synthese Type de synthèse. Présence par défaut
 #' @param Echelle Échelle spatiale de la synthèse (commune, communauté de communes, contexte de PDPG ou département)
 #' @param Territoire Territoire concerné : code insee ou code contexte

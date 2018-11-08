@@ -3,9 +3,6 @@
 \name{poissons.NTT}
 \alias{poissons.NTT}
 \title{Calcul des NTT}
-\usage{
-poissons.NTT(station)
-}
 \arguments{
 \item{Données}{Dataframe issu de poissons.stations()}
 }

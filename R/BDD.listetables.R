@@ -1,7 +1,7 @@
 #' Chargement des tables et champs de nas-sig-data
 #'
 #' Cette fonction permet de charger les noms des tables et des champs de la base de donnéesnas-sig-data
-#' 
+#' @name BDD.listetables
 #' @import dbplyr
 #' @import dplyr
 #' @import keyring

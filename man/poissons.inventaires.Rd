@@ -3,9 +3,6 @@
 \name{poissons.inventaires}
 \alias{poissons.inventaires}
 \title{Listing des inventaires pour une station}
-\usage{
-poissons.inventaires(station = "", all = FALSE)
-}
 \arguments{
 \item{station}{Code de la station}
 

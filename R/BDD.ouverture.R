@@ -1,7 +1,7 @@
 #' Chargement des bases de données
 #'
 #' Cette fonction permet de charger les bases de données de la fédération
-#' 
+#' @name BDD.ouverture
 #' @param Type Type de base de données. Chroniques par défaut
 #' @import dbplyr
 #' @import dplyr

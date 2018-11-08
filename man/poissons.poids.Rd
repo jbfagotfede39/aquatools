@@ -3,9 +3,6 @@
 \name{poissons.poids}
 \alias{poissons.poids}
 \title{Calcul des poids attendus en fonction de la taille pour un jeu de captures}
-\usage{
-poissons.poids(Captures = Captures)
-}
 \description{
 Calcule, à partir d'une jeu de données de captures, les poids attendus pour des tailles données
 }

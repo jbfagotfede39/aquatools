@@ -3,9 +3,6 @@
 \name{poissons.stations}
 \alias{poissons.stations}
 \title{Extraction de données de stations}
-\usage{
-poissons.stations(station = "")
-}
 \arguments{
 \item{Nom}{de la station}
 }

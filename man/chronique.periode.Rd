@@ -3,9 +3,6 @@
 \name{chronique.periode}
 \alias{chronique.periode}
 \title{Filtrage d'une chronique}
-\usage{
-chronique.periode(x = Data, deb = "", fin = "")
-}
 \arguments{
 \item{Début}{Date de début (2015-02-01 14:00:00)}
 

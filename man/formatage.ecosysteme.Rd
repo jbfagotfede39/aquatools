@@ -3,10 +3,6 @@
 \name{formatage.ecosysteme}
 \alias{formatage.ecosysteme}
 \title{Mise en acronymes des écosystèmes ou inversement}
-\usage{
-formatage.ecosysteme(acronymes = data, Type = c("Simplification",
-  "Expansion"))
-}
 \description{
 Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
 }

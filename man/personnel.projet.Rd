@@ -3,9 +3,6 @@
 \name{personnel.projet}
 \alias{personnel.projet}
 \title{Extraction des données de temps de travail par projet}
-\usage{
-personnel.projet(projet = "Étude Leue")
-}
 \description{
 Extrait au format excel les données plus ou moins détaillées des coûts du personnel par projet
 }

@@ -1,6 +1,7 @@
 #' Extraction de données brutes de chronique
 #'
 #' Permet d'extraire les données de chronique d'une station
+#' @name chronique.mesures
 #' @keywords chronique
 #' @import DBI
 #' @import dplyr

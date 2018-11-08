@@ -3,9 +3,6 @@
 \name{chronique.tendance}
 \alias{chronique.tendance}
 \title{Tendance d'évolution d'une chroniques}
-\usage{
-chronique.tendance(data = data, N = 2)
-}
 \arguments{
 \item{data}{Jeu de données}
 

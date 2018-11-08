@@ -3,13 +3,8 @@
 \name{chronique.analyse}
 \alias{chronique.analyse}
 \title{Analyse de chroniques}
-\usage{
-chronique.analyse(data = data, pasdetemps = 1)
-}
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur}
-
-\item{pasdetemps}{Indique le pas de temps entre chaque mesure : 1 pour une heure (1 par défaut)}
 
 \item{Titre}{Titre du graphique (vide par défaut)}
 
@@ -26,6 +21,8 @@ valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche p
 \item{Ymin}{Valeur minimale de l'axe des Y (0 par défaut)}
 
 \item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
+
+\item{pasdetemps}{Indique le pas de temps entre chaque mesure : 1 pour une heure (1 par défaut)}
 }
 \description{
 Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)
