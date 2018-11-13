@@ -3,11 +3,9 @@
 #' Permet d'extraire les données de chronique d'une station
 #' @name chronique.mesures
 #' @keywords chronique
-#' @import DBI
-#' @import dplyr
 #' @import lubridate 
-#' @import RSQLite 
 #' @import stringr
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.mesures("HER0-6", "Thermie") 
@@ -16,7 +14,7 @@
 
 chronique.mesures <- function(  
   CodeStation = character(0),
-  Type = c("Thermie", "Piézométrie", "Hydrologie", "O2", "Pluviométrie"),
+  Type = c("Thermie", "Piézométrie", "Tout", "Hydrologie", "O2", "Pluviométrie"),
   annee = numeric(0),
   Valide = T)
 {
@@ -30,24 +28,40 @@ if(nchar(as.character(CodeStation)) == 0)
   stop("Attention : pas de station spécifiée")
 
 ##### Connexion à la BDD #####
-dbC <- BDD.ouverture(Type = "Chroniques")
-
+dbD <- BDD.ouverture("Data")
 
 ##### Collecte des données #####
-if(Valide == F){
+if(Valide == F & Type != "Tout"){
   Mesures <- 
-    tbl(dbC,"Mesures") %>% 
-    filter(TypeMesure == Type) %>% 
-    filter(CodeRDT == as.character(CodeStation)) %>% 
-    #filter(Validation == "Validé") %>% 
+    tbl(dbD, in_schema("fd_production", "chroniques_mesures")) %>% 
+    filter(chmes_typemesure == Type) %>% 
+    filter(chmes_coderhj == as.character(CodeStation)) %>% 
+    #filter(chmes_validation == "Validé") %>% 
     collect()
 }
 
-if(Valide == T){
-  Mesures <- tbl(dbC,"Mesures") %>% 
-    filter(TypeMesure == Type) %>% 
-    filter(CodeRDT == as.character(CodeStation)) %>% 
-    filter(Validation == "Validé") %>% 
+if(Valide == T & Type != "Tout"){
+  Mesures <- tbl(dbD, in_schema("fd_production", "chroniques_mesures")) %>% 
+    filter(chmes_typemesure == Type) %>% 
+    filter(chmes_coderhj == as.character(CodeStation)) %>% 
+    filter(chmes_validation == "Validé") %>% 
+    collect()
+}
+
+if(Valide == F & Type == "Tout"){
+  Mesures <- 
+    tbl(dbD, in_schema("fd_production", "chroniques_mesures")) %>% 
+    #filter(chmes_typemesure == Type) %>% 
+    filter(chmes_coderhj == as.character(CodeStation)) %>% 
+    #filter(chmes_validation == "Validé") %>% 
+    collect()
+}
+
+if(Valide == T & Type == "Tout"){
+  Mesures <- tbl(dbD, in_schema("fd_production", "chroniques_mesures")) %>% 
+    #filter(chmes_typemesure == Type) %>% 
+    filter(chmes_coderhj == as.character(CodeStation)) %>% 
+    filter(chmes_validation == "Validé") %>% 
     collect()
 }
 
@@ -56,11 +70,11 @@ if(length(as.character(annee)) != 0){
   Mesures <-
     Mesures %>% 
     formatage.annee.biologique() %>% 
-    filter(AnneeBiol == as.character(annee))
+    filter(chmes_anneebiol == as.character(annee))
 }
 
 ##### Mise en forme #####
-Mesures <- Mesures %>% arrange(Date, Heure)
+Mesures <- Mesures %>% arrange(chmes_date, chmes_heure)
 
 ##### Sortie #####
 return(Mesures)

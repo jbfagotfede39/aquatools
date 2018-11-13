@@ -4,10 +4,10 @@
 \alias{formatage.annee.biologique}
 \title{Reformatage de dates en année biologique}
 \arguments{
-\item{data}{Jeu de données contenant une colonne Date au format Date}
+\item{data}{Jeu de données contenant une colonne chmes_date au format Date}
 }
 \description{
-Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne AnneeBiol
+Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne chmes_anneebiol
 }
 \examples{
 formatage.annee.biologique(data)

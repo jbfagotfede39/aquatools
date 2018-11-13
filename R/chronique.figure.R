@@ -50,17 +50,17 @@ chronique.figure <- function(
 ##### Mise au format des données #####
 
 ## Transformation du format des dates
-data$Date <- as.Date(data$Date,format="%Y-%m-%d")
+data$chmes_date <- as.Date(data$chmes_date,format="%Y-%m-%d")
 
 ## Extraction des valeurs remarquables journalières ##
 
 syntjour <-
   data %>%
-  group_by(Date) %>%
+  group_by(chmes_date) %>%
   summarise(
-    VMinJ=min(Valeur),
-    VMoyJ=mean(Valeur),
-    VMaxJ=max(Valeur)
+    VMinJ=min(chmes_valeur),
+    VMoyJ=mean(chmes_valeur),
+    VMaxJ=max(chmes_valeur)
     )
 
 if(Vmm30j == T){
@@ -70,8 +70,8 @@ for (i in 1:length(syntjour$VMaxJ)){
   if (i+29<=length(syntjour$VMaxJ)) cumuleVMaxJ[i]<-sum(syntjour$VMaxJ[i:(i+29)])}  
 TMaxMoy30J <- round(max(cumuleVMaxJ)/30,1)
 
-DateDebutTMaxMoy30J <- syntjour$Date[which(cumuleVMaxJ==max(cumuleVMaxJ))]
-DateFinTMaxMoy30J <- syntjour$Date[which(cumuleVMaxJ==max(cumuleVMaxJ))+29]
+DateDebutTMaxMoy30J <- syntjour$chmes_date[which(cumuleVMaxJ==max(cumuleVMaxJ))]
+DateFinTMaxMoy30J <- syntjour$chmes_date[which(cumuleVMaxJ==max(cumuleVMaxJ))+29]
   
 # Pour avoir un affichage propre de l'étiquette de Tmm30j et du trait de Tmm
 data.label <- data.frame(
@@ -90,7 +90,7 @@ data.label <- data.frame(
 
 ##### Plot temps relatif sur l'échantillon de données #####
 
-  plotrelatif <- ggplot(syntjour, aes(Date))
+  plotrelatif <- ggplot(syntjour, aes(chmes_date))
   plotrelatif <- plotrelatif + geom_line(aes(y = VMoyJ, colour = "Moy/J"))
   if(Vminmax == T) plotrelatif <- plotrelatif + geom_line(aes(y = VMinJ, colour = "Min/J"))
   if(Vminmax == T) plotrelatif <- plotrelatif + geom_line(aes(y = VMaxJ, colour = "Max/J"))
@@ -109,9 +109,9 @@ if(duree == "Relatif"){
 }
 
 ##### Plot temps absolu sur une année ####
-if(length(unique(format(syntjour$Date,"%Y"))) == 1){
+if(length(unique(format(syntjour$chmes_date,"%Y"))) == 1){
   plotabsolu <-
-    plotabsolu <- ggplot(syntjour, aes(Date))
+    plotabsolu <- ggplot(syntjour, aes(chmes_date))
     plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = "Moy/J"))
     if(Vminmax == T) plotabsolu <- plotabsolu + geom_line(aes(y = VMinJ, colour = "Min/J"))
     if(Vminmax == T) plotabsolu <- plotabsolu + geom_line(aes(y = VMaxJ, colour = "Max/J"))
@@ -119,7 +119,7 @@ if(length(unique(format(syntjour$Date,"%Y"))) == 1){
     plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
     plotabsolu <- plotabsolu + scale_x_date(#breaks = "2 month", 
       #labels = date_format("%m-%Y"), # Ne fonctionne pas
-      limits = as.Date(c(paste(as.numeric(format(syntjour$Date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$Date[length(syntjour$Date)],"%Y"),"-09-30",sep=""))))
+      limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
     
     #scale_x_date(breaks = "2 month", #### Save qui fonctionne avant le test automatique plus haut
     #labels = date_format("%m-%Y"), # Ne fonctionne pas
@@ -130,9 +130,9 @@ if(length(unique(format(syntjour$Date,"%Y"))) == 1){
   #if(save==T){ggsave(file=paste("Sorties/Vues/absolu_",Titre,format,sep=""))}
 }
 
-if(length(unique(format(syntjour$Date,"%Y"))) == 2){
+if(length(unique(format(syntjour$chmes_date,"%Y"))) == 2){
   
-  plotabsolu <- ggplot(syntjour, aes(Date))
+  plotabsolu <- ggplot(syntjour, aes(chmes_date))
   plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = "Moy/J"))
   if(Vminmax == T) plotabsolu <- plotabsolu + geom_line(aes(y = VMinJ, colour = "Min/J"))
   if(Vminmax == T) plotabsolu <- plotabsolu + geom_line(aes(y = VMaxJ, colour = "Max/J"))
@@ -140,7 +140,7 @@ if(length(unique(format(syntjour$Date,"%Y"))) == 2){
   plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
   plotabsolu <- plotabsolu + scale_x_date(#breaks = "2 month", 
       #labels = date_format("%m-%Y"), # Ne fonctionne pas
-      limits = as.Date(c(paste(format(syntjour$Date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$Date[length(syntjour$Date)],"%Y"),"-09-30",sep=""))))
+      limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
     
     #scale_x_date(breaks = "2 month", #### Save qui fonctionne avant le test automatique plus haut
     #labels = date_format("%m-%Y"), # Ne fonctionne pas

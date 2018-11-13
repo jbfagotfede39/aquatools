@@ -45,39 +45,39 @@ chronique.hydroreel <- function(Station)
   }
   
   # Date
-  Date <- stringr::str_extract(complet, "([0-9]{2}/[0-9]{2}/[0-9]{4})") # Je cherche dans un bloc (parenthèses) un caractère numérique deux fois puis un slash un caractère numérique deux fois etc.
-  Date <- dmy(Date)
+  chmes_date <- stringr::str_extract(complet, "([0-9]{2}/[0-9]{2}/[0-9]{4})") # Je cherche dans un bloc (parenthèses) un caractère numérique deux fois puis un slash un caractère numérique deux fois etc.
+  chmes_date <- dmy(chmes_date)
   
   # Heure
-  Heure <- stringr::str_extract(complet, "([0-9]{2}:[0-9]{2})")
-  Heure <- paste0(Heure,":00")
+  chmes_heure <- stringr::str_extract(complet, "([0-9]{2}:[0-9]{2})")
+  chmes_heure <- paste0(chmes_heure,":00")
   
   # Valeur
   # Extraction du morceau de phrase contenant seulement la valeur
   complet <- strsplit(complet, "(m3/s)")[[1]][2]
   
   #Dans cet ordre, avec test de la longueur du truc à chaque fois ensuite si = NA on passe au suivant
-  Valeur <- stringr::str_extract(complet, "([0-9]{4}.[0-9])") # On cherche une valeur de débit à 4 chiffres
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{4})") # Si celle d'avant est vide, on cherche une valeur de débit à 4 chiffres sans virgule
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{3}.[0-9])") # Si celle d'avant est vide, on cherche une valeur de débit à 3 chiffres
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 3 //// Dernier
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 3 //// Dernier
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 3 chiffres sans virgule
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{2})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 2
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{1})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 1
-  #if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{0})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres sans virgule
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{2})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 2  
-  if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{1})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 1 
-  #if(is.na(Valeur)) Valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{0})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 0
+  chmes_valeur <- stringr::str_extract(complet, "([0-9]{4}.[0-9])") # On cherche une valeur de débit à 4 chiffres
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{4})") # Si celle d'avant est vide, on cherche une valeur de débit à 4 chiffres sans virgule
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{3}.[0-9])") # Si celle d'avant est vide, on cherche une valeur de débit à 3 chiffres
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 3 //// Dernier
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 3 //// Dernier
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{3})") # Si celle d'avant est vide, on cherche une valeur de débit à 3 chiffres sans virgule
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{2})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 2
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{1})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres + 1
+  #if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{2}.[0-9]{0})") # Si celle d'avant est vide, on cherche une valeur de débit à 2 chiffres sans virgule
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{2})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 2  
+  if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{1})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 1 
+  #if(is.na(chmes_valeur)) chmes_valeur <- stringr::str_extract(complet, "([0-9]{1}.[0-9]{0})") # Si celle d'avant est vide, on cherche une valeur de débit à 1 chiffres + 0
   
   # Station
   
   # Synthèse
-  data <- data.frame(Station,Date,Heure,Valeur)
-  data$Valeur <- as.numeric(levels(data$Valeur))[data$Valeur]
-  data$Date <- as.character(data$Date)
-  data$Heure <- as.character(data$Heure)
-  data$Station <- as.character(data$Station)
+  data <- data.frame(Station,chmes_date,chmes_heure,chmes_valeur) %>% rename(chmes_coderhj = Station)
+  data$chmes_valeur <- as.numeric(levels(data$chmes_valeur))[data$chmes_valeur]
+  data$chmes_date <- as.character(data$chmes_date)
+  data$chmes_heure <- as.character(data$chmes_heure)
+  data$chmes_coderhj <- as.character(data$chmes_coderhj)
   
   # Retour
   return(data)

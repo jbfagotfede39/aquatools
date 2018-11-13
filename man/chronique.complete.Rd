@@ -4,7 +4,7 @@
 \alias{chronique.complete}
 \title{Complément de chroniques}
 \arguments{
-\item{data}{Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur}
+\item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 }
 \description{
 Cette fonction permet de compléter les chroniques présentant des valeurs manquantes

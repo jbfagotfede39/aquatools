@@ -31,6 +31,7 @@ chronique.suivi <- function(x = "ORA2-7",
   
   ## Chargement des données ##
   SuiviTerrain <- tbl(dbD, in_schema("fd_production", "chroniques_suiviterrain")) %>% collect(n = Inf) %>% arrange(chsvi_coderhj)
+  #dbDisconnect(dbD)
   
   ## Formatage ##
   SuiviTerrain$chsvi_date <- ymd(SuiviTerrain$chsvi_date)

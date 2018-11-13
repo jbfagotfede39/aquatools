@@ -24,7 +24,7 @@ chronique.periode <- function(x = Data, deb = "", fin = "")
   fin <- ymd_hms(fin)
   x <-
     x %>% 
-    mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
+    mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
     filter(Time < fin) %>% #Time >= deb, 
     select(-Time)
 }
@@ -33,7 +33,7 @@ if (nchar(fin) == 0){
   deb <- ymd_hms(deb)
   x <-
     x %>% 
-    mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
+    mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
     #filter(Time > deb + hours(1)) %>% #, Time <= fin
     filter(Time > deb) %>% #, Time <= fin
     select(-Time)
@@ -44,7 +44,7 @@ if (nchar(deb) != 0 & nchar(fin) != 0){
   fin <- ymd_hms(fin)
   x <-
     x %>% 
-    mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
+    mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
     #filter(Time > deb + hours(1), Time < fin) %>% 
     filter(Time > deb, Time < fin) %>% 
     select(-Time)

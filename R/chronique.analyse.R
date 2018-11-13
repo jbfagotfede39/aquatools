@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)
 #' @name chronique.analyse
-#' @param data Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur
+#' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
 #' @param Titre Titre du graphique (vide par défaut)
 #' @param legendeY Défini le texte de la légende de l'axe Y (Température (°C) par défaut)
 #' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
@@ -42,9 +42,9 @@ chronique.analyse <- function(
   ## Transformation du format des dates
   data <-
     data %>% 
-    mutate(Date = ymd(Date)) %>% 
-    mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
-    filter(is.na(Valeur) == F) %>% 
+    mutate(chmes_date = ymd(chmes_date)) %>% 
+    mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
+    filter(is.na(chmes_valeur) == F) %>% 
     arrange(Time)
 
   ##### Contexte de la chronique #####
@@ -56,7 +56,7 @@ chronique.analyse <- function(
   Contexte <- 
     data %>% 
     summarise(
-      Annee = median(year(Date))
+      Annee = median(year(chmes_date))
     ) %>% 
     bind_cols(Contexte)
 
@@ -64,26 +64,26 @@ chronique.analyse <- function(
   ValRemarqInstant <-
     data %>% 
     summarise(
-      VMinI = round(min(Valeur),1),
-      VMedI = round(median(Valeur),1),
-      VMoyI = round(mean(Valeur),1),
-      VMaxI = round(max(Valeur),1),
+      VMinI = round(min(chmes_valeur),1),
+      VMedI = round(median(chmes_valeur),1),
+      VMoyI = round(mean(chmes_valeur),1),
+      VMaxI = round(max(chmes_valeur),1),
       VAmpliI = VMaxI-VMinI,
-      VarI = round(var(Valeur),2)
+      VarI = round(var(chmes_valeur),2)
     )
   
   ##### Valeurs journalières remarquables #####
   ### Statistiques par jour ###
   ValJours <- 
     data %>% 
-    group_by(Date) %>% 
+    group_by(chmes_date) %>% 
     summarise(
-      VMinJ = min(Valeur),
-      VMedJ = median(Valeur),
-      VMoyJ = mean(Valeur),
-      VMaxJ = max(Valeur),
+      VMinJ = min(chmes_valeur),
+      VMedJ = median(chmes_valeur),
+      VMoyJ = mean(chmes_valeur),
+      VMaxJ = max(chmes_valeur),
       VAmpliJ = VMaxJ-VMinJ,
-      VarJ = var(Valeur),
+      VarJ = var(chmes_valeur),
       N = n()
     ) %>% 
     mutate(Nref = 24/pasdetemps) %>% 
@@ -99,11 +99,11 @@ chronique.analyse <- function(
     ValJours %>% 
     summarise(
       VMoyJMinPer = round(min(VMoyJ),1),
-      DateVMoyJMinPer = Date[VMoyJ == min(VMoyJ)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateVMoyJMinPer = chmes_date[VMoyJ == min(VMoyJ)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
       VMoyJMedPer = round(median(VMoyJ),1),
       VMoyJMoyPer = round(mean(VMoyJ),1),
       VMoyJMaxPer = round(max(VMoyJ),1),
-      DateVMoyJMaxPer = Date[VMoyJ == max(VMoyJ)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateVMoyJMaxPer = chmes_date[VMoyJ == max(VMoyJ)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
       AmplitudeVMoyJPer = VMoyJMaxPer-VMoyJMinPer,
       VarVMoyJ = round(var(VMoyJ),2)
     )
@@ -115,8 +115,8 @@ chronique.analyse <- function(
     filter(!is.na(VMM30j)) %>% 
     summarise(
       VMaxMoy30J = max(VMM30j),
-      DateDebutVMaxMoy30J = Date[VMM30j == max(VMM30j)][1] -29, # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
-      DateFinVMaxMoy30J = Date[VMM30j == max(VMM30j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateDebutVMaxMoy30J = chmes_date[VMM30j == max(VMM30j)][1] -29, # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateFinVMaxMoy30J = chmes_date[VMM30j == max(VMM30j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
     ) 
     
   ValRemarqPeriodesMobiles <-
@@ -124,8 +124,8 @@ chronique.analyse <- function(
     filter(!is.na(VMM7j)) %>% 
     summarise(
       VMaxMoy7J = max(VMM7j),
-      DateDebutVMaxMoy7J = Date[VMM7j == max(VMM7j)][1] -6,# le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
-      DateFinVMaxMoy7J = Date[VMM7j == max(VMM7j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateDebutVMaxMoy7J = chmes_date[VMM7j == max(VMM7j)][1] -6,# le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateFinVMaxMoy7J = chmes_date[VMM7j == max(VMM7j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
     ) %>% 
     bind_cols(ValRemarqPeriodesMobiles) %>% 
     mutate(VMaxMoy7J = round(VMaxMoy7J,1)) %>% 
@@ -147,8 +147,8 @@ chronique.analyse <- function(
     filter(!is.na(TestValeurInf)) %>% 
     mutate(DegJours = cumsum(VMoyJ)) %>% 
     summarise(
-      DateDebutDegresJours = Date[first(TestValeurInf)],
-      DateFinDegresJours = first(Date[DegJours > RefDegJours])
+      DateDebutDegresJours = chmes_date[first(TestValeurInf)],
+      DateFinDegresJours = first(chmes_date[DegJours > RefDegJours])
     ) %>%
     mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>% 
     mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>% 
@@ -161,13 +161,13 @@ chronique.analyse <- function(
   DegresJoursAutreEsp <-
     ValJours %>% 
     mutate(TestValeurSup = ifelse(VMoyJ > RefValeurSup, 1, NA)) %>% # identification de la journée passant sous une valeur repère
-    filter(Date > paste0(year(last(Date)),"-02-01")) %>% # 29 mars
+    filter(chmes_date > paste0(year(last(chmes_date)),"-02-01")) %>% # 29 mars
     filter(!is.na(TestValeurSup)) %>% 
     #View()
     mutate(DegJours = cumsum(VMoyJ)) %>% 
     summarise(
-      DateDebutDegresJours = Date[first(TestValeurSup)],
-      DateFinDegresJours = first(Date[DegJours > RefDegJours])
+      DateDebutDegresJours = chmes_date[first(TestValeurSup)],
+      DateFinDegresJours = first(chmes_date[DegJours > RefDegJours])
     ) %>%
     mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>% 
     mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>% 
@@ -191,15 +191,15 @@ chronique.analyse <- function(
   
   ##### Qualité des données #####
   ## Date début période ##
-  DateDPeriode <- data$Date[1]
+  DateDPeriode <- data$chmes_date[1]
   #DateDPeriode <- format(data$Date[1], format="%d-%m-%Y")
   
   ## Date fin période ##
-  DateFPeriode <- data$Date[dim(data)[1]]
-  #DateFPeriode <- format(data$Date[dim(data)[1]], format="%d-%m-%Y")
+  DateFPeriode <- data$chmes_date[dim(data)[1]]
+  #DateFPeriode <- format(data$chmes_date[dim(data)[1]], format="%d-%m-%Y")
 
   ## Nb Total de Jours ##
-  NbJ <- length(unique(data$Date))
+  NbJ <- length(unique(data$chmes_date))
   
   ## Vérification de la cohérence entre le nombre de jours et la durée de la chronique ##
   intervalMax <- max(data$Time) - min(data$Time)

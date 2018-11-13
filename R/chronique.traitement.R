@@ -5,13 +5,11 @@
 #' @keywords chronique
 #' @param data Data.frame issu de chronique.mesures, pouvant contenir différentes stations
 #' @param export Si \code{TRUE} (par défault), exporte les résultats/figures.  Si \code{FALSE}, ne les exporte pas.
-#' @import DBI
 #' @import dplyr
 #' @import lubridate 
-#' @import rgdal
-#' @import RSQLite 
-#' @import sp
+#' @import sf
 #' @import stringr
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.traitement(data)
@@ -62,11 +60,11 @@ data <-
 #### Analyse des données ####
 DataTravail <- 
   data %>% 
-  #group_by(AnneeBiol) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
-  #filter(n_distinct(Date) > 30) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
+  #group_by(chmes_anneebiol) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
+  #filter(n_distinct(chmes_date) > 30) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
   #ungroup() %>% 
-  group_by(CodeRDT, AnneeBiol) %>% 
-  filter(n_distinct(Date) > 30) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
+  group_by(chmes_coderhj, chmes_anneebiol) %>% 
+  filter(n_distinct(chmes_date) > 30) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
   do(chronique.analyse(data = .)) %>% # applique la fonction à chaque station pour chaque année
   ungroup()
 
@@ -74,10 +72,10 @@ DataTravail <-
 ## Chronique complète ##
 if(export == TRUE){
 data %>%
-  group_by(CodeRDT, AnneeBiol) %>%
-  #do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$CodeRDT))), duree = "Complet", legendeY = "Température (°C)", save=T, format=".png")) %>% # Fonctionne uniquement si une seule année
-  do({chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$CodeRDT))," - ",unique(unlist(.$AnneeBiol)))), duree = "Complet", legendeY = "Température (°C)", save=T, format=".png") # Fonctionne si plusieurs années
-    distinct(., CodeRDT, AnneeBiol) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
+  group_by(chmes_coderhj, chmes_anneebiol) %>%
+  #do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$chmes_coderhj))), duree = "Complet", legendeY = "Température (°C)", save=T, format=".png")) %>% # Fonctionne uniquement si une seule année
+  do({chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Complet", legendeY = "Température (°C)", save=T, format=".png") # Fonctionne si plusieurs années
+    distinct(., chmes_coderhj, chmes_anneebiol) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
     }) %>%
   ungroup()
 }
@@ -85,10 +83,10 @@ data %>%
 ## Chronique incomplète ##
 if(export == TRUE){
 data %>%
-  group_by(CodeRDT, AnneeBiol) %>%
-  #do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$CodeRDT))), duree = "Relatif", legendeY = "Température (°C)", save=T, format=".png")) %>% # Fonctionne uniquement si une seule année
-  do({chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$CodeRDT))," - ",unique(unlist(.$AnneeBiol)))), duree = "Relatif", legendeY = "Température (°C)", save=T, format=".png") # Fonctionne si plusieurs années
-    distinct(., CodeRDT, AnneeBiol) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
+  group_by(chmes_coderhj, chmes_anneebiol) %>%
+  #do(chronique.figure(data = ., Titre = as.character(unique(unlist(.$chmes_coderhj))), duree = "Relatif", legendeY = "Température (°C)", save=T, format=".png")) %>% # Fonctionne uniquement si une seule année
+  do({chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", legendeY = "Température (°C)", save=T, format=".png") # Fonctionne si plusieurs années
+    distinct(., chmes_coderhj, chmes_anneebiol) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
     }) %>%
   ungroup()
 }
@@ -96,9 +94,9 @@ data %>%
 ##### Sorties agrégées #####
 if(export == TRUE){
 data %>% 
-  group_by(CodeRDT) %>% 
+  group_by(chmes_coderhj) %>% 
   do({chronique.agregation(data = ., export = T)
-    distinct(., CodeRDT) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
+    distinct(., chmes_coderhj) # Pour permettre à la fonction do de sortir un dataframe, sinon erreur
     }) %>% # applique la fonction à chaque station pour chaque année
   #purrr::map(chronique.agregation(data = ., export = T)) # applique la fonction à chaque station pour chaque année
   ungroup()
@@ -106,20 +104,17 @@ data %>%
 
 ##### Sortie stations #####
 if(export == TRUE){
-listeStations <- data %>% distinct(CodeRDT)
+listeStations <- data %>% distinct(chmes_coderhj)
+
 ## Connexion à la BDD ##
-dbC <- BDD.ouverture(Type = "Chroniques")
-listeStations <- tbl(dbC,"Stations") %>% filter(CodeRDT %in% listeStations$CodeRDT) %>% collect() %>% select(CodeRDT:Departement, X:TypeCoord, Fonctionnement:ReseauThermie)
+dbD <- BDD.ouverture("Data")
+listeStations <- sf::st_read(dbD, query = "SELECT * FROM fd_production.chroniques_stations;") %>% filter(chsta_coderhj %in% listeStations$chmes_coderhj) %>% collect() %>% select(chsta_coderhj:chsta_departement, chsta_coord_x:chsta_coord_type, chsta_fonctionnement:chsta_reseauthermietype)
 
 ## Excel ##
-openxlsx::write.xlsx(Stations, file = paste0("./Sorties/", format(now(), format="%Y-%m-%d"), "_Stations.xlsx"))
+openxlsx::write.xlsx(listeStations, file = paste0("./Sorties/", format(now(), format="%Y-%m-%d"), "_Stations.xlsx"))
 
 ## Shapefile ##
-Stations <- listeStations %>% filter(TypeCoord == "L93")
-coordinates(Stations) <- ~X+Y # Permet de créer un SpatialPointsDataFrame à partir d'un dataframe Data contenant les coordonnées dans les colonnes XLambert et YLambert
-proj4string(Stations) <- CRS("+init=epsg:2154") # Définition de la projection, ici pour Lambert 93
-setCPLConfigOption("SHAPE_ENCODING", "UTF-8") # Afin de définir l'encodage en UT8
-writeOGR(Stations, ".", paste0("./Sorties/SIG/", format(now(), format="%Y-%m-%d"), "_Stations"), driver="ESRI Shapefile", layer_options= c(encoding= "UTF-8"), overwrite_layer=T)
+SIG.exportSHP(listeStations, paste0("./Sorties/SIG/", format(now(), format="%Y-%m-%d"), "_Stations.shp"))
 }
 
 ##### Sortie résultats élaborés #####
@@ -128,12 +123,8 @@ if(export == TRUE){
 openxlsx::write.xlsx(DataTravail, file = paste0("./Sorties/", format(now(), format="%Y-%m-%d"), "_Résultats_calculés.xlsx"))
   
 ## Shapefile ##
-Stations <- listeStations %>% filter(TypeCoord == "L93")
-DataTravailSIG <- Stations %>% left_join(DataTravail %>% mutate(intervalMax = as.numeric(sub(",", ".", intervalMax))), by = "CodeRDT")
-coordinates(DataTravailSIG) <- ~X+Y # Permet de créer un SpatialPointsDataFrame à partir d'un dataframe Data contenant les coordonnées dans les colonnes XLambert et YLambert
-proj4string(DataTravailSIG) <- CRS("+init=epsg:2154") # Définition de la projection, ici pour Lambert 93
-setCPLConfigOption("SHAPE_ENCODING", "UTF-8") # Afin de définir l'encodage en UT8
-writeOGR(DataTravailSIG, ".", paste0("./Sorties/SIG/", format(now(), format="%Y-%m-%d"), "_Résultats"), driver="ESRI Shapefile", layer_options= c(encoding= "UTF-8"), overwrite_layer=T)
+DataTravailSIG <- listeStations %>% left_join(DataTravail %>% mutate(intervalMax = as.numeric(sub(",", ".", intervalMax))), by = c("chsta_coderhj" = "chmes_coderhj"))
+SIG.exportSHP(DataTravailSIG, paste0("./Sorties/SIG/", format(now(), format="%Y-%m-%d"), "_Résultats.shp"))
 }
 
 return(DataTravail)

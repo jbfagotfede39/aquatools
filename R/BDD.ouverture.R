@@ -29,6 +29,7 @@ BDD.ouverture <- function(
 ## Connexion à la BDD ##
 drv <- dbDriver("SQLite")
 
+#### Utilisateur ####
 if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MacBookJB.local"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MacBookJB"){UtilisateurFD <- "JB"}

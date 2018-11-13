@@ -28,9 +28,9 @@ chronique.validation <- function(data, ValMax = 21, ValMin = 0, ValEcart = 1, Te
   # Transformation du format de date et calcul des écarts
   data <-
     data %>% 
-    mutate(DateFine = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
-    arrange(DateFine) %>% 
-    mutate(Difference = DateFine - lag(DateFine)) # calcule l'écart de temps entre une valeur et la valeur précédente
+    mutate(chmes_datefine = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
+    arrange(chmes_datefine) %>% 
+    mutate(Difference = chmes_datefine - lag(chmes_datefine)) # calcule l'écart de temps entre une valeur et la valeur précédente
   
   # Écarts différents de 1 heure (ou autre)
   paste("Écarts différents de", TempsDiff, "heure(s) :")
@@ -41,41 +41,41 @@ chronique.validation <- function(data, ValMax = 21, ValMin = 0, ValEcart = 1, Te
   # Complétude des jours
   verif <-
     data %>% 
-    complete(Date, Heure) %>% 
-    filter(is.na(Valeur) == T)
-  if(length(levels(as.factor(verif$Date))) > 2) print("Plus de 2 journées incomplètes") else print("Seulement 2 journées incomplètes")
+    complete(chmes_date, chmes_heure) %>% 
+    filter(is.na(chmes_valeur) == T)
+  if(length(levels(as.factor(verif$chmes_date))) > 2) print("Plus de 2 journées incomplètes") else print("Seulement 2 journées incomplètes")
   "Complétude des jours :"
   b <- 
-    levels(as.factor(verif$Date)) # faire la différence entre ce vecteur et les min et max de ensemble
+    levels(as.factor(verif$chmes_date)) # faire la différence entre ce vecteur et les min et max de ensemble
   
   # Nombre de jours cohérent avec les dates minimales et maximales (au cas où il manque une journée complète) #
-  if(class(data$Date) != "Date") data$Date <- ymd(data$Date)
-  if(max(data$Date) - min(data$Date) == nlevels(as.factor(data$Date)) - 1) c <- "Pas de journée complète manquante" else c <- "Journée complète manquante"
+  if(class(data$chmes_date) != "Date") data$chmes_date <- ymd(data$chmes_date)
+  if(max(data$chmes_date) - min(data$chmes_date) == nlevels(as.factor(data$chmes_date)) - 1) c <- "Pas de journée complète manquante" else c <- "Journée complète manquante"
 
   # Sélection des données supérieures à une valeur donnée ValeurMax #
   paste("Valeurs supérieures ou égales à ",ValMax)
   d <- 
     data %>% 
-    filter(Valeur >= ValMax) %>% 
-    arrange(desc(Valeur)) # %>% 
+    filter(chmes_valeur >= ValMax) %>% 
+    arrange(desc(chmes_valeur)) # %>% 
     #head(25)
   
   # Sélection des données inférieures à une valeur donnée ValeurMin #
   paste("Valeurs inférieures ou égales à",ValMin)
   e <- 
     data %>% 
-    filter(Valeur <= ValMin) %>% 
-    arrange(Valeur) # %>% 
+    filter(chmes_valeur <= ValMin) %>% 
+    arrange(chmes_valeur) # %>% 
   #head(25)
   
   # Recherche des valeurs différentes ValEcart avec la précédente #
   paste("Écart entre deux valeurs supérieur à",ValEcart)
   f <- 
     data %>% 
-    mutate(diff = Valeur - lag(Valeur)) %>% 
+    mutate(diff = chmes_valeur - lag(chmes_valeur)) %>% 
     filter(abs(diff) > ValEcart) %>% 
     arrange(desc(abs(diff))) %>% 
-    arrange(Date)
+    arrange(chmes_date)
   
   output <- list(paste("Écarts différents de", TempsDiff, " heure(s) :"),a,
                  "Complétude des jours :",b,

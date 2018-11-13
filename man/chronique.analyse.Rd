@@ -4,7 +4,7 @@
 \alias{chronique.analyse}
 \title{Analyse de chroniques}
 \arguments{
-\item{data}{Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur}
+\item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 
 \item{Titre}{Titre du graphique (vide par défaut)}
 

@@ -4,7 +4,7 @@
 \alias{chronique.decalage}
 \title{Décalage de données brutes de chronique}
 \arguments{
-\item{data}{Chronique à modifier, avec un champ Date, un champ Heure et un champ Valeur}
+\item{data}{Chronique à modifier, avec un champ chmes_date, un champ chmes_heure et un champ chmes_valeur}
 
 \item{decalage}{Valeur de décalage à calculer par soustration des deux dates au format lubridate}
 }

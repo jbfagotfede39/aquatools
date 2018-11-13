@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet d'agréger des chroniques de mesures (température, niveaux, etc.)
 #' @name chronique.agregation
-#' @param data Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur
+#' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
 #' @keywords chronique
 #' @import openxlsx
 #' @import lubridate
@@ -29,9 +29,9 @@ chronique.agregation <- function(
 ## Transformation du format des dates
 data <-
   data %>% 
-  mutate(Date = ymd(Date)) %>% 
-  mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
-  filter(is.na(Valeur) == F) %>% 
+  mutate(chmes_date = ymd(chmes_date)) %>% 
+  mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
+  filter(is.na(chmes_valeur) == F) %>% 
   arrange(Time) %>% 
   select(-Time)
 
@@ -44,7 +44,7 @@ if(length(Contexte) != 1) stop("Différentes stations dans la chronique à analy
 Contexte <- 
   data %>% 
   summarise(
-    Annee = median(year(Date))
+    Annee = median(year(chmes_date))
   ) %>% 
   bind_cols(Contexte)
 
@@ -55,29 +55,29 @@ ValInstantanees <-
 #### Agrégation par jour ####
 ValJours <- 
   data %>% 
-  group_by(Date) %>% 
+  group_by(chmes_date) %>% 
   summarise(
-    VMinJ = min(Valeur),
-    VMedJ = median(Valeur),
-    VMoyJ = mean(Valeur),
-    VMaxJ = max(Valeur),
+    VMinJ = min(chmes_valeur),
+    VMedJ = median(chmes_valeur),
+    VMoyJ = mean(chmes_valeur),
+    VMaxJ = max(chmes_valeur),
     VAmpliJ = VMaxJ-VMinJ,
-    VarJ = var(Valeur),
+    VarJ = var(chmes_valeur),
     NMesuresJ = n()
   )
 
 #### Agrégation par mois ####
 ValMois <- 
   data %>% 
-  mutate(Mois = paste0(year(Date), "-", month(Date))) %>% 
+  mutate(Mois = paste0(year(chmes_date), "-", month(chmes_date))) %>% 
   group_by(Mois) %>% 
   summarise(
-    VMinM = min(Valeur),
-    VMedM = median(Valeur),
-    VMoyM = mean(Valeur),
-    VMaxM = max(Valeur),
+    VMinM = min(chmes_valeur),
+    VMedM = median(chmes_valeur),
+    VMoyM = mean(chmes_valeur),
+    VMaxM = max(chmes_valeur),
     VAmpliM = VMaxM-VMinM,
-    VarM = var(Valeur),
+    VarM = var(chmes_valeur),
     NMesuresM = n()
   )
 
@@ -87,12 +87,12 @@ ValAnneeBiol <-
   formatage.annee.biologique() %>% 
   group_by(AnneeBiol) %>% 
   summarise(
-    VMinAB = min(Valeur),
-    VMedAB = median(Valeur),
-    VMoyAB = mean(Valeur),
-    VMaxAB = max(Valeur),
+    VMinAB = min(chmes_valeur),
+    VMedAB = median(chmes_valeur),
+    VMoyAB = mean(chmes_valeur),
+    VMaxAB = max(chmes_valeur),
     VAmpliAB = VMaxAB-VMinAB,
-    VarAB = var(Valeur),
+    VarAB = var(chmes_valeur),
     NMesuresAB = n()
   )
 

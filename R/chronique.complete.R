@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet de compléter les chroniques présentant des valeurs manquantes
 #' @name chronique.complete
-#' @param data Data.frame contenant a minima une colonne Date, une colonne Heure et une colonne Valeur
+#' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
 #' @keywords chronique
 #' @import lubridate dplyr
 #' @export
@@ -19,59 +19,59 @@ chronique.complete <- function(
   
 ##### Mise au format des données #####
 
-if(length(unique(data$CodeRDT)) == 1) CodeRDT <- unique(data$CodeRDT) else stop("Différentes stations dans le data")
-if(length(unique(data$Unite)) == 1) Unite <- unique(data$Unite) else stop("Différentes unités dans le data")
-if(length(unique(data$TypeMesure)) == 1) TypeMesure <- unique(data$TypeMesure) else stop("Différents types de mesure dans le data")
-if(length(unique(data$Validation)) == 1) Validation <- unique(data$Validation) else warning("Différents statuts de validation dans le data")
+if(length(unique(data$chmes_coderhj)) == 1) chmes_coderhj <- unique(data$chmes_coderhj) else stop("Différentes stations dans le data")
+if(length(unique(data$chmes_unite)) == 1) chmes_unite <- unique(data$chmes_unite) else stop("Différentes unités dans le data")
+if(length(unique(data$chmes_typemesure)) == 1) chmes_typemesure <- unique(data$chmes_typemesure) else stop("Différents types de mesure dans le data")
+if(length(unique(data$chmes_validation)) == 1) chmes_validation <- unique(data$chmes_validation) else warning("Différents statuts de validation dans le data")
 
 data <-
   data %>% 
-  mutate(Time = ymd_hms(paste(Date, Heure, sep = "_")))
+  mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_")))
 
 min <- min(data$Time)
 max <- max(data$Time)
 
 ValeurBrutNA <- seq(as.Date(format(min, format="%Y-%m-%d")), as.Date(format(max, format="%Y-%m-%d")), "day")
 ValeurBrutNA <- as.data.frame(ValeurBrutNA)
-colnames(ValeurBrutNA) <- "Date"
-ValeurBrutNA$MesureID <- as.numeric(NA)
-ValeurBrutNA$CodeRDT <- as.character(NA)
-ValeurBrutNA$Capteur <- as.character(NA)
-ValeurBrutNA$Date <- as.character(ValeurBrutNA$Date)
-ValeurBrutNA$Heure <- as.character(NA)
-ValeurBrutNA$Valeur <- as.numeric(NA)
-ValeurBrutNA$Unite <- as.character(NA)
-ValeurBrutNA$TypeMesure <- as.character(NA)
-ValeurBrutNA$Validation <- "Validé"
-ValeurBrutNA$ModeAcquisition <- as.character(NA)
+colnames(ValeurBrutNA) <- "chmes_date"
+ValeurBrutNA$id <- as.numeric(NA)
+ValeurBrutNA$chmes_coderhj <- as.character(NA)
+ValeurBrutNA$chmes_capteur <- as.character(NA)
+ValeurBrutNA$chmes_date <- as.character(ValeurBrutNA$chmes_date)
+ValeurBrutNA$chmes_heure <- as.character(NA)
+ValeurBrutNA$chmes_valeur <- as.numeric(NA)
+ValeurBrutNA$chmes_unite <- as.character(NA)
+ValeurBrutNA$chmes_typemesure <- as.character(NA)
+ValeurBrutNA$chmes_validation <- "Validé"
+ValeurBrutNA$chmes_modeacquisition <- as.character(NA)
 ValeurBrutNA <- 
   ValeurBrutNA %>% 
-  select(MesureID, CodeRDT, Capteur, Date, Heure, Valeur, Unite, TypeMesure, Validation, ModeAcquisition)
+  select(id, chmes_coderhj, chmes_capteur, chmes_date, chmes_heure, chmes_valeur, chmes_unite, chmes_typemesure, chmes_validation, chmes_modeacquisition)
 
 data <-
   data %>% 
   select(-Time)
 
-ValeurBrutNA$Date <- ymd(ValeurBrutNA$Date)
+ValeurBrutNA$chmes_date <- ymd(ValeurBrutNA$chmes_date)
 
 data <-
   bind_rows(ValeurBrutNA, data)
 
 data <-
   data %>% 
-  complete(Date, Heure) 
+  complete(chmes_date, chmes_heure) 
 
-data$CodeRDT <- CodeRDT
-data$Unite <- Unite
-data$TypeMesure <- TypeMesure
-#data$Validation <- Validation
-data$Validation[is.na(data$Validation)] <- "Validé"
+data$chmes_coderhj <- chmes_coderhj
+data$chmes_unite <- chmes_unite
+data$chmes_typemesure <- chmes_typemesure
+#data$chmes_validation <- chmes_validation
+data$chmes_validation[is.na(data$chmes_validation)] <- "Validé"
 
 data <-
   data %>% 
-  mutate(Time = ymd_hms(paste(Date, Heure, sep = "_"))) %>% 
+  mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
   filter(Time >= min, Time <= max) %>% 
-  select(MesureID, CodeRDT, Capteur, Date, Heure, Valeur, Unite, TypeMesure, Validation, ModeAcquisition)
+  select(id, chmes_coderhj, chmes_capteur, chmes_date, chmes_heure, chmes_valeur, chmes_unite, chmes_typemesure, chmes_validation, chmes_modeacquisition)
 
 return(data)
 

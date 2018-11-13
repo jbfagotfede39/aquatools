@@ -18,9 +18,9 @@ chronique.duree <- function(Mesures)
 {
   Mesures <-
     Mesures %>% 
-    mutate(Date = ymd(Date))
+    mutate(chmes_date = ymd(chmes_date))
 
-gg <- ggplot(Mesures, aes(x=Date, y = fct_reorder(CodeRDT, Date), color = Validation))
+gg <- ggplot(Mesures, aes(x=chmes_date, y = fct_reorder(chmes_coderhj, chmes_date), color = chmes_validation))
 gg <- gg + geom_line()
 gg <- gg + labs(y = "Station") # Pour changer le titre
 gg <- gg + theme_bw()
