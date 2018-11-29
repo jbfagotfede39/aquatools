@@ -3,10 +3,10 @@
 #' Permet de supprimer des données brutes de chronique présentant des valeurs aberrantes. ATTENTION : ne gère pas les ID
 #' @name chronique.suppression
 #' @param data Chronique à modifier
-#' @param cCodeRDT
-#' @param cCapteur
-#' @param cDate
-#' @param cHeure
+#' @param cCodeRDT chmes_coderhj à modifier
+#' @param cCapteur chmes_capteur à modifier
+#' @param cDate chmes_date à modifier
+#' @param cHeure chmes_heure à modifier
 #' @param cTypeMesure \code{Thermie} (par défault)
 #' @param cValeur Valeur à supprimer
 #' @keywords chronique

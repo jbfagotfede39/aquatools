@@ -3,16 +3,12 @@
 #' Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)
 #' @name chronique.analyse
 #' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
-#' @param Titre Titre du graphique (vide par défaut)
-#' @param legendeY Défini le texte de la légende de l'axe Y (Température (°C) par défaut)
-#' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
-#' @param Vmm30j Si \code{FALSE} (par défault), n'affiche pas les
-#'    Vmm30j.  Si \code{TRUE}, les affiche.
-#' @param Vminmax Si \code{TRUE} (par défault), affiche pas les
-#'    valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche pas.
-#' @param Ymin Valeur minimale de l'axe des Y (0 par défaut)
-#' @param Ymax Valeur maximale de l'axe des Y (aucune par défaut)
+#' @param typemesure Défini le type de données et modifie l'analyse en fonction
 #' @param pasdetemps Indique le pas de temps entre chaque mesure : 1 pour une heure (1 par défaut)
+#' @param Vmin Valeur inférieure de seuil d'analyse
+#' @param Vmax Valeur supérieure de seuil d'analyse
+#' @param VminExt Valeur inférieure extrême de seuil d'analyse
+#' @param VmaxExt Valeur supérieure extrême de seuil d'analyse
 #' @keywords chronique
 #' @import tidyverse
 #' @import lubridate
@@ -24,19 +20,21 @@
 
 chronique.analyse <- function(
   data = data,
-  pasdetemps = 1
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie"),
+  pasdetemps = 1,
+  Vmin = 4,
+  Vmax = 18,
+  VminExt = 0,
+  VmaxExt = 24
   )
 {
   
   ##### -------------- A FAIRE -------------- #####
-  # Créer plusieurs modes de sortie : Complet, mensuel, journalier, synthèse, avec un test en fin de fonction qui crache des données différentes en fonction
+  # Ajout d'un interrupteur de traitement de thermie/piézo/O2 -> classes d'amplitudes différentes en fct de thermie/piézo/O2 notamment -> chercher valeurs de référence dans biblio)
   # Calcul du nb et de la durée de dépassement de 4 valeurs Vmin, Vmax, VminExt, VmaxExt
-  # 
+  # Il faudra faire une fonction commune (entre chronique.figure, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
   # -------------- A FAIRE -------------- #
-  #data <- DataTravail
-  #data <- DataToAdd
-  #data <- Mesures
-  
+
   ##### Mise au format des données #####
   
   ## Transformation du format des dates
@@ -48,44 +46,46 @@ chronique.analyse <- function(
     arrange(Time)
 
   ##### Contexte de la chronique #####
+  # chmes_coderhj
   Contexte <- 
     data %>% 
-    distinct(CodeRDT)
-  if(length(Contexte) != 1) stop("Différentes stations dans la chronique à analyser")
+    distinct(chmes_coderhj)
+  if(dim(Contexte)[1] == 0) stop("Aucune donnée dans la chronique à analyser")
+  if(dim(Contexte)[1] > 1) stop("Différentes stations dans la chronique à analyser")
   
+  # Annee
   Contexte <- 
     data %>% 
     summarise(
       Annee = median(year(chmes_date))
     ) %>% 
     bind_cols(Contexte)
-
-  ##### Valeurs instantanées remarquables #####
-  ValRemarqInstant <-
+  
+  # chmes_typemesure
+  if(testit::has_error(data %>% 
+                         distinct(chmes_typemesure) %>% 
+                         bind_cols(Contexte)) == TRUE) stop("Plusieurs chmes_typemesure au sein du jeu de données")
+  Contexte <- 
     data %>% 
-    summarise(
-      VMinI = round(min(chmes_valeur),1),
-      VMedI = round(median(chmes_valeur),1),
-      VMoyI = round(mean(chmes_valeur),1),
-      VMaxI = round(max(chmes_valeur),1),
-      VAmpliI = VMaxI-VMinI,
-      VarI = round(var(chmes_valeur),2)
-    )
+    distinct(chmes_typemesure) %>% 
+    bind_cols(Contexte)
+  
+  typemesure <- Contexte$chmes_typemesure
+  
+  #### Évaluation des choix ####
+  typemesure <- match.arg(typemesure) # à replacer en tête de fonction si ne fonctionne pas bien ici
+  
+  ##### Agrégation complète #####
+  DataTravail <- chronique.agregation(data)
+  #DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
+  
+  ##### Valeurs instantanées remarquables #####
+  ValRemarqInstant <- DataTravail[[5]]
   
   ##### Valeurs journalières remarquables #####
   ### Statistiques par jour ###
   ValJours <- 
-    data %>% 
-    group_by(chmes_date) %>% 
-    summarise(
-      VMinJ = min(chmes_valeur),
-      VMedJ = median(chmes_valeur),
-      VMoyJ = mean(chmes_valeur),
-      VMaxJ = max(chmes_valeur),
-      VAmpliJ = VMaxJ-VMinJ,
-      VarJ = var(chmes_valeur),
-      N = n()
-    ) %>% 
+    DataTravail[[2]] %>% 
     mutate(Nref = 24/pasdetemps) %>% 
     mutate(VMM7j = roll_mean(VMoyJ, 7, align = "right", fill = NA)) %>% 
     mutate(VMM30j = roll_mean(VMoyJ, 30, align = "right", fill = NA))
@@ -142,35 +142,35 @@ chronique.analyse <- function(
   RefDegJours <- 800
 
   DegresJoursTRF <-
-    ValJours %>% 
+    ValJours %>%
     mutate(TestValeurInf = ifelse(VMoyJ < RefValeurInf, 1, NA)) %>% # identification de la journée passant sous une valeur repère
-    filter(!is.na(TestValeurInf)) %>% 
-    mutate(DegJours = cumsum(VMoyJ)) %>% 
+    filter(!is.na(TestValeurInf)) %>%
+    mutate(DegJours = cumsum(VMoyJ)) %>%
     summarise(
       DateDebutDegresJours = chmes_date[first(TestValeurInf)],
       DateFinDegresJours = first(chmes_date[DegJours > RefDegJours])
     ) %>%
-    mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>% 
-    mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>% 
+    mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>%
+    mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>%
     mutate(NbJDegresJours = as.numeric(DateFinDegresJours - DateDebutDegresJours))
-  
+
   ## Degrés-jours montants (OBR) ##
   RefValeurSup <- 9
   RefDegJours <- 270
-  
+
   DegresJoursAutreEsp <-
-    ValJours %>% 
+    ValJours %>%
     mutate(TestValeurSup = ifelse(VMoyJ > RefValeurSup, 1, NA)) %>% # identification de la journée passant sous une valeur repère
     filter(chmes_date > paste0(year(last(chmes_date)),"-02-01")) %>% # 29 mars
-    filter(!is.na(TestValeurSup)) %>% 
+    filter(!is.na(TestValeurSup)) %>%
     #View()
-    mutate(DegJours = cumsum(VMoyJ)) %>% 
+    mutate(DegJours = cumsum(VMoyJ)) %>%
     summarise(
       DateDebutDegresJours = chmes_date[first(TestValeurSup)],
       DateFinDegresJours = first(chmes_date[DegJours > RefDegJours])
     ) %>%
-    mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>% 
-    mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>% 
+    mutate(DateDebutDegresJours = ymd(DateDebutDegresJours)) %>%
+    mutate(DateFinDegresJours = ymd(DateFinDegresJours)) %>%
     mutate(NbJDegresJours = as.numeric(DateFinDegresJours - DateDebutDegresJours))
   
   ##### Dépassement de valeurs seuils #### 
@@ -209,11 +209,11 @@ chronique.analyse <- function(
   ## Vérification de la cohérence avec le nb de données attendues par jour ##
   
   # Totaux des jours OK et pas OK #
-  NbJpasOK <- dim(ValJours %>% filter(N != Nref))[1]
-  NbJOK <- dim(ValJours %>% filter(N == Nref))[1]
+  NbJpasOK <- dim(ValJours %>% filter(NMesuresJ != Nref))[1]
+  NbJOK <- dim(ValJours %>% filter(NMesuresJ == Nref))[1]
   
   #### Sortie des résultats ####
-  Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, Contexte$CodeRDT, Contexte$Annee, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J, DegresJoursTRF$DateDebutDegresJours, DegresJoursTRF$DateFinDegresJours, DegresJoursTRF$NbJDegresJours, DegresJoursAutreEsp$DateDebutDegresJours, DegresJoursAutreEsp$DateFinDegresJours, DegresJoursAutreEsp$NbJDegresJours) 
-  
-  
+  if(typemesure == "Thermie") Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, Contexte$chmes_coderhj, Contexte$Annee, Contexte$chmes_typemesure, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J, DegresJoursTRF$DateDebutDegresJours, DegresJoursTRF$DateFinDegresJours, DegresJoursTRF$NbJDegresJours, DegresJoursAutreEsp$DateDebutDegresJours, DegresJoursAutreEsp$DateFinDegresJours, DegresJoursAutreEsp$NbJDegresJours) 
+  if(typemesure != "Thermie") Complet <- data.frame(NbJ, NbJOK, NbJpasOK, DateDPeriode, DateFPeriode, intervalMax, dureeTotale, Contexte$chmes_coderhj, Contexte$Annee, Contexte$chmes_typemesure, AnneeVMM, ValRemarqInstant$VMinI, ValRemarqInstant$VMaxI, ValRemarqInstant$VMoyI, ValRemarqInstant$VMedI, ValRemarqInstant$VarI, ValRemarqInstant$VAmpliI, ValRemarqJours$VMoyJMinPer, ValRemarqJours$DateVMoyJMinPer, ValRemarqJours$VMoyJMaxPer, ValRemarqJours$DateVMoyJMaxPer, ValRemarqJours$VMoyJMoyPer, ValRemarqJours$VMoyJMedPer, CVJ, ValRemarqJours$AmplitudeVMoyJPer, ValRemarqPeriodesMobiles$VMaxMoy7J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy7J, ValRemarqPeriodesMobiles$DateFinVMaxMoy7J, ValRemarqPeriodesMobiles$VMaxMoy30J, ValRemarqPeriodesMobiles$DateDebutVMaxMoy30J, ValRemarqPeriodesMobiles$DateFinVMaxMoy30J) 
+
 } # Fin de la fonction

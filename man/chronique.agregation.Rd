@@ -5,13 +5,15 @@
 \title{Agrégation de chroniques}
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
+
+\item{projet}{Nom du projet}
 }
 \description{
-Cette fonction permet d'agréger des chroniques de mesures (température, niveaux, etc.)
+Cette fonction permet d'agréger des chroniques de mesures (température, niveaux, etc.) à différentes fréquences (dans l'ordre : pas d'agrégation, jours, mois, années, chronique complète)
 }
 \examples{
 DataTravail <- chronique.agregation(data)
-DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]]
-chronique.agregation(data, export= T) # Export sous forme de fichier excel avec 4 onglets
+DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
+chronique.agregation(data, export = T) # Export sous forme de fichier excel avec 5 onglets
 }
 \keyword{chronique}

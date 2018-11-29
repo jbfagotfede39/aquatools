@@ -4,11 +4,11 @@
 \alias{chronique.figure}
 \title{Représentation de chroniques}
 \arguments{
-\item{thermie}{Data.frame contenant a minima une colonne Date et une colonne Valeur}
+\item{data}{Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur}
 
 \item{Titre}{Titre du graphique (vide par défaut)}
 
-\item{legendeY}{Défini le texte de la légende de l'axe Y (Température (C))}
+\item{typemesure}{Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data}
 
 \item{duree}{Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.}
 
@@ -25,6 +25,8 @@ valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche p
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
 figures.  Si \code{TRUE}, les enregistre.}
 
+\item{projet}{Nom du projet}
+
 \item{format}{Défini le format d'enregistrement (par défaut .png)}
 }
 \description{
@@ -32,7 +34,7 @@ Cette fonction permet de représenter des chroniques de mesures (température, n
 }
 \examples{
 chronique.figure(data)
-chronique.figure(data = mesdonnees, legendeY = "Température (°C)", duree = "Complet")
-chronique.figure(data = tableaudonnee, Titre=nom, legendeY = "Température (°C)", save=T, format=".png")
+chronique.figure(data = mesdonnees, typemesure = "Thermie", duree = "Complet")
+chronique.figure(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
 }
 \keyword{chronique}

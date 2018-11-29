@@ -6,6 +6,14 @@
 \arguments{
 \item{data}{Chronique à modifier}
 
+\item{cCodeRDT}{chmes_coderhj à modifier}
+
+\item{cCapteur}{chmes_capteur à modifier}
+
+\item{cDate}{chmes_date à modifier}
+
+\item{cHeure}{chmes_heure à modifier}
+
 \item{cTypeMesure}{\code{Thermie} (par défault)}
 
 \item{cValeur}{Valeur à supprimer}

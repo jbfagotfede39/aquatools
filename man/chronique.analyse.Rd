@@ -6,23 +6,17 @@
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
-
-\item{legendeY}{Défini le texte de la légende de l'axe Y (Température (°C) par défaut)}
-
-\item{duree}{Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.}
-
-\item{Vmm30j}{Si \code{FALSE} (par défault), n'affiche pas les
-Vmm30j.  Si \code{TRUE}, les affiche.}
-
-\item{Vminmax}{Si \code{TRUE} (par défault), affiche pas les
-valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche pas.}
-
-\item{Ymin}{Valeur minimale de l'axe des Y (0 par défaut)}
-
-\item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
+\item{typemesure}{Défini le type de données et modifie l'analyse en fonction}
 
 \item{pasdetemps}{Indique le pas de temps entre chaque mesure : 1 pour une heure (1 par défaut)}
+
+\item{Vmin}{Valeur inférieure de seuil d'analyse}
+
+\item{Vmax}{Valeur supérieure de seuil d'analyse}
+
+\item{VminExt}{Valeur inférieure extrême de seuil d'analyse}
+
+\item{VmaxExt}{Valeur supérieure extrême de seuil d'analyse}
 }
 \description{
 Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)

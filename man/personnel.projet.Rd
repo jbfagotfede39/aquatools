@@ -7,6 +7,6 @@
 Extrait au format excel les données plus ou moins détaillées des coûts du personnel par projet
 }
 \examples{
-personnel.projet("Étude Leue")
+personnel.projet("Étude Valouse")
 }
 \keyword{personnel}

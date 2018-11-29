@@ -2,7 +2,7 @@
 #'
 #' Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne chmes_anneebiol
 #' @name formatage.annee.biologique
-#' @param data Jeu de données contenant une colonne chmes_date au format Date
+#' @param data Jeu de données contenant une colonne chmes_date ou chsvi_date au format Date
 #' @keywords donnees
 #' @import lubridate
 #' @export
@@ -16,12 +16,14 @@ formatage.annee.biologique <- function(data)
 # 
 #####################
   
-  #library(aquatools);library(lubridate)
-  #data <- chronique.mesures("HER0-6", "Thermie")
-  #str(data)
-  #data$chmes_date <- ymd(data$chmes_date)
-  
+if("chmes_date" %in% colnames(data)){
   data$chmes_anneebiol <- ifelse(month(data$chmes_date) < 10,year(data$chmes_date),year(data$chmes_date)+1)
+  }
+  
+
+if("chsvi_date" %in% colnames(data)){
+  data$chsvi_anneebiol <- ifelse(month(data$chsvi_date) < 10,year(data$chsvi_date),year(data$chsvi_date)+1)
+  }
   
 return(data)
 

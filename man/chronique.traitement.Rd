@@ -7,6 +7,10 @@
 \item{data}{Data.frame issu de chronique.mesures, pouvant contenir différentes stations}
 
 \item{export}{Si \code{TRUE} (par défault), exporte les résultats/figures.  Si \code{FALSE}, ne les exporte pas.}
+
+\item{typemesure}{Défini le type de données et modifie le traitement en fonction}
+
+\item{projet}{Nom du projet}
 }
 \description{
 Permet d'exécuter plusieurs opérations de traitement des données de chronique d'une station

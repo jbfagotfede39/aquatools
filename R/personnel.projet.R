@@ -3,61 +3,141 @@
 #' Extrait au format excel les données plus ou moins détaillées des coûts du personnel par projet
 #' @name personnel.projet
 #' @keywords personnel
-#' @import dplyr RSQLite DBI lubridate xlsx
+#' @import dplyr
+#' @import lubridate
+#' @import openxlsx
+#' @import tidyverse
 #' @export
 #' @examples
-#' personnel.projet("Étude Leue")
+#' personnel.projet("Étude Valouse")
+
+###### À faire #####
+# déplacer moe/client de tpswrecap vers tpswprj et ajouter moa (maître d'oeuvre vs maître d'ouvrage)
+# Ajouter dans table projets le numéro de devis
+####################
 
 personnel.projet <- function(
-  projet="Étude Leue")
+  projet = as.character(NA)
+  )
 {
-  
-  #library("RSQLite");library("dplyr");library(lubridate);library(xlsx)
   
   ##### Récupération des données #####
   ## Connexion à la BDD ##
-  dbTW <- BDD.ouverture(Type = "Temps de travail")
   dbD <- BDD.ouverture("Data")
   
   ## Récupération des données ##
-  TpsW <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_detail")) %>% collect(n = Inf)
-  RecapTpsW <- tbl(dbTW,"RecapTempsDeTravail") %>% collect(n = Inf)
+  TpsW <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_detail")) %>% filter(tpswdetail_projet == projet) %>% collect(n = Inf)
+  RecapTpsW <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_recapitulatif")) %>% filter(tpswrecap_projet == projet) %>% collect(n = Inf)
+  Projets <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_projets")) %>% filter(tpswprj_projet == projet) %>% collect(n = Inf)
   
-  ## Fermeture de la BDD ##
-  DBI::dbDisconnect(dbTW)
-  DBI::dbDisconnect(dbD)
+  id_max <- as.numeric(tbl(dbD,in_schema("fd_production", "tpstravail_recapitulatif")) %>% summarise(max = max(id, na.rm = TRUE)) %>% collect())
   
-  ##### Transformation des formats #####
-  TpsW$Date <- ymd(TpsW$Date)
 
-  ##### Vérification de l'existence de ce projet dans les données élaborées #####
-  if(dim(TpsW %>% filter(Identification == projet))[1] == 0) stop("Pas de données détaillées pour ce projet")
-  if(dim(RecapTpsW %>% filter(Identification == projet))[1] == 0) stop("Pas de données regroupées pour ce projet")
+  ##### Vérification de l'existence de ce projet #####
+  if(dim(Projets)[1] == 0) stop("Projet non répertorié")
+  if(dim(TpsW)[1] == 0) stop("Pas de données détaillées pour ce projet")
+  if(dim(RecapTpsW)[1] == 0) stop("Pas de données récapitulatives (au moins projetées) pour ce projet")
+  if(grepl("AERMC",projet)) stop("Développement nécessaire pour la gestion des actions et sous-action AERMC de la convention pour le calcul + adaptation des sorties")
   
-  ##### Extraction des données de synthèse par poste ####
-  SynthesePoste <- 
-    RecapTpsW %>% 
-    filter(Identification == projet) %>% 
-    select(Identification:Jours)
-    arrange(Detail,Poste)
+  #### Calcul des données élaborées si absentes ####
+if(dim(RecapTpsW %>% filter(tpswrecap_programmation == "Réalisé"))[1] == 0){
+  DataToAdd <- 
+    TpsW %>% 
+    filter(tpswdetail_projet == projet) %>% 
+    filter(!is.na(tpswdetail_temps)) %>% 
+    group_by(tpswdetail_projet, tpswdetail_poste, tpswdetail_personnel, tpswdetail_detail) %>%
+    summarise(tpswrecap_jours = sum(tpswdetail_temps)) %>% 
+    ungroup() %>% 
+    mutate(tpswrecap_programmation = "Réalisé") %>% 
+    mutate(tpswrecap_natureprojet = as.character(NA)) %>% 
+    mutate(tpswrecap_moe = as.character(NA)) %>% 
+    mutate(tpswrecap_client = as.character(NA)) %>% 
+    mutate(tpswrecap_actionaermc = as.character(NA)) %>%  
+    mutate(tpswrecap_sousactionaermc = as.character(NA)) %>%  
+    mutate(tpswrecap_argent = as.numeric(NA)) %>%  
+    mutate(tpswrecap_coutunitaire = as.numeric(NA)) %>% 
+    mutate(tpswrecap_quantite = as.numeric(NA)) %>%  
+    mutate(tpswrecap_quantitepersonnel = as.numeric(NA))
   
-  ##### Extraction des données de synthèse par personnel ####
-  SynthesePersonnel <- 
-    TpsW %>%
-    filter(Identification == projet) %>% 
-    group_by(Identification, Personnel) %>%
-    summarise(Journees = sum(Temps))
+colnames(DataToAdd) <- 
+  DataToAdd %>% 
+  colnames() %>% 
+  str_replace("tpswdetail", "tpswrecap")
+
+DataToAdd <-
+  DataToAdd %>% 
+  left_join(Projets %>% ungroup() %>% select(tpswprj_projet, tpswprj_natureprojet), by = c("tpswrecap_projet" = "tpswprj_projet")) %>% # 
+  mutate(tpswrecap_natureprojet = tpswprj_natureprojet) %>% 
+  #mutate(id = NA) %>% 
+  mutate(id = row_number() + id_max) %>%  # Pour incrémenter les id à partir du dernier
+  mutate('_modif_utilisateur' = NA) %>% 
+  mutate('_modif_date' = NA) %>% 
+  mutate('_modif_type' = NA) %>% 
+  select(match(names(.),colnames(RecapTpsW)))
+
+# Complément des id #
+DataToAdd <-
+  DataToAdd %>% 
+  mutate(id = row_number() + id_max) %>%  # Pour incrémenter les id à partir du dernier
+  arrange(id)
+
+# Écriture des données #
+RPostgreSQL::dbWriteTable(conn = dbD,
+                          name = c("fd_production","tpstravail_recapitulatif"),
+                          value = DataToAdd,
+                          #overwrite=F,
+                          append=T,
+                          row.names=FALSE)
+}
+
+#### Extraction des données élaborées ####
+RecapTpsW <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_recapitulatif")) %>% filter(tpswrecap_projet == projet)  %>% filter(tpswrecap_programmation == "Réalisé") %>% collect(n = Inf)
   
-  SynthesePersonnel <- as.data.frame(SynthesePersonnel)
+##### Extraction des données de synthèse par poste ####
+SynthesePoste <- 
+  RecapTpsW %>% 
+  filter(tpswrecap_projet == projet) %>% 
+  filter(!is.na(tpswrecap_jours)) %>% 
+  group_by(tpswrecap_projet, tpswrecap_detail,tpswrecap_personnel) %>% 
+  summarise(Jours = sum(tpswrecap_jours)
+  ) %>% 
+  arrange(tpswrecap_detail,tpswrecap_personnel) %>% 
+  rename(Projet = tpswrecap_projet) %>% 
+  rename(Detail = tpswrecap_detail) %>% 
+  rename(Personnel = tpswrecap_personnel)
+  
+SynthesePoste <- as.data.frame(SynthesePoste)
+  
+##### Extraction des données de synthèse par personnel ####
+SynthesePersonnel <- 
+  RecapTpsW %>% 
+  filter(tpswrecap_projet == projet) %>% 
+  filter(!is.na(tpswrecap_jours)) %>% 
+  group_by(tpswrecap_projet, tpswrecap_personnel) %>%
+  summarise(Journées = sum(tpswrecap_jours)) %>% 
+  rename(Projet = tpswrecap_projet) %>% 
+  rename(Personnel = tpswrecap_personnel)
+  
+SynthesePersonnel <- as.data.frame(SynthesePersonnel)
   
   ##### Extraction des données détaillées par personnel ####
   Detail <- 
     TpsW %>% 
-    filter(Identification == projet) %>% 
-    select(Personnel, Date, Poste, Statut, Identification, Detail, CE, Temps) %>% 
-    arrange(Personnel, Date)
+    filter(tpswdetail_projet == projet) %>% 
+    select(tpswdetail_personnel, tpswdetail_date, tpswdetail_poste, tpswdetail_statut, tpswdetail_projet, tpswdetail_detail, tpswdetail_ecosysteme, tpswdetail_temps) %>% 
+    arrange(tpswdetail_personnel, tpswdetail_date) %>% 
+    filter(!is.na(tpswdetail_temps)) %>% 
+    select(-tpswdetail_detail) %>% 
+    rename(Personnel = tpswdetail_personnel) %>% 
+    rename(Date = tpswdetail_date) %>% 
+    rename(Poste = tpswdetail_poste) %>% 
+    rename(Statut = tpswdetail_statut) %>% 
+    rename(Temps = tpswdetail_temps) %>% 
+    rename(Projet = tpswdetail_projet) %>% 
+    select(-tpswdetail_ecosysteme)
   
   Detail$Date <- as.character(Detail$Date)
+  Detail <- as.data.frame(Detail)
   
   ##### Écriture du fichier excel #####
   tempsprojet <- createWorkbook()
@@ -68,5 +148,8 @@ personnel.projet <- function(
   addDataFrame(x=SynthesePoste, sheet=feuilleSynthesePoste, row.names=FALSE)
   addDataFrame(x=Detail, sheet=feuilleDetail, row.names=FALSE)
   saveWorkbook(tempsprojet, paste0(format(now(), format="%Y-%m-%d"), "_", projet, "_récapitulatif_coût_personnel.xlsx"))
+  
+  l <- list(SynthesePoste = SynthesePoste, SynthesePersonnel = SynthesePersonnel, Detail = Detail)
+  openxlsx::write.xlsx(l, file = paste0(format(now(), format="%Y-%m-%d"), "_", projet, "_récapitulatif_coût_personnel.xlsx"))
   
 } # Fin de la fonction
