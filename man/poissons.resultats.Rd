@@ -2,11 +2,18 @@
 % Please edit documentation in R/poissons.resultats.R
 \name{poissons.resultats}
 \alias{poissons.resultats}
-\title{Extraction des données des résultats d'une opération}
+\title{Extraction des résultats pour une station}
+\arguments{
+\item{ListeStations}{Dataframe contenant un colonne "Nom" avec le code de la station (RHJ)}
+
+\item{Sortie}{Forme du dataframe de sortie - \code{Simple} (par défault), \code{Propre} (format diffusable, avec stations) ou \code{Complet} (tous les champs)}
+}
 \description{
-Récupère les données de résultats d'une opération dans Maxifish pour les mettre dans un dataframe
+Cette fonction permet de collecter les différents résultats pour une liste donnée de stations
 }
 \examples{
-poissons.resultats("SOR10-2", "2015-05-19")
+poissons.resultats()
+Resultats <- poissons.resultats()
+poissons.resultats(data.frame(Nom = "SOR10-2"), Sortie = Propre)
 }
 \keyword{donnees}

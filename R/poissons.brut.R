@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet d'exporter les résultats bruts et élaborés de pêche au format excel
 #' @name poissons.brut
-#' @param station Code de la station
+#' @param station Code RHJ de la station
 #' @param date Date de la pêche
 #' @keywords poissons
 #' @import dplyr RSQLite xlsx lubridate

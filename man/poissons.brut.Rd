@@ -4,7 +4,7 @@
 \alias{poissons.brut}
 \title{Exportation des résultats bruts de pêche}
 \arguments{
-\item{station}{Code de la station}
+\item{station}{Code RHJ de la station}
 
 \item{date}{Date de la pêche}
 }

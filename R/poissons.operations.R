@@ -6,7 +6,10 @@
 #' @param CodeOperation Affichage du CodeOperation - \code{FALSE} (par défault)
 #' @param Sortie Forme du dataframe de sortie - \code{Simple} (par défault), \code{Propre} (format diffusable, avec stations) ou \code{Complet} (tous les champs)
 #' @keywords poissons
-#' @import dplyr RSQLite DBI lubridate
+#' @import dplyr
+#' @import RSQLite
+#' @import DBI
+#' @import lubridate
 #' @export
 #' @examples
 #' poissons.operations()
