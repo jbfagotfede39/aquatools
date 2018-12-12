@@ -48,7 +48,6 @@ chronique.figure <- function(
   # Changer ordre max/min/moy dans légende par Max/Moy/Min
   # Il faudra faire une fonction commune (entre chronique.figure, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
 # -------------- A FAIRE -------------- #
-data <- MesuresBarométriques
   
 ##### Mise au format des données #####
 ## Transformation du format des dates

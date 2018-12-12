@@ -13,7 +13,6 @@
 
 ###### À faire #####
 # déplacer moe/client de tpswrecap vers tpswprj et ajouter moa (maître d'oeuvre vs maître d'ouvrage)
-# Ajouter dans table projets le numéro de devis
 ####################
 
 personnel.projet <- function(
@@ -73,7 +72,7 @@ DataToAdd <-
   mutate('_modif_utilisateur' = NA) %>% 
   mutate('_modif_date' = NA) %>% 
   mutate('_modif_type' = NA) %>% 
-  select(match(names(.),colnames(RecapTpsW)))
+  select(match(names(RecapTpsW),colnames(.)))
 
 # Complément des id #
 DataToAdd <-

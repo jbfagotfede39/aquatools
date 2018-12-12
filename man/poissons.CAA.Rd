@@ -2,11 +2,11 @@
 % Please edit documentation in R/poissons.CAA.R
 \name{poissons.CAA}
 \alias{poissons.CAA}
-\title{Affichage de graphes piscicoles}
+\title{Collecte des données de CAA et CAR pour une station donnée}
 \description{
-Cette fonction permet de créer des comparaisons entre les espèces attendues et observées. Le jeu de données doit contenir un champ ESPECE, un champ CA et un champ Date.
+Cette fonction permet de synthétiser les données de cotes d'abondance attendues et observées pour une station donnée
 }
 \examples{
-poissons.CAA(poissonsvue)
+poissons.CAA(data)
 }
 \keyword{poissons}
