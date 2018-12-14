@@ -24,7 +24,7 @@ poissons.exportation <- function(
 {
 
 ##### -------------- A FAIRE -------------- #####
-# 
+# Intégrer dans une chaîne cette fonction et poissons.CAA/poissons.CAAvue
 # -------------- A FAIRE -------------- #  
 
 #### Évaluation des choix ####

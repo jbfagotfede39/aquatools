@@ -9,5 +9,6 @@ Cette fonction permet de créer des comparaisons entre les espèces attendues et
 \examples{
 poissons.CAAvue(data)
 poissons.CAAvue(data, save=T)
+poissons.CAA("MAD6-2", 5) \%>\% poissons.CAAvue()
 }
 \keyword{poissons}

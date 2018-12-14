@@ -3,10 +3,15 @@
 \name{poissons.CAA}
 \alias{poissons.CAA}
 \title{Collecte des données de CAA et CAR pour une station donnée}
+\arguments{
+\item{station}{Code RHJ de la station ("MAD6-2")}
+
+\item{NTT}{NTT de la station, au format numérique (5 par exemple)}
+}
 \description{
 Cette fonction permet de synthétiser les données de cotes d'abondance attendues et observées pour une station donnée
 }
 \examples{
-poissons.CAA(data)
+poissons.CAA("MAD6-2", 5)
 }
 \keyword{poissons}

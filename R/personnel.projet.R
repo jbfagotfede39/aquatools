@@ -3,6 +3,7 @@
 #' Extrait au format excel les données plus ou moins détaillées des coûts du personnel par projet
 #' @name personnel.projet
 #' @keywords personnel
+#' @import dbplyr
 #' @import dplyr
 #' @import lubridate
 #' @import openxlsx
@@ -30,16 +31,15 @@ personnel.projet <- function(
   Projets <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_projets")) %>% filter(tpswprj_projet == projet) %>% collect(n = Inf)
   
   id_max <- as.numeric(tbl(dbD,in_schema("fd_production", "tpstravail_recapitulatif")) %>% summarise(max = max(id, na.rm = TRUE)) %>% collect())
-  
 
   ##### Vérification de l'existence de ce projet #####
   if(dim(Projets)[1] == 0) stop("Projet non répertorié")
   if(dim(TpsW)[1] == 0) stop("Pas de données détaillées pour ce projet")
   if(dim(RecapTpsW)[1] == 0) stop("Pas de données récapitulatives (au moins projetées) pour ce projet")
-  if(grepl("AERMC",projet)) stop("Développement nécessaire pour la gestion des actions et sous-action AERMC de la convention pour le calcul + adaptation des sorties")
-  
+
   #### Calcul des données élaborées si absentes ####
 if(dim(RecapTpsW %>% filter(tpswrecap_programmation == "Réalisé"))[1] == 0){
+  if(!grepl("AERMC",projet)){ # Cas où ce n'est pas une convention avec l'AE
   DataToAdd <- 
     TpsW %>% 
     filter(tpswdetail_projet == projet) %>% 
@@ -57,6 +57,26 @@ if(dim(RecapTpsW %>% filter(tpswrecap_programmation == "Réalisé"))[1] == 0){
     mutate(tpswrecap_coutunitaire = as.numeric(NA)) %>% 
     mutate(tpswrecap_quantite = as.numeric(NA)) %>%  
     mutate(tpswrecap_quantitepersonnel = as.numeric(NA))
+  }
+  
+  if(grepl("AERMC",projet)){ # Cas où c'est une convention de l'AE
+    DataToAdd <- 
+      TpsW %>% 
+      filter(tpswdetail_projet == projet) %>% 
+      filter(!is.na(tpswdetail_temps)) %>% 
+      group_by(tpswdetail_projet, tpswdetail_actionaermc, tpswdetail_sousactionaermc, tpswdetail_poste, tpswdetail_personnel) %>%
+      summarise(tpswrecap_jours = sum(tpswdetail_temps)) %>% 
+      ungroup() %>% 
+      mutate(tpswrecap_programmation = "Réalisé") %>% 
+      mutate(tpswrecap_natureprojet = as.character(NA)) %>% 
+      mutate(tpswrecap_moe = as.character(NA)) %>% 
+      mutate(tpswrecap_client = as.character(NA)) %>% 
+      mutate(tpswdetail_detail = as.character(NA)) %>% 
+      mutate(tpswrecap_argent = as.numeric(NA)) %>%  
+      mutate(tpswrecap_coutunitaire = as.numeric(NA)) %>% 
+      mutate(tpswrecap_quantite = as.numeric(NA)) %>%  
+      mutate(tpswrecap_quantitepersonnel = as.numeric(NA))
+  }
   
 colnames(DataToAdd) <- 
   DataToAdd %>% 
@@ -67,18 +87,12 @@ DataToAdd <-
   DataToAdd %>% 
   left_join(Projets %>% ungroup() %>% select(tpswprj_projet, tpswprj_natureprojet), by = c("tpswrecap_projet" = "tpswprj_projet")) %>% # 
   mutate(tpswrecap_natureprojet = tpswprj_natureprojet) %>% 
-  #mutate(id = NA) %>% 
+  #mutate(id = NA) %>% # Car met le bazar dans l'incrémentation automatique
   mutate(id = row_number() + id_max) %>%  # Pour incrémenter les id à partir du dernier
   mutate('_modif_utilisateur' = NA) %>% 
   mutate('_modif_date' = NA) %>% 
   mutate('_modif_type' = NA) %>% 
   select(match(names(RecapTpsW),colnames(.)))
-
-# Complément des id #
-DataToAdd <-
-  DataToAdd %>% 
-  mutate(id = row_number() + id_max) %>%  # Pour incrémenter les id à partir du dernier
-  arrange(id)
 
 # Écriture des données #
 RPostgreSQL::dbWriteTable(conn = dbD,
@@ -87,6 +101,13 @@ RPostgreSQL::dbWriteTable(conn = dbD,
                           #overwrite=F,
                           append=T,
                           row.names=FALSE)
+
+# Mise à jour de la séquence des id #
+
+dbGetQuery(dbD, "
+SELECT setval('fd_production.tpstravail_recapitulatif_id_seq', COALESCE((SELECT MAX(id)+1 FROM fd_production.tpstravail_recapitulatif), 1), false);
+           ")
+
 }
 
 #### Extraction des données élaborées ####

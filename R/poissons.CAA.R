@@ -3,38 +3,65 @@
 #' Cette fonction permet de synthétiser les données de cotes d'abondance attendues et observées pour une station donnée
 #' @name poissons.CAA
 #' @keywords poissons
+#' @param station Code RHJ de la station ("MAD6-2")
+#' @param NTT NTT de la station, au format numérique (5 par exemple)
 #' @export
-#' @import ggplot2
+#' @import tidyverse
 #' @examples
-#' poissons.CAA(data)
+#' poissons.CAA("MAD6-2", 5)
 
 ##### -------------- A FAIRE -------------- #####
-# 
+# Intégrer dans une chaîne cette fonction et poissons.CAA au sein de poissons.exportation
 # -------------- A FAIRE -------------- #
 
 poissons.CAA <- function(
-  station = as.character(NA))
+  station = as.character(NA),
+  NTT = as.numeric(NA))
   {
-
-  ## Vérifications ##
-  if(length(station) == 0) stop("Aucune station au sein du jeu de données")
-  if(length(station) != 1) stop("Plusieurs stations au sein du jeu de données")
-
-  ## Transformation des données ##
-  data(listeSp) # Pour charger la liste complète des espèces
-  Resultatsvue$codeespece <- factor(Resultatsvue$codeespece,listeSp) # Pour modifier l'ordre des espèce
   
-  ## Représentation graphique ##
-  gg1 <- ggplot(data, aes(x=factor(codeespece,listeSp), y = CA, fill=as.factor(date)))
-  gg1 <- gg1 + geom_bar(stat="identity")
-  gg1 <- gg1 + facet_grid(date ~ .)
-  gg1 <- gg1 + labs(x = "Espèce", y = "Cote d'abondance (/5)", fill= "Date", title = Station)
-  #gg1 <- gg1 + scale_fill_manual(values=c("#8A9B0F","#F8CA00","#E97F02", "#BD1550", "#490A3D")) +
-  gg1 <- gg1 + scale_fill_manual(values=c("#0000FF","#FF0000","#8A9B0F","#F8CA00","#E97F02", "#BD1550", "#490A3D","#490A3D","#490A3D","#490A3D"))
-  gg1 <- gg1 + theme(legend.position = 'none', panel.grid.minor = element_blank()) # Pour mettre la légende en haut + enlever les lignes blanches horizontales des 0,5
-  gg1 <- gg1 + ylim(0,5)
-  gg1
-  if(save==T){ggsave(file=paste("Vue_CAA_CAR_", Station, format,sep=""))}
-  if(save==F){return(gg1)}
+  ## Vérifications ##
+  if(is.na(station)) stop("Aucune station saisie")
+  if(is.na(NTT)) stop("Aucun NTT saisi")
+  
+  ## Transformations de format ##
+  codeRHJ <- stations.CodeRDT(as.data.frame(station) %>% rename(CodeRDT = station), DistSource = F) %>% select(CodeEcos) %>% as.character()
+
+  ## Import CAA REF ##
+  BddNTT <- read_excel(adresse.switch("NAS-DATA/Poissons/BDDNTT.xlsx")) %>%
+    rename(coderhj = RDT) %>% 
+    rename(codeespece = ESP) %>% 
+    rename(typetheorique = NTT) %>%
+    mutate(date = "Référence") %>%
+    select(date,codeespece,coderhj,typetheorique,CA) %>%
+    filter(coderhj == codeRHJ) %>%
+    filter(typetheorique == NTT)
+  
+  ## Import CAR observées ##
+  Resultats <- poissons.resultats.BDD() %>% 
+    select(nom, datedebut.x, codeespece, coderdt,coteabondancenumerique,coteabondanceponderale,typetheorique) %>%
+    arrange(nom, datedebut.x, codeespece) %>% 
+    rename(date = datedebut.x) %>% 
+    rename(coderhj = coderdt) %>% 
+    rowwise() %>% # Pour grouper les données par ligne pour avoir le min
+    mutate(CA = min(coteabondancenumerique, coteabondanceponderale)) %>% 
+    ungroup() %>% 
+    mutate(date = as.character(date)) %>% 
+    filter(nom == station) %>%  # Pour ne conserver que la station qui nous intéresse
+    select(codeespece, date, coderhj, typetheorique,CA)
+  
+  ## Regroupement des données attendues et observées ##
+  Resultatsvue <- 
+    Resultats %>%
+    #union(BddNTT %>% select(codeespece, date, coderhj:CA)) # Engendre ensuite une sortie de la fonction au format liste, alors que ça fonctionne parfaitement en test
+    bind_rows(BddNTT %>% select(codeespece, date, coderhj:CA)) %>% 
+    mutate(station = station) %>% 
+    mutate(CA = ifelse(codeespece == "OCL", 0, CA)) %>% 
+    mutate(CA = ifelse(codeespece == "PFL", 0, CA)) %>% 
+    mutate(CA = ifelse(codeespece == "APP", 0, CA))
+  
+  ## Sortie ##
+  #return(Resultats) # Ok
+  return(Resultatsvue)
+  #return(as.data.frame(Resultatsvue))
   
 } # Fin de la fonction
