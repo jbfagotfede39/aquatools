@@ -10,5 +10,6 @@ Cette fonction permet de créer des comparaisons entre les espèces attendues et
 poissons.CAAvue(data)
 poissons.CAAvue(data, save=T)
 poissons.CAA("MAD6-2", 5) \%>\% poissons.CAAvue()
+poissons.CAA("MAD6-2", 5) \%>\% poissons.CAAvue(save = T)
 }
 \keyword{poissons}

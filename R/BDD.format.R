@@ -111,6 +111,11 @@ BDD.format <- function(data)
   #if(all(colnames(data %>% select(-('_modif_utilisateur':'_modif_date'))) %in% colnames(SuiviTerrain))) {
   if(all(colnames(data) %in% colnames(SuiviTerrain))) {
     
+    # Travail sur les MO #
+    data <-
+      data %>% 
+      mutate(chsvi_mo = ifelse(chsvi_mo == "Fédé 39", "FJPPMA", chsvi_mo))
+    
     # Travail sur les stations #
     data$chsvi_coderhj <- str_replace(data$chsvi_coderhj, " ", "") # On efface les espaces en trop dans les noms de station
     
@@ -163,6 +168,11 @@ BDD.format <- function(data)
         mutate(chsvi_remarques = ifelse(chsvi_action == "changement de pile", paste0(chsvi_remarques, " - Changement de pile"), chsvi_remarques)) %>% 
         mutate(chsvi_action = ifelse(chsvi_action == "changement de pile", "Relève", chsvi_action)) %>% 
         mutate(chsvi_remarques = ifelse(chsvi_remarques == "NA - Changement de pile", "Changement de pile", chsvi_remarques))
+    }
+    if(dim(filter(data, grepl("Dépose", chsvi_remarques)))[1] > 0){
+    data <- 
+      data %>% 
+      mutate(chsvi_action = ifelse(grepl("Dépose", chsvi_remarques), "Dépose", chsvi_action))
     }
     if(dim(filter(data, !(chsvi_action == "Disparue"|chsvi_action == "Pose"|chsvi_action == "Dépose"|chsvi_action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
     

@@ -14,6 +14,7 @@
 
 ###### À faire #####
 # déplacer moe/client de tpswrecap vers tpswprj et ajouter moa (maître d'oeuvre vs maître d'ouvrage)
+# Développer la sortie au format excel pour convention AERMC
 ####################
 
 personnel.projet <- function(
@@ -36,6 +37,14 @@ personnel.projet <- function(
   if(dim(Projets)[1] == 0) stop("Projet non répertorié")
   if(dim(TpsW)[1] == 0) stop("Pas de données détaillées pour ce projet")
   if(dim(RecapTpsW)[1] == 0) stop("Pas de données récapitulatives (au moins projetées) pour ce projet")
+  
+  ##### Extration des coûts unitaires #####
+  CoutPersonnel <- 
+  RecapTpsW %>% 
+    filter(tpswrecap_programmation == "Attendu") %>% 
+    filter(!is.na(tpswrecap_poste)) %>% 
+    filter(tpswrecap_poste != "") %>% 
+    distinct(tpswrecap_poste, tpswrecap_coutunitaire)
 
   #### Calcul des données élaborées si absentes ####
 if(dim(RecapTpsW %>% filter(tpswrecap_programmation == "Réalisé"))[1] == 0){
@@ -47,14 +56,14 @@ if(dim(RecapTpsW %>% filter(tpswrecap_programmation == "Réalisé"))[1] == 0){
     group_by(tpswdetail_projet, tpswdetail_poste, tpswdetail_personnel, tpswdetail_detail) %>%
     summarise(tpswrecap_jours = sum(tpswdetail_temps)) %>% 
     ungroup() %>% 
+    left_join(CoutPersonnel, by = c("tpswdetail_poste" = "tpswrecap_poste")) %>% 
     mutate(tpswrecap_programmation = "Réalisé") %>% 
     mutate(tpswrecap_natureprojet = as.character(NA)) %>% 
     mutate(tpswrecap_moe = as.character(NA)) %>% 
     mutate(tpswrecap_client = as.character(NA)) %>% 
     mutate(tpswrecap_actionaermc = as.character(NA)) %>%  
     mutate(tpswrecap_sousactionaermc = as.character(NA)) %>%  
-    mutate(tpswrecap_argent = as.numeric(NA)) %>%  
-    mutate(tpswrecap_coutunitaire = as.numeric(NA)) %>% 
+    mutate(tpswrecap_argent = tpswrecap_coutunitaire * tpswrecap_jours) %>% 
     mutate(tpswrecap_quantite = as.numeric(NA)) %>%  
     mutate(tpswrecap_quantitepersonnel = as.numeric(NA))
   }
@@ -67,13 +76,13 @@ if(dim(RecapTpsW %>% filter(tpswrecap_programmation == "Réalisé"))[1] == 0){
       group_by(tpswdetail_projet, tpswdetail_actionaermc, tpswdetail_sousactionaermc, tpswdetail_poste, tpswdetail_personnel) %>%
       summarise(tpswrecap_jours = sum(tpswdetail_temps)) %>% 
       ungroup() %>% 
+      left_join(CoutPersonnel, by = c("tpswdetail_poste" = "tpswrecap_poste")) %>% 
       mutate(tpswrecap_programmation = "Réalisé") %>% 
       mutate(tpswrecap_natureprojet = as.character(NA)) %>% 
       mutate(tpswrecap_moe = as.character(NA)) %>% 
       mutate(tpswrecap_client = as.character(NA)) %>% 
       mutate(tpswdetail_detail = as.character(NA)) %>% 
-      mutate(tpswrecap_argent = as.numeric(NA)) %>%  
-      mutate(tpswrecap_coutunitaire = as.numeric(NA)) %>% 
+      mutate(tpswrecap_argent = tpswrecap_coutunitaire * tpswrecap_jours) %>% 
       mutate(tpswrecap_quantite = as.numeric(NA)) %>%  
       mutate(tpswrecap_quantitepersonnel = as.numeric(NA))
   }
@@ -112,7 +121,10 @@ SELECT setval('fd_production.tpstravail_recapitulatif_id_seq', COALESCE((SELECT 
 
 #### Extraction des données élaborées ####
 RecapTpsW <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_recapitulatif")) %>% filter(tpswrecap_projet == projet)  %>% filter(tpswrecap_programmation == "Réalisé") %>% collect(n = Inf)
-  
+
+#### Arrêt d'extraction si convention AERMC car non développé ####
+if(!grepl("AERMC",projet)) stop("Extraction en xlsx non développée pour les conventions AE")
+
 ##### Extraction des données de synthèse par poste ####
 SynthesePoste <- 
   RecapTpsW %>% 
