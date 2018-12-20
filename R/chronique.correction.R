@@ -22,7 +22,7 @@ chronique.correction <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
   #cCodeRDT = "BONbaro"; cCapteur = "P5353"; cDate = "2015-01-05"; cHeure = "23:00:00"; cValeur = 1013.0; cTypeMesure = "Piézométrie"; cNvelleValeur = 700
 
   cDate <- ymd(cDate)
-  data$Date <- ymd(data$Date)
+  data$chmes_date <- ymd(data$chmes_date)
 
   ##### Recherche de la ligne fausse #####
   #LigneFausse <-
@@ -36,11 +36,11 @@ chronique.correction <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
     
   LigneFausse <-
     data %>% 
-    filter(CodeRDT == cCodeRDT & Capteur == cCapteur & Date == cDate & Heure == cHeure & Valeur == cValeur & TypeMesure == cTypeMesure)
+    filter(chmes_coderhj == cCodeRDT & chmes_capteur == cCapteur & chmes_date == cDate & chmes_heure == cHeure & chmes_valeur == cValeur & chmes_typemesure == cTypeMesure)
     
   if(dim(LigneFausse)[1] == 0) stop("Pas de ligne correspondante")
   if(dim(LigneFausse)[1] >1) stop("Plusieurs lignes correspondantes")
-  if(dim(LigneFausse)[1] == 1 && LigneFausse$Validation == "Rejeté") stop("Une ligne correspondante mais déjà rejetée")
+  if(dim(LigneFausse)[1] == 1 && LigneFausse$chmes_validation == "Rejeté") stop("Une ligne correspondante mais déjà rejetée")
   
   ##### Suppression de la ligne fausse #####
   data <-
@@ -55,14 +55,14 @@ chronique.correction <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
   
   ##### Remise en commun des morceaux #####
   data <-
-    dplyr::union(data, LigneJuste)
+    dplyr::union(data, LigneJuste, by = c("id", "chmes_coderhj", "chmes_capteur", "chmes_date", "chmes_heure", "chmes_valeur", "chmes_unite", "chmes_typemesure", "chmes_validation", "chmes_mode_acquisition", "chmes_mode_integration", "_modif_utilisateur", "_modif_type", "_modif_date"))
   data <-
-    dplyr::union(data, LigneFausse)
+    dplyr::union(data, LigneFausse, by = c("id", "chmes_coderhj", "chmes_capteur", "chmes_date", "chmes_heure", "chmes_valeur", "chmes_unite", "chmes_typemesure", "chmes_validation", "chmes_mode_acquisition", "chmes_mode_integration", "_modif_utilisateur", "_modif_type", "_modif_date"))
 
   ##### Rangement dans l'ordre chronologique #####
   data <-
     data %>% 
-    arrange(Date, Heure)
+    arrange(chmes_date, chmes_heure)
   
   ##### Remise en commun des morceaux #####
   return(data)

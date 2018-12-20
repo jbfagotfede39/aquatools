@@ -57,8 +57,11 @@ data$chmes_date <- as.Date(data$chmes_date,format="%Y-%m-%d")
 # Calcul du nombre de stations ##
 if("chmes_coderhj" %in% colnames(data)) Contexte <- tibble(nStations = n_distinct(data$chmes_coderhj))
 if("chmes_coderhj" %in% colnames(data) == FALSE){
-  Contexte$nStations <- 1
+  Contexte <- data_frame(nStations = 1)
   data <- data %>% mutate(chmes_coderhj = NA)
+}
+if("chmes_typemesure" %in% colnames(data) == FALSE){
+  data <- data %>% mutate(chmes_typemesure = typemesure)
 }
 
 if(Contexte$nStations == 0) stop("Aucune donnée dans la chronique à analyser")
@@ -75,7 +78,7 @@ if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à anal
   typemesure <- Contexte$chmes_typemesure
 
 # nJours
-  Contexte$nJours <- n_distinct(syntjour$chmes_date)
+  Contexte$nJours <- n_distinct(data$chmes_date)
   
 #### Valeurs remarquables journalières ####
 DataTravail <- chronique.agregation(data)

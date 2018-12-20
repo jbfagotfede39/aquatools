@@ -26,21 +26,25 @@ chronique.ajout <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDat
   
   ##### Transformation des formats #####
   cDate <- ymd(cDate)
-  data$Date <- ymd(data$Date)
+  data$chmes_date <- ymd(data$chmes_date)
   
   ##### Copie d'une ligne existante #####
   LigneAjout <- data[1,]
   
   ##### Modification des valeurs #####
-  LigneAjout$CodeRDT <- cCodeRDT
-  LigneAjout$Capteur <- cCapteur
-  LigneAjout$Date <- cDate
-  LigneAjout$Heure <- cHeure
-  LigneAjout$Unite <- cUnite
-  LigneAjout$TypeMesure <- cTypeMesure
-  LigneAjout$Valeur <- as.numeric(cNvelleValeur)
-  LigneAjout$Validation <- cValidation
-  LigneAjout$ModeAcquisition <- cModeAcquisition
+  LigneAjout$chmes_coderhj <- cCodeRDT
+  LigneAjout$chmes_capteur <- cCapteur
+  LigneAjout$chmes_date <- cDate
+  LigneAjout$chmes_heure <- cHeure
+  LigneAjout$chmes_unite <- cUnite
+  LigneAjout$chmes_typemesure <- cTypeMesure
+  LigneAjout$chmes_valeur <- as.numeric(cNvelleValeur)
+  LigneAjout$chmes_mode_integration <- "Ajout manuel"
+  LigneAjout$chmes_validation <- cValidation
+  LigneAjout$chmes_mode_acquisition <- cModeAcquisition
+  LigneAjout$`_modif_utilisateur` <- NA
+  LigneAjout$`_modif_type` <- NA
+  LigneAjout$`_modif_date` <- NA
   
   ##### Remise en commun des morceaux #####
   data <-
@@ -49,7 +53,7 @@ chronique.ajout <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDat
   ##### Rangement dans l'ordre chronologique #####
   data <-
     data %>% 
-    arrange(Date, Heure)
+    arrange(chmes_date, chmes_heure)
   
   ##### Retour des données #####
   return(data)
