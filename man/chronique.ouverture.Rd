@@ -4,12 +4,12 @@
 \alias{chronique.ouverture}
 \title{Ouverture de fichiers de chroniques}
 \arguments{
-\item{localisation}{Localisation relative du fichier (à partir de /NAS-DATA/)}
+\item{localisation}{Localisation relative du fichier (à partir de /NAS-dataaimporter/)}
 }
 \description{
 Cette fonction permet d'ouvrir de manière semi-automatisée des fichiers de chroniques
 }
 \examples{
-chronique.ouverture("/NAS-DATA/Chroniques/Saisie_JB/2018-12-17_Suivi_Ain_amont_FJPPMA_été_2018/10880567.txt")
+chronique.ouverture("/NAS-dataaimporter/Chroniques/Saisie_JB/2018-12-17_Suivi_Ain_amont_FJPPMA_été_2018/10880567.txt")
 }
 \keyword{chronique}

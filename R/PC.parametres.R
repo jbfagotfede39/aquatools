@@ -15,6 +15,7 @@ PC.parametres <- function(data)
 ##### TODO LIST #####
 # Extraction du CodeRDT et transformation en nom d'écosystème à l'aide de la fonction format.abreviation()
 # Nécessité d'arrondir ? Oui mais compliqué car il ne faut pas faire les mêmes arrondis en fonction des paramètres...
+# Il faudrait mettre tous les codes dans une table afin de pouvoir faire la conversion dans les deux sens : Paramètre <-> puis application dans PC.figure
 #####################
 
   ## Recherche si les colonnes existent, sinon création
@@ -103,18 +104,21 @@ data$UniteNom[data$Parametre == "NH4"] <- "mg(NH4)/L"
 data$UniteSANDRE[data$Parametre == "NH4"] <- "169"
 data$ParametreNom[data$Parametre == "NH4"] <- "Ammonium"
 data$UniteSANDRE[data$Parametre == "Ammonium"] <- "169"
+data$UniteNom[data$Parametre == "Ammonium"] <- "mg(NH4)/L"
 
 data$ParametreSANDRE[data$Parametre == "NO2"] <- "1339"
 data$UniteNom[data$Parametre == "NO2"] <- "mg(NO2)/L"
 data$UniteSANDRE[data$Parametre == "NO2"] <- "171"
 data$ParametreNom[data$Parametre == "NO2"] <- "Nitrites"
 data$UniteSANDRE[data$Parametre == "Nitrites"] <- "171"
+data$UniteNom[data$Parametre == "Nitrites"] <- "mg(NO2)/L"
 
 data$ParametreSANDRE[data$Parametre == "NO3"] <- "1340"
 data$UniteNom[data$Parametre == "NO3"] <- "mg(NO3)/L"
 data$UniteSANDRE[data$Parametre == "NO3"] <- "173"
 data$ParametreNom[data$Parametre == "NO3"] <- "Nitrates"
 data$UniteSANDRE[data$Parametre == "Nitrates"] <- "173"
+data$UniteNom[data$Parametre == "Nitrates"] <- "mg(NO3)/L"
 
 data$UniteSANDRE[data$Parametre == "Azote Kjeldahl"] <- "168"
 
@@ -125,8 +129,10 @@ data$UniteNom[data$Parametre == "PO4"] <- "mg(PO4)/L"
 data$UniteSANDRE[data$Parametre == "PO4"] <- "176"
 data$ParametreNom[data$Parametre == "PO4"] <- "Phosphates"
 data$UniteSANDRE[data$Parametre == "Phosphates"] <- "176"
+data$UniteNom[data$Parametre == "Phosphates"] <- "mg(PO4)/L"
 
 data$UniteSANDRE[data$Parametre == "Phosphore total"] <- "177"
+data$UniteNom[data$Parametre == "Phosphore total"] <- "mg(P)/L"
 
 data$ParametreSANDRE[data$Parametre == "HCO3"] <- "1327"
 data$UniteNom[data$Parametre == "HCO3"] <- "mg(HCO3)/L"
@@ -235,19 +241,19 @@ data$UniteSANDRE[data$Parametre == "Chlorophylle c"] <- "133"
 data$ParametreNom[data$Parametre == "Chlorophylle a active"] <- "Chlorophylle a active"
 
 data$ParametreNom[data$Parametre == "Pheopigments"] <- "Pheopigments"
-data$ParametreSANDRE[data$Parametre == "Pheopigments"] <-"1436"
-data$UniteNom[data$Parametre == "Pheopigments"] <-"mg/L"
+data$ParametreSANDRE[data$Parametre == "Pheopigments"] <- "1436"
+data$UniteNom[data$Parametre == "Pheopigments"] <- "mg/L"
 data$UniteSANDRE[data$Parametre == "Pheopigments"] <- "133"
 
 data$ParametreNom[data$Parametre == "Carotenoides"] <- "Carotenoides"
-data$ParametreSANDRE[data$Parametre == "Carotenoides"] <-"1436"
-data$UniteNom[data$Parametre == "Carotenoides"] <-"mg/L"
+data$ParametreSANDRE[data$Parametre == "Carotenoides"] <- "1436"
+data$UniteNom[data$Parametre == "Carotenoides"] <- "mg/L"
 data$UniteSANDRE[data$Parametre == "Carotenoides"] <- "133"
 
 data$ParametreNom[data$Parametre == "PsurB"] <- "P/B"
 
 data$UniteSANDRE[data$Parametre == "P tot"] <- "177"
-data$ParametreNom[data$Parametre == "P tot"]<- "Phosphore total"
+data$ParametreNom[data$Parametre == "P tot"] <- "Phosphore total"
 data$ParametreSANDRE[data$Parametre == "P tot"] <- "1350"
 data$UniteNom[data$Parametre == "P tot"] <- "mg(P)/L"
 
@@ -256,34 +262,34 @@ data$UniteSANDRE[data$Parametre == "Fer tot"] <- "309"
 data$UniteNom[data$Parametre == "Fer tot"] <- "mg(Fe)/L"
 data$ParametreNom[data$Parametre == "Fer tot"] <- "Fer total"
 
-data$ParametreNom[data$Parametre == "Cl"]<- "Chlorures"
-data$ParametreSANDRE[data$Parametre == "Cl"]<- "1337"
-data$UniteNom[data$Parametre == "Cl"]<- "mg(Cl)/L"
-data$UniteSANDRE[data$Parametre == "Cl"]<- "162"
+data$ParametreNom[data$Parametre == "Cl"] <- "Chlorures"
+data$ParametreSANDRE[data$Parametre == "Cl"] <- "1337"
+data$UniteNom[data$Parametre == "Cl"] <- "mg(Cl)/L"
+data$UniteSANDRE[data$Parametre == "Cl"] <- "162"
 
-data$ParametreNom[data$Parametre == "MeS"]<-"MeS"
-data$ParametreSANDRE[data$Parametre == "MeS"]<- "1305"
-data$UniteNom[data$Parametre == "MeS"]<-"mg(MS)/L"
+data$ParametreNom[data$Parametre == "MeS"] <- "MeS"
+data$ParametreSANDRE[data$Parametre == "MeS"] <- "1305"
+data$UniteNom[data$Parametre == "MeS"] <- "mg(MS)/L"
 data$UniteSANDRE[data$Parametre == "MeS"] <- "162"
 
-data$ParametreNom[data$Parametre == "COD"]<- "Carbone organique dissous"
-data$ParametreSANDRE[data$Parametre == "COD"]<- "7804"
-data$UniteNom[data$Parametre == "COD"]<- "mg(COD)/L"
+data$ParametreNom[data$Parametre == "COD"] <- "Carbone organique dissous"
+data$ParametreSANDRE[data$Parametre == "COD"] <- "7804"
+data$UniteNom[data$Parametre == "COD"] <- "mg(COD)/L"
 data$UniteSANDRE[data$Parametre == "COD"] <- "163"
 
-data$ParametreNom[data$Parametre == "COT"]<- "Carbone organique Total"
-data$ParametreSANDRE[data$Parametre == "COT"]<- "1841"
-data$UniteNom[data$Parametre == "COT"]<- "mg(COT)/L"
+data$ParametreNom[data$Parametre == "COT"] <- "Carbone organique Total"
+data$ParametreSANDRE[data$Parametre == "COT"] <- "1841"
+data$UniteNom[data$Parametre == "COT"] <- "mg(COT)/L"
 data$UniteSANDRE[data$Parametre == "COT"] <- "163"
 
-data$ParametreNom[data$Parametre == "N tot"]<-"Azote total"
-data$ParametreSANDRE[data$Parametre == "N tot"]<- "6018"
-data$UniteNom[data$Parametre == "N tot"]<- "mg(N)/L"
+data$ParametreNom[data$Parametre == "N tot"] <- "Azote total"
+data$ParametreSANDRE[data$Parametre == "N tot"] <- "6018"
+data$UniteNom[data$Parametre == "N tot"] <- "mg(N)/L"
 data$UniteSANDRE[data$Parametre == "N tot"] <- "162"
 
 data$ParametreSANDRE[data$Parametre == "DBO5"] <- "1313"
 data$ParametreNom[data$Parametre == "DBO5"] <- "Demande Biologique en Oxygene en 5 jours (DBO5)"
-data$UniteNom[data$Parametre == "DBO5"]<- "mg(O2)/L"
+data$UniteNom[data$Parametre == "DBO5"] <- "mg(O2)/L"
 data$UniteSANDRE[data$Parametre == "DBO5"] <- "175"
 
 
@@ -292,26 +298,26 @@ data$ParametreSANDRE[data$Parametre == "Mg"] <- "1372"
 data$UniteNom[data$Parametre == "Mg"] <- "mg(Mg)/L"
 data$ParametreNom[data$Parametre == "Mg"] <- "Magnesium"
 
-data$ParametreNom[data$Parametre == "MeS volatiles"]<-"Matiere en suspension volatiles"
-data$ParametreSANDRE[data$Parametre == "MeS volatiles"]<-"1434"
-data$UniteNom[data$Parametre == "MeS volatiles"]<-"mg/L"
-data$UniteSANDRE[data$Parametre == "MeS volatiles"]<-"162"
+data$ParametreNom[data$Parametre == "MeS volatiles"] <- "Matiere en suspension volatiles"
+data$ParametreSANDRE[data$Parametre == "MeS volatiles"] <- "1434"
+data$UniteNom[data$Parametre == "MeS volatiles"] <- "mg/L"
+data$UniteSANDRE[data$Parametre == "MeS volatiles"] <- "162"
 
-data$ParametreNom[data$Parametre == "MeS minerales"]<-"Matiere en suspension minerales"
-data$ParametreSANDRE[data$Parametre == "MeS minerales"]<-"6048"
-data$UniteNom[data$Parametre == "MeS minerales"]<-"mg/L"
-data$UniteSANDRE[data$Parametre == "MeS minerales"]<-"162"
+data$ParametreNom[data$Parametre == "MeS minerales"] <- "Matiere en suspension minerales"
+data$ParametreSANDRE[data$Parametre == "MeS minerales"] <- "6048"
+data$UniteNom[data$Parametre == "MeS minerales"] <- "mg/L"
+data$UniteSANDRE[data$Parametre == "MeS minerales"] <- "162"
 
 data$ParametreNom[data$Parametre == "CaMg"] <- "Calcium et Magnesium"
-data$UniteNom[data$Parametre == "CaMg"]<- "mg(CaMg)/L"
-data$UniteSANDRE[data$Parametre == "CaMg"]<-"162"
+data$UniteNom[data$Parametre == "CaMg"] <- "mg(CaMg)/L"
+data$UniteSANDRE[data$Parametre == "CaMg"] <- "162"
 
-data$ParametreNom[data$Parametre == "PheosurChla"]<- "Rapport Pheopigments sur Chl a"
+data$ParametreNom[data$Parametre == "PheosurChla"] <- "Rapport Pheopigments sur Chl a"
 
-data$ParametreNom[data$Parametre == "DCO"]<- "Demande chimique en oxygene"
-data$ParametreSANDRE[data$Parametre == "DCO"]<- "1314"
+data$ParametreNom[data$Parametre == "DCO"] <- "Demande chimique en oxygene"
+data$ParametreSANDRE[data$Parametre == "DCO"] <- "1314"
 data$UniteSANDRE[data$Parametre == "DCO"] <- "162"
-data$UniteNom[data$Parametre == "DCO"]<- "mg(O2)/L"
+data$UniteNom[data$Parametre == "DCO"] <- "mg(O2)/L"
 
 
 
