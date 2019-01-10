@@ -24,8 +24,8 @@ MI.captures <- function(
   Prelevements <- tbl(dbMI,"Prelevements") %>% collect(n = Inf)
   Captures <- tbl(dbMI,"Captures") %>% collect(n = Inf)
   
-  ## Fermeture de la BDD ##
-  DBI::dbDisconnect(dbMI)
+  # ## Fermeture de la BDD ##
+  # DBI::dbDisconnect(dbMI)
   
   ##### Synthèse des données #####
   Prelevements <- left_join(Prelevements, Operations, by = c("OperationID"))

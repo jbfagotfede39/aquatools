@@ -101,7 +101,7 @@ if(Type == "Data" & exists("dbD") == FALSE){
     )
   }
 }
-
+if(Type == "Data"){
 if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
   dbDisconnect(dbD)
   rm(dbD)
@@ -125,6 +125,7 @@ if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(d
                                   password = keyring::key_get("nas-sig-data")
     )
   }
+}
 }
 
 if(Type == "Chroniques"){return(dbC)}

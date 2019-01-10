@@ -2,14 +2,14 @@
 % Please edit documentation in R/poissons.placettes.R
 \name{poissons.placettes}
 \alias{poissons.placettes}
-\title{Listing des opérations pour une station}
+\title{Listing des placettes pour une station}
 \arguments{
 \item{station}{Code de la station}
 
 \item{complet}{Données simplifiées \code{FALSE} (par défault) ou complètes \code{TRUE}}
 }
 \description{
-Cette fonction permet de lister les différentes opérations pour une station donnée
+Cette fonction permet de lister les différentes placettes pour une station donnée
 }
 \examples{
 poissons.placettes()

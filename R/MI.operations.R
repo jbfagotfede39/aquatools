@@ -6,7 +6,10 @@
 #' @param CodeOperation Affichage du CodeOperation - \code{FALSE} (par défault)
 #' @param Sortie Forme du dataframe de sortie - \code{Simple} (par défault), \code{Propre} (format diffusable, avec stations) ou \code{Complet} (tous les champs)
 #' @keywords poissons
-#' @import dplyr RSQLite DBI lubridate
+#' @import dplyr
+#' @import RSQLite
+#' @import DBI
+#' @import lubridate
 #' @export
 #' @examples
 #' MI.operations()
@@ -48,8 +51,8 @@ MI.operations <- function(
   
   Habitats$Recouvrement <- as.numeric(sub(",", ".", Habitats$Recouvrement))
   
-  ## Fermeture de la BDD ##
-  DBI::dbDisconnect(dbMI)
+  # ## Fermeture de la BDD ##
+  # DBI::dbDisconnect(dbMI)
   
   ## Format de Date ##
   Operations$Date <- ymd(Operations$Date)
