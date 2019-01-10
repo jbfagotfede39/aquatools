@@ -35,9 +35,12 @@ if(system('uname -n',intern=T) == "MacBookJB.local"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MacBookJB"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MBP-de-Adrien"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "MBP-de-Adrien.local"){UtilisateurFD <- "Adrien"}
+if(system('uname -n',intern=T) == "macbook-pro-de-adrien"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "macbook-pro-de-adrien.home"){UtilisateurFD <- "Adrien"}
-if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <- "Adrien"}
+if(system('uname -n',intern=T) == "macbook-pro-de-adrien.local"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien"){UtilisateurFD <- "Adrien"}
+if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <- "Adrien"}
+if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.home"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "Air-de-Nadege"){UtilisateurFD <- "Quentin"}
 if(system('uname -n',intern=T) == "Air-de-Nadege.local"){UtilisateurFD <- "Quentin"}
 
