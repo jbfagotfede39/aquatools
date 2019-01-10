@@ -4,10 +4,11 @@
 #' @name PC.figure
 #' @param PC Jeu de données issu de la BDD PC
 #' @import tidyverse
+#' @import tibble
 #' @export
 #' @examples
 #' PC.figure(PC)
-#' PC %>% PC.figure
+#' PC %>% PC.figure()
 #' spNitrates <- ChimieOrg %>% filter(ParametreNom == Parametre[3]) %>% PC.figure()
 
 ##### TODO LIST #####
@@ -26,6 +27,7 @@ PC.figure <- function(
   }
   
   if("CodeRDT" %in% colnames(PC)) Contexte <- tibble(nStations = n_distinct(PC$CodeRDT))
+  if("CodeRDT" %in% colnames(PC) == FALSE) Contexte <- tibble(nStations = 1)
   
   if(testit::has_error(PC %>% 
                        distinct(ParametreSANDRE) %>% 

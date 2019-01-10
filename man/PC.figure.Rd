@@ -11,6 +11,6 @@ Cette fonction permet de représenter des valeurs physico-chimiques
 }
 \examples{
 PC.figure(PC)
-PC \%>\% PC.figure
+PC \%>\% PC.figure()
 spNitrates <- ChimieOrg \%>\% filter(ParametreNom == Parametre[3]) \%>\% PC.figure()
 }
