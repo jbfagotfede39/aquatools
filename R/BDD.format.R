@@ -63,7 +63,6 @@ BDD.format <- function(data)
   
   ###### Chroniques ######
   ## Connexion à la BDD ##
-  dbC <- BDD.ouverture("Chroniques")
   dbD <- BDD.ouverture("Data")
   
   ## Récupération des données ##
@@ -150,6 +149,7 @@ BDD.format <- function(data)
     
     # Transformation des numéros de capteurs
     data$chsvi_capteur <- str_replace(data$chsvi_capteur, "\\..*", "") # On supprime d'éventuels .0 à la fin
+    data$chsvi_capteur <- str_replace(data$chsvi_capteur, "O", "0") # On supprime d'éventuels O par des 0
     
     # Transformation des actions
     data$chsvi_action <- dplyr::recode(data$chsvi_action,
@@ -189,6 +189,21 @@ BDD.format <- function(data)
   # Capteurs #
   if(all(colnames(data) %in% colnames(Capteurs))) {
     data$id <- row_number(data$chcap_numerocapteur) + max(Capteurs$id, na.rm = TRUE) # Pour incrémenter les id à partir du dernier
+  }
+  
+  # Stations #
+  if(all(colnames(data) %in% colnames(Stations))) {
+    data <-
+      data %>% 
+      mutate(id = row_number(data$chsta_coderhj) + as.numeric(dbGetQuery(dbD, "SELECT MAX(id) FROM fd_production.chroniques_stations;"))) %>% # Pour incrémenter les id à partir du dernier
+      #arrange(id) %>% # Pour conserver le même ordre que celui dans le fichier de saisie
+      mutate(chsta_mo = ifelse(chsta_mo == "FD39", "FJPPMA", chsta_mo)) %>% 
+      mutate(chsta_mo = ifelse(chsta_mo == "CD39", "CD39_CR_Ain", chsta_mo)) %>% 
+      mutate(chsta_mo = ifelse(chsta_mo == "CD39-FJPPMA", "CD39_CR_Ain - FJPPMA", chsta_mo)) %>% 
+      mutate(chsta_mo = ifelse(chsta_mo == "ONEMA", "AFB", chsta_mo)) %>% 
+      mutate(chsta_mo = ifelse(chsta_mo == "CD39_CR_Ain - ONEMA", "CD39_CR_Ain - AFB", chsta_mo)) %>% 
+      mutate(chsta_numphoto = ifelse(is.na(chsta_numphoto), "acompleter.png", chsta_numphoto))
+    
   }
   
   # Résultats #

@@ -148,6 +148,6 @@ poissons.operations <- function(
       dplyr::rename(CodeOperation = codeoperation, Station = nom, Date = datedebut.x, X = xlambert, Y = ylambert, TypeCoord = typelambert) %>% 
       arrange(Station, Date)}
 
-  return(Operations)
+  return(as_tibble(Operations))
   
 } # Fin de la fonction

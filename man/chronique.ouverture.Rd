@@ -4,12 +4,18 @@
 \alias{chronique.ouverture}
 \title{Ouverture de fichiers de chroniques}
 \arguments{
-\item{localisation}{Localisation relative du fichier (à partir de /NAS-dataaimporter/)}
+\item{Type}{Type de données en entrée (Mesures, Suivis, Stations)}
+
+\item{Localisation}{Localisation relative du fichier (à partir de /NAS-DATA/)}
+
+\item{typemesure}{Défini le type de données (Thermie, Piézométrie, etc.)}
 }
 \description{
 Cette fonction permet d'ouvrir de manière semi-automatisée des fichiers de chroniques
 }
 \examples{
-chronique.ouverture("/NAS-dataaimporter/Chroniques/Saisie_JB/2018-12-17_Suivi_Ain_amont_FJPPMA_été_2018/10880567.txt")
+DataToAdd <- chronique.ouverture("Mesures", "Thermie", "/NAS-DATA/Chroniques/Saisie_JB/2018-12-17_Suivi_Ain_amont_FJPPMA_été_2018/10880567.txt")
+DataToAdd <- chronique.ouverture("Stations", "Thermie", "/NAS-DATA/Chroniques/Saisie_JB/2019-01-11_PDPG/Stations sondesPDPG.xlsx")
+chronique.ouverture("Suivi", "Thermie", "/NAS-DATA/Chroniques/Saisie_JB/2019-01-18_PDPG/Saisie_cahier_terrain_PDPG_V2.xlsx")
 }
 \keyword{chronique}
