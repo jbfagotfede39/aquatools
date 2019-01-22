@@ -17,6 +17,8 @@
 \item{VminExt}{Valeur inférieure extrême de seuil d'analyse}
 
 \item{VmaxExt}{Valeur supérieure extrême de seuil d'analyse}
+
+\item{DegresJours}{Calcul des degrés/jours (\code{FALSE} par défault)}
 }
 \description{
 Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)

@@ -32,15 +32,19 @@ Type <- match.arg(Type)
 #### Mesures ####
 if(Type == "Mesures"){
 ## Chargement des données ##
-if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b"), delim=";")
-if(exists("dataaimporter") == FALSE){
-  if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c"), delim=";")}
-if(exists("dataaimporter") == FALSE){
-  if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d"), delim=";")}
-if(exists("dataaimporter") == FALSE){
-  if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e"), delim=";")}
-if(exists("dataaimporter") == FALSE){
-  if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")}
+# if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b"), delim=";")
+# if(exists("dataaimporter") == FALSE){
+#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c"), delim=";")}
+# if(exists("dataaimporter") == FALSE){
+#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d"), delim=";")}
+# if(exists("dataaimporter") == FALSE){
+#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e"), delim=";")}
+# if(exists("dataaimporter") == FALSE){
+#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")}
+
+  # Suppression de la partie antérieure suite à la version 1.3.1 de readr qui affiche en warnin les erreurs de parsing
+dataaimporter <- read_delim(adresse.switch(Localisation), skip = 1, delim=";")
+names(dataaimporter)[3] <- c('Valeur')
 
 if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développer")
 
