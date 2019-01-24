@@ -84,6 +84,7 @@ if(Type == "Poissons"){
 }
 
 if(Type == "Data" & exists("dbD") == FALSE){
+  if(UtilisateurFD == "Quentin") UtilisateurFD <- "quentin"
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
                           dbname = "nas-sig-data",
@@ -106,8 +107,9 @@ if(Type == "Data" & exists("dbD") == FALSE){
 }
 if(Type == "Data"){
 if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
+  if(UtilisateurFD == "Quentin") UtilisateurFD <- "quentin"
   dbDisconnect(dbD)
-  rm(dbD)
+  #rm(dbD)
   
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
