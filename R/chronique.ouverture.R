@@ -173,6 +173,7 @@ dataaimporter <-
   rename_at(vars(contains("Remarque")), funs(str_replace(., "Remarque", "remarques"))) %>%
   rename_all(funs(str_to_lower(.))) %>% 
   rename_all(funs(str_replace(., "[[:punct:]]", "_"))) %>% 
+  rename_all(funs(str_replace(., "chsta_", ""))) %>% # car parfois déjà présent devant certains noms de colonnes dans excel
   rename_all(funs(str_c("chsta_",.))) %>% 
   mutate(chsta_coord_x = ifelse(is.na(chsta_coord_x) & "chsta_coord_xl93" %in% names(.), chsta_coord_xl93, chsta_coord_x)) %>% 
   mutate(chsta_coord_y = ifelse(is.na(chsta_coord_y) & "chsta_coord_yl93" %in% names(.), chsta_coord_yl93, chsta_coord_y)) %>% 
@@ -233,14 +234,14 @@ dataaimporter <-
   mutate(chsta_url = ifelse("chsta_url" %in% names(.), chsta_url, NA)) %>% 
   mutate(chsta_module = ifelse("chsta_module" %in% names(.), round(as.numeric(chsta_module),3), NA)) %>% 
   mutate(chsta_qmna5 = ifelse("chsta_qmna5" %in% names(.), chsta_qmna5, NA)) %>% 
-  mutate(chsta_Q2 = ifelse("chsta_Q2" %in% names(.), chsta_Q2, NA)) %>% 
-  mutate(chsta_Q5 = ifelse("chsta_Q5" %in% names(.), chsta_Q5, NA)) %>% 
-  mutate(chsta_Q10 = ifelse("chsta_Q10" %in% names(.), chsta_Q10, NA)) %>% 
-  mutate(chsta_Q20 = ifelse("chsta_Q20" %in% names(.), chsta_Q20, NA)) %>% 
-  mutate(chsta_Q30 = ifelse("chsta_Q30" %in% names(.), chsta_Q30, NA)) %>% 
-  mutate(chsta_Q50 = ifelse("chsta_Q50" %in% names(.), chsta_Q50, NA)) %>% 
-  mutate(chsta_Q100 = ifelse("chsta_Q100" %in% names(.), chsta_Q100, NA)) %>% 
-  mutate(chsta_Q300 = ifelse("chsta_Q300" %in% names(.), chsta_Q300, NA)) %>% 
+  mutate(chsta_q2 = ifelse("chsta_q2" %in% names(.), chsta_q2, NA)) %>% 
+  mutate(chsta_q5 = ifelse("chsta_q5" %in% names(.), chsta_q5, NA)) %>% 
+  mutate(chsta_q10 = ifelse("chsta_q10" %in% names(.), chsta_q10, NA)) %>% 
+  mutate(chsta_q20 = ifelse("chsta_q20" %in% names(.), chsta_q20, NA)) %>% 
+  mutate(chsta_q30 = ifelse("chsta_q30" %in% names(.), chsta_q30, NA)) %>% 
+  mutate(chsta_q50 = ifelse("chsta_q50" %in% names(.), chsta_q50, NA)) %>% 
+  mutate(chsta_q100 = ifelse("chsta_q100" %in% names(.), chsta_q100, NA)) %>% 
+  mutate(chsta_q300 = ifelse("chsta_q300" %in% names(.), chsta_q300, NA)) %>% 
   mutate(chsta_surfacebassinversant = ifelse("chsta_surfacebassinversant" %in% names(.), chsta_surfacebassinversant, NA)) %>% 
   ungroup() %>% 
   # select(-(matches("chsta_afaire"))) %>%

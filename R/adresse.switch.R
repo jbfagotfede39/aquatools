@@ -27,6 +27,7 @@ adresse.switch <- function(
   if(file.exists(paste0("/Users/imac27/",url))) url <- paste0("/Users/imac27/",url) # Machine fixe JB
   if(file.exists(paste0("/Volumes/Fixe-FD39/",url))) url <- paste0("/Volumes/Fixe-FD39/",url) # Machine portable JB
   if(file.exists(paste0("/Users/adrienlavigne/",url))) url <- paste0("/Users/adrienlavigne/",url) # Machine Adrien
+  if(file.exists(paste0("/Users/quentinducreux/",url))) url <- paste0("/Users/quentinducreux/",url) # Machine portable Quentin
   
   #### Retour de l'adresse correcte ####
   return(url)
