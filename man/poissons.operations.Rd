@@ -18,7 +18,7 @@ poissons.operations()
 poissons.operations(CodeOperation = TRUE)
 poissons.operations(data.frame(Nom = "SOR10-2"))
 poissons.operations(data.frame(Nom = "SOR10-2"), CodeOperation = TRUE)
-poissons.operations(listeStations, Sortie = Propre)
-poissons.operations(data.frame(Nom = "SOR10-2"), Sortie = Complet)
+poissons.operations(listeStations, Sortie = "Propre")
+poissons.operations(data.frame(Nom = "SOR10-2"), Sortie = "Complet")
 }
 \keyword{poissons}

@@ -14,6 +14,6 @@ Cette fonction permet de collecter les différents résultats pour une liste don
 \examples{
 poissons.resultats()
 Resultats <- poissons.resultats()
-poissons.resultats(data.frame(Nom = "SOR10-2"), Sortie = Propre)
+poissons.resultats(data.frame(Nom = "SOR10-2"), Sortie = "Propre")
 }
 \keyword{donnees}

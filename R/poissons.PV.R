@@ -35,7 +35,7 @@ poissons.PV <- function(
   DBI::dbDisconnect(dbP)
   
   ## Synthèse des données ##
-  pv_lots <- left_join(pv_lots, Ecosystemes, by = c("codeecosysteme" = "Codeecosysteme")) #
+  pv_lots <- left_join(pv_lots, Ecosystemes, by = c("codeecosysteme")) #
   pv_lots <- left_join(pv_lots, pv_pvs, by = "numero_pv") #
   
   ## Format de dates ##
@@ -46,7 +46,7 @@ poissons.PV <- function(
   if(nchar(ecosysteme) != 0){
     pv_lots <- 
       pv_lots %>%
-      filter(codeRDT == ecosysteme) %>% 
+      filter(coderdt == ecosysteme) %>% 
       rename(Date = date_pv) %>% 
       arrange(desc(Date))}
   
@@ -54,7 +54,7 @@ poissons.PV <- function(
   if(nchar(ecosysteme) == 0){
     pv_lots <- 
       pv_lots %>%
-      #filter(codeRDT == ecosysteme) %>% 
+      #filter(coderdt == ecosysteme) %>% 
       rename(Date = date_pv) %>% 
       arrange(desc(Date))}
 

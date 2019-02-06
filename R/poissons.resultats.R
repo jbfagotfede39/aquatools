@@ -13,7 +13,7 @@
 #' @examples
 #' poissons.resultats()
 #' Resultats <- poissons.resultats()
-#' poissons.resultats(data.frame(Nom = "SOR10-2"), Sortie = Propre)
+#' poissons.resultats(data.frame(Nom = "SOR10-2"), Sortie = "Propre")
 
 poissons.resultats <- function(
   ListeStations = data.frame(Nom = character(0)),

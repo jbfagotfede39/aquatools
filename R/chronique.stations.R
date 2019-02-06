@@ -40,7 +40,7 @@ chronique.stations <- function(x = "CD39",
   if(Recherche == "MO") 
     Vue <-
     Stations %>% 
-    filter(chsta_mo == x) %>% 
+    filter(grepl(x, chsta_mo)) %>% 
     #filter(chsta_milieu == x) %>% 
     #filter(chsta_bassin == x) %>% 
     #filter(chsta_sousbassin == x) %>% 
@@ -51,7 +51,7 @@ chronique.stations <- function(x = "CD39",
   if(Recherche == "Milieu") 
     Vue <-
     Stations %>% 
-    #filter(chsta_mo == x) %>% 
+    #filter(grepl(x, chsta_mo)) %>% 
     filter(chsta_milieu == x) %>% 
     #filter(chsta_bassin == x) %>% 
     #filter(chsta_sousbassin == x) %>% 
@@ -62,7 +62,7 @@ chronique.stations <- function(x = "CD39",
   if(Recherche == "Bassin") 
     Vue <-
     Stations %>% 
-    #filter(chsta_mo == x) %>% 
+    #filter(grepl(x, chsta_mo)) %>% 
     #filter(chsta_milieu == x) %>% 
     filter(chsta_bassin == x) %>% 
     #filter(chsta_sousbassin == x) %>% 
@@ -73,7 +73,7 @@ chronique.stations <- function(x = "CD39",
   if(Recherche == "Sous-bassin") 
     Vue <-
     Stations %>% 
-    #filter(chsta_mo == x) %>% 
+    #filter(grepl(x, chsta_mo)) %>% 
     #filter(chsta_milieu == x) %>% 
     #filter(chsta_bassin == x) %>% 
     filter(chsta_sousbassin == x) %>% 
@@ -84,7 +84,7 @@ chronique.stations <- function(x = "CD39",
   if(Recherche == "Commune") 
     Vue <-
     Stations %>% 
-    #filter(chsta_mo == x) %>% 
+    #filter(grepl(x, chsta_mo)) %>% 
     #filter(chsta_milieu == x) %>% 
     #filter(chsta_bassin == x) %>% 
     #filter(chsta_sousbassin == x) %>% 
@@ -95,7 +95,7 @@ chronique.stations <- function(x = "CD39",
   if(Recherche == "Département") 
     Vue <-
     Stations %>% 
-    #filter(chsta_mo == x) %>% 
+    #filter(grepl(x, chsta_mo)) %>% 
     #filter(chsta_milieu == x) %>% 
     #filter(chsta_bassin == x) %>% 
     #filter(chsta_sousbassin == x) %>% 

@@ -3,10 +3,17 @@
 \name{poissons.especes}
 \alias{poissons.especes}
 \title{Extraction des données de référence des espèces}
+\arguments{
+\item{Sortie}{Format de la sortie}
+
+\item{Couleurs}{Présence de couleurs dans le formatage du statut des espèces (\code{FALSE} par défault)}
+}
 \description{
 Récupère l'ensemble des données de référence des espèces de Multifish
 }
 \examples{
 poissons.especes()
+poissons.especes(Sortie = "Simple", Couleurs = T)
+poissons.especes("Propre")
 }
 \keyword{donnees}
