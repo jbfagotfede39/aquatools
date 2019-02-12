@@ -12,6 +12,7 @@
 #' @export
 #' @examples
 #' SIG.export(Stations, "Export_stations")
+#' DataToAdd %>% st_as_sf(coords = c("XLong", "YLat"), crs = 4269) %>% st_transform(2154) %>% SIG.export("GCL_Bathy_points_bruts")
 
 ##### TODO LIST #####
 # 

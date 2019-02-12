@@ -79,8 +79,11 @@ dataaimporter <- read_excel(adresse.switch(Localisation), sheet = 1)
 dataaimporter <- 
   dataaimporter %>% 
   rename_at(vars(matches("Valeur manuelle")), funs(str_replace(., "Valeur manuelle", "chsvi_valeur"))) %>%
+  rename_at(vars(matches("Tmanuelle")), funs(str_replace(., "Tmanuelle", "chsvi_valeur"))) %>%
   rename_at(vars(matches("MO")), funs(str_replace(., "MO", "chsvi_mo"))) %>%
   rename_at(vars(matches("Operateurs")), funs(str_replace(., "Operateurs", "chsvi_operateurs"))) %>%
+  rename_at(vars(matches("Opérateurs")), funs(str_replace(., "Opérateurs", "chsvi_operateurs"))) %>%
+  rename_at(vars(matches("CodeRDT")), funs(str_replace(., "CodeRDT", "chsvi_coderhj"))) %>%
   rename_at(vars(matches("Station")), funs(str_replace(., "Station", "chsvi_coderhj"))) %>%
   rename_at(vars(matches("Date")), funs(str_replace(., "Date", "chsvi_date"))) %>%
   rename_at(vars(matches("Heure")), funs(str_replace(., "Heure", "chsvi_heure"))) %>%
@@ -88,8 +91,11 @@ dataaimporter <-
   rename_at(vars(matches("Unite")), funs(str_replace(., "Unite", "chsvi_unite"))) %>%
   rename_at(vars(matches("Action")), funs(str_replace(., "Action", "chsvi_action"))) %>%
   rename_at(vars(matches("Fonctionnement")), funs(str_replace(., "Fonctionnement", "chsvi_fonctionnement"))) %>%
+  rename_at(vars(matches("Qualité")), funs(str_replace(., "Qualité", "chsvi_qualite"))) %>%
+  rename_at(vars(matches("Qualite")), funs(str_replace(., "Qualite", "chsvi_qualite"))) %>%
   rename_at(vars(starts_with("Remarque")), funs(str_replace(., "Remarque", "chsvi_remarques"))) %>%
   rename_at(vars(matches("AFaire")), funs(str_replace(., "AFaire", "chsvi_actionafaire"))) %>%
+  rename_at(vars(matches("ToDo")), funs(str_replace(., "ToDo", "chsvi_actionafaire"))) %>%
   #rename( = ``) %>% 
   mutate('_modif_utilisateur' = NA) %>% 
   mutate('_modif_type' = NA) %>% 

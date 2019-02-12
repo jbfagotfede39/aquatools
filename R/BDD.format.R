@@ -13,7 +13,7 @@
 #' BDD.format(data)
 
 ###### À faire #####
-# 
+# Ajout d'un test pour les suivi de chronique : si le champ fonctionnement contient perdue, alors le champ action ne peut être que disparue, sinon stop et signalement
 # 
 ####################
 
@@ -117,6 +117,7 @@ BDD.format <- function(data)
     
     # Travail sur les stations #
     data$chsvi_coderhj <- str_replace(data$chsvi_coderhj, " ", "") # On efface les espaces en trop dans les noms de station
+    data$chsvi_coderhj <- str_to_upper(data$chsvi_coderhj, locale = "fr") # On met les noms de station en majuscules
     
     # Travail sur les heures #
     if(all(!is.na(data$chsvi_heure))){ # Afin de n'appliquer les commandes que dans le cas où il n'y a pas que des NA dans les heures
