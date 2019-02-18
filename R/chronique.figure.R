@@ -6,6 +6,7 @@
 #' @param Titre Titre du graphique (vide par défaut)
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
 #' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
+#' @param complement Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut)
 #' @param Vmm30j Si \code{FALSE} (par défault), n'affiche pas les
 #'    Vmm30j.  Si \code{TRUE}, les affiche.
 #' @param Vminmax Si \code{TRUE} (par défault), affiche pas les
@@ -27,8 +28,9 @@
 chronique.figure <- function(
     data = data,
     Titre="",
-    typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie"),
+    typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
     duree = c("Complet", "Relatif"),
+    complement = FALSE,
     Vmm30j=F,
     Vminmax=T,
     Ymin=0,
@@ -65,7 +67,7 @@ if("chmes_typemesure" %in% colnames(data) == FALSE){
 }
 
 if(Contexte$nStations == 0) stop("Aucune donnée dans la chronique à analyser")
-if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à analyser")
+if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer à partir du rapport N2000 Vogna")
   
 # chmes_typemesure
   if(testit::has_error(data %>% 
@@ -81,7 +83,8 @@ if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à anal
   Contexte$nJours <- n_distinct(data$chmes_date)
   
 #### Valeurs remarquables journalières ####
-DataTravail <- chronique.agregation(data)
+if(complement == FALSE) DataTravail <- chronique.agregation(data)
+if(complement == TRUE) DataTravail <- chronique.agregation(data, complement = T)
 syntjour <- DataTravail[[2]]
 
 ## Calcul de la Vmm30j ##
@@ -129,7 +132,12 @@ if(typemesure == "Piézométrie" | typemesure == "Piézométrie brute" | typemes
   legendeY = "Hauteur d'eau (cm)"
   legendeTitre = "Piézométrie :"
   typemesureTitreSortie = "_piézométrie_"
-  }
+}
+if(typemesure == "Piézométrie NGF"){
+  legendeY = "Hauteur d'eau (NGF)"
+  legendeTitre = "Piézométrie :"
+  typemesureTitreSortie = "_piézométrie_"
+}
 if(typemesure == "Oxygénation"){
   legendeY = expression(Oxygene~dissous~(mg~O[2]/L))
   legendeTitre = "Oxygénation :"

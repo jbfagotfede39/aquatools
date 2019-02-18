@@ -3,6 +3,15 @@
 \name{chronique.mesures}
 \alias{chronique.mesures}
 \title{Extraction de données brutes de chronique}
+\arguments{
+\item{CodeStation}{Code RHJ de la station}
+
+\item{Type}{Type de chronique recherchée : Thermie (par défaut), piézométrie, Hydrologie, O2, pluviométrie ou toutes les données}
+
+\item{annee}{Année biologique recherchée si spécifiée, sinon ensemble de la chronique (par défaut)}
+
+\item{Valide}{Validité des données (\code(TRUE) par défaut)}
+}
 \description{
 Permet d'extraire les données de chronique d'une station
 }

@@ -4,6 +4,8 @@
 #' @name chronique.agregation
 #' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
 #' @param projet Nom du projet
+#' @param complement Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut). Uniquement pour les valeurs journalières
+#' @param export Si \code{TRUE}, exporte les résultats (\code{FALSE} par défaut)
 #' @keywords chronique
 #' @import lubridate
 #' @import openxlsx
@@ -17,6 +19,7 @@
 chronique.agregation <- function(
   data = data,
   projet = as.character(NA),
+  complement = FALSE,
   export = FALSE
 )
 {
@@ -60,6 +63,11 @@ if("chmes_typemesure" %in% colnames(data) == FALSE){
 #### Pas d'agrégation ####
 ValInstantanees <-
   data
+if(complement == TRUE){
+  # ValInstantanees <-
+  # ValInstantanees %>%
+  # complete(chmes_date = seq.Date(min(chmes_date), max(chmes_date), by="hour"))
+}
 
 #### Agrégation par jour ####
 ValJours <- 
@@ -85,6 +93,12 @@ ValJours <-
       ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_date")
   ) %>% 
   select(chmes_coderhj, chmes_typemesure, chmes_date, VMinJ:VAmpliJ, VAmpliSigneJ, VarJ, NMesuresJ)
+
+if(complement == TRUE){
+  ValJours <-
+    ValJours %>%
+    complete(chmes_date = seq.Date(min(chmes_date), max(chmes_date), by="day"))
+}
 
 #### Agrégation par mois ####
 ValMois <- 
@@ -112,6 +126,12 @@ ValMois <-
   ) %>% 
   select(chmes_coderhj, chmes_typemesure, chmes_mois, VMinM:VAmpliM, VAmpliSigneM, VarM, NMesuresM)
 
+if(complement == TRUE){
+  # ValMois <-
+  #   ValMois %>%
+  #   complete(chmes_mois = seq.Date(min(chmes_mois), max(chmes_mois), by="month"))
+}
+
 #### Agrégation par année biologique ####
 ValAnneeBiol <-
   data %>% 
@@ -137,6 +157,12 @@ ValAnneeBiol <-
     ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_anneebiol")
   ) %>% 
   select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, VMinAB:VAmpliAB, VAmpliSigneAB, VarAB, NMesuresAB)
+
+if(complement == TRUE){
+  # ValAnneeBiol <-
+  #   ValAnneeBiol %>%
+  #   complete(chmes_anneebiol = seq.Date(min(chmes_anneebiol), max(chmes_anneebiol), by="year"))
+}
 
 #### Agrégation de l'intégralité de la chronique ####
 ValComplet <-

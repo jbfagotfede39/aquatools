@@ -12,6 +12,8 @@
 
 \item{duree}{Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.}
 
+\item{complement}{Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut)}
+
 \item{Vmm30j}{Si \code{FALSE} (par défault), n'affiche pas les
 Vmm30j.  Si \code{TRUE}, les affiche.}
 

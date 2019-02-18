@@ -7,6 +7,10 @@
 \item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 
 \item{projet}{Nom du projet}
+
+\item{complement}{Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut). Uniquement pour les valeurs journalières}
+
+\item{export}{Si \code{TRUE}, exporte les résultats (\code{FALSE} par défaut)}
 }
 \description{
 Cette fonction permet d'agréger des chroniques de mesures (température, niveaux, etc.) à différentes fréquences (dans l'ordre : pas d'agrégation, jours, mois, années, chronique complète)

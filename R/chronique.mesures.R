@@ -6,6 +6,10 @@
 #' @import lubridate 
 #' @import stringr
 #' @import tidyverse
+#' @param CodeStation Code RHJ de la station
+#' @param Type Type de chronique recherchée : Thermie (par défaut), piézométrie, Hydrologie, O2, pluviométrie ou toutes les données
+#' @param annee Année biologique recherchée si spécifiée, sinon ensemble de la chronique (par défaut)
+#' @param Valide Validité des données (\code(TRUE) par défaut)
 #' @export
 #' @examples
 #' chronique.mesures("HER0-6", "Thermie") 
