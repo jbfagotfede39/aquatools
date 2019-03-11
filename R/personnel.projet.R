@@ -18,7 +18,7 @@
 ####################
 
 personnel.projet <- function(
-  projet = as.character(NA)
+  projet = NA_character_
   )
 {
   
@@ -48,7 +48,7 @@ personnel.projet <- function(
 
   #### Calcul des données élaborées si absentes ####
 if(dim(RecapTpsW %>% filter(tpswrecap_programmation == "Réalisé"))[1] == 0){
-  if(!grepl("AERMC",projet)){ # Cas où ce n'est pas une convention avec l'AE
+  if(!grepl("AERMC", projet)){ # Cas où ce n'est pas une convention avec l'AE
   DataToAdd <- 
     TpsW %>% 
     filter(tpswdetail_projet == projet) %>% 
@@ -123,7 +123,7 @@ SELECT setval('fd_production.tpstravail_recapitulatif_id_seq', COALESCE((SELECT 
 RecapTpsW <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_recapitulatif")) %>% filter(tpswrecap_projet == projet)  %>% filter(tpswrecap_programmation == "Réalisé") %>% collect(n = Inf)
 
 #### Arrêt d'extraction si convention AERMC car non développé ####
-if(!grepl("AERMC",projet)) stop("Extraction en xlsx non développée pour les conventions AE")
+if(grepl("AERMC",projet)) stop("Extraction en xlsx non développée pour les conventions AE")
 
 ##### Extraction des données de synthèse par poste ####
 SynthesePoste <- 

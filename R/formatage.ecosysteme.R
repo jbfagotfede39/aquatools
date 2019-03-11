@@ -7,7 +7,7 @@
 #' @import tidyverse
 #' @examples
 #' formatage.ecosysteme(data$Station, Type = "Simplification")
-#' PC$CodeRDT <- formatage.ecosysteme(PC$CodeRDT, Type = "Simplification")
+#' PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Type = "Simplification")
 #' data %>% stations.CodeRDT(DistSource = F) %>% formatage.ecosysteme(Type = "Expansion")
 
 ##### TODO LIST #####
@@ -27,8 +27,8 @@ formatage.ecosysteme <- function(
 if(Type == "Expansion"){
 acronymes <-
   acronymes %>% 
-  left_join(formatage.abreviation() %>% filter(Type == "Écosystème"), by = c(CodeEcos = "Acronyme")) %>% 
-  select(-Type, -CodeEcos) %>% 
+  left_join(formatage.abreviation() %>% filter(Type == "Écosystème"), by = c(codemilieu = "Acronyme")) %>% 
+  select(-Type, -codemilieu) %>% 
   rename(Ecosysteme = Definition)
 }
 

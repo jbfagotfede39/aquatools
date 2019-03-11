@@ -7,7 +7,7 @@
 \item{PC}{Jeu de données issu de la BDD PC}
 }
 \description{
-Cette fonction permet de représenter des valeurs physico-chimiques
+Cette fonction permet de représenter des pcmes_valeurs physico-chimiques
 }
 \examples{
 PC.figure(PC)

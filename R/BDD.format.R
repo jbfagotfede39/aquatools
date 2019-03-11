@@ -118,11 +118,23 @@ BDD.format <- function(data)
     # Travail sur les stations #
     data$chsvi_coderhj <- str_replace(data$chsvi_coderhj, " ", "") # On efface les espaces en trop dans les noms de station
     data$chsvi_coderhj <- str_to_upper(data$chsvi_coderhj, locale = "fr") # On met les noms de station en majuscules
+    data <- 
+      data %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUCHARTREUSE", "VOUchartreuse", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUGRINGALETPORT", "VOUgringaletport", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUMERCANTINE", "VOUmercantine", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUPATORNAY", "VOUpatornay", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUSURCHAUFFANT", "VOUsurchauffant", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BIE32-4AVAL", "BIE32-4aval", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "LEM-2-2", "LEM2-2", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "NCZ6-2TRÉMONTAGNE", "NCZ6-2", chsvi_coderhj))
     
     # Travail sur les heures #
     if(all(!is.na(data$chsvi_heure))){ # Afin de n'appliquer les commandes que dans le cas où il n'y a pas que des NA dans les heures
     data$chsvi_heure <- str_replace(data$chsvi_heure, "h", ":") # On remplace le h par :
     data$chsvi_heure <- str_replace(data$chsvi_heure, "H", ":") # On remplace le H par :
+    data$chsvi_heure <- str_replace(data$chsvi_heure, "Oubli", NA_character_) # On remplace Oubli par NA
+    data$chsvi_heure <- str_replace(data$chsvi_heure, "oubli", NA_character_) # On remplace oubli par NA
     if(all(str_count(data$chsvi_heure, ":") == 1)) data$chsvi_heure <- str_c(data$chsvi_heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
     if(testit::has_warning(format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S")) == FALSE) data$chsvi_heure <- format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
     if(testit::has_warning(format(ymd_hms(data$chsvi_heure), format="%H:%M:%S")) == FALSE) data$chsvi_heure <- format(ymd_hms(data$chsvi_heure), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
@@ -158,7 +170,10 @@ BDD.format <- function(data)
                                  "Sonde disparue" = "Disparue",
                                  "releve" = "Relève",
                                  "relève" = "Relève",
+                                 "Relève et repose" = "Relève",
+                                 "Relevé" = "Relève",
                                  "pose" = "Pose",
+                                 "Repose" = "Pose",
                                  "dépose" = "Dépose"
     )
     

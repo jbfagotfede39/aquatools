@@ -18,9 +18,9 @@
 Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques
 }
 \examples{
-profil.lac(PC,param="O2mg")
-profil.lac(PC,param="O2pourc")
-profil.lac(PC,param="Cond")
-profil.lac(PC,param="ph")
-#' profil.lac(PC,param="temp")
+profil.lac(PC, param="O2mg")
+profil.lac(PC, param="O2pourc")
+profil.lac(PC, param="Cond")
+profil.lac(PC, param="ph")
+#' profil.lac(PC, param="temp")
 }

@@ -18,7 +18,7 @@
 ##### TODO LIST #####
 # Si mise à jour des paramètres :
 # library(readxl);library(tidyverse);data <- read_excel("data/Seuils_PC_V5.xlsx");save(data,file="data/Seuils_PC.RData")
-# PC <- PC %>% filter(SupportSANDRE == 6)
+# PC <- PC %>% filter(pcmes_supportsandre == 6)
 # PCsave <- PC
 # library(readxl);library(tidyverse);library(reshape2);library(aquatools);data(Seuils_PC);Categorie = 1
 # load("data/Seuils_PC.RData")
@@ -59,84 +59,84 @@ if(Referentiel == "NV") {
     data %>% 
     filter(Referentiel == "Nisbet - Verneaux") %>% 
     tidyr::unite(Seuil, c(Seuil, ClasseQualite), remove=T, sep = "-") %>% 
-    dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
-    tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-")
+    dcast(Referentiel + pcmes_parametresandre + pcmes_supportsandre ~ Seuil, value.var = "ValeurSeuil") %>% 
+    tidyr::unite(Cl, c(pcmes_parametresandre, pcmes_supportsandre), remove=T, sep = "-")
   
   ## Attribution des classes de qualité ##
   ClasseQualites <-
     PC %>% 
-    tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=F, sep = "-") %>% 
+    tidyr::unite(Cl, c(pcmes_parametresandre, pcmes_supportsandre), remove=F, sep = "-") %>% 
     left_join(Seuils, by = c("Cl" = "Cl")) %>% 
-    mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
+    mutate(pcmes_valeur = as.numeric(sub(",", ".", pcmes_valeur))) %>% 
     mutate(ClasseQualite = NA) %>% 
     mutate(ClasseQualite = ifelse(is.na(`Minimum-1`) & is.na(`Minimum-2`) & is.na(`Minimum-3`) & is.na(`Minimum-4`) & is.na(`Minimum-5`) & is.na(`Minimum-6`) & is.na(`Minimum-7`), # Pour le cas où il y a 8 classes = 7 seuils <=> SANDRE 1305
-                                  case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                            .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
-                                            .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
-                                            .$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-4` ~ "Classe 4",
-                                            .$Valeur >= .$`Maximum-4` & .$Valeur < .$`Maximum-5` ~ "Classe 5",
-                                            .$Valeur >= .$`Maximum-5` & .$Valeur < .$`Maximum-6` ~ "Classe 6",
-                                            .$Valeur >= .$`Maximum-6` & .$Valeur < .$`Maximum-7` ~ "Classe 7",
-                                            .$Valeur >= .$`Minimum-8` ~ "Classe 8",
+                                  case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                            .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Maximum-2` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Maximum-2` & .$pcmes_valeur < .$`Maximum-3` ~ "Classe 3",
+                                            .$pcmes_valeur >= .$`Maximum-3` & .$pcmes_valeur < .$`Maximum-4` ~ "Classe 4",
+                                            .$pcmes_valeur >= .$`Maximum-4` & .$pcmes_valeur < .$`Maximum-5` ~ "Classe 5",
+                                            .$pcmes_valeur >= .$`Maximum-5` & .$pcmes_valeur < .$`Maximum-6` ~ "Classe 6",
+                                            .$pcmes_valeur >= .$`Maximum-6` & .$pcmes_valeur < .$`Maximum-7` ~ "Classe 7",
+                                            .$pcmes_valeur >= .$`Minimum-8` ~ "Classe 8",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1312-3", # Pour le cas où SANDRE 1312 <-> 6 cas
-                                  case_when(.$Valeur < .$`Maximum-6` ~ "Classe 6",
-                                            .$Valeur >= .$`Minimum-5` & .$Valeur < .$`Minimum-4` ~ "Classe 5",
-                                            .$Valeur >= .$`Minimum-4` & .$Valeur < .$`Minimum-3` ~ "Classe 4",
-                                            .$Valeur >= .$`Minimum-3` & .$Valeur < .$`Minimum-2` ~ "Classe 3",
-                                            .$Valeur >= .$`Minimum-2` & .$Valeur < .$`Minimum-1` ~ "Classe 2",
-                                            .$Valeur >= .$`Minimum-1` ~ "Classe 1",
+                                  case_when(.$pcmes_valeur < .$`Maximum-6` ~ "Classe 6",
+                                            .$pcmes_valeur >= .$`Minimum-5` & .$pcmes_valeur < .$`Minimum-4` ~ "Classe 5",
+                                            .$pcmes_valeur >= .$`Minimum-4` & .$pcmes_valeur < .$`Minimum-3` ~ "Classe 4",
+                                            .$pcmes_valeur >= .$`Minimum-3` & .$pcmes_valeur < .$`Minimum-2` ~ "Classe 3",
+                                            .$pcmes_valeur >= .$`Minimum-2` & .$pcmes_valeur < .$`Minimum-1` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Minimum-1` ~ "Classe 1",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1313-3", # Pour le cas où SANDRE 1313 <-> 4 cas
-                                  case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                            .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
-                                            .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
-                                            .$Valeur >= .$`Minimum-4` ~ "Classe 4",
+                                  case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                            .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Maximum-2` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Maximum-2` & .$pcmes_valeur < .$`Maximum-3` ~ "Classe 3",
+                                            .$pcmes_valeur >= .$`Minimum-4` ~ "Classe 4",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1335-3", # Pour le cas où SANDRE 1335 <-> 3 cas
-                                  case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                            .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Minimum-3` ~ "Classe 2",
-                                            .$Valeur >= .$`Minimum-3` ~ "Classe 3",
+                                  case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                            .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Minimum-3` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Minimum-3` ~ "Classe 3",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1337-3" | Cl == "1338-3" , # Pour le cas où SANDRE 1337 et 1338 <-> 7 cas
-                                  case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                            .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
-                                            .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
-                                            .$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-4` ~ "Classe 4",
-                                            .$Valeur >= .$`Maximum-4` & .$Valeur < .$`Maximum-5` ~ "Classe 5",
-                                            .$Valeur >= .$`Maximum-5` & .$Valeur < .$`Maximum-6` ~ "Classe 6",
-                                            .$Valeur >= .$`Minimum-7` ~ "Classe 7",
+                                  case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                            .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Maximum-2` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Maximum-2` & .$pcmes_valeur < .$`Maximum-3` ~ "Classe 3",
+                                            .$pcmes_valeur >= .$`Maximum-3` & .$pcmes_valeur < .$`Maximum-4` ~ "Classe 4",
+                                            .$pcmes_valeur >= .$`Maximum-4` & .$pcmes_valeur < .$`Maximum-5` ~ "Classe 5",
+                                            .$pcmes_valeur >= .$`Maximum-5` & .$pcmes_valeur < .$`Maximum-6` ~ "Classe 6",
+                                            .$pcmes_valeur >= .$`Minimum-7` ~ "Classe 7",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1339-3", # Pour le cas où SANDRE 1339 <-> 4 cas
-                                  case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                            .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
-                                            .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
-                                            .$Valeur >= .$`Minimum-4` ~ "Classe 4",
+                                  case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                            .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Maximum-2` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Maximum-2` & .$pcmes_valeur < .$`Maximum-3` ~ "Classe 3",
+                                            .$pcmes_valeur >= .$`Minimum-4` ~ "Classe 4",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1333-3" | Cl == "1340-3" , # Pour le cas où SANDRE 1333 et 1340 <-> 6 cas
-                                  case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                            .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
-                                            .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
-                                            .$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-4` ~ "Classe 4",
-                                            .$Valeur >= .$`Maximum-4` & .$Valeur < .$`Maximum-5` ~ "Classe 5",
-                                            .$Valeur >= .$`Minimum-6` ~ "Classe 6",
+                                  case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                            .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Maximum-2` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Maximum-2` & .$pcmes_valeur < .$`Maximum-3` ~ "Classe 3",
+                                            .$pcmes_valeur >= .$`Maximum-3` & .$pcmes_valeur < .$`Maximum-4` ~ "Classe 4",
+                                            .$pcmes_valeur >= .$`Maximum-4` & .$pcmes_valeur < .$`Maximum-5` ~ "Classe 5",
+                                            .$pcmes_valeur >= .$`Minimum-6` ~ "Classe 6",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
-    mutate(ClasseQualite = ifelse(CodeRemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
-    mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
+    mutate(ClasseQualite = ifelse(pcmes_coderemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
+    mutate(ClasseQualite = ifelse(pcmes_coderemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
     select(-(`Maximum-1`:`Minimum-8`), -Cl) %>% 
     mutate(Couleur = case_when(.$ClasseQualite == "Classe 1" ~ "Bleu",
                                .$ClasseQualite == "Classe 2" ~ "Vert",
@@ -157,20 +157,20 @@ if(Referentiel == "SEQ-EAU") {
   ## Création des seuils ##
   Seuils <- 
     data %>% 
-    filter(Referentiel == "SEQ-Eau par alteration" & ParametreSANDRE != "1301") %>% 
-    filter(!(SupportSANDRE == 3 & (ParametreSANDRE == "1382" | ParametreSANDRE == "1383" | ParametreSANDRE == "1386" | ParametreSANDRE == "1388" | ParametreSANDRE == "1389" | ParametreSANDRE == "1392"))) %>% # Afin d'éliminer certains ETM car dépendants de la dureté donc traitement à part
-    bind_rows(filter(data, Referentiel == "SEQ-Eau par alteration" & (ParametreSANDRE_condition == 2 & Valeur_condition == Categorie))) %>% 
+    filter(Referentiel == "SEQ-Eau par alteration" & pcmes_parametresandre != "1301") %>% 
+    filter(!(pcmes_supportsandre == 3 & (pcmes_parametresandre == "1382" | pcmes_parametresandre == "1383" | pcmes_parametresandre == "1386" | pcmes_parametresandre == "1388" | pcmes_parametresandre == "1389" | pcmes_parametresandre == "1392"))) %>% # Afin d'éliminer certains ETM car dépendants de la dureté donc traitement à part
+    bind_rows(filter(data, Referentiel == "SEQ-Eau par alteration" & (pcmes_parametresandre_condition == 2 & Valeur_condition == Categorie))) %>% 
     tidyr::unite(Seuil, c(Seuil, ClasseQualite), remove=T, sep = "-") %>% 
-    dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
-    tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-")
+    dcast(Referentiel + pcmes_parametresandre + pcmes_supportsandre ~ Seuil, value.var = "ValeurSeuil") %>% 
+    tidyr::unite(Cl, c(pcmes_parametresandre, pcmes_supportsandre), remove=T, sep = "-")
   
   # Calcul de la dureté par operation ##
   Durete <-
     PC %>%
-    filter(ParametreSANDRE == "1345") %>%
-    mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>%
-    distinct(CodeRDT, Date, Valeur) %>%
-    rename(Durete = Valeur)
+    filter(pcmes_parametresandre == "1345") %>%
+    mutate(pcmes_valeur = as.numeric( sub(",", ".", pcmes_valeur))) %>%
+    distinct(pcmes_coderhj, pcmes_date, pcmes_valeur) %>%
+    rename(Durete = pcmes_valeur)
   PC <-
     PC %>%
     left_join(Durete)
@@ -178,78 +178,78 @@ if(Referentiel == "SEQ-EAU") {
   # Seuils dureté pour cuivre
   SeuilsETMH2O <-
     data %>% 
-    filter(SupportSANDRE == 3 & (ParametreSANDRE == "1382" | ParametreSANDRE == "1383" | ParametreSANDRE == "1386" | ParametreSANDRE == "1388" | ParametreSANDRE == "1389" | ParametreSANDRE == "1392")) %>% # Afin de ne considérer que certains métaux sur l'eau
+    filter(pcmes_supportsandre == 3 & (pcmes_parametresandre == "1382" | pcmes_parametresandre == "1383" | pcmes_parametresandre == "1386" | pcmes_parametresandre == "1388" | pcmes_parametresandre == "1389" | pcmes_parametresandre == "1392")) %>% # Afin de ne considérer que certains métaux sur l'eau
     mutate(Durete = case_when(Seuil_condition == "Maximum" & Valeur_condition == 5 ~ "DureteFaible",
                                      Seuil_condition == "Maximum" & Valeur_condition == 20 ~ "DureteMoyenne",
                                      Seuil_condition == "Minimum" & Valeur_condition == 20 ~ "DureteForte")
     ) %>% 
     tidyr::unite(Seuil, c(Durete, Seuil, ClasseQualite), remove=T, sep = "-") %>% 
-    dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
-    tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-") %>% 
+    dcast(Referentiel + pcmes_parametresandre + pcmes_supportsandre ~ Seuil, value.var = "ValeurSeuil") %>% 
+    tidyr::unite(Cl, c(pcmes_parametresandre, pcmes_supportsandre), remove=T, sep = "-") %>% 
     rename(Referentie = Referentiel)
 
   ## Attribution des classes de qualité ##
   ClasseQualites <-
     PC %>% 
-    tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=F, sep = "-") %>% 
+    tidyr::unite(Cl, c(pcmes_parametresandre, pcmes_supportsandre), remove=F, sep = "-") %>% 
     left_join(Seuils, by = c("Cl" = "Cl")) %>% 
     left_join(SeuilsETMH2O, by = c("Cl" = "Cl")) %>% # Afin de coller les seuils de qualité pour les ETM qui sont fonction de la dureté
     mutate(Referentiel = ifelse(is.na(Referentie), Referentiel, Referentie)) %>% # Afin de remettre la colonne référentiel en une seule commune aux deux jeux de données de seuils
     select(-Referentie) %>% # Afin d'effacer la colonne temporaire
-    mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
+    mutate(pcmes_valeur = as.numeric( sub(",", ".", pcmes_valeur))) %>% 
     #mutate(Durete = as.numeric( sub(",", ".", Durete))) %>% 
     mutate(ClasseQualite = NA) %>% 
     mutate(ClasseQualite = ifelse(is.na(`Maximum-4`) & !is.na(`Maximum-1`), # Pour le cas où il n'y a que 3 seuils - Avec exclusion des na en max-1 pour 1311 et 1312 traités ensuite
-                           case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                     .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
-                                     .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
-                                     .$Valeur >= .$`Maximum-3` ~ "Classe 4", # S'il n'existe que 3 limites
-                                     #.$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-Classe 4` ~ "Classe 4", # S'il existe 4 limites
-                                     #.$Valeur >= .$`Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                           case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                     .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Maximum-2` ~ "Classe 2",
+                                     .$pcmes_valeur >= .$`Maximum-2` & .$pcmes_valeur < .$`Maximum-3` ~ "Classe 3",
+                                     .$pcmes_valeur >= .$`Maximum-3` ~ "Classe 4", # S'il n'existe que 3 limites
+                                     #.$pcmes_valeur >= .$`Maximum-3` & .$pcmes_valeur < .$`Maximum-Classe 4` ~ "Classe 4", # S'il existe 4 limites
+                                     #.$pcmes_valeur >= .$`Maximum-4` ~ "Classe 5", # S'il existe 4 limites
                                      TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                            ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(!is.na(`Maximum-4`), # Pour le cas où il y a 4 seuils
-                           case_when(.$Valeur < .$`Maximum-1` ~ "Classe 1",
-                                     .$Valeur >= .$`Maximum-1` & .$Valeur < .$`Maximum-2` ~ "Classe 2",
-                                     .$Valeur >= .$`Maximum-2` & .$Valeur < .$`Maximum-3` ~ "Classe 3",
-                                     #.$Valeur >= .$`Maximum-3` ~ "Classe 4", # S'il n'existe que 3 limites
-                                     .$Valeur >= .$`Maximum-3` & .$Valeur < .$`Maximum-4` ~ "Classe 4", # S'il existe 4 limites
-                                     .$Valeur >= .$`Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                           case_when(.$pcmes_valeur < .$`Maximum-1` ~ "Classe 1",
+                                     .$pcmes_valeur >= .$`Maximum-1` & .$pcmes_valeur < .$`Maximum-2` ~ "Classe 2",
+                                     .$pcmes_valeur >= .$`Maximum-2` & .$pcmes_valeur < .$`Maximum-3` ~ "Classe 3",
+                                     #.$pcmes_valeur >= .$`Maximum-3` ~ "Classe 4", # S'il n'existe que 3 limites
+                                     .$pcmes_valeur >= .$`Maximum-3` & .$pcmes_valeur < .$`Maximum-4` ~ "Classe 4", # S'il existe 4 limites
+                                     .$pcmes_valeur >= .$`Maximum-4` ~ "Classe 5", # S'il existe 4 limites
                                      TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                            ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1311-3" | Cl == "1312-3", # Pour le cas où il y a 4 seuils mais seulement pour 1311 et 1312 (car par minimum et non par maximum)
-                                  case_when(.$Valeur < .$`Minimum-4` ~ "Classe 5",
-                                            .$Valeur >= .$`Minimum-4` & .$Valeur < .$`Minimum-3` ~ "Classe 4",
-                                            .$Valeur >= .$`Minimum-3` & .$Valeur < .$`Minimum-2` ~ "Classe 3",
-                                            .$Valeur >= .$`Minimum-2` & .$Valeur < .$`Minimum-1` ~ "Classe 2",
-                                            .$Valeur >= .$`Minimum-1` ~ "Classe 1",
+                                  case_when(.$pcmes_valeur < .$`Minimum-4` ~ "Classe 5",
+                                            .$pcmes_valeur >= .$`Minimum-4` & .$pcmes_valeur < .$`Minimum-3` ~ "Classe 4",
+                                            .$pcmes_valeur >= .$`Minimum-3` & .$pcmes_valeur < .$`Minimum-2` ~ "Classe 3",
+                                            .$pcmes_valeur >= .$`Minimum-2` & .$pcmes_valeur < .$`Minimum-1` ~ "Classe 2",
+                                            .$pcmes_valeur >= .$`Minimum-1` ~ "Classe 1",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>% 
     mutate(ClasseQualite = ifelse(Cl == "1382-3" | Cl == "1383-3" | Cl == "1386-3" | Cl == "1388-3" | Cl == "1389-3" | Cl == "1392-3", # Pour le cas où il y a 4 seuils mais seulement pour quelques ETM
-                                  case_when(Durete < 5 & Valeur < `DureteFaible-Maximum-1` ~ "Classe 1",
-                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-1` & Valeur < `DureteFaible-Maximum-2` ~ "Classe 2",
-                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-2` & Valeur < `DureteFaible-Maximum-3` ~ "Classe 3",
-                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-3` & Valeur < `DureteFaible-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
-                                            Durete < 5 & Valeur >= `DureteFaible-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
-                                            Durete >= 5 & Durete < 20 & Valeur < `DureteMoyenne-Maximum-1` ~ "Classe 1",
-                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-1` & Valeur < `DureteMoyenne-Maximum-2` ~ "Classe 2",
-                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-2` & Valeur < `DureteMoyenne-Maximum-3` ~ "Classe 3",
-                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-3` & Valeur < `DureteMoyenne-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
-                                            Durete >= 5 & Durete < 20 & Valeur >= `DureteMoyenne-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
-                                            Durete > 20 & Valeur < `DureteForte-Maximum-1` ~ "Classe 1",
-                                            Durete > 20 & Valeur >= `DureteForte-Maximum-1` & Valeur < `DureteForte-Maximum-2` ~ "Classe 2",
-                                            Durete > 20 & Valeur >= `DureteForte-Maximum-2` & Valeur < `DureteForte-Maximum-3` ~ "Classe 3",
-                                            Durete > 20 & Valeur >= `DureteForte-Maximum-3` & Valeur < `DureteForte-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
-                                            Durete > 20 & Valeur >= `DureteForte-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                                  case_when(Durete < 5 & pcmes_valeur < `DureteFaible-Maximum-1` ~ "Classe 1",
+                                            Durete < 5 & pcmes_valeur >= `DureteFaible-Maximum-1` & pcmes_valeur < `DureteFaible-Maximum-2` ~ "Classe 2",
+                                            Durete < 5 & pcmes_valeur >= `DureteFaible-Maximum-2` & pcmes_valeur < `DureteFaible-Maximum-3` ~ "Classe 3",
+                                            Durete < 5 & pcmes_valeur >= `DureteFaible-Maximum-3` & pcmes_valeur < `DureteFaible-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
+                                            Durete < 5 & pcmes_valeur >= `DureteFaible-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                                            Durete >= 5 & Durete < 20 & pcmes_valeur < `DureteMoyenne-Maximum-1` ~ "Classe 1",
+                                            Durete >= 5 & Durete < 20 & pcmes_valeur >= `DureteMoyenne-Maximum-1` & pcmes_valeur < `DureteMoyenne-Maximum-2` ~ "Classe 2",
+                                            Durete >= 5 & Durete < 20 & pcmes_valeur >= `DureteMoyenne-Maximum-2` & pcmes_valeur < `DureteMoyenne-Maximum-3` ~ "Classe 3",
+                                            Durete >= 5 & Durete < 20 & pcmes_valeur >= `DureteMoyenne-Maximum-3` & pcmes_valeur < `DureteMoyenne-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
+                                            Durete >= 5 & Durete < 20 & pcmes_valeur >= `DureteMoyenne-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
+                                            Durete > 20 & pcmes_valeur < `DureteForte-Maximum-1` ~ "Classe 1",
+                                            Durete > 20 & pcmes_valeur >= `DureteForte-Maximum-1` & pcmes_valeur < `DureteForte-Maximum-2` ~ "Classe 2",
+                                            Durete > 20 & pcmes_valeur >= `DureteForte-Maximum-2` & pcmes_valeur < `DureteForte-Maximum-3` ~ "Classe 3",
+                                            Durete > 20 & pcmes_valeur >= `DureteForte-Maximum-3` & pcmes_valeur < `DureteForte-Maximum-4` ~ "Classe 4", # S'il existe 4 limites
+                                            Durete > 20 & pcmes_valeur >= `DureteForte-Maximum-4` ~ "Classe 5", # S'il existe 4 limites
                                             is.na(Durete) ~ "Pas de durete",
                                             TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                                   ClasseQualite)
     ) %>%
-    mutate(ClasseQualite = ifelse(CodeRemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
-    mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
+    mutate(ClasseQualite = ifelse(pcmes_coderemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
+    mutate(ClasseQualite = ifelse(pcmes_coderemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
     select(-(`Maximum-1`:`Minimum-4`), -Cl, -Durete,-(`DureteFaible-Maximum-1`:`DureteMoyenne-Maximum-4`)) %>% 
     mutate(Couleur = case_when(.$ClasseQualite == "Classe 1" ~ "Bleu",
                                .$ClasseQualite == "Classe 2" ~ "Vert",
@@ -271,38 +271,38 @@ Seuils <-
   data %>% 
   filter(Referentiel == "Criteres pour l'evaluation de la qualite des sediments au Quebec") %>% 
   tidyr::unite(Seuil, c(Seuil, ClasseQualite), remove=T, sep = "-") %>% 
-  dcast(Referentiel + ParametreSANDRE + SupportSANDRE ~ Seuil, value.var = "ValeurSeuil") %>% 
-  tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=T, sep = "-")
+  dcast(Referentiel + pcmes_parametresandre + pcmes_supportsandre ~ Seuil, value.var = "ValeurSeuil") %>% 
+  tidyr::unite(Cl, c(pcmes_parametresandre, pcmes_supportsandre), remove=T, sep = "-")
   
   ## Attribution des classes de qualité ##
 ClasseQualites <-
   PC %>% 
-  tidyr::unite(Cl, c(ParametreSANDRE, SupportSANDRE), remove=F, sep = "-") %>% 
+  tidyr::unite(Cl, c(pcmes_parametresandre, pcmes_supportsandre), remove=F, sep = "-") %>% 
   left_join(Seuils, by = c("Cl" = "Cl")) %>% 
-  mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
+  mutate(pcmes_valeur = as.numeric( sub(",", ".", pcmes_valeur))) %>% 
   mutate(ClasseQualite = NA) %>% 
   mutate(ClasseQualite = ifelse(is.na(`Minimum-CEF`) & is.na(`Minimum-CEP`) & is.na(`Minimum-CER`) & is.na(`Minimum-CSE`), # Pour le cas où il y a 1 seuil
-                             case_when(.$Valeur < .$`Minimum-CEO` ~ "< Concentration effets occasionnels",
-                                       #.$Valeur >= .$`Minimum-CER` & .$Valeur < .$`Minimum-CSE` ~ "Concentration effets rares",
-                                       #.$Valeur >= .$`Minimum-CSE` & .$Valeur < .$`Minimum-CEO` ~ "Concentration seuil produisant un effet",
-                                       .$Valeur >= .$`Minimum-CEO` ~ "Concentration effets occasionnels",
-                                       #.$Valeur >= .$`Minimum-CEP` & .$Valeur < .$`Minimum-CEF` ~ "Concentration produisant un effet probable",
-                                       #.$Valeur >= .$`Minimum-CEF` ~ "Concentration effets frequents",
+                             case_when(.$pcmes_valeur < .$`Minimum-CEO` ~ "< Concentration effets occasionnels",
+                                       #.$pcmes_valeur >= .$`Minimum-CER` & .$pcmes_valeur < .$`Minimum-CSE` ~ "Concentration effets rares",
+                                       #.$pcmes_valeur >= .$`Minimum-CSE` & .$pcmes_valeur < .$`Minimum-CEO` ~ "Concentration seuil produisant un effet",
+                                       .$pcmes_valeur >= .$`Minimum-CEO` ~ "Concentration effets occasionnels",
+                                       #.$pcmes_valeur >= .$`Minimum-CEP` & .$pcmes_valeur < .$`Minimum-CEF` ~ "Concentration produisant un effet probable",
+                                       #.$pcmes_valeur >= .$`Minimum-CEF` ~ "Concentration effets frequents",
                                        TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                              ClasseQualite)
   ) %>% 
   mutate(ClasseQualite = ifelse(!is.na(`Minimum-CEF`), # Pour le cas où il y a 5 seuils
-                             case_when(.$Valeur < .$`Minimum-CER` ~ "Concentration sans effet",
-                                       .$Valeur >= .$`Minimum-CER` & .$Valeur < .$`Minimum-CSE` ~ "Concentration effets rares",
-                                       .$Valeur >= .$`Minimum-CSE` & .$Valeur < .$`Minimum-CEO` ~ "Concentration seuil produisant un effet",
-                                       .$Valeur >= .$`Minimum-CEO` & .$Valeur < .$`Minimum-CEP` ~ "Concentration effets occasionnels",
-                                       .$Valeur >= .$`Minimum-CEP` & .$Valeur < .$`Minimum-CEF` ~ "Concentration produisant un effet probable",
-                                       .$Valeur >= .$`Minimum-CEF` ~ "Concentration effets frequents",
+                             case_when(.$pcmes_valeur < .$`Minimum-CER` ~ "Concentration sans effet",
+                                       .$pcmes_valeur >= .$`Minimum-CER` & .$pcmes_valeur < .$`Minimum-CSE` ~ "Concentration effets rares",
+                                       .$pcmes_valeur >= .$`Minimum-CSE` & .$pcmes_valeur < .$`Minimum-CEO` ~ "Concentration seuil produisant un effet",
+                                       .$pcmes_valeur >= .$`Minimum-CEO` & .$pcmes_valeur < .$`Minimum-CEP` ~ "Concentration effets occasionnels",
+                                       .$pcmes_valeur >= .$`Minimum-CEP` & .$pcmes_valeur < .$`Minimum-CEF` ~ "Concentration produisant un effet probable",
+                                       .$pcmes_valeur >= .$`Minimum-CEF` ~ "Concentration effets frequents",
                                        TRUE ~ "Pas de classe"),  # cette dernière ligne permet d'ajouter ce qu'on veut aux cas qui ne se sont pas présentés
                              ClasseQualite)
       ) %>% 
-  mutate(ClasseQualite = ifelse(CodeRemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
-  mutate(ClasseQualite = ifelse(CodeRemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
+  mutate(ClasseQualite = ifelse(pcmes_coderemarque == 10 & !is.na(`Referentiel`), "< seuil quantification", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de quantification
+  mutate(ClasseQualite = ifelse(pcmes_coderemarque == 2 & !is.na(`Referentiel`), "< seuil detection", ClasseQualite)) %>%  # Pour compléter les cas inférieurs au seuil de detection 
   select(-(`Minimum-CEF`:`Minimum-CSE`), -Cl) %>% 
   mutate(Couleur = case_when(.$ClasseQualite == "Concentration sans effet" ~ "Bleu",
                                  .$ClasseQualite == "Concentration effets rares" ~ "Vert",
