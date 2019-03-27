@@ -130,16 +130,20 @@ BDD.format <- function(data)
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "NCZ6-2TRÉMONTAGNE", "NCZ6-2", chsvi_coderhj))
     
     # Travail sur les heures #
-    if(all(!is.na(data$chsvi_heure))){ # Afin de n'appliquer les commandes que dans le cas où il n'y a pas que des NA dans les heures
+    if(any(!is.na(data$chsvi_heure))){
     data$chsvi_heure <- str_replace(data$chsvi_heure, "h", ":") # On remplace le h par :
     data$chsvi_heure <- str_replace(data$chsvi_heure, "H", ":") # On remplace le H par :
-    data$chsvi_heure <- str_replace(data$chsvi_heure, "Oubli", NA_character_) # On remplace Oubli par NA
-    data$chsvi_heure <- str_replace(data$chsvi_heure, "oubli", NA_character_) # On remplace oubli par NA
-    if(all(str_count(data$chsvi_heure, ":") == 1)) data$chsvi_heure <- str_c(data$chsvi_heure, ":00") # On ajoute les secondes à la fin s'il n'y a qu'une seule fois :
+    data <- 
+      data %>% 
+      mutate(chsvi_heure = ifelse(grepl("Oubli", chsvi_heure), NA_character_, chsvi_heure)) %>% 
+      mutate(chsvi_heure = ifelse(grepl("oubli", chsvi_heure), NA_character_, chsvi_heure)) %>% 
+      mutate(count = str_count(.$chsvi_heure, ":")) %>% 
+      mutate(chsvi_heure = ifelse(!is.na(chsvi_heure) & count == 1, paste0(chsvi_heure, ":00"), chsvi_heure)) %>% 
+      select(-count)
     if(testit::has_warning(format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S")) == FALSE) data$chsvi_heure <- format(ymd_hms(paste(data$chsvi_date,"-",data$chsvi_heure)), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
     if(testit::has_warning(format(ymd_hms(data$chsvi_heure), format="%H:%M:%S")) == FALSE) data$chsvi_heure <- format(ymd_hms(data$chsvi_heure), format="%H:%M:%S") # Afin de ré-écrire les heures proprement
     }
-    
+
     # Travail sur les dates #
     if(testit::has_warning(ymd(data$chsvi_date)) == TRUE & testit::has_warning(dmy(data$chsvi_date)) == FALSE) data$chsvi_date <- as.character(format(dmy(data$chsvi_date), format="%Y-%m-%d"))
     if(testit::has_warning(ymd(data$chsvi_date)) == TRUE & testit::has_warning(dmy(data$chsvi_date)) == TRUE){ # dans le cas où les formats de date sont mélangés
