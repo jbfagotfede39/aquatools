@@ -157,7 +157,7 @@ if(Referentiel == "SEQ-EAU") {
   ## Création des seuils ##
   Seuils <- 
     data %>% 
-    filter(Referentiel == "SEQ-Eau par alteration" & pcmes_parametresandre != "1301") %>% 
+    filter(Referentiel == "SEQ-Eau par alteration" & pcmes_parametresandre != "1301") %>% # On enlève la température de l'eau
     filter(!(pcmes_supportsandre == 3 & (pcmes_parametresandre == "1382" | pcmes_parametresandre == "1383" | pcmes_parametresandre == "1386" | pcmes_parametresandre == "1388" | pcmes_parametresandre == "1389" | pcmes_parametresandre == "1392"))) %>% # Afin d'éliminer certains ETM car dépendants de la dureté donc traitement à part
     bind_rows(filter(data, Referentiel == "SEQ-Eau par alteration" & (pcmes_parametresandre_condition == 2 & Valeur_condition == Categorie))) %>% 
     tidyr::unite(Seuil, c(Seuil, ClasseQualite), remove=T, sep = "-") %>% 
@@ -173,7 +173,7 @@ if(Referentiel == "SEQ-EAU") {
     rename(Durete = pcmes_valeur)
   PC <-
     PC %>%
-    left_join(Durete)
+    left_join(Durete, by = c("pcmes_coderhj", "pcmes_date"))
   
   # Seuils dureté pour cuivre
   SeuilsETMH2O <-

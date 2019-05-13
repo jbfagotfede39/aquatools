@@ -108,6 +108,7 @@ if(Type == "Data" & exists("dbD") == FALSE){
 if(Type == "Data"){
 if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
   if(UtilisateurFD == "Quentin") UtilisateurFD <- "quentin"
+  if(UtilisateurFD == "Adrien") UtilisateurFD <- "adrien"
   dbDisconnect(dbD)
   #rm(dbD)
   
