@@ -11,5 +11,6 @@ Cette fonction permet d'associer le territoire au sens du SDDLP à chaque SAPL
 }
 \examples{
 sddlp.territoires(data)
+sapl <- sf::st_read(dbD, query = "select * from fd_production.pecheloisir_sapl;") \%>\%  sddlp.territoires()
 }
 \keyword{sddlp}

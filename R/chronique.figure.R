@@ -11,14 +11,15 @@
 #'    Vmm30j.  Si \code{TRUE}, les affiche.
 #' @param Vminmax Si \code{TRUE} (par défault), affiche pas les
 #'    valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche pas.
-#' @param Ymin Valeur minimale de l'axe des Y (0 par défaut)
+#' @param Ymin Valeur minimale de l'axe des Y (-1 par défaut)
 #' @param Ymax Valeur maximale de l'axe des Y (aucune par défaut)
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les
 #'    figures.  Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
-#' @import ggplot2 dplyr
+#' @import ggplot2 
+#' @import dplyr
 #' @export
 #' @examples
 #' chronique.figure(data)
@@ -33,7 +34,7 @@ chronique.figure <- function(
     complement = FALSE,
     Vmm30j=F,
     Vminmax=T,
-    Ymin=0,
+    Ymin=-1,
     Ymax=NA,
     save=F,
     projet = as.character(NA),
@@ -53,7 +54,8 @@ chronique.figure <- function(
   
 ##### Mise au format des données #####
 ## Transformation du format des dates
-data$chmes_date <- as.Date(data$chmes_date,format="%Y-%m-%d")
+if(class(data$chmes_date) != "Date"){#data$chmes_date <- as.Date(data$chmes_date,format="%Y-%m-%d") # ancien format du 08/04/19
+data$chmes_date <- ymd(data$chmes_date)}
 
 ##### Contexte de la chronique #####
 # Calcul du nombre de stations ##
@@ -92,15 +94,16 @@ if(Contexte$nJours < 30){
   Vmm30j == F
   warning("Durée inférieure à 30 jours : pas d'affichage de la Vmm30j")
 }
-if(Vmm30j == T & Contexte$nStations != 1){
+if(Vmm30j == T & Contexte$nStations == 1){
 ###T Moymax 30 J
-cumuleVMaxJ <- numeric(length(syntjour$VMaxJ)-30)
-for (i in 1:length(syntjour$VMaxJ)){
-  if (i+29<=length(syntjour$VMaxJ)) cumuleVMaxJ[i]<-sum(syntjour$VMaxJ[i:(i+29)])}  
+  syntjourSansAgregation <- syntjour %>% filter(!is.na(VMaxJ)) # Si on fait un complément du jeu de données
+cumuleVMaxJ <- numeric(length(syntjourSansAgregation$VMaxJ)-30)
+for (i in 1:length(syntjourSansAgregation$VMaxJ)){
+  if (i+29<=length(syntjourSansAgregation$VMaxJ)) cumuleVMaxJ[i]<-sum(syntjourSansAgregation$VMaxJ[i:(i+29)])}  
 VMaxMoy30J <- round(max(cumuleVMaxJ)/30,1)
 
-DateDebutVMaxMoy30J <- syntjour$chmes_date[which(cumuleVMaxJ==max(cumuleVMaxJ))]
-DateFinVMaxMoy30J <- syntjour$chmes_date[which(cumuleVMaxJ==max(cumuleVMaxJ))+29]
+DateDebutVMaxMoy30J <- syntjourSansAgregation$chmes_date[which(cumuleVMaxJ==max(cumuleVMaxJ))]
+DateFinVMaxMoy30J <- syntjourSansAgregation$chmes_date[which(cumuleVMaxJ==max(cumuleVMaxJ))+29]
   
 # Pour avoir un affichage propre de l'étiquette de Tmm30j et du trait de Tmm
 data.label <- data.frame(
@@ -155,72 +158,62 @@ if(typemesure == "Pluviométrie"){
 }
 
 ##### Plot temps relatif sur l'échantillon de données #####
-
+## Version grisée avec enveloppe sur fond clair (min/max) ##
 plotrelatif <- ggplot(syntjour, aes(chmes_date))
-if(Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_line(aes(y = VMoyJ, colour = "Moy/J"))
+if(Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha=0.2)
 if(Contexte$nStations != 1) plotrelatif <- plotrelatif + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
-if(Vminmax == T & Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_line(aes(y = VMinJ, colour = "Min/J"))
-if(Vminmax == T & Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_line(aes(y = VMaxJ, colour = "Max/J"))
-if(Vmm30j == T & Contexte$nStations == 1){plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
-plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
-plotrelatif <- plotrelatif + scale_x_date(date_labels = "%m/%Y")
+if(Vmm30j == T & Contexte$nStations == 1){
+  plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
+  plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)
+  }
+if(length(unique(format(syntjour$chmes_date,"%m"))) < 9) plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b %Y")
+if(length(unique(format(syntjour$chmes_date,"%m"))) >= 9) plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b %Y", date_minor_breaks = "1 month")
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotrelatif <- plotrelatif + ylim(0,as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotrelatif <- plotrelatif + ylim(as.numeric(Ymin),as.numeric(Ymax))
 plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
+plotrelatif <- plotrelatif + theme_bw()
 
 if(duree == "Relatif"){
   plotrelatif
-  if(save==T){ggsave(file=paste(projet,"/Sorties/Vues/relatif",typemesureTitreSortie, Titre,format,sep=""))}
+  if(save==T){
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/relatif-libre/relatif-libre",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/relatif-libre/relatif-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/relatif-fixé/relatif-fixé",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/relatif-fixé/relatif-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotrelatif avec Ymax fixé et Ymin libre non programmé")
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotrelatif avec Ymax libre et Ymin fixé non programmé")
+    }
   if(save==F){return(plotrelatif)}
 }
 
 ##### Plot temps absolu sur une année ####
-if(length(unique(format(syntjour$chmes_date,"%Y"))) == 1){
-    plotabsolu <- ggplot(syntjour, aes(chmes_date))
-    if(Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = "Moy/J"))
-    if(Contexte$nStations != 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
-    if(Vminmax == T & Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMinJ, colour = "Min/J"))
-    if(Vminmax == T & Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMaxJ, colour = "Max/J"))
-    if(Vmm30j == T & Contexte$nStations == 1){plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
-    plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
-    plotabsolu <- plotabsolu + scale_x_date(#breaks = "2 month", 
-      #labels = date_format("%m-%Y"), # Ne fonctionne pas
-      limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
-    
-    #scale_x_date(breaks = "2 month", #### Save qui fonctionne avant le test automatique plus haut
-    #labels = date_format("%m-%Y"), # Ne fonctionne pas
-    #limits = as.Date(c('2013-10-01','2014-09-30'))) +
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotabsolu <- plotabsolu + ylim(0,as.numeric(Ymax))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotabsolu <- plotabsolu + ylim(as.numeric(Ymin),as.numeric(Ymax))
-    plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
-  #if(save==T){ggsave(file=paste(projet,"/Sorties/Vues/absolu_",Titre,format,sep=""))}
-}
-
-if(length(unique(format(syntjour$chmes_date,"%Y"))) >= 2){ # modifié le 14/11/2018, c'était == avant
-  
+## Version grisée avec enveloppe sur fond clair (min/max) ##
+# if(length(unique(format(syntjour$chmes_date,"%Y"))) == 1){
   plotabsolu <- ggplot(syntjour, aes(chmes_date))
-  if(Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = "Moy/J"))
+  if(Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha=0.2)
   if(Contexte$nStations != 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
-  if(Vminmax == T & Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMinJ, colour = "Min/J"))
-  if(Vminmax == T & Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMaxJ, colour = "Max/J"))
-  if(Vmm30j == T & Contexte$nStations == 1){plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
-  plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)}
-  plotabsolu <- plotabsolu + scale_x_date(#breaks = "2 month", 
-      #labels = date_format("%m-%Y"), # Ne fonctionne pas
-      limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
-    
-    #scale_x_date(breaks = "2 month", #### Save qui fonctionne avant le test automatique plus haut
-    #labels = date_format("%m-%Y"), # Ne fonctionne pas
-    #limits = as.Date(c('2013-10-01','2014-09-30'))) +
-  if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotabsolu <- plotabsolu + ylim(0,as.numeric(Ymax))
+  if(Vmm30j == T & Contexte$nStations == 1){
+    plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
+    plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)
+    }
+  if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotabsolu <- plotabsolu + ylim(-1,as.numeric(Ymax))
   if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotabsolu <- plotabsolu + ylim(as.numeric(Ymin),as.numeric(Ymax))
+  if(length(unique(format(syntjour$chmes_date,"%Y"))) < 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
+  if(length(unique(format(syntjour$chmes_date,"%Y"))) >= 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
   plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
- # if(save==T){ggsave(file=paste(projet,"/Sorties/Vues/absolu_",Titre,format,sep=""))}
-}
+  plotabsolu <- plotabsolu + theme_bw()
+# }
 
 if(duree == "Complet"){
   plotabsolu
-  if(save==T){ggsave(file=paste(projet,"/Sorties/Vues/absolu",typemesureTitreSortie,Titre,format,sep=""))}
+  if(save==T){
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/absolu-libre/absolu-libre",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/absolu-libre/absolu-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/absolu-fixé/absolu-fixé",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/absolu-fixé/absolu-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotabsolu avec Ymax fixé et Ymin libre non programmé")
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotabsolu avec Ymax libre et Ymin fixé non programmé")
+    }
   if(save==F){return(plotabsolu)}
 }
 

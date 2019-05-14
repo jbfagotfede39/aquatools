@@ -3,8 +3,10 @@
 #' Cette fonction permet d'ouvrir de manière semi-automatisée des fichiers de chroniques
 #' @name chronique.ouverture
 #' @param Type Type de données en entrée (Mesures, Suivis, Stations)
-#' @param Localisation Localisation relative du fichier (à partir de /NAS-DATA/)
 #' @param typemesure Défini le type de données (Thermie, Piézométrie, etc.)
+#' @param Localisation Localisation relative du fichier (à partir de /NAS-DATA/)
+#' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
+#' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms)
 #' @keywords chronique
 #' @import tidyverse
 #' @export
@@ -16,7 +18,9 @@
 chronique.ouverture <- function(
   Type = c("Mesures","Suivis","Stations"),
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie"),
-  Localisation = as.character(NA)
+  Localisation = as.character(NA),
+  skipvalue = 1,
+  typedate = "ymd"
 )
 {
   
@@ -43,7 +47,9 @@ if(Type == "Mesures"){
 #   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")}
 
   # Suppression de la partie antérieure suite à la version 1.3.1 de readr qui affiche en warnin les erreurs de parsing
-dataaimporter <- read_delim(adresse.switch(Localisation), skip = 1, delim=";")
+dataaimporter <- read_delim(adresse.switch(Localisation), skip = skipvalue, delim=";", col_types = "ctc")
+names(dataaimporter)[1] <- c('Date')
+names(dataaimporter)[2] <- c('Heure')
 names(dataaimporter)[3] <- c('Valeur')
 
 if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développer")
@@ -51,9 +57,21 @@ if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développe
 ## Nettoyage ##
 dataaimporter <-
   dataaimporter %>% 
-  select(Date, Heure, Valeur) %>%
+  select(Date, Heure, Valeur)
+
+if(testit::has_warning(ymd(dataaimporter$Date)) == FALSE & typedate == "ymd") dataaimporter$Date <- ymd(dataaimporter$Date)
+if(testit::has_warning(dmy(dataaimporter$Date)) == FALSE & typedate == "dmy") dataaimporter$Date <- dmy(dataaimporter$Date)
+if(testit::has_warning(mdy(dataaimporter$Date)) == FALSE & typedate == "mdy") dataaimporter$Date <- mdy(dataaimporter$Date)
+#if(testit::has_warning(ymd_hms(dataaimporter$Date)) == FALSE) dataaimporter$Date <- ymd_hms(dataaimporter$Date)
+if(testit::has_warning(dmy_hms(dataaimporter$Date)) == FALSE & typedate == "dmy_hms") dataaimporter$Date <- dmy_hms(dataaimporter$Date)
+
+dataaimporter <-
+  dataaimporter %>% 
+  mutate(Date = format(Date, format="%Y-%m-%d")) %>% 
   mutate(Date = ymd(Date)) %>% 
   mutate(Heure = as.character(Heure)) %>% 
+  mutate(Valeur = str_replace(Valeur, " °C", "")) %>% 
+  mutate(Valeur = str_replace(Valeur, "°C", "")) %>% 
   mutate(Valeur = as.numeric(sub(",", ".", Valeur))) %>% 
   mutate(Valeur = round(Valeur,3)) %>% 
   filter(is.na(Valeur) != T)

@@ -9,5 +9,5 @@ Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de tran
 \examples{
 formatage.ecosysteme(data$Station, Type = "Simplification")
 PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Type = "Simplification")
-data \%>\% stations.CodeRDT(DistSource = F) \%>\% formatage.ecosysteme(Type = "Expansion")
+data \%>\% stations.coderhj(DistSource = F) \%>\% formatage.ecosysteme(Type = "Expansion")
 }

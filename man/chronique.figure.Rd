@@ -20,7 +20,7 @@ Vmm30j.  Si \code{TRUE}, les affiche.}
 \item{Vminmax}{Si \code{TRUE} (par défault), affiche pas les
 valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche pas.}
 
-\item{Ymin}{Valeur minimale de l'axe des Y (0 par défaut)}
+\item{Ymin}{Valeur minimale de l'axe des Y (-1 par défaut)}
 
 \item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
 

@@ -124,12 +124,25 @@ ValMois <-
       NMesuresM = n()
     ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_mois")
   ) %>% 
-  select(chmes_coderhj, chmes_typemesure, chmes_mois, VMinM:VAmpliM, VAmpliSigneM, VarM, NMesuresM)
+  select(chmes_coderhj, chmes_typemesure, chmes_mois, VMinM:VAmpliM, VAmpliSigneM, VarM, NMesuresM) %>% 
+  left_join(
+    data %>% 
+      group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>% 
+      summarise(
+        VMoyJ = mean(chmes_valeur)) %>% 
+      ungroup() %>% 
+      mutate(chmes_mois = paste0(year(chmes_date), "-", month(chmes_date))) %>% 
+      group_by(chmes_coderhj, chmes_typemesure, chmes_mois) %>% 
+      summarise(
+        SommeMoyJM = sum(VMoyJ)) %>% 
+      select(chmes_coderhj, chmes_typemesure, chmes_mois, SommeMoyJM)
+      , by = c("chmes_coderhj", "chmes_typemesure", "chmes_mois"))
 
 if(complement == TRUE){
   # ValMois <-
   #   ValMois %>%
   #   complete(chmes_mois = seq.Date(min(chmes_mois), max(chmes_mois), by="month"))
+  warning("Le complément par mois n'est pas développé")
 }
 
 #### Agrégation par année biologique ####
@@ -153,16 +166,67 @@ ValAnneeBiol <-
       VMaxAB = max(chmes_valeur),
       VAmpliAB = VMaxAB-VMinAB,
       VarAB = var(chmes_valeur),
-      NMesuresAB = n()
+      NMesuresAB = n(),
+      DateVMinAB = paste(chmes_date, chmes_heure, sep = " ")[chmes_valeur == min(chmes_valeur)][1],
+      DateVMaxAB = paste(chmes_date, chmes_heure, sep = " ")[chmes_valeur == max(chmes_valeur)][1]
     ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_anneebiol")
   ) %>% 
-  select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, VMinAB:VAmpliAB, VAmpliSigneAB, VarAB, NMesuresAB)
+  select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, VMinAB:VAmpliAB, VAmpliSigneAB, VarAB, NMesuresAB, DateVMinAB, DateVMaxAB) %>% 
+  left_join(
+    data %>% 
+      group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>% 
+      summarise(
+        VMoyJ = mean(chmes_valeur)) %>% 
+      ungroup() %>% 
+      formatage.annee.biologique() %>% 
+      group_by(chmes_coderhj, chmes_typemesure, chmes_anneebiol) %>% 
+      summarise(
+        SommeMoyJAB = sum(VMoyJ)) %>% 
+      select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, SommeMoyJAB)
+  , by = c("chmes_coderhj", "chmes_typemesure", "chmes_anneebiol"))
+
+## Calcul des percentiles ##
+# Calcul manuel du percentile 90 diurne #
+PercentilesCalcules <-
+  data %>% 
+  group_by(chmes_anneebiol) %>% 
+  mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
+  filter(between(hour(Time), 8, 18)) %>% 
+  select(-Time) %>% 
+  mutate(rang = percent_rank(chmes_valeur)) %>% 
+  filter(rang <= 0.9) %>% 
+  arrange(desc(rang)) %>% 
+  filter(row_number() == 1) %>% 
+  select(chmes_anneebiol, chmes_valeur) %>% 
+  rename(Percentile90diurneAB = chmes_valeur)
+
+# Calcul des autres percentiles #
+Percentiles <- rev(c(0.1,0.25,0.5,0.75,0.9)) # on inverse pour ensuite avoir les résultats dans l'ordre logique
+
+for(i in 1:length(Percentiles)){
+  Percentile <- Percentiles[i]
+  
+  PercentilesCalcules <-
+    data %>% 
+    group_by(chmes_anneebiol) %>% 
+    mutate(rang = percent_rank(chmes_valeur)) %>% 
+    filter(rang <= Percentile) %>% 
+    arrange(desc(rang)) %>% 
+    filter(row_number() == 1) %>% 
+    select(chmes_anneebiol, chmes_valeur) %>% 
+    rename(!!paste0('Percentile',quo_name(Percentile*100),'AB') := chmes_valeur) %>% 
+    left_join(PercentilesCalcules, by = "chmes_anneebiol")
+}
+ValAnneeBiol <-
+  ValAnneeBiol %>% 
+  left_join(PercentilesCalcules, by = "chmes_anneebiol")
 
 if(complement == TRUE){
   # ValAnneeBiol <-
   #   ValAnneeBiol %>%
   #   complete(chmes_anneebiol = seq.Date(min(chmes_anneebiol), max(chmes_anneebiol), by="year"))
-}
+  warning("Le complément par année biologique n'est pas développé")
+  }
 
 #### Agrégation de l'intégralité de la chronique ####
 ValComplet <-
@@ -180,8 +244,6 @@ ValComplet <-
 
 #### Sortie des résultats ####
 ## Dataframe vers R
-
-
 if(export == FALSE){
   return(list(ValInstantanees, ValJours, ValMois, ValAnneeBiol, ValComplet))
 }
@@ -191,5 +253,4 @@ if(export == TRUE){
   l <- list(ValInstantanees = ValInstantanees, ValJours = ValJours, ValMois = ValMois, ValAnneeBiol = ValAnneeBiol, ValComplet = ValComplet)
   openxlsx::write.xlsx(l, file = paste0("./",projet, "/Sorties/Données/",Contexte$chmes_coderhj, "_données.xlsx"))
 }
-#paste0("./Sorties/Données/",Contexte$CodeRDT, "_données.xlsx"))
 } # Fin de la fonction

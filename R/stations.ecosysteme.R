@@ -131,15 +131,15 @@ stations.ecosysteme <- function(
   Synthese2 <-
     Synthese %>% 
     filter(!is.na(fin)) %>% 
-    bind_rows(Synthese %>% filter(is.na(fin)) %>% stations.CodeRDT(DistSource = F))
+    bind_rows(Synthese %>% filter(is.na(fin)) %>% stations.coderhj(DistSource = F))
   
   # Travail sur les stations avec CodeRDT
   acronymes <- formatage.abreviation() %>% filter(Type == "Écosystème")
   
   Synthese <-
     Synthese2 %>% 
-    filter(is.na(CodeEcos)) %>% # On prend ceux qui n'ont pas de codeRDT
-    full_join(Synthese2 %>% filter(!is.na(CodeEcos)) %>% left_join(acronymes, by = c(CodeEcos = "Acronyme")), by = c("CodeRDT", "MilieuTemporaire", "fin", "X", "Y", "TypeCoord", "Poisson", "Chronique", "PC", "CodeEcos")) %>% # on fusionne avec ceux qui en ont un et avec la traduction
+    filter(is.na(codemilieu)) %>% # On prend ceux qui n'ont pas de codeRDT
+    full_join(Synthese2 %>% filter(!is.na(codemilieu)) %>% left_join(acronymes, by = c(codemilieu = "Acronyme")), by = c("CodeRDT", "MilieuTemporaire", "fin", "X", "Y", "TypeCoord", "Poisson", "Chronique", "PC", "codemilieu")) %>% # on fusionne avec ceux qui en ont un et avec la traduction
     mutate(Milieu = ifelse(is.na(Definition), MilieuTemporaire, Definition)) %>% 
     select(CodeRDT, Milieu, X:PC) %>% 
     rename(Nom = CodeRDT)

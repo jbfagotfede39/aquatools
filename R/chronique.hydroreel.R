@@ -2,46 +2,46 @@
 #'
 #' Cette fonction permet d'extraire depuis Hydroréel la dernière valeur mesurée de débit d'une station donnée
 #' @name chronique.hydroreel
-#' @param station Numéro de la station
+#' @param url url hydroréel de la station
 #' @keywords chronique
+#' @import dplyr
 #' @import lubridate
 #' @import rvest
 #' @import stringr
-#' @import dplyr
-#' @export
+#' @import xml2
+#' @export 
 #' @examples
-#' chronique.hydroreel(Station)
-#' chronique.hydroreel(433)
+#' chronique.hydroreel(url)
+#' chronique.hydroreel("http://www.rdbrmc.com/hydroreel2/station.php?codestation=433")
 #' # Extraction des mesures à partir de http://www.rdbrmc.com/hydroreel2/listestation.php?dep=39
 
 ##### TODO LIST #####
 # Nb de chiffres après la virgule : cas du Hérisson à 7,58 le 10/03/17 à 9h et seulement 7,5 retenu
 #####################
 
-chronique.hydroreel <- function(Station)
+chronique.hydroreel <- function(
+  url = NA_character_
+  )
 {
-  # Station = 185
-  # Station = 435
-  # Station = listeStations[1]
   
   # Collecte de la page
-  url <- paste0("http://www.rdbrmc.com/hydroreel2/station.php?codestation=",Station)
-  hh <- read_html(url)
+  if(is.na(url)) stop("Pas d'URL de saisie")
+  hh <- xml2::read_html(url)
   
   # Parse HTML
   complet <-
     hh %>%
-    html_nodes("div h5") %>%
+    rvest::html_nodes("div h5") %>%
     `[[`(2) %>% 
-    html_text()
+    rvest::html_text()
 
   # Test afin de savoir si on a bien des données de débits dans complet (cas problématiques des stations 35 à 39 car il y a un cadre de plus en haut de page)
   if(is.na(strsplit(complet, "(m3/s)")[[1]][2])){
     complet <-
       hh %>% 
-      html_nodes("div h5") %>% 
+      rvest::html_nodes("div h5") %>% 
       .[[3]] %>% # Ligne modifiée : on prend le cadre de dessous pour ne pas considérer les hauteurs d'eau
-      html_text()
+      rvest::html_text()
   }
   
   # Date
@@ -73,11 +73,11 @@ chronique.hydroreel <- function(Station)
   # Station
   
   # Synthèse
-  data <- data.frame(Station,chmes_date,chmes_heure,chmes_valeur) %>% rename(chmes_coderhj = Station)
+  data <- data.frame(url,chmes_date,chmes_heure,chmes_valeur) %>% rename(chsta_url = url)
   data$chmes_valeur <- as.numeric(levels(data$chmes_valeur))[data$chmes_valeur]
   data$chmes_date <- as.character(data$chmes_date)
   data$chmes_heure <- as.character(data$chmes_heure)
-  data$chmes_coderhj <- as.character(data$chmes_coderhj)
+  data$chsta_url <- as.character(data$chsta_url)
   
   # Retour
   return(data)

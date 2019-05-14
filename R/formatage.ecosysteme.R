@@ -8,7 +8,7 @@
 #' @examples
 #' formatage.ecosysteme(data$Station, Type = "Simplification")
 #' PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Type = "Simplification")
-#' data %>% stations.CodeRDT(DistSource = F) %>% formatage.ecosysteme(Type = "Expansion")
+#' data %>% stations.coderhj(DistSource = F) %>% formatage.ecosysteme(Type = "Expansion")
 
 ##### TODO LIST #####
 # La mise en acronymes devrait moyennement fonctionner, car se basait précédemment que sur une colonne

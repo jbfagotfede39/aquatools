@@ -11,6 +11,10 @@
 \item{typemesure}{Défini le type de données et modifie le traitement en fonction}
 
 \item{projet}{Nom du projet}
+
+\item{dep39}{Si \code{FALSE} (par défault), ne va pas rechercher les données de stations dans la base locale et donc export simplifié. Si \code{TRUE}, fait la jointure SIG.}
+
+\item{archivage}{Si Aucun (par défault), ne va pas créer une archives .zip du répertoire de sortie. Si Partiel, créé une archive et conserve le répertoire. Si Complet, créé une archive et supprimer le répertoire.}
 }
 \description{
 Permet d'exécuter plusieurs opérations de traitement des données de chronique d'une station

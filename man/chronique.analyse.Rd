@@ -10,21 +10,16 @@
 
 \item{pasdetemps}{Indique le pas de temps entre chaque mesure : 1 pour une heure (1 par défaut)}
 
-\item{Vmin}{Valeur inférieure de seuil d'analyse}
+\item{seuils}{Seuils de valeurs (25,22,19,15,4 par défaut) dont il faut tester les dépassements. L'ordre de sortie correspond à l'ordre de cette liste.}
 
-\item{Vmax}{Valeur supérieure de seuil d'analyse}
+\item{seuilexcesdefaut}{Seuil en-deça duquel les dépassements sont testés par défaut, sinon ils sont testés par excès (valeur de 12 par défaut).}
 
-\item{VminExt}{Valeur inférieure extrême de seuil d'analyse}
-
-\item{VmaxExt}{Valeur supérieure extrême de seuil d'analyse}
-
-\item{DegresJours}{Calcul des degrés/jours (\code{FALSE} par défault)}
+\item{degresjours}{Calcul des degrés/jours (\code{FALSE} par défault)}
 }
 \description{
 Cette fonction permet d'analyser des chroniques de mesures (température, niveaux, etc.)
 }
 \examples{
-chronique.analyse("ANG0-4", 2016, data, pasdetemps = 1)
-chronique.analyse(as.character(Stations[i,2]), Annee, data, pasdetemps = 1)
+chronique.analyse(data, "Thermie")
 }
 \keyword{chronique}

@@ -24,7 +24,7 @@ poissons.CAA <- function(
   if(is.na(NTT)) stop("Aucun NTT saisi")
   
   ## Transformations de format ##
-  codeRHJ <- stations.CodeRDT(as.data.frame(station) %>% rename(CodeRDT = station), DistSource = F) %>% select(CodeEcos) %>% as.character()
+  codeRHJ <- stations.coderhj(as.data.frame(station) %>% rename(CodeRDT = station), DistSource = F) %>% select(codemilieu) %>% as.character()
 
   ## Import CAA REF ##
   BddNTT <- read_excel(adresse.switch("NAS-DATA/Poissons/BDDNTT.xlsx")) %>%

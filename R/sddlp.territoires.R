@@ -9,6 +9,7 @@
 #' @export
 #' @examples
 #' sddlp.territoires(data)
+#' sapl <- sf::st_read(dbD, query = "select * from fd_production.pecheloisir_sapl;") %>%  sddlp.territoires()
 
 sddlp.territoires <- function(data)
   {

@@ -6,9 +6,13 @@
 \arguments{
 \item{Type}{Type de données en entrée (Mesures, Suivis, Stations)}
 
+\item{typemesure}{Défini le type de données (Thermie, Piézométrie, etc.)}
+
 \item{Localisation}{Localisation relative du fichier (à partir de /NAS-DATA/)}
 
-\item{typemesure}{Défini le type de données (Thermie, Piézométrie, etc.)}
+\item{skipvalue}{Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)}
+
+\item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms)}
 }
 \description{
 Cette fonction permet d'ouvrir de manière semi-automatisée des fichiers de chroniques

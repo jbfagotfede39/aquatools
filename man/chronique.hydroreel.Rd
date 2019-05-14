@@ -4,14 +4,14 @@
 \alias{chronique.hydroreel}
 \title{Collecte de la dernière valeur de débit transmise}
 \arguments{
-\item{station}{Numéro de la station}
+\item{url}{url hydroréel de la station}
 }
 \description{
 Cette fonction permet d'extraire depuis Hydroréel la dernière valeur mesurée de débit d'une station donnée
 }
 \examples{
-chronique.hydroreel(Station)
-chronique.hydroreel(433)
+chronique.hydroreel(url)
+chronique.hydroreel("http://www.rdbrmc.com/hydroreel2/station.php?codestation=433")
 # Extraction des mesures à partir de http://www.rdbrmc.com/hydroreel2/listestation.php?dep=39
 }
 \keyword{chronique}
