@@ -125,6 +125,19 @@ BDD.format <- function(data)
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUMERCANTINE", "VOUmercantine", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUPATORNAY", "VOUpatornay", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUSURCHAUFFANT", "VOUsurchauffant", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONBARO", "BONbaro", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONLAC", "BONlac", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONZH", "BONzh", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONAVAL", "BONaval", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BRTBARO", "BRTbaro", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLBARO", "GCLbaro", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLLAC", "GCLlac", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLZHAVAL", "GCLzhaval", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLZHENTRE2", "GCLzhentre2", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "ILABARO", "ILAbaro", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "ILALAC", "ILAlac", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "LVALAC", "LVAlac", chsvi_coderhj)) %>% 
+      #mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "", "", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BIE32-4AVAL", "BIE32-4aval", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "LEM-2-2", "LEM2-2", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "NCZ6-2TRÉMONTAGNE", "NCZ6-2", chsvi_coderhj))

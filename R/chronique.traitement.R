@@ -93,28 +93,29 @@ data <-
   data %>% 
   formatage.annee.biologique() # Calcul de l'année biologique
 
-#### Analyse des données ####
+#### Nettoyage des données ####
 if("chmes_typemesure" %in% colnames(data) == FALSE){
-  DataTravail <- 
+  data <- 
     data %>% 
     group_by(chmes_coderhj, chmes_anneebiol) %>% 
     filter(n_distinct(chmes_date) > 30) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
-    ungroup() %>% 
-    group_split(chmes_coderhj, chmes_anneebiol,chmes_typemesure) %>% 
-    purrr::map_dfr(~ chronique.analyse(.)) %>% 
     ungroup()
 }
 
 if("chmes_typemesure" %in% colnames(data) == TRUE){
-DataTravail <- 
+data <- 
   data %>% 
   group_by(chmes_coderhj, chmes_anneebiol,chmes_typemesure) %>% 
   filter(n_distinct(chmes_date) > 30) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
-  ungroup() %>% 
-  group_split(chmes_coderhj, chmes_anneebiol, chmes_typemesure) %>% 
-  purrr::map_dfr(~ chronique.analyse(.)) %>% 
   ungroup()
 }
+  
+#### Analyse des données ####
+DataTravail <- 
+  data %>%
+  group_split(chmes_coderhj, chmes_anneebiol,chmes_typemesure) %>% 
+    purrr::map_dfr(~ chronique.analyse(.)) %>% 
+    ungroup()
 # ça pourra crasher par ici lorsqu'on fera un essai mixant chmes_typemesure == "Thermie" avec un autre chmes_typemesure à cause de la jointure à réaliser et un nb de champ différent (absence de TRF$DateDebutDegresJours et la suite)
 
 ##### Sorties graphiques #####

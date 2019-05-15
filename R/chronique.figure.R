@@ -69,7 +69,7 @@ if("chmes_typemesure" %in% colnames(data) == FALSE){
 }
 
 if(Contexte$nStations == 0) stop("Aucune donnée dans la chronique à analyser")
-if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer à partir du rapport N2000 Vogna")
+if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer à partir du rapport N2000 Vogna et de 2019-05-15_Calcul_résultats_chroniques_Vouglans.R")
   
 # chmes_typemesure
   if(testit::has_error(data %>% 
@@ -90,8 +90,8 @@ if(complement == TRUE) DataTravail <- chronique.agregation(data, complement = T)
 syntjour <- DataTravail[[2]]
 
 ## Calcul de la Vmm30j ##
-if(Contexte$nJours < 30){
-  Vmm30j == F
+if(Contexte$nJours < 30 & Vmm30j == T){
+  Vmm30j <- F
   warning("Durée inférieure à 30 jours : pas d'affichage de la Vmm30j")
 }
 if(Vmm30j == T & Contexte$nStations == 1){
