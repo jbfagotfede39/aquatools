@@ -3,11 +3,16 @@
 \name{formatage.ecosysteme}
 \alias{formatage.ecosysteme}
 \title{Mise en acronymes des écosystèmes ou inversement}
+\arguments{
+\item{acronymes}{Dataframe contenant les données à transformer}
+
+\item{Operation}{Type de transformation que l'on souhaite réaliser}
+}
 \description{
 Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
 }
 \examples{
-formatage.ecosysteme(data$Station, Type = "Simplification")
-PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Type = "Simplification")
-data \%>\% stations.coderhj(DistSource = F) \%>\% formatage.ecosysteme(Type = "Expansion")
+formatage.ecosysteme(data$Station, Operation = "Simplification")
+PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Operation = "Simplification")
+data \%>\% stations.coderhj(DistSource = F) \%>\% formatage.ecosysteme(Operation = "Expansion")
 }

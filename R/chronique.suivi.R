@@ -3,6 +3,7 @@
 #' Cette fonction permet d'extraire des données de suivi de terrain
 #' 
 #' @name chronique.suivi
+#' @param x Variable dont on cherche le suivi (MO, opérateur, Station, Date, Capteur)
 #' @param Type Type de donnée de suivi
 #' @import lubridate
 #' @import tidyverse
@@ -12,14 +13,14 @@
 #' chronique.suivi("JB-Stéphane", Type = "Opérateur")
 #' chronique.suivi("DRO14-2", Type = "Station")
 #' chronique.suivi("2015-10-23", Type = "Date")
-#' chronique.suivi("9759803", Type = "Sonde")
+#' chronique.suivi("9759803", Type = "Capteur")
 
 ##### TODO LIST #####
 # Pour l'instant requête globale, mais transformer pour faire requêtes spécifiques à la demande
 #####################
 
 chronique.suivi <- function(x = "ORA2-7", 
-                          Type = c("MO", "Opérateur", "Station", "Date", "Sonde")
+                          Type = c("MO", "Opérateur", "Station", "Date", "Capteur")
                           )
 {
 
@@ -81,7 +82,7 @@ chronique.suivi <- function(x = "ORA2-7",
     arrange(desc(chsvi_date))
   }
   
-  if(Type == "Sonde") {
+  if(Type == "Capteur") {
     Vue <-
     SuiviTerrain %>% 
     #filter(chsvi_mo == x) %>% 

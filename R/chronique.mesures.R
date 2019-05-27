@@ -21,10 +21,8 @@ chronique.mesures <- function(
   Type = c("Thermie", "Piézométrie", "Tout", "Hydrologie", "O2", "Pluviométrie"),
   annee = numeric(0),
   Valide = T)
-{
   
-  # library("DBI");library("dplyr");library("lubridate");library("RSQLite");library("stringr")
-  # CodeStation ="GCLzhaval";Type="Piézométrie";annee="2015"
+{
   
 #### Évaluation des choix ####
 Type <- match.arg(Type)

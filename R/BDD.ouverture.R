@@ -43,6 +43,8 @@ if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.home"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin"){UtilisateurFD <- "Quentin"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "Quentin"}
+if(system('uname -n',intern=T) == "IMac-Mehdi"){UtilisateurFD <- "Quentin"}
+if(system('uname -n',intern=T) == "IMac-Mehdi.local"){UtilisateurFD <- "Quentin"}
 
 ## Chroniques ##
 if(Type == "Chroniques" & file.exists("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) dbC <- src_sqlite("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")

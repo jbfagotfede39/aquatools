@@ -3,6 +3,9 @@
 \name{donnees.aberrantes}
 \alias{donnees.aberrantes}
 \title{Détection des données aberrantes}
+\arguments{
+\item{data}{Jeu de données à traiter}
+}
 \description{
 Cette fonction est une aide à la détection de données aberrantes dans une chronique
 }

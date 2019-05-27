@@ -4,6 +4,8 @@
 \alias{chronique.suivi}
 \title{Extraction suivi terrain chroniques}
 \arguments{
+\item{x}{Variable dont on cherche le suivi (MO, opérateur, Station, Date, Capteur)}
+
 \item{Type}{Type de donnée de suivi}
 }
 \description{
@@ -14,5 +16,5 @@ chronique.suivi("CG39", Type = "MO")
 chronique.suivi("JB-Stéphane", Type = "Opérateur")
 chronique.suivi("DRO14-2", Type = "Station")
 chronique.suivi("2015-10-23", Type = "Date")
-chronique.suivi("9759803", Type = "Sonde")
+chronique.suivi("9759803", Type = "Capteur")
 }

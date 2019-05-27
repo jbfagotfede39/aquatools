@@ -2,7 +2,7 @@
 #'
 #' Cette fonction est une aide à la détection de données aberrantes dans une chronique
 #' @name donnees.aberrantes
-#' @param data
+#' @param data Jeu de données à traiter
 #' @keywords Données
 #' @export
 #' @import dplyr

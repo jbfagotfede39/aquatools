@@ -8,6 +8,7 @@
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms)
 #' @keywords chronique
+#' @import lubridate
 #' @import tidyverse
 #' @export
 #' @examples
@@ -16,7 +17,7 @@
 #' chronique.ouverture("Suivi", "Thermie", "/NAS-DATA/Chroniques/Saisie_JB/2019-01-18_PDPG/Saisie_cahier_terrain_PDPG_V2.xlsx")
 
 chronique.ouverture <- function(
-  Type = c("Mesures","Suivis","Stations"),
+  Type = c("Mesures", "Suivis", "Stations"),
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie"),
   Localisation = as.character(NA),
   skipvalue = 1,
@@ -77,12 +78,12 @@ dataaimporter <-
   filter(is.na(Valeur) != T)
   
 ## Transformation des champs ##
-colnames(dataaimporter) <- 
+dataaimporter <- 
   dataaimporter %>% 
-  colnames() %>% 
-  paste0("chmes_",.) %>% 
-  gsub("[[:punct:]]", "_", .) %>% 
-  tolower()
+  rename_all(list(~stringi::stri_trans_general(., "latin-ascii"))) %>% # Pour remplacer les caractères accentués par les mêmes sans accents
+  rename_all(list(~paste0("chmes_",.))) %>% 
+  rename_all(list(~gsub("[[:punct:]]", "_", .))) %>% 
+  rename_all(list(~tolower(.)))
 }
 
 #### Suivis ####

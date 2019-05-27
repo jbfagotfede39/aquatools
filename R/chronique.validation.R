@@ -7,8 +7,10 @@
 #' @param ValMin Valeur maximale dont les dépassements sont pris en compte
 #' @param ValEcart Écart entre deux valeurs successives dont les dépassements sont pris en compte
 #' @param TempsDiff Différence de temps attendue entre 2 valeurs successives (1 par défault)
-#' @keywords 
-#' @import dplyr DBI RSQLite
+#' @keywords chronique
+#' @import DBI 
+#' @import RSQLite
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.validation(data)

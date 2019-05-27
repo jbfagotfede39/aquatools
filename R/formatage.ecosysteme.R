@@ -2,13 +2,15 @@
 #'
 #' Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
 #' @name formatage.ecosysteme
+#' @param acronymes Dataframe contenant les données à transformer
+#' @param Operation Type de transformation que l'on souhaite réaliser
 #' @export
 #' @import stringr
 #' @import tidyverse
 #' @examples
-#' formatage.ecosysteme(data$Station, Type = "Simplification")
-#' PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Type = "Simplification")
-#' data %>% stations.coderhj(DistSource = F) %>% formatage.ecosysteme(Type = "Expansion")
+#' formatage.ecosysteme(data$Station, Operation = "Simplification")
+#' PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Operation = "Simplification")
+#' data %>% stations.coderhj(DistSource = F) %>% formatage.ecosysteme(Operation = "Expansion")
 
 ##### TODO LIST #####
 # La mise en acronymes devrait moyennement fonctionner, car se basait précédemment que sur une colonne
@@ -16,15 +18,15 @@
 
 formatage.ecosysteme <- function(
   acronymes = data,
-  Type = c("Simplification", "Expansion")
+  Operation = c("Simplification", "Expansion")
   )
   {
 
   ## Évaluation des choix
-  Type <- match.arg(Type)
+  Operation <- match.arg(Operation)
 
   ##### Expansion #####
-if(Type == "Expansion"){
+if(Operation == "Expansion"){
 acronymes <-
   acronymes %>% 
   left_join(formatage.abreviation() %>% filter(Type == "Écosystème"), by = c(codemilieu = "Acronyme")) %>% 
@@ -33,7 +35,7 @@ acronymes <-
 }
 
   ##### Simplification #####
-if(Type == "Simplification"){
+if(Operation == "Simplification"){
   #### Mise en minuscule ####
   # Afin de s'affranchir des problèmes de casse
   acronymes <-

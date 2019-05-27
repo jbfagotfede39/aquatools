@@ -19,7 +19,7 @@
 
 #####################
 
-chronique.capteurs <- function(x = "CD39", 
+chronique.capteurs <- function(Nom = "CD39", 
                                Recherche = c("Propriétaire", "Type", "Modèle", "Numéro", "État", "Projet")
 )
 {
@@ -35,71 +35,71 @@ chronique.capteurs <- function(x = "CD39",
     tbl(dbD, in_schema("fd_production", "chroniques_capteurs")) %>% 
     collect()
   
-  ## x en tant que telle
+  ## Nom en tant que tel
   if(Recherche == "Propriétaire") 
     Vue <-
     Capteurs %>% 
-    filter(chcap_proprietaire == x) %>% 
-    #filter(chcap_typecapteur == x) %>% 
-    #filter(chcap_modelecapteur == x) %>% 
-    #filter(chcap_numerocapteur == x) %>% 
-    #filter(chcap_etat == x) %>% 
-    #filter(chcap_projet == x) %>% 
+    filter(chcap_proprietaire == Nom) %>% 
+    #filter(chcap_typecapteur == Nom) %>% 
+    #filter(chcap_modelecapteur == Nom) %>% 
+    #filter(chcap_numerocapteur == Nom) %>% 
+    #filter(chcap_etat == Nom) %>% 
+    #filter(chcap_projet == Nom) %>% 
     arrange(chcap_numerocapteur)
   
   if(Recherche == "Type") 
     Vue <-
     Capteurs %>% 
-    #filter(chcap_proprietaire == x) %>% 
-    filter(chcap_typecapteur == x) %>% 
-    #filter(chcap_modelecapteur == x) %>% 
-    #filter(chcap_numerocapteur == x) %>% 
-    #filter(chcap_etat == x) %>% 
-    #filter(chcap_projet == x) %>% 
+    #filter(chcap_proprietaire == Nom) %>% 
+    filter(chcap_typecapteur == Nom) %>% 
+    #filter(chcap_modelecapteur == Nom) %>% 
+    #filter(chcap_numerocapteur == Nom) %>% 
+    #filter(chcap_etat == Nom) %>% 
+    #filter(chcap_projet == Nom) %>% 
     arrange(chcap_numerocapteur)
   
   if(Recherche == "Modèle") 
     Vue <-
     Capteurs %>% 
-    #filter(chcap_proprietaire == x) %>% 
-    #filter(chcap_typecapteur == x) %>% 
-    filter(chcap_modelecapteur == x) %>% 
-    #filter(chcap_numerocapteur == x) %>% 
-    #filter(chcap_etat == x) %>% 
-    #filter(chcap_projet == x) %>% 
+    #filter(chcap_proprietaire == Nom) %>% 
+    #filter(chcap_typecapteur == Nom) %>% 
+    filter(chcap_modelecapteur == Nom) %>% 
+    #filter(chcap_numerocapteur == Nom) %>% 
+    #filter(chcap_etat == Nom) %>% 
+    #filter(chcap_projet == Nom) %>% 
     arrange(chcap_numerocapteur)
   
   if(Recherche == "Numéro") 
     Vue <-
     Capteurs %>% 
-    #filter(chcap_proprietaire == x) %>% 
-    #filter(chcap_typecapteur == x) %>% 
-    #filter(chcap_modelecapteur == x) %>% 
-    filter(chcap_numerocapteur == x) %>% 
-    #filter(chcap_etat == x) %>% 
-    #filter(chcap_projet == x) %>% 
+    #filter(chcap_proprietaire == Nom) %>% 
+    #filter(chcap_typecapteur == Nom) %>% 
+    #filter(chcap_modelecapteur == Nom) %>% 
+    filter(chcap_numerocapteur == Nom) %>% 
+    #filter(chcap_etat == Nom) %>% 
+    #filter(chcap_projet == Nom) %>% 
     arrange(chcap_numerocapteur)
   
   if(Recherche == "État") 
     Vue <-
     Capteurs %>% 
-    #filter(chcap_proprietaire == x) %>% 
-    #filter(chcap_typecapteur == x) %>% 
-    #filter(chcap_modelecapteur == x) %>% 
-    #filter(chcap_numerocapteur == x) %>% 
-    filter(chcap_etat == x) %>% 
-    #filter(chcap_projet == x) %>% 
+    #filter(chcap_proprietaire == Nom) %>% 
+    #filter(chcap_typecapteur == Nom) %>% 
+    #filter(chcap_modelecapteur == Nom) %>% 
+    #filter(chcap_numerocapteur == Nom) %>% 
+    filter(chcap_etat == Nom) %>% 
+    #filter(chcap_projet == Nom) %>% 
     arrange(chcap_numerocapteur)
   
   if(Recherche == "Projet") 
     Vue <-
     Capteurs %>% 
-    #filter(chcap_proprietaire == x) %>% 
-    #filter(chcap_typecapteur == x) %>% 
-    #filter(chcap_modelecapteur == x) %>% 
-    #filter(chcap_numerocapteur == x) %>% 
-    #filter(chcap_etat == x) %>% 
-    filter(chcap_projet == x) %>% 
+    #filter(chcap_proprietaire == Nom) %>% 
+    #filter(chcap_typecapteur == Nom) %>% 
+    #filter(chcap_modelecapteur == Nom) %>% 
+    #filter(chcap_numerocapteur == Nom) %>% 
+    #filter(chcap_etat == Nom) %>% 
+    filter(chcap_projet == Nom) %>% 
     arrange(chcap_numerocapteur)
   
   ## Affichage des résultats ##

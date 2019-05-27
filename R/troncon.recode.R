@@ -5,7 +5,7 @@
 #' @name troncon.recode
 #' @param data Chronique à valider
 #' @keywords data
-#' @import dplyr 
+#' @import tidyverse 
 #' @export
 #' @examples
 #' troncon.recode(data)
@@ -14,45 +14,45 @@
 # 
 ####################
 
-troncon.recode <- function(troncon = data)
+troncon.recode <- function(data)
 {
 
   # Renommage des colonnes #
-  if("score2" %in% names(troncon)){
-    troncon <-
-      troncon %>%
+  if("score2" %in% names(data)){
+    data <-
+      data %>%
       dplyr::rename(ScoreNote = score2)}
     
-  if("heterogen2" %in% names(troncon)){
-    troncon <-
-      troncon %>%
+  if("heterogen2" %in% names(data)){
+    data <-
+      data %>%
       dplyr::rename(HeterogeneiteNote = heterogen2)}
 
-  if("attractiv2" %in% names(troncon)){
-    troncon <-
-      troncon %>%
+  if("attractiv2" %in% names(data)){
+    data <-
+      data %>%
       dplyr::rename(AttractiviteNote = attractiv2)}
   
-  if("connectiv2" %in% names(troncon)){
-    troncon <-
-      troncon %>%
+  if("connectiv2" %in% names(data)){
+    data <-
+      data %>%
       dplyr::rename(ConnectiviteNote = connectiv2)}
   
-  if("stab2" %in% names(troncon)){
-    troncon <-
-      troncon %>%
+  if("stab2" %in% names(data)){
+    data <-
+      data %>%
       dplyr::rename(StabiliteNote = stab2)}
   
   # Ré-encodage #
-  if(class(troncon$ScoreNote) == "factor") troncon$ScoreNote <- as.numeric(levels(troncon$ScoreNote))[troncon$ScoreNote]
-  if(class(troncon$HeterogeneiteNote) == "factor") troncon$HeterogeneiteNote <- as.numeric(levels(troncon$HeterogeneiteNote))[troncon$HeterogeneiteNote]
-  if(class(troncon$AttractiviteNote) == "factor") troncon$AttractiviteNote <- as.numeric(levels(troncon$AttractiviteNote))[troncon$AttractiviteNote]
-  if(class(troncon$ConnectiviteNote) == "factor") troncon$ConnectiviteNote <- as.numeric(levels(troncon$ConnectiviteNote))[troncon$ConnectiviteNote]
-  if(class(troncon$StabiliteNote) == "factor") troncon$StabiliteNote <- as.numeric(levels(troncon$StabiliteNote))[troncon$StabiliteNote]
+  if(class(data$ScoreNote) == "factor") data$ScoreNote <- as.numeric(levels(data$ScoreNote))[data$ScoreNote]
+  if(class(data$HeterogeneiteNote) == "factor") data$HeterogeneiteNote <- as.numeric(levels(data$HeterogeneiteNote))[data$HeterogeneiteNote]
+  if(class(data$AttractiviteNote) == "factor") data$AttractiviteNote <- as.numeric(levels(data$AttractiviteNote))[data$AttractiviteNote]
+  if(class(data$ConnectiviteNote) == "factor") data$ConnectiviteNote <- as.numeric(levels(data$ConnectiviteNote))[data$ConnectiviteNote]
+  if(class(data$StabiliteNote) == "factor") data$StabiliteNote <- as.numeric(levels(data$StabiliteNote))[data$StabiliteNote]
   
   # Attribution des classes #
-  tronconbis <-
-    troncon %>% 
+  databis <-
+    data %>% 
     mutate(ScoreClasse = case_when(.$ScoreNote >= 6500 ~ "A",
                                    .$ScoreNote < 6500 & .$ScoreNote >= 3500  ~ "B",
                                    .$ScoreNote < 3500 & .$ScoreNote >= 1500  ~ "C",
@@ -82,4 +82,7 @@ troncon.recode <- function(troncon = data)
                                           .$StabiliteNote < -10 & .$StabiliteNote >= -25  ~ "C",
                                           .$StabiliteNote < -25 & .$StabiliteNote >= -60  ~ "D")
     )
-}
+
+  return(databis)
+  
+} # Fin de la fonction

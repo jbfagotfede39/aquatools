@@ -4,7 +4,7 @@
 \alias{ecosystemes.affluents}
 \title{Listage des affluents}
 \arguments{
-\item{Nom}{du cours d'eau principal}
+\item{ecosysteme}{Nom du cours d'eau principal}
 }
 \description{
 Cette fonction permet de lister les affluents d'un cours d'eau donné

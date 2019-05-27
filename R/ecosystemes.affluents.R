@@ -2,9 +2,11 @@
 #'
 #' Cette fonction permet de lister les affluents d'un cours d'eau donné
 #' @name ecosystemes.affluents
-#' @param Nom du cours d'eau principal
+#' @param ecosysteme Nom du cours d'eau principal
 #' @keywords écosystèmes
-#' @import dplyr DBI RSQLite
+#' @import DBI
+#' @import RSQLite
+#' @import tidyverse
 #' @export
 #' @examples
 #' ecosystemes.affluents("Ain")

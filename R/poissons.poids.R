@@ -4,8 +4,6 @@
 #' @name poissons.poids
 #' @keywords donnees
 #' @import FSA
-#' @import car 
-#' @import magrittr 
 #' @import dplyr
 #' @export
 #' @examples

@@ -5,7 +5,7 @@
 #' @param Nom Nom recherché
 #' @param Recherche Type de données recherchées
 #' @keywords capteurs
-#' @import dplyr
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.capteurs("HER0-6","Station")

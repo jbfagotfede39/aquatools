@@ -3,6 +3,7 @@
 #' Cette fonction permet d'exporter la définition des acronymes
 #' @name formatage.abreviation
 #' @export
+#' @import readr
 #' @import tidyverse
 #' @examples
 #' formatage.abreviation()
