@@ -31,6 +31,11 @@ drv <- dbDriver("SQLite")
 
 #### Utilisateur ####
 if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "imac27.local"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "Client_imacJB"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "Client_imacJB.local"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "Client_MacBookJB"){UtilisateurFD <- "JB"}
+if(system('uname -n',intern=T) == "Client_MacBookJB.local"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MacBookJB.local"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MacBookJB"){UtilisateurFD <- "JB"}
 if(system('uname -n',intern=T) == "MBP-de-Adrien"){UtilisateurFD <- "Adrien"}
@@ -41,10 +46,12 @@ if(system('uname -n',intern=T) == "macbook-pro-de-adrien.local"){UtilisateurFD <
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.home"){UtilisateurFD <- "Adrien"}
+if(system('uname -n',intern=T) == "Client_MBP-de-Adrien"){UtilisateurFD <- "Adrien"}
+if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.local"){UtilisateurFD <- "Adrien"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin"){UtilisateurFD <- "Quentin"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "Quentin"}
-if(system('uname -n',intern=T) == "IMac-Mehdi"){UtilisateurFD <- "Quentin"}
-if(system('uname -n',intern=T) == "IMac-Mehdi.local"){UtilisateurFD <- "Quentin"}
+if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){UtilisateurFD <- "Quentin"}
+if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD <- "Quentin"}
 
 ## Chroniques ##
 if(Type == "Chroniques" & file.exists("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) dbC <- src_sqlite("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")
@@ -66,7 +73,8 @@ if(Type == "Temps de travail" & file.exists("/Users/imac27/NAS-FD/FD39/Activité
 if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) dbTW <- src_sqlite("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
 
 if(Type == "Poissons"){
-  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
+  #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
+  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
                        dbname = "multifish",
                        host = '192.168.1.2',
@@ -87,7 +95,8 @@ if(Type == "Poissons"){
 
 if(Type == "Data" & exists("dbD") == FALSE){
   if(UtilisateurFD == "Quentin") UtilisateurFD <- "quentin"
-  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
+  #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
+  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
                           dbname = "nas-sig-data",
                           host = '192.168.1.14',
@@ -114,7 +123,8 @@ if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(d
   dbDisconnect(dbD)
   #rm(dbD)
   
-  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){
+  #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
+  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
                                   dbname = "nas-sig-data",
                                   host = '192.168.1.14',
