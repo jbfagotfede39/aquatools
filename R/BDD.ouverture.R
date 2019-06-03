@@ -75,6 +75,7 @@ if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/FD39/Acti
 if(Type == "Poissons"){
   #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
+  if(UtilisateurFD == "adrien"){UtilisateurFD <- "Adrien"} # car pb de majuscule pour l'identification
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
                        dbname = "multifish",
                        host = '192.168.1.2',
