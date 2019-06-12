@@ -127,17 +127,22 @@ BDD.format <- function(data)
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUSURCHAUFFANT", "VOUsurchauffant", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONBARO", "BONbaro", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONLAC", "BONlac", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONSEUIL", "BONseuil", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONZH", "BONzh", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONAVAL", "BONaval", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BRTBARO", "BRTbaro", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLBARO", "GCLbaro", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLLAC", "GCLlac", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLVANNE", "GCLvanne", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLPLONGEOIR", "GCLplongeoir", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLZHAVAL", "GCLzhaval", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "GCLZHENTRE2", "GCLzhentre2", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "ILABARO", "ILAbaro", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "ILABLOC", "ILAbloc", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "ILALAC", "ILAlac", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "LVALAC", "LVAlac", chsvi_coderhj)) %>% 
       #mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "", "", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VEU8-8ATMO", "VEU8-8atmo", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BIE32-4AVAL", "BIE32-4aval", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "LEM-2-2", "LEM2-2", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "NCZ6-2TRÉMONTAGNE", "NCZ6-2", chsvi_coderhj))
@@ -207,7 +212,7 @@ BDD.format <- function(data)
       data %>% 
       mutate(chsvi_action = ifelse(grepl("Dépose", chsvi_remarques), "Dépose", chsvi_action))
     }
-    if(dim(filter(data, !(chsvi_action == "Disparue"|chsvi_action == "Pose"|chsvi_action == "Dépose"|chsvi_action == "Relève")))[1] > 0) stop("Action saisie de type inconnu")
+    if(dim(filter(data, !(chsvi_action == "Disparue"|chsvi_action == "Pose"|chsvi_action == "Dépose"|chsvi_action == "Relève"|chsvi_action == "Mesure manuelle")))[1] > 0) stop("Action saisie de type inconnu")
     
     # Transformation des formats
     data$id <- as.integer(data$id)

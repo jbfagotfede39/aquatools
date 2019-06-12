@@ -36,18 +36,8 @@ Type <- match.arg(Type)
 
 #### Mesures ####
 if(Type == "Mesures"){
-## Chargement des données ##
-# if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b"), delim=";")
-# if(exists("dataaimporter") == FALSE){
-#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c"), delim=";")}
-# if(exists("dataaimporter") == FALSE){
-#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d"), delim=";")}
-# if(exists("dataaimporter") == FALSE){
-#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e"), delim=";")}
-# if(exists("dataaimporter") == FALSE){
-#   if(testit::has_warning(read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")) == FALSE) dataaimporter <- read_delim(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure", "Valeur","b", "c", "d", "e", "f"), delim=";")}
-
-  # Suppression de la partie antérieure suite à la version 1.3.1 de readr qui affiche en warnin les erreurs de parsing
+  if(typemesure == "Thermie"){
+    
 dataaimporter <- read_delim(adresse.switch(Localisation), skip = skipvalue, delim=";", col_types = "ctc")
 names(dataaimporter)[1] <- c('Date')
 names(dataaimporter)[2] <- c('Heure')
@@ -75,7 +65,43 @@ dataaimporter <-
   mutate(Valeur = str_replace(Valeur, "°C", "")) %>% 
   mutate(Valeur = as.numeric(sub(",", ".", Valeur))) %>% 
   mutate(Valeur = round(Valeur,3)) %>% 
-  filter(is.na(Valeur) != T)
+  filter(is.na(Valeur) != T) %>% 
+  mutate(chmes_typemesure = "Thermie") %>% 
+  mutate(chmes_unite = "°C")
+  }
+  
+if(typemesure == "Piézométrie"){
+  typecapteur = readline(prompt = "Type de capteur piézométrique (Hobo ou Diver) : ")
+  typedonnee = readline(prompt = "Type de mesure piézométrique (Baro ou Piézo) : ")
+  
+  if(typecapteur == "Diver"){
+    dataaimporter <- 
+      read_csv2(adresse.switch(Localisation), skip = 54, col_names = c("Date","Piézométrie", "Thermie")) %>% 
+      filter(Piézométrie != 4133.6) %>% # Car fin de chronique remplie avec cette valeur
+      filter(Thermie != 193.35) %>% # Car fin de chronique remplie avec cette valeur
+      mutate(Date = ymd_hms(Date)) %>%
+      mutate(Heure = format(Date, format="%H:%M:%S")) %>% 
+      mutate(Datefine = Date) %>% 
+      mutate(Date = ymd(format(Date, format="%Y-%m-%d")))
+  }
+  if(typecapteur == "Hobo"){
+    dataaimporter <- 
+      read_csv2(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie"))
+  }
+  
+  dataaimporter <- 
+    dataaimporter %>% 
+    filter(!is.na(Thermie)) %>% 
+    mutate(Heure = as.character(Heure)) %>% 
+    tidyr::gather(typemesure, Valeur, Piézométrie:Thermie) %>% 
+    mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
+    mutate(unite = ifelse(typemesure == "Piézométrie" & typecapteur == "Hobo", "kPa", unite)) %>% 
+    mutate(unite = ifelse(typemesure == "Piézométrie" & typecapteur == "Diver", "cm H2O", unite)) %>% 
+    mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Baro", "Thermie barométrique", typemesure)) %>% 
+    mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Piézo", "Thermie piézométrique", typemesure)) %>% 
+    mutate(typemesure = ifelse(typemesure == "Piézométrie" & typedonnee == "Baro", "Barométrie", typemesure)) %>% 
+    mutate(typemesure = ifelse(typemesure == "Piézométrie" & typedonnee == "Piézo", "Piézométrie brute", typemesure))
+}
   
 ## Transformation des champs ##
 dataaimporter <- 

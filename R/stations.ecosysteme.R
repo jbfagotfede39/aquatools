@@ -23,7 +23,7 @@
 #####################
 
 stations.ecosysteme <- function(
-  ecosysteme="",
+  ecosysteme = "",
   shp = F){
   
   #### Base poissons ####
@@ -57,6 +57,9 @@ stations.ecosysteme <- function(
       rename(Y = ylambert) %>% 
       rename(TypeCoord = typelambert) %>% 
       mutate(Poisson = "Oui")}
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
 
   #### Base chronique ####
   ## Ouverture de la BDD ##
@@ -80,7 +83,7 @@ stations.ecosysteme <- function(
       mutate(Chronique = "Oui")}
   
   ## Fermeture de la BDD ##
-  DBI::dbDisconnect(dbP)
+  #DBI::dbDisconnect(dbC)
   
   #### Base physico-chimie ####
   ## Ouverture de la BDD ##
@@ -139,8 +142,11 @@ stations.ecosysteme <- function(
   Synthese <-
     Synthese2 %>% 
     filter(is.na(codemilieu)) %>% # On prend ceux qui n'ont pas de codeRDT
-    full_join(Synthese2 %>% filter(!is.na(codemilieu)) %>% left_join(acronymes, by = c(codemilieu = "Acronyme")), by = c("CodeRDT", "MilieuTemporaire", "fin", "X", "Y", "TypeCoord", "Poisson", "Chronique", "PC", "codemilieu")) %>% # on fusionne avec ceux qui en ont un et avec la traduction
-    mutate(Milieu = ifelse(is.na(Definition), MilieuTemporaire, Definition)) %>% 
+    full_join(Synthese2 %>% 
+                filter(!is.na(codemilieu)) %>% 
+                left_join(acronymes, by = c(codemilieu = "Acronyme")), by = c("CodeRDT", "MilieuTemporaire", "fin", "X", "Y", "TypeCoord", "Poisson", "Chronique", "PC", "codemilieu")) %>% # on fusionne avec ceux qui en ont un et avec la traduction
+    mutate(Milieu = ifelse(is.na(Definition), MilieuTemporaire, Definition)) %>%
+    mutate(CodeRDT = ifelse(is.na(CodeRDT), coderhj.y, CodeRDT)) %>% 
     select(CodeRDT, Milieu, X:PC) %>% 
     rename(Nom = CodeRDT)
   

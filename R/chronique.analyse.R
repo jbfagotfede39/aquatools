@@ -83,8 +83,9 @@ chronique.analyse <- function(
   ValJours <- 
     DataTravail[[2]] %>% 
     mutate(Nref = 24/pasdetemps) %>% 
-    mutate(VMM7j = RcppRoll::roll_mean(VMoyJ, 7, align = "right", fill = NA)) %>% 
-    mutate(VMM30j = RcppRoll::roll_mean(VMoyJ, 30, align = "right", fill = NA))
+    mutate(VMaxMoy7j = RcppRoll::roll_mean(VMaxJ, 7, align = "right", fill = NA)) %>% 
+    mutate(VMaxMoy30j = RcppRoll::roll_mean(VMaxJ, 30, align = "right", fill = NA)) %>% 
+    mutate(VMoyMoy30j = RcppRoll::roll_mean(VMoyJ, 30, align = "right", fill = NA))
   
   ### Coefficient de variation des moyennes journalières
   CVJ <- sd(ValJours$VMoyJ)/mean(ValJours$VMoyJ)
@@ -111,24 +112,33 @@ chronique.analyse <- function(
     select(VMinAB, DateVMinAB, VMaxAB, DateVMaxAB, Percentile10AB, Percentile25AB, Percentile50AB, Percentile75AB, Percentile90AB, Percentile90diurneAB)
   
   ##### Valeurs remarquables sur périodes mobiles #### 
-  ## Calcul V Moymax 30 jours ##
+  ## Calcul V Maxmoy 30 jours ## (Sens FD71)
   ValRemarqPeriodesMobiles <-
     ValJours %>% 
-    filter(!is.na(VMM30j)) %>% 
+    filter(!is.na(VMoyMoy30j)) %>% 
     summarise(
-      VMaxMoy30J = max(VMM30j),
-      DateDebutVMaxMoy30J = chmes_date[VMM30j == max(VMM30j)][1] -29, # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
-      DateFinVMaxMoy30J = chmes_date[VMM30j == max(VMM30j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      VMoyMoy30J = max(VMoyMoy30j)
     ) 
   
-  ## Calcul V Moymax 7 jours ##
+  ## Calcul V Maxmoy 30 jours ## (Sens Verneaux)
   ValRemarqPeriodesMobiles <-
     ValJours %>% 
-    filter(!is.na(VMM7j)) %>% 
+    filter(!is.na(VMaxMoy30j)) %>% 
     summarise(
-      VMaxMoy7J = max(VMM7j),
-      DateDebutVMaxMoy7J = chmes_date[VMM7j == max(VMM7j)][1] -6,# le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
-      DateFinVMaxMoy7J = chmes_date[VMM7j == max(VMM7j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      VMaxMoy30J = max(VMaxMoy30j),
+      DateDebutVMaxMoy30J = chmes_date[VMaxMoy30j == max(VMaxMoy30j)][1] -29, # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateFinVMaxMoy30J = chmes_date[VMaxMoy30j == max(VMaxMoy30j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+    ) %>% 
+    left_join(ValRemarqPeriodesMobiles, by = c("chmes_coderhj", "chmes_typemesure"))
+  
+  ## Calcul V Maxmoy 7 jours ##
+  ValRemarqPeriodesMobiles <-
+    ValJours %>% 
+    filter(!is.na(VMaxMoy7j)) %>% 
+    summarise(
+      VMaxMoy7J = max(VMaxMoy7j),
+      DateDebutVMaxMoy7J = chmes_date[VMaxMoy7j == max(VMaxMoy7j)][1] -6,# le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
+      DateFinVMaxMoy7J = chmes_date[VMaxMoy7j == max(VMaxMoy7j)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
     ) %>% 
     left_join(ValRemarqPeriodesMobiles, by = c("chmes_coderhj", "chmes_typemesure"))
   

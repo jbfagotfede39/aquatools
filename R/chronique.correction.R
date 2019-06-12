@@ -25,14 +25,14 @@ chronique.correction <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
   data$chmes_date <- ymd(data$chmes_date)
 
   ##### Recherche de la ligne fausse #####
-  #LigneFausse <-
-    # data %>% 
-    # filter(CodeRDT == cCodeRDT) %>%
-    # filter(Capteur == cCapteur) %>%
-    # filter(Date == cDate) %>%
-    # filter(Heure == cHeure) %>%
-    # filter(TypeMesure == cTypeMesure) %>% 
-    # filter(Valeur == cValeur)
+  # LigneFausse <-
+  # data %>%
+  # filter(chmes_coderhj == cCodeRDT) %>%
+  # filter(chmes_capteur == cCapteur) %>%
+  # filter(chmes_date == cDate) %>%
+  # filter(chmes_heure == cHeure) %>%
+  # filter(chmes_typemesure == cTypeMesure) %>%
+  # filter(chmes_valeur == cValeur)
     
   LigneFausse <-
     data %>% 
