@@ -99,21 +99,21 @@ if(Type == "Data" & exists("dbD") == FALSE){
   #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                          dbname = "nas-sig-data",
-                          host = '192.168.1.14',
+                          dbname = "eaux-jura-sig-data",
+                          host = '192.168.1.100',
                           #host = '80.11.169.205',
-                          port = 5433,
+                          port = 3254,
                           user = UtilisateurFD,
-                          password = keyring::key_get("nas-sig-data")
+                          password = keyring::key_get("eaux-jura-sig-data")
     )
   }else{
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                          dbname = "nas-sig-data",
-                          #host = '192.168.1.14',
+                          dbname = "eaux-jura-sig-data",
+                          #host = '192.168.1.100',
                           host = '80.11.169.205',
-                          port = 5433,
+                          port = 3254,
                           user = UtilisateurFD,
-                          password = keyring::key_get("nas-sig-data")
+                          password = keyring::key_get("eaux-jura-sig-data")
     )
   }
 }
@@ -127,21 +127,21 @@ if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(d
   #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                  dbname = "nas-sig-data",
-                                  host = '192.168.1.14',
+                                  dbname = "eaux-jura-sig-data",
+                                  host = '192.168.1.100',
                                   #host = '80.11.169.205',
-                                  port = 5433,
+                                  port = 3254,
                                   user = UtilisateurFD,
-                                  password = keyring::key_get("nas-sig-data")
+                                  password = keyring::key_get("eaux-jura-sig-data")
     )
   }else{
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                  dbname = "nas-sig-data",
-                                  #host = '192.168.1.14',
+                                  dbname = "eaux-jura-sig-data",
+                                  #host = '192.168.1.100',
                                   host = '80.11.169.205',
-                                  port = 5433,
+                                  port = 3254,
                                   user = UtilisateurFD,
-                                  password = keyring::key_get("nas-sig-data")
+                                  password = keyring::key_get("eaux-jura-sig-data")
     )
   }
 }
