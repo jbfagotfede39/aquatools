@@ -96,6 +96,8 @@ if(Type == "Poissons"){
 
 if(Type == "Data" & exists("dbD") == FALSE){
   if(UtilisateurFD == "Quentin") UtilisateurFD <- "quentin"
+  if(UtilisateurFD == "Adrien") UtilisateurFD <- "adrien"
+  if(UtilisateurFD == "JB") UtilisateurFD <- "jb"
   #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
@@ -121,6 +123,7 @@ if(Type == "Data"){
 if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
   if(UtilisateurFD == "Quentin") UtilisateurFD <- "quentin"
   if(UtilisateurFD == "Adrien") UtilisateurFD <- "adrien"
+  if(UtilisateurFD == "JB") UtilisateurFD <- "jb"
   dbDisconnect(dbD)
   #rm(dbD)
   
