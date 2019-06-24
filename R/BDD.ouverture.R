@@ -73,7 +73,8 @@ if(Type == "Temps de travail" & file.exists("/Users/imac27/NAS-FD/FD39/Activité
 if(Type == "Temps de travail" & file.exists("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite") == T) dbTW <- src_sqlite("/Volumes/Fixe-FD39/NAS-FD/FD39/Activité/Temps de travail/BDD_Tps_travail_FD39.sqlite")
 
 if(Type == "Poissons"){
-  #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
+  if(Type == "Poissons" & exists("dbP") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){dbDisconnect(dbP)}
+  if(Type == "Poissons" & exists("dbP") == FALSE){
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
   if(UtilisateurFD == "adrien"){UtilisateurFD <- "Adrien"} # car pb de majuscule pour l'identification
   dbP <- DBI::dbConnect(RPostgreSQL::PostgreSQL(),
@@ -92,13 +93,13 @@ if(Type == "Poissons"){
                        password = keyring::key_get("Multifish")
                        )
   }
+  }
 }
 
 if(Type == "Data" & exists("dbD") == FALSE){
   if(UtilisateurFD == "Quentin") UtilisateurFD <- "quentin"
   if(UtilisateurFD == "Adrien") UtilisateurFD <- "adrien"
   if(UtilisateurFD == "JB") UtilisateurFD <- "jb"
-  #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
                           dbname = "eaux-jura-sig-data",
@@ -127,7 +128,6 @@ if(Type == "Data" & exists("dbD") == TRUE & RPostgreSQL::isPostgresqlIdCurrent(d
   dbDisconnect(dbD)
   #rm(dbD)
   
-  #if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "ac:84:c9:42:d2:8d"){ # Ancien routeur livebox
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
                                   dbname = "eaux-jura-sig-data",

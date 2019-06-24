@@ -6,7 +6,11 @@
 #' @param date Date de la pêche
 #' @param commentaires \code{FALSE} par défault
 #' @keywords poissons
-#' @import stringr DBI RSQLite lubridate knitr
+#' @import stringr 
+#' @import DBI 
+#' @import RSQLite 
+#' @import lubridate 
+#' @import knitr
 #' @export
 #' @examples
 #' poissons.fiche("AIN18-4", "2013-09-27", commentaires = FALSE)

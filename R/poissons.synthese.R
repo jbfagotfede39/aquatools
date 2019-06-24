@@ -97,6 +97,9 @@ if(Echelle == "ContextePDPG"){
   stop("Fonction à développer")
 }
   
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
+   
   ## Sortie des résultats ##
 return(ResultatsSynthese)
   

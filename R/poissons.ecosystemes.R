@@ -41,4 +41,7 @@ poissons.ecosystemes <- function(
   if(nchar(ecosysteme) == 0) {
     ecosysteme <- Ecosystemes}
   
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbP)
+  
 } # Fin de la fonction
