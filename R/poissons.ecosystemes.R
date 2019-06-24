@@ -44,4 +44,7 @@ poissons.ecosystemes <- function(
   ## Fermeture de la BDD ##
   DBI::dbDisconnect(dbP)
   
+  ## Sortie des résultats ##
+  return(ecosysteme)
+  
 } # Fin de la fonction
