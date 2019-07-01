@@ -31,6 +31,9 @@ chronique.resultats <- function(x = "HER0-6",
     tbl(dbD, in_schema("fd_production", "chroniques_resultats")) %>% 
     collect()
   
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbD)
+  
   ## x en tant que telle
   if(Recherche == "Station") 
     Vue <-

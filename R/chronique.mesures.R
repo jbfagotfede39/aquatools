@@ -67,6 +67,9 @@ if(Valide == T & Type == "Tout"){
     collect()
 }
 
+## Fermeture de la BDD ##
+DBI::dbDisconnect(dbD)
+
 ##### Filtrage en fonction de la période #####
 if(length(as.character(annee)) != 0){
   Mesures <-

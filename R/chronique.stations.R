@@ -35,7 +35,10 @@ chronique.stations <- function(x = "CD39",
   Stations <- 
     sf::st_read(dbD, query = "SELECT * FROM fd_production.chroniques_stations;") %>% 
     arrange(chsta_coderhj)
-
+  
+  ## Fermeture de la BDD ##
+  DBI::dbDisconnect(dbD)
+  
   ## x en tant que telle
   if(Recherche == "MO") 
     Vue <-

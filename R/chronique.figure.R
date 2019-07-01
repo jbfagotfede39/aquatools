@@ -50,13 +50,16 @@ chronique.figure <- function(
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
   # Changer ordre max/min/moy dans légende par Max/Moy/Min
   # Il faudra faire une fonction commune (entre chronique.figure, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
-# -------------- A FAIRE -------------- #
+  # -------------- A FAIRE -------------- #
   
 ##### Mise au format des données #####
 ## Transformation du format des dates
 if(class(data$chmes_date) != "Date"){#data$chmes_date <- as.Date(data$chmes_date,format="%Y-%m-%d") # ancien format du 08/04/19
 data$chmes_date <- ymd(data$chmes_date)}
-
+  
+#### Test de cohérence ####
+if("chmes_unite" %in% colnames(data) & (data %>% filter(chmes_unite == "kPa") %>% count() %>% pull() != 0)) warning("Attention pour les piézo, des données en kPa seront représentées avec une échelle en cm d'eau, alors que 1 kPa = 10,1972 cm d'H2O")
+  
 ##### Contexte de la chronique #####
 # Calcul du nombre de stations ##
 if("chmes_coderhj" %in% colnames(data)) Contexte <- tibble(nStations = n_distinct(data$chmes_coderhj))

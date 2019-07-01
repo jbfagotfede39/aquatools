@@ -37,7 +37,6 @@ chronique.traitement <- function(
 {
 
 ##### -------------- A FAIRE -------------- #####
-# Export lexique : le faire depuis un fichier contenu dans le package
 # Export fichier readme qui explique le fonctionnement + auteur + date + noms/versions (session_info) des packages 
 # Essayer de supprimer le warning qui apparaît suite à # Analyse des données # (In bind_rows_(x, .id) : Unequal factor levels: coercing to character)
 # -------------- A FAIRE -------------- #  
@@ -45,7 +44,7 @@ chronique.traitement <- function(
 #### Évaluation des choix ####
   typemesure <- match.arg(typemesure)
   archivage <- match.arg(archivage)
-
+  
 #### Vérification des répertoires ####
 if(export == TRUE){
   if(file.exists(paste0("./",projet)) == FALSE){
@@ -109,7 +108,7 @@ data <-
   filter(n_distinct(chmes_date) > 30) %>% # Pour supprimer les années biologiques avec moins de 30 dates différentes
   ungroup()
 }
-  
+
 #### Analyse des données ####
 DataTravail <- 
   data %>%
@@ -125,19 +124,19 @@ if(all(export & "chmes_typemesure" %in% colnames(data)) == TRUE){
 # Y libre sans vmm30j
   data %>%
   group_split(chmes_coderhj, chmes_anneebiol,chmes_typemesure) %>% 
-  purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = "Thermie", complement = TRUE, Ymin=NA, Ymax=NA, save=T, projet = projet, format=".png"))
+  purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = unique(.$chmes_typemesure), complement = TRUE, Ymin=NA, Ymax=NA, save=T, projet = projet, format=".png"))
 # Y libre avec vmm30j
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol,chmes_typemesure) %>% 
-    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = "Thermie", complement = TRUE, Ymin=NA, Ymax=NA, Vmm30j=T, save=T, projet = projet, format=".png"))
+    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = unique(.$chmes_typemesure), complement = TRUE, Ymin=NA, Ymax=NA, Vmm30j=T, save=T, projet = projet, format=".png"))
 # Y fixé sans vmm30j
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol,chmes_typemesure) %>% 
-    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = "Thermie", complement = TRUE, Ymin=-1, Ymax=30, save=T, projet = projet, format=".png"))
+    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = unique(.$chmes_typemesure), complement = TRUE, Ymin=-1, Ymax=30, save=T, projet = projet, format=".png"))
 # Y fixé avec vmm30j
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol,chmes_typemesure) %>% 
-    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = "Thermie", complement = TRUE, Ymin=-1, Ymax=30, Vmm30j=T, save=T, projet = projet, format=".png"))
+    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj)," - ",unique(.$chmes_anneebiol))), duree = "Complet", typemesure = unique(.$chmes_typemesure), complement = TRUE, Ymin=-1, Ymax=30, Vmm30j=T, save=T, projet = projet, format=".png"))
   }
 
 ## Type de mesures non spécifié ##
@@ -167,19 +166,19 @@ if(all(export & "chmes_typemesure" %in% colnames(data)) == TRUE){
 # Y libre sans vmm30j
 data %>%
     group_split(chmes_coderhj, chmes_anneebiol, chmes_typemesure) %>%
-    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = "Thermie", Ymin=NA, Ymax=NA, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
+    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = unique(.$chmes_typemesure), Ymin=NA, Ymax=NA, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
 # Y libre avec vmm30j
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol, chmes_typemesure) %>%
-    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = "Thermie", Ymin=NA, Ymax=NA, Vmm30j=T, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
+    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = unique(.$chmes_typemesure), Ymin=NA, Ymax=NA, Vmm30j=T, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
 # Y fixé sans vmm30j
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol, chmes_typemesure) %>%
-    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = "Thermie", Ymin=-1, Ymax=30, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
+    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = unique(.$chmes_typemesure), Ymin=-1, Ymax=30, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
 # Y fixé avec vmm30j
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol, chmes_typemesure) %>%
-    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = "Thermie", Ymin=-1, Ymax=30, Vmm30j=T, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
+    purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = unique(.$chmes_typemesure), Ymin=-1, Ymax=30, Vmm30j=T, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
 }
 
 ## Type de mesures non spécifié ##
@@ -216,7 +215,7 @@ SIG.export(listeStations, paste0("./",projet, "/Sorties/Stations/", format(now()
 
 ##### Sortie résultats élaborés #####
 if(export == TRUE & dep39 == TRUE){
-DataTravailSIG <- listeStations %>% left_join(DataTravail %>% mutate(intervalMax = as.numeric(sub(",", ".", intervalMax))), by = c("chsta_coderhj" = "chmes_coderhj"))
+DataTravailSIG <- listeStations %>% left_join(DataTravail %>% mutate(intervalMax = as.numeric(sub(",", ".", IntervalleMax))), by = c("chsta_coderhj" = "Coderhj"))
 SIG.export(DataTravailSIG, paste0("./",projet, "/Sorties/Résultats/", format(now(), format="%Y-%m-%d"), "_Résultats"))
 }
 
@@ -245,6 +244,7 @@ if(export == FALSE){
 
 #### Notices ####
 if(export == TRUE){
+dbD <- BDD.ouverture("Data")
 tbl(dbD, in_schema("fd_referentiels", "dictionnaire_glossaire")) %>% 
   filter(dicglo_type == "Chronique" | dicglo_codeunique == "Typemesure" | dicglo_codeunique == "Coderhj" | dicglo_codeunique == "Annee") %>% 
   collect() %>% 
