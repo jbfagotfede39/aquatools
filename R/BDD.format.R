@@ -17,9 +17,21 @@
 # 
 ####################
 
-BDD.format <- function(data)
+BDD.format <- function(
+  data = data,
+  traitementforce = FALSE,
+  Type = c("MI", "Chroniques", "PC")
+  )
 {
+
+  ###### Contexte ######
+  if(traitementforce == "TRUE"){Type <- match.arg(Type)} # Évaluation des choix
+  
   ###### MI ######
+  Testtraitementforce <- 0
+  if(traitementforce == TRUE) Testtraitementforce <- 1
+  if(traitementforce == FALSE & Type == "MI") Testtraitementforce <- 1
+  if(Testtraitementforce == 1){
   ## Connexion à la BDD ##
   dbMI <- BDD.ouverture("Macroinvertébrés")
   
@@ -49,7 +61,6 @@ BDD.format <- function(data)
   }
   
   # Travail sur les captures #
-  
   if(all(colnames(data) %in% colnames(Captures))) {
 
     # Transformation des formats
@@ -59,9 +70,15 @@ BDD.format <- function(data)
     
     # Ajout des ID
     data$CaptureID <- row_number(data$PrelevementID) + as.numeric(tbl(dbMI,"Captures") %>% summarise(max = max(CaptureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les CaptureID à partir du dernier
-  }
+  } # Fin de travail sur les captures
+  } # Fin de travail sur les MI
   
   ###### Chroniques ######
+  Testtraitementforce <- 0
+  if(traitementforce == TRUE) Testtraitementforce <- 1
+  if(traitementforce == FALSE & Type == "Chroniques") Testtraitementforce <- 1
+  if(Testtraitementforce == 1){
+    
   ## Connexion à la BDD ##
   dbD <- BDD.ouverture("Data")
   
@@ -95,6 +112,9 @@ BDD.format <- function(data)
     
     # Arrondi des valeurs
     data$chmes_valeur <- round(as.numeric(data$chmes_valeur),3) # On arrondi à 3 chiffres après la virgule
+    
+    # Complément des heures #
+    data$chmes_heure <- ifelse(nchar(data$chmes_heure) == 5, paste0(data$chmes_heure, ":00"), data$chmes_heure) 
     
     # Transformation des formats
     data$id <- as.integer(data$id)
@@ -257,9 +277,14 @@ BDD.format <- function(data)
         data %>% 
         mutate(chres_aquatoolsversion = packageVersion("aquatools"))
     }
-  }
+  } # fin de travail sur les résultats
+  } # Fin de travail sur les chroniques
   
   ##### PC #####
+  Testtraitementforce <- 0
+  if(traitementforce == TRUE) Testtraitementforce <- 1
+  if(traitementforce == FALSE & Type == "PC") Testtraitementforce <- 1
+  if(Testtraitementforce == 1){
   ## Connexion à la BDD ##
   dbPC <- BDD.ouverture("Physico-chimie")
   
@@ -277,7 +302,8 @@ BDD.format <- function(data)
     # Ajout des ID
     data$MesureID <- row_number(data$Valeur) + as.numeric(tbl(dbPC,"PC") %>% summarise(max = max(MesureID, na.rm = TRUE)) %>% collect()) # Pour incrémenter les MesureID à partir du dernier
     if(dim(filter(data, is.na(MesureID)))[1] > 0) stop("Tous les id ne sont pas complétés")
-  }
+  } # Fin de travail sur les mesures de PC
+  } # Fin de travail sur PC
   
   ##### Commun #####
 data <- as.data.frame(data)

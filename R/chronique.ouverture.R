@@ -9,6 +9,7 @@
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms)
 #' @keywords chronique
 #' @import lubridate
+#' @import stringr
 #' @import tidyverse
 #' @export
 #' @examples
@@ -18,7 +19,7 @@
 
 chronique.ouverture <- function(
   Type = c("Mesures", "Suivis", "Stations"),
-  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie"),
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie", "Télétransmission"),
   Localisation = as.character(NA),
   skipvalue = 1,
   typedate = "ymd"
@@ -34,11 +35,14 @@ chronique.ouverture <- function(
 Type <- match.arg(Type)
 #typemesure <- match.arg(typemesure) # car deux match.arg semblent mettre le micmac
 
+#### Localisation du fichier ####
+Localisation <- adresse.switch(Localisation)
+
 #### Mesures ####
 if(Type == "Mesures"){
   if(typemesure == "Thermie"){
     
-dataaimporter <- read_delim(adresse.switch(Localisation), skip = skipvalue, delim=";", col_types = "ctc")
+dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")
 names(dataaimporter)[1] <- c('Date')
 names(dataaimporter)[2] <- c('Heure')
 names(dataaimporter)[3] <- c('Valeur')
@@ -76,7 +80,7 @@ if(typemesure == "Piézométrie"){
   
   if(typecapteur == "Diver"){
     dataaimporter <- 
-      read_csv2(adresse.switch(Localisation), skip = 54, col_names = c("Date","Piézométrie", "Thermie")) %>% 
+      read_csv2(Localisation, skip = 54, col_names = c("Date","Piézométrie", "Thermie")) %>% 
       filter(Piézométrie != 4133.6) %>% # Car fin de chronique remplie avec cette valeur
       filter(Thermie != 193.35) %>% # Car fin de chronique remplie avec cette valeur
       mutate(Date = ymd_hms(Date)) %>%
@@ -86,7 +90,7 @@ if(typemesure == "Piézométrie"){
   }
   if(typecapteur == "Hobo"){
     dataaimporter <- 
-      read_csv2(adresse.switch(Localisation), skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie"))
+      read_csv2(Localisation, skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie"))
   }
   
   dataaimporter <- 
@@ -103,6 +107,95 @@ if(typemesure == "Piézométrie"){
     mutate(typemesure = ifelse(typemesure == "Piézométrie" & typedonnee == "Piézo", "Piézométrie brute", typemesure))
 }
   
+  if(typemesure == "Télétransmission"){
+    ## Définition du point de suivi :
+    station <- stringr::str_extract_all(Localisation, pattern = "[:alnum:]+__", simplify = FALSE)[[1]][1] %>% str_replace("__", "")
+    if(nchar(station) == 1){station <- stringr::str_extract_all(Localisation, pattern = "[:alnum:]+-[:alnum:]+__", simplify = FALSE)[[1]][1] %>% str_replace("__", "")}
+    
+    Contexte <- readChar(adresse.switch(Localisation), file.info(adresse.switch(Localisation))$size)
+    debutData <- str_split(Contexte, pattern = "Record n", simplify = FALSE)[[1]][1] %>% str_count(pattern = "\n")+1
+    nData <- str_split(Contexte, pattern = "-----------", simplify = FALSE)[[1]][1] %>% str_count(pattern = "\n")-debutData
+    nColonnes <- str_split(Contexte, pattern = "Record n", simplify = FALSE)[[1]][2]
+    nColonnes <- str_split(nColonnes, pattern = "\n", simplify = FALSE)[[1]][1] %>% str_count(pattern = ",")+1
+    emetteur <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][1] %>% str_replace("^s/n:", "")
+    capteur <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][2] %>% str_replace("^s/n:", "")
+    dateCompleteTeletransmission <- dmy_hms(str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][6])
+    dateTeletransmission <- format(dateCompleteTeletransmission, format="%Y-%m-%d")
+    heureTeletransmission <- format(dateCompleteTeletransmission, format="%H:%M:%S")
+    valeurTempTeletransmission <- str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][debutData + nData + 3]
+    valeurTempTeletransmission <- str_split(valeurTempTeletransmission, pattern = "- Temperature:  ", simplify = FALSE)[[1]][2]
+    valeurTempTeletransmission <- as.numeric(str_split(valeurTempTeletransmission, pattern = " \xb0C\r", simplify = FALSE)[[1]][1])
+    
+    ## Importation des données ##
+    dataaimporter <- 
+      read_delim(Localisation, skip = debutData, delim=",", col_types = str_dup("c", nColonnes), col_names = F, n_max = nData) %>% 
+      rename(Date = "X2") %>% 
+      filter(!is.na(Date)) %>% 
+      mutate(Date = dmy(Date))
+    
+    ## Travail des données de VOU ##
+    if(station == "VOUmercantine" | station == "VOUsurchauffant" | station == "AIN22-2"){
+      dataaimporterPartie1 <-
+        dataaimporter %>%
+        select(2:3,5) %>%
+        rename(Heure = 2, Valeur = 3) %>%
+        mutate(Capteur = emetteur) %>%
+        mutate(typemesure = "Barométrie") %>%
+        mutate(unite = "mBar")
+
+      dataaimporterPartie2 <-
+        dataaimporter %>%
+        select(2,3,8) %>%
+        rename(Heure = 2, Valeur = 3) %>%
+        mutate(Capteur = capteur) %>%
+        mutate(typemesure = "Thermie") %>%
+        mutate(unite = "°C")
+    }
+    
+    ## Travail des données de l'Ain à Ney ##
+      if(station == "AIN22-2"){
+        dataaimporterPartie3 <-
+          dataaimporter %>%
+          select(2,3,7) %>%
+          rename(Heure = 2, Valeur = 3) %>%
+          mutate(Capteur = capteur) %>%
+          mutate(typemesure = "Piézométrie brute") %>%
+          mutate(unite = "PSI")
+        
+        dataaimporterPartie4 <-
+          dataaimporter %>%
+          select(2,3,9) %>%
+          rename(Heure = 2, Valeur = 3) %>%
+          mutate(Capteur = capteur) %>%
+          mutate(typemesure = "Piézométrie brute") %>%
+          mutate(unite = "pieds")
+        
+        dataaimporterPartie2 <-
+          dataaimporterPartie2 %>%
+          bind_rows(dataaimporterPartie3) %>%
+          bind_rows(dataaimporterPartie4)
+        
+      }
+      
+    ## Travail des données de l'Ain à Marigny ##
+    if(station == "AIN37-2"){
+      capteur2 <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][3] %>% str_replace("^s/n:", "")
+      
+    }
+      
+      ## Regroupement des parties de données ##
+      dataaimporter <-
+        dataaimporterPartie1 %>%
+        bind_rows(dataaimporterPartie2) %>%
+        add_row(Date = dateTeletransmission, Heure = heureTeletransmission, Valeur = valeurTempTeletransmission, Capteur = emetteur, typemesure = "Thermie barométrique", unite = "°C") %>% 
+        #rowwise() %>% 
+        #mutate(Heure = ifelse(nchar(Heure == 5, paste0(Heure, ":00")))) %>% 
+        mutate(Valeur = as.numeric(sub(",", ".", Valeur))) %>%
+        mutate(Valeur = round(Valeur,3)) %>% 
+        mutate(coderhj = station)
+    
+  }
+  
 ## Transformation des champs ##
 dataaimporter <- 
   dataaimporter %>% 
@@ -118,7 +211,7 @@ if(Type == "Suivis"){
 dbD <- BDD.ouverture("Data")
 SuiviTerrain <- tbl(dbD, in_schema("fd_production", "chroniques_suiviterrain")) %>% collect(n = 2) %>% arrange(chsvi_coderhj)
 
-dataaimporter <- read_excel(adresse.switch(Localisation), sheet = 1)
+dataaimporter <- read_excel(Localisation, sheet = 1)
 
 ## Renommage des champs ##
 dataaimporter <- 
@@ -192,7 +285,7 @@ dataaimporter <-
 if(Type == "Stations"){
 
 ## Chargement des données ##
-dataaimporter <- read_excel(adresse.switch(Localisation), sheet = 1)
+dataaimporter <- read_excel(Localisation, sheet = 1)
 
 ## Transformation ##
 dataaimporter <- 
