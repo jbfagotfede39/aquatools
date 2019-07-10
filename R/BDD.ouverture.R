@@ -52,6 +52,7 @@ if(system('uname -n',intern=T) == "iMac-de-Quentin"){UtilisateurFD <- "Quentin"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "Quentin"}
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){UtilisateurFD <- "Quentin"}
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD <- "Quentin"}
+if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
 
 ## Chroniques ##
 if(Type == "Chroniques" & file.exists("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite") == T) dbC <- src_sqlite("/Users/imac27/NAS-DATA/Chroniques/BDD_Chroniques_FD39.sqlite")

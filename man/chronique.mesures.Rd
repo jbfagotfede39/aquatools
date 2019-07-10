@@ -19,5 +19,6 @@ Permet d'extraire les données de chronique d'une station
 chronique.mesures("HER0-6", "Thermie") 
 chronique.mesures("DRO6-8", "Thermie", "2013")
 chronique.mesures("GCLzhaval", "Piézométrie", "2015", Valide = F)
+chronique.mesures("GCLzhaval", "Tout", "2015", Valide = F)
 }
 \keyword{chronique}
