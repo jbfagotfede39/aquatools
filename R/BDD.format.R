@@ -29,7 +29,7 @@ BDD.format <- function(
   
   ###### MI ######
   Testtraitementforce <- 0
-  if(traitementforce == TRUE) Testtraitementforce <- 1
+  if(traitementforce == TRUE & Type == "MI") Testtraitementforce <- 1
   if(traitementforce == FALSE & Type == "MI") Testtraitementforce <- 1
   if(Testtraitementforce == 1){
   ## Connexion à la BDD ##
@@ -75,7 +75,7 @@ BDD.format <- function(
   
   ###### Chroniques ######
   Testtraitementforce <- 0
-  if(traitementforce == TRUE) Testtraitementforce <- 1
+  if(traitementforce == TRUE & Type == "Chroniques") Testtraitementforce <- 1
   if(traitementforce == FALSE & Type == "Chroniques") Testtraitementforce <- 1
   if(Testtraitementforce == 1){
     
@@ -83,29 +83,97 @@ BDD.format <- function(
   dbD <- BDD.ouverture("Data")
   
   ## Récupération des données ##
-  Stations <- sf::st_read(dbD, query = "select * from fd_production.chroniques_stations limit 3;")
-  Capteurs <- tbl(dbD, in_schema("fd_production", "chroniques_capteurs")) %>% collect()
-  Mesures <- tbl(dbD, in_schema("fd_production", "chroniques_mesures")) %>% collect(n = 5)
-  SuiviTerrain <- tbl(dbD, in_schema("fd_production", "chroniques_suiviterrain")) %>% collect(n = 5)
-  # SuiviTerrain <- data.frame("id" = c(NA),
-  #                            "chsvi_mo" = c(NA),
-  #                            "chsvi_coderhj" = c(NA),
-  #                            "chsvi_typesuivi" = c(NA),
-  #                            "chsvi_operateurs" = c(NA),
-  #                            "chsvi_date" = c(NA),
-  #                            "chsvi_heure" = c(NA),
-  #                            "chsvi_capteur" = c(NA),
-  #                            "chsvi_valeur" = c(NA),
-  #                            "chsvi_unite" = c(NA),
-  #                            "chsvi_action" = c(NA),
-  #                            "chsvi_fonctionnement" = c(NA),
-  #                            "chsvi_qualite" = c(NA),
-  #                            "chsvi_actionafaire" = c(NA),
-  #                            "chsvi_remarques" = c(NA),
-  #                            "_modif_utilisateur" = c(NA),
-  #                            "_modif_type" = c(NA),
-  #                            "_modif_date" = c(NA),
-  #                            stringsAsFactors = FALSE)
+  Stations <- structure(list(id = 301L, chsta_coderhj = "CHYh1", chsta_codemo = "H1", 
+                             chsta_codesie = NA_character_, chsta_mo = "FDCJ", chsta_milieu = "CHY", 
+                             chsta_milieucodehydro = NA, chsta_bassin = NA, chsta_sousbassin = NA, 
+                             chsta_commune = "39201", chsta_departement = "39", chsta_codecontextepdpg = NA_character_, 
+                             chsta_pays = "France", chsta_coord_x = 915084, chsta_coord_y = 6618704, 
+                             chsta_coord_type = "L93", chsta_fonctionnement = "En cours", 
+                             chsta_transmission = "false", chsta_suivithermie = "true", 
+                             chsta_reseauthermietype = NA_character_, chsta_suivipiezo = "true", 
+                             chsta_suivihydro = "true", chsta_suivio2 = NA_character_, 
+                             chsta_suivipluvio = NA_character_, chsta_altitude = NA_real_, 
+                             chsta_distancesource = NA_real_, chsta_distancesource_confluencedrainprincipal = NA, 
+                             chsta_temperaturemax = NA_integer_, chsta_sectionmouillee = NA_integer_, 
+                             chsta_durete = NA_integer_, chsta_largeurlitmineur = NA_integer_, 
+                             chsta_largeurlitetiage = NA_integer_, chsta_pente = NA_integer_, 
+                             chsta_typetheorique = NA_character_, chsta_surfacebassinversant = NA_real_, 
+                             chsta_carteign = NA_character_, chsta_rive = NA_character_, 
+                             chsta_ancrage = NA_character_, chsta_acces = NA_character_, 
+                             chsta_detailsloc = NA_character_, chsta_description = NA_character_, 
+                             chsta_url = NA_character_, chsta_remarques = NA_character_, 
+                             chsta_ordretournee = NA_integer_, chsta_impacts = NA_character_, 
+                             chsta_profsonde = NA_real_, chsta_substrats = NA_character_, 
+                             chsta_distberge = NA_real_, chsta_numphoto = NA_character_, 
+                             chsta_zcapteur = NA_real_, chsta_zbouchon = NA_real_, chsta_typez = NA_real_, 
+                             chsta_hcapteurbouchon = NA_character_, chsta_module = NA_real_, 
+                             chsta_qmna5 = NA_real_, chsta_q2 = NA_real_, chsta_q5 = NA_real_, 
+                             chsta_q10 = NA_real_, chsta_q20 = NA_real_, chsta_q30 = NA_real_, 
+                             chsta_q50 = NA_real_, chsta_q100 = NA_real_, chsta_q300 = NA_real_, 
+                             `_modif_utilisateur` = "jb", `_modif_type` = "U", `_modif_date` = structure(1561709154.12295, class = c("POSIXct", 
+                                                                                                                                     "POSIXt"), tzone = ""), geom = structure(list(structure(c(915084, 
+                                                                                                                                                                                               6618704), class = c("XY", "POINT", "sfg"))), n_empty = 0L, class = c("sfc_POINT", 
+                                                                                                                                                                                                                                                                    "sfc"), precision = 0, bbox = structure(c(xmin = 915084, 
+                                                                                                                                                                                                                                                                                                              ymin = 6618704, xmax = 915084, ymax = 6618704), class = "bbox"), crs = structure(list(
+                                                                                                                                                                                                                                                                                                                epsg = 2154L, proj4string = "+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"), class = "crs"))), row.names = 1L, class = c("sf", 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "data.frame"), sf_column = "geom", agr = structure(c(id = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_coderhj = NA_integer_, chsta_codemo = NA_integer_, chsta_codesie = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_mo = NA_integer_, chsta_milieu = NA_integer_, chsta_milieucodehydro = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_bassin = NA_integer_, chsta_sousbassin = NA_integer_, chsta_commune = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_departement = NA_integer_, chsta_codecontextepdpg = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_pays = NA_integer_, chsta_coord_x = NA_integer_, chsta_coord_y = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_coord_type = NA_integer_, chsta_fonctionnement = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_transmission = NA_integer_, chsta_suivithermie = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_reseauthermietype = NA_integer_, chsta_suivipiezo = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_suivihydro = NA_integer_, chsta_suivio2 = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_suivipluvio = NA_integer_, chsta_altitude = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_distancesource = NA_integer_, chsta_distancesource_confluencedrainprincipal = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_temperaturemax = NA_integer_, chsta_sectionmouillee = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_durete = NA_integer_, chsta_largeurlitmineur = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_largeurlitetiage = NA_integer_, chsta_pente = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_typetheorique = NA_integer_, chsta_surfacebassinversant = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_carteign = NA_integer_, chsta_rive = NA_integer_, chsta_ancrage = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_acces = NA_integer_, chsta_detailsloc = NA_integer_, chsta_description = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_url = NA_integer_, chsta_remarques = NA_integer_, chsta_ordretournee = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_impacts = NA_integer_, chsta_profsonde = NA_integer_, chsta_substrats = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_distberge = NA_integer_, chsta_numphoto = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_zcapteur = NA_integer_, chsta_zbouchon = NA_integer_, chsta_typez = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_hcapteurbouchon = NA_integer_, chsta_module = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_qmna5 = NA_integer_, chsta_q2 = NA_integer_, chsta_q5 = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_q10 = NA_integer_, chsta_q20 = NA_integer_, chsta_q30 = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   chsta_q50 = NA_integer_, chsta_q100 = NA_integer_, chsta_q300 = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   `_modif_utilisateur` = NA_integer_, `_modif_type` = NA_integer_, 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   `_modif_date` = NA_integer_), class = "factor", .Label = c("constant", 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "aggregate", "identity")))
+  Capteurs <- structure(list(id = 13L, chcap_proprietaire = "CD39", chcap_typecapteur = "Thermie", 
+                             chcap_modelecapteur = NA_character_, chcap_numerocapteur = "10316505", 
+                             chcap_etat = NA_character_, chcap_projet = "RDP", chcap_originecapteur = "Achat", 
+                             chcap_datedebut = NA_character_, chcap_datefin = NA_character_, 
+                             chcap_remarques = NA_character_, `_modif_utilisateur` = NA_character_, 
+                             `_modif_type` = NA_character_, `_modif_date` = structure(NA_real_, class = c("POSIXct", 
+                                                                                                          "POSIXt"), tzone = "")), row.names = 1L, class = c("tbl_df", 
+                                                                                                                                                             "tbl", "data.frame"))
+  Mesures <- structure(list(id = 32968L, chmes_coderhj = "BON", chmes_capteur = "350938", 
+                            chmes_date = structure(15126, class = "Date"), chmes_heure = "14:00:00", 
+                            chmes_valeur = 11.09, chmes_unite = "°C", chmes_typemesure = "Thermie", 
+                            chmes_validation = "Validé", chmes_mode_acquisition = "Mesuré", 
+                            chmes_mode_integration = "Ajout manuel", `_modif_utilisateur` = "JB", 
+                            `_modif_type` = "I", `_modif_date` = structure(1541660441.85543, class = c("POSIXct", 
+                                                                                                       "POSIXt"), tzone = "")), row.names = 1L, class = c("tbl_df", 
+                                                                                                                                                          "tbl", "data.frame"))
+  SuiviTerrain <- structure(list(id = 1151L, chsvi_mo = "SMISA", chsvi_coderhj = "BCB4-1amont", 
+                                 chsvi_typesuivi = "Thermie", chsvi_operateurs = "PIZZETTI", 
+                                 chsvi_date = "2018-03-26", chsvi_heure = "10:20:00", chsvi_capteur = "20136662", 
+                                 chsvi_valeur = 7.4, chsvi_unite = "°C", chsvi_action = "Relève", 
+                                 chsvi_fonctionnement = "OK", chsvi_qualite = NA_character_, 
+                                 chsvi_actionafaire = NA_character_, chsvi_remarques = "Piles impossible à changer problème paramétrage ordi et impossible de mettre en place nouvelles sonde car impossible d'en lancer une suite  ce problème", 
+                                 `_modif_utilisateur` = "JB", `_modif_type` = "I", `_modif_date` = structure(1537779116.5002, class = c("POSIXct", 
+                                                                                                                                        "POSIXt"), tzone = "")), row.names = 1L, class = c("tbl_df", 
+                                                                                                                                                                                           "tbl", "data.frame"))
+  #Capteurs <- tbl(dbD, in_schema("fd_production", "chroniques_capteurs")) %>% collect(n = 1)
+  #Stations <- sf::st_read(dbD, query = "select * from fd_production.chroniques_stations limit 1;")
+  #Mesures <- tbl(dbD, in_schema("fd_production", "chroniques_mesures")) %>% collect(n = 1)
+  #SuiviTerrain <- tbl(dbD, in_schema("fd_production", "chroniques_suiviterrain")) %>% collect(n = 1)
   
   # Mesures #
   if(all(colnames(data) %in% colnames(Mesures))) {
@@ -282,7 +350,7 @@ BDD.format <- function(
   
   ##### PC #####
   Testtraitementforce <- 0
-  if(traitementforce == TRUE) Testtraitementforce <- 1
+  if(traitementforce == TRUE & Type == "PC") Testtraitementforce <- 1
   if(traitementforce == FALSE & Type == "PC") Testtraitementforce <- 1
   if(Testtraitementforce == 1){
   ## Connexion à la BDD ##
