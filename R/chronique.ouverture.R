@@ -160,15 +160,15 @@ if(typemesure == "Piézométrie"){
           rename(Heure = 2, Valeur = 3) %>%
           mutate(Capteur = capteur) %>%
           mutate(typemesure = "Piézométrie brute") %>%
-          mutate(unite = "PSI")
+          mutate(unite = "cmH2O")
         
         dataaimporterPartie4 <-
           dataaimporter %>%
           select(2,3,9) %>%
           rename(Heure = 2, Valeur = 3) %>%
           mutate(Capteur = capteur) %>%
-          mutate(typemesure = "Piézométrie brute") %>%
-          mutate(unite = "pieds")
+          mutate(typemesure = "Piézométrie compensée") %>%
+          mutate(unite = "cmH2O")
         
         dataaimporterPartie2 <-
           dataaimporterPartie2 %>%
