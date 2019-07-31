@@ -11,6 +11,7 @@
 #' @examples
 #' BDD.ouverture()
 #' BDD.ouverture(Type = "Poissons")
+#' BDD.ouverture(Type = "Data")
 #' db <- BDD.ouverture()
 #' db <- BDD.ouverture(Type = "Poissons")
 #' head(tbl(db,"SuiviTerrain"), 10) %>% collect()

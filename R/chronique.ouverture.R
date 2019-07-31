@@ -134,7 +134,7 @@ if(typemesure == "Piézométrie"){
       mutate(Date = dmy(Date))
     
     ## Travail des données de VOU ##
-    if(station == "VOUmercantine" | station == "VOUsurchauffant" | station == "AIN22-2"){
+    if(station == "VOUmercantine" | station == "VOUsurchauffant" | station == "AIN22-2" | station == "AIN37-2"){
       dataaimporterPartie1 <-
         dataaimporter %>%
         select(2:3,5) %>%
@@ -154,6 +154,7 @@ if(typemesure == "Piézométrie"){
     
     ## Travail des données de l'Ain à Ney ##
       if(station == "AIN22-2"){
+        # Piézo brute
         dataaimporterPartie3 <-
           dataaimporter %>%
           select(2,3,7) %>%
@@ -162,6 +163,7 @@ if(typemesure == "Piézométrie"){
           mutate(typemesure = "Piézométrie brute") %>%
           mutate(unite = "cmH2O")
         
+        # Piézo nette
         dataaimporterPartie4 <-
           dataaimporter %>%
           select(2,3,9) %>%
@@ -179,7 +181,65 @@ if(typemesure == "Piézométrie"){
       
     ## Travail des données de l'Ain à Marigny ##
     if(station == "AIN37-2"){
-      capteur2 <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][3] %>% str_replace("^s/n:", "")
+      capteurQualite <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][3] %>% str_replace("^s/n:", "")
+      
+      # O2 concentration
+      dataaimporterPartie3 <-
+        dataaimporter %>%
+        select(2,3,7) %>%
+        rename(Heure = 2, Valeur = 3) %>%
+        mutate(Capteur = capteur) %>%
+        mutate(typemesure = "Oxygénation") %>%
+        mutate(unite = "mg/L")
+      
+      # O2 saturation
+      dataaimporterPartie4 <-
+        dataaimporter %>%
+        select(2,3,9) %>%
+        rename(Heure = 2, Valeur = 3) %>%
+        mutate(Capteur = capteur) %>%
+        mutate(typemesure = "Oxygénation") %>%
+        mutate(unite = "%")
+      
+      # O2 pression
+      dataaimporterPartie5 <-
+        dataaimporter %>%
+        select(2,3,10) %>%
+        rename(Heure = 2, Valeur = 3) %>%
+        mutate(Capteur = capteur) %>%
+        mutate(typemesure = "Oxygénation") %>%
+        mutate(unite = "torr")
+      
+      
+      #### Baromètre et capteur O2 traités -> reste sonde qualité à faire au moins pour la piézo brute + compensée
+      
+      
+      # Piézo brute
+      dataaimporterPartie6 <-
+        dataaimporter %>%
+        select(2,3,28) %>%
+        rename(Heure = 2, Valeur = 3) %>%
+        mutate(Capteur = capteur) %>%
+        mutate(typemesure = "Piézométrie brute") %>%
+        mutate(unite = "kPa")
+      
+      # Piézo nette
+      dataaimporterPartie7 <-
+        dataaimporter %>%
+        select(2,3,31) %>%
+        rename(Heure = 2, Valeur = 3) %>%
+        mutate(Capteur = capteur) %>%
+        mutate(typemesure = "Piézométrie compensée") %>%
+        mutate(unite = "cmH2O")
+      
+      dataaimporterPartie2 <-
+        dataaimporterPartie2 %>%
+        bind_rows(dataaimporterPartie3) %>%
+        bind_rows(dataaimporterPartie4) %>%
+        bind_rows(dataaimporterPartie5) %>%
+        bind_rows(dataaimporterPartie6) %>%
+        bind_rows(dataaimporterPartie7) #%>% # Nutriments, conductivité, turbidité à ajouter ensuite
+        #bind_rows(dataaimporterPartie8)
       
     }
       
