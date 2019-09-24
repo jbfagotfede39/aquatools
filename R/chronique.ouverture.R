@@ -70,8 +70,8 @@ dataaimporter <-
   mutate(Valeur = as.numeric(sub(",", ".", Valeur))) %>% 
   mutate(Valeur = round(Valeur,3)) %>% 
   filter(is.na(Valeur) != T) %>% 
-  mutate(chmes_typemesure = "Thermie") %>% 
-  mutate(chmes_unite = "°C")
+  mutate(typemesure = "Thermie") %>% 
+  mutate(unite = "°C")
   }
   
 if(typemesure == "Piézométrie"){
