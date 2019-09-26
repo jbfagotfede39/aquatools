@@ -70,7 +70,7 @@ if(Valide == T & Type == "Tout"){
 }
 
 ## Fermeture de la BDD ##
-DBI::dbDisconnect(dbD)
+RPostgreSQL::dbDisconnect(dbD)
 
 ##### Filtrage en fonction de la période #####
 if(length(as.character(annee)) != 0){

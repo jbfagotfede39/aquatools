@@ -152,8 +152,12 @@ if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
 # }
 # }
 
-if(Type == "Data" & exists("dbD") == TRUE){if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){dbDisconnect(dbD)}}
-if(Type == "Data" & exists("dbD") == FALSE){
+if(Type == "Data" & exists("dbD") == TRUE){
+  if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
+    RPostgreSQL::dbDisconnect(dbD)}
+  }
+
+if(Type == "Data"){
   
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
@@ -176,8 +180,12 @@ if(Type == "Data" & exists("dbD") == FALSE){
   }
 }
   
-if(Type == "Poissons" & exists("dbP") == TRUE){if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){dbDisconnect(dbP)}}
-if(Type == "Poissons" & exists("dbP") == FALSE){
+if(Type == "Poissons" & exists("dbP") == TRUE){
+  if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
+    RPostgreSQL::dbDisconnect(dbP)}
+  }
+  
+if(Type == "Poissons"){
   
   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
     dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
