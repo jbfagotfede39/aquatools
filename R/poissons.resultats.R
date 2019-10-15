@@ -51,7 +51,7 @@ poissons.resultats <- function(
   Resultats <- left_join(Resultats, Operations, by = c("codeoperation"))
   
   ##### Remplacement des codes communes et écosystèmes #####
-  Resultats <- left_join(Resultats, Ecosystemes, by = c("codeecosysteme.x" = "codeecosysteme"))
+  Resultats <- left_join(Resultats, Ecosystemes, by = c("codeecosysteme.y" = "codeecosysteme"))
   Communes <- select(Communes, codecommune, commune)
   Resultats <- left_join(Resultats, Communes, by = c("codecommune"))
   
