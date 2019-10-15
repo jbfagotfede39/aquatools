@@ -42,9 +42,9 @@ chronique.ajout <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDat
   LigneAjout$chmes_mode_integration <- "Ajout manuel"
   LigneAjout$chmes_validation <- cValidation
   LigneAjout$chmes_mode_acquisition <- cModeAcquisition
-  LigneAjout$`_modif_utilisateur` <- NA
-  LigneAjout$`_modif_type` <- NA
-  LigneAjout$`_modif_date` <- NA
+  LigneAjout$`_modif_utilisateur` <- NA_character_
+  LigneAjout$`_modif_type` <- NA_character_
+  LigneAjout$`_modif_date` <- ymd_hms(NA)
   
   ##### Remise en commun des morceaux #####
   data <-

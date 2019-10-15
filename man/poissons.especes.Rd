@@ -13,7 +13,8 @@ Récupère l'ensemble des données de référence des espèces de Multifish
 }
 \examples{
 poissons.especes()
-poissons.especes(Sortie = "Simple", Couleurs = T)
+poissons.especes(Sortie = "Simple")
 poissons.especes("Propre")
+poissons.especes("Propre", Couleurs = T)
 }
 \keyword{donnees}

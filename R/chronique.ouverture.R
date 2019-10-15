@@ -22,7 +22,9 @@ chronique.ouverture <- function(
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie", "Télétransmission"),
   Localisation = as.character(NA),
   skipvalue = 1,
-  typedate = "ymd"
+  nbcolonnes = 3,
+  typefichier = c("csv", "excel"),
+  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "ymd_hms")
 )
 {
   
@@ -41,11 +43,22 @@ Localisation <- adresse.switch(Localisation)
 #### Mesures ####
 if(Type == "Mesures"){
   if(typemesure == "Thermie"){
-    
-dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")
+    if(nbcolonnes == 3){
+      if(typefichier == "csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")}
 names(dataaimporter)[1] <- c('Date')
 names(dataaimporter)[2] <- c('Heure')
 names(dataaimporter)[3] <- c('Valeur')
+    }
+    
+    if(nbcolonnes == 2){
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
+      names(dataaimporter)[1] <- c('Date')
+      names(dataaimporter)[2] <- c('Valeur')
+      if(testit::has_warning(ymd_hms(dataaimporter$Date)) == FALSE & typedate == "ymd_hms"){
+        dataaimporter$Date <- ymd_hms(dataaimporter$Date)
+        dataaimporter$Heure <- format(dataaimporter$Date, format="%H:%M:%S")
+      }
+    }
 
 if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développer")
 
