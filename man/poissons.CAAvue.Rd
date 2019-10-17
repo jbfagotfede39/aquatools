@@ -4,12 +4,12 @@
 \alias{poissons.CAAvue}
 \title{Affichage de graphes piscicoles}
 \description{
-Cette fonction permet de créer des comparaisons entre les espèces attendues et observées. Le jeu de données doit contenir un champ codeespece, un champ CA et un champ date
+Cette fonction permet de créer des comparaisons entre les espèces attendues et observées. Le jeu de données doit en entrée doit être issu de poissons.CAA
 }
 \examples{
 poissons.CAAvue(data)
 poissons.CAAvue(data, save=T)
-poissons.CAA("MAD6-2", 5) \%>\% poissons.CAAvue()
-poissons.CAA("MAD6-2", 5) \%>\% poissons.CAAvue(save = T)
+poissons.CAA("MAD6-2") \%>\% poissons.CAAvue()
+poissons.CAA("MAD6-2") \%>\% poissons.CAAvue(save = T)
 }
 \keyword{poissons}

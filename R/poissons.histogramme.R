@@ -22,7 +22,7 @@
 
 poissons.histogramme <- function(
   Captures = Captures,
-  save=F
+  save = F
 )
 {
 
@@ -42,7 +42,7 @@ poissons.histogramme <- function(
     ungroup()
   
   #### Mono-date mono-station mono-espece classe sans ####
-if(count(distinct(Captures, nom, datedebut, codeespece)) == 1){
+if(nrow(distinct(Captures, nom, datedebut, codeespece)) == 1){
   MdMsMeCs <- ggplot(Captures, aes(x=taillemoy)) + geom_bar(aes(weight = nombre), width=1.5, fill="steelblue")
   MdMsMeCs <- MdMsMeCs + labs(y = "Nombre d'individus", x = "Taille moyenne (mm)",title = Station ) 
   MdMsMeCs <- MdMsMeCs + theme_linedraw() 
@@ -58,7 +58,7 @@ if(count(distinct(Captures, nom, datedebut, codeespece)) == 1){
   }
   
   #### Traitement mono-date mono-station ####
-  if(count(distinct(Captures, nom, datedebut)) == 1){
+  if(nrow(distinct(Captures, nom, datedebut)) == 1){
     
   ### Mono-date mono-station multi-espece classe avec ###
   MdMsMUeCa <- ggplot(Captures, aes(x = classetaille, y=nombre, fill = codeespece)) + geom_bar(stat="identity", position=position_dodge())
@@ -73,9 +73,7 @@ if(count(distinct(Captures, nom, datedebut, codeespece)) == 1){
   if(save==F){return(MdMsMUeCa)}
   }
   
-
-  
-  if(count(distinct(Captures, nom, datedebut)) != 1){
+  if(nrow(distinct(Captures, nom, datedebut)) != 1){
     warning("Attention il y a plusieurs couples nom, datedebut, dans le jeu de données : représentations mono-date mono-station impossibles")
     ### Multi-dates mono-station multi-espece classe avec ###
     MUdMsMUeCa <- ggplot(Captures, aes(x = classetaille, y=nombre, fill = codeespece)) + geom_bar(stat="identity", position=position_dodge())
@@ -85,10 +83,11 @@ if(count(distinct(Captures, nom, datedebut, codeespece)) == 1){
     MUdMsMUeCa <- MUdMsMUeCa + theme_linedraw() 
     MUdMsMUeCa <- MUdMsMUeCa + theme(strip.text = element_text(size = rel(1)))
     MUdMsMUeCa <- MUdMsMUeCa + facet_wrap(datedebut~.,scales='fixed')
-    MdMsMUeCa
+    MUdMsMUeCa
+    
     # Exportation/sortie #
     if(save==T){ggsave(paste0("./HistoTaille/",gsub("[[:punct:]]", "-", Station), ".png"))}
-    if(save==F){return(MdMsMUeCa)}
+    if(save==F){return(MUdMsMUeCa)}
   }
 
 } # Fin de la fonction
