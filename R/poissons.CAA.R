@@ -98,6 +98,7 @@ poissons.CAA <- function(
     if(Contexte$Ntypo == ""){
       Resultatsvue <- 
         Resultats %>%
+        mutate(Annee = year(ymd(datedebut.x))) %>% ########### ajouter cette ligne #####
         mutate(Annee = ifelse(is.na(Annee), datedebut.x, Annee))
     }
       
