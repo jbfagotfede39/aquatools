@@ -170,9 +170,8 @@ poissons.CAA <- function(
     rename(Date = datedebut.x) %>% 
     rename(Ecosysteme = coderdt) %>% 
     rename(NTT = typetheorique) %>% 
-    rename(Station = station) %>% 
+    rename(Station = station)
     
-  
   #### Sortie ####
   return(Resultatsvue)
   
