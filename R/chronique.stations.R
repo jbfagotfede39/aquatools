@@ -17,7 +17,7 @@
 #' chronique.stations("39","Département")
 
 ##### TODO LIST #####
-
+# Reprendre le code de 2019-10-18_Export_stations_BV_Bienne.R pour améliorer la recherche par BV
 #####################
 
 chronique.stations <- function(x = "CD39", 

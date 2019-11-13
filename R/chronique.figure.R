@@ -97,6 +97,7 @@ if(Contexte$nJours < 30 & Vmm30j == T){
   Vmm30j <- F
   warning("Durée inférieure à 30 jours : pas d'affichage de la Vmm30j")
 }
+
 if(Vmm30j == T & Contexte$nStations == 1){
 ###T Moymax 30 J
   syntjourSansAgregation <- syntjour %>% filter(!is.na(VMaxJ)) # Si on fait un complément du jeu de données
@@ -179,10 +180,10 @@ plotrelatif <- plotrelatif + theme_bw()
 if(duree == "Relatif"){
   plotrelatif
   if(save==T){
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/relatif-libre/relatif-libre",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/relatif-libre/relatif-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/relatif-fixé/relatif-fixé",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/relatif-fixé/relatif-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixé/relatif-fixé",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixé/relatif-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
     if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotrelatif avec Ymax fixé et Ymin libre non programmé")
     if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotrelatif avec Ymax libre et Ymin fixé non programmé")
     }
@@ -210,10 +211,10 @@ if(duree == "Relatif"){
 if(duree == "Complet"){
   plotabsolu
   if(save==T){
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/absolu-libre/absolu-libre",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/absolu-libre/absolu-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/absolu-fixé/absolu-fixé",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/absolu-fixé/absolu-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixé/absolu-fixé",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixé/absolu-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
     if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotabsolu avec Ymax fixé et Ymin libre non programmé")
     if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotabsolu avec Ymax libre et Ymin fixé non programmé")
     }

@@ -8,8 +8,8 @@ Cette fonction permet de créer des comparaisons entre les espèces attendues et
 }
 \examples{
 poissons.CAAvue(data)
-poissons.CAAvue(data, save=T)
+poissons.CAAvue(data, export=T)
 poissons.CAA("MAD6-2") \%>\% poissons.CAAvue()
-poissons.CAA("MAD6-2") \%>\% poissons.CAAvue(save = T)
+poissons.CAA("MAD6-2") \%>\% poissons.CAAvue(export = T)
 }
 \keyword{poissons}

@@ -21,10 +21,10 @@ chronique.ouverture <- function(
   Type = c("Mesures", "Suivis", "Stations"),
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie", "Télétransmission"),
   Localisation = as.character(NA),
-  skipvalue = 1,
-  nbcolonnes = 3,
-  typefichier = c("csv", "excel"),
-  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "ymd_hms")
+  skipvalue = 0,
+  nbcolonnes = 6,
+  typefichier = c(".csv", "excel"),
+  typedate = c("ymd", "dmy", "mdy", "dmy_hms")
 )
 {
   
@@ -43,22 +43,26 @@ Localisation <- adresse.switch(Localisation)
 #### Mesures ####
 if(Type == "Mesures"){
   if(typemesure == "Thermie"){
-    if(nbcolonnes == 3){
-      if(typefichier == "csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")}
-names(dataaimporter)[1] <- c('Date')
-names(dataaimporter)[2] <- c('Heure')
-names(dataaimporter)[3] <- c('Valeur')
-    }
-    
     if(nbcolonnes == 2){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
-      names(dataaimporter)[1] <- c('Date')
+      names(dataaimporter)[1] <- c('DateHeure')
       names(dataaimporter)[2] <- c('Valeur')
-      if(testit::has_warning(ymd_hms(dataaimporter$Date)) == FALSE & typedate == "ymd_hms"){
-        dataaimporter$Date <- ymd_hms(dataaimporter$Date)
-        dataaimporter$Heure <- format(dataaimporter$Date, format="%H:%M:%S")
-      }
     }
+    
+    if(nbcolonnes == 3){
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")}
+    }
+    
+    if(nbcolonnes == 6){
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcccc")}
+    }
+    
+if(nbcolonnes == 3 | nbcolonnes == 6){names(dataaimporter)[1] <- c('Date')}
+if(nbcolonnes == 3 | nbcolonnes == 6){names(dataaimporter)[2] <- c('Heure')}
+if(nbcolonnes == 3 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
+if(nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
+if(nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
+if(nbcolonnes == 6){names(dataaimporter)[6] <- c('asup3')}
 
 if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développer")
 
@@ -289,28 +293,33 @@ dataaimporter <- read_excel(Localisation, sheet = 1)
 ## Renommage des champs ##
 dataaimporter <- 
   dataaimporter %>% 
-  rename_at(vars(matches("Valeur manuelle")), funs(str_replace(., "Valeur manuelle", "chsvi_valeur"))) %>%
-  rename_at(vars(matches("Valeur")), funs(str_replace(., "Valeur", "chsvi_valeur"))) %>%
-  rename_at(vars(matches("Tmanuelle")), funs(str_replace(., "Tmanuelle", "chsvi_valeur"))) %>%
-  rename_at(vars(matches("MO")), funs(str_replace(., "MO", "chsvi_mo"))) %>%
-  rename_at(vars(matches("Operateurs")), funs(str_replace(., "Operateurs", "chsvi_operateurs"))) %>%
-  rename_at(vars(matches("Opérateurs")), funs(str_replace(., "Opérateurs", "chsvi_operateurs"))) %>%
-  rename_at(vars(matches("CodeRDT")), funs(str_replace(., "CodeRDT", "chsvi_coderhj"))) %>%
-  rename_at(vars(matches("Station")), funs(str_replace(., "Station", "chsvi_coderhj"))) %>%
-  rename_at(vars(matches("TypeSuivi")), funs(str_replace(., "TypeSuivi", "chsvi_typesuivi"))) %>%
-  rename_at(vars(matches("Date")), funs(str_replace(., "Date", "chsvi_date"))) %>%
-  rename_at(vars(matches("Heure")), funs(str_replace(., "Heure", "chsvi_heure"))) %>%
-  rename_at(vars(matches("Capteur")), funs(str_replace(., "Capteur", "chsvi_capteur"))) %>%
-  rename_at(vars(matches("Unite")), funs(str_replace(., "Unite", "chsvi_unite"))) %>%
-  rename_at(vars(matches("Action")), funs(str_replace(., "Action", "chsvi_action"))) %>%
-  rename_at(vars(matches("Fonctionnement")), funs(str_replace(., "Fonctionnement", "chsvi_fonctionnement"))) %>%
-  rename_at(vars(matches("Qualité")), funs(str_replace(., "Qualité", "chsvi_qualite"))) %>%
-  rename_at(vars(matches("Qualite")), funs(str_replace(., "Qualite", "chsvi_qualite"))) %>%
-  rename_at(vars(starts_with("Remarque")), funs(str_replace(., "Remarque", "chsvi_remarques"))) %>%
-  rename_at(vars(matches("AFaire")), funs(str_replace(., "AFaire", "chsvi_actionafaire"))) %>%
-  rename_at(vars(matches("ToDo")), funs(str_replace(., "ToDo", "chsvi_actionafaire"))) %>%
-  rename_at(vars(matches("A faire Printemps 2019")), funs(str_replace(., "A faire Printemps 2019", "chsvi_actionafaire"))) %>%
+  rename_at(vars(matches("Valeur manuelle")), list(~str_replace(., "Valeur manuelle", "chsvi_valeur"))) %>%
+  rename_at(vars(matches("Valeur")), list(~str_replace(., "Valeur", "chsvi_valeur"))) %>%
+  rename_at(vars(matches("Tmanuelle")), list(~str_replace(., "Tmanuelle", "chsvi_valeur"))) %>%
+  rename_at(vars(matches("MO")), list(~str_replace(., "MO", "chsvi_mo"))) %>%
+  rename_at(vars(matches("Maître d'ouvrage")), list(~str_replace(., "Maître d'ouvrage", "chsvi_mo"))) %>%
+  rename_at(vars(matches("Operateurs")), list(~str_replace(., "Operateurs", "chsvi_operateurs"))) %>%
+  rename_at(vars(matches("Opérateurs")), list(~str_replace(., "Opérateurs", "chsvi_operateurs"))) %>%
+  rename_at(vars(matches("CodeRDT")), list(~str_replace(., "CodeRDT", "chsvi_coderhj"))) %>%
+  rename_at(vars(matches("Station")), list(~str_replace(., "Station", "chsvi_coderhj"))) %>%
+  rename_at(vars(matches("TypeSuivi")), list(~str_replace(., "TypeSuivi", "chsvi_typesuivi"))) %>%
+  rename_at(vars(matches("Date")), list(~str_replace(., "Date", "chsvi_date"))) %>%
+  rename_at(vars(matches("Heure")), list(~str_replace(., "Heure", "chsvi_heure"))) %>%
+  rename_at(vars(matches("Capteur")), list(~str_replace(., "Capteur", "chsvi_capteur"))) %>%
+  rename_at(vars(matches("Numéro sonde")), list(~str_replace(., "Numéro sonde", "chsvi_capteur"))) %>%
+  rename_at(vars(matches("Unité")), list(~str_replace(., "Unité", "chsvi_unite"))) %>%
+  rename_at(vars(matches("Unite")), list(~str_replace(., "Unite", "chsvi_unite"))) %>%
+  rename_at(vars(matches("Action")), list(~str_replace(., "Action", "chsvi_action"))) %>%
+  rename_at(vars(matches("Fonctionnement")), list(~str_replace(., "Fonctionnement", "chsvi_fonctionnement"))) %>%
+  rename_at(vars(matches("Qualité")), list(~str_replace(., "Qualité", "chsvi_qualite"))) %>%
+  rename_at(vars(matches("Qualite")), list(~str_replace(., "Qualite", "chsvi_qualite"))) %>%
+  rename_at(vars(starts_with("Remarque")), list(~str_replace(., "Remarque", "chsvi_remarques"))) %>%
+  rename_at(vars(matches("AFaire")), list(~str_replace(., "AFaire", "chsvi_actionafaire"))) %>%
+  rename_at(vars(matches("chsvi_action à réaliser lors de la prochaine visite")), list(~str_replace(., "chsvi_action à réaliser lors de la prochaine visite", "chsvi_actionafaire"))) %>%
+  rename_at(vars(matches("ToDo")), list(~str_replace(., "ToDo", "chsvi_actionafaire"))) %>%
+  rename_at(vars(matches("A faire Printemps 2019")), list(~str_replace(., "A faire Printemps 2019", "chsvi_actionafaire"))) %>%
   select(-contains("SuiviTerrainID")) %>% 
+  select(-contains("saisie")) %>% 
   #rename( = ``) %>% 
   mutate('_modif_utilisateur' = NA) %>% 
   mutate('_modif_type' = NA) %>% 
@@ -329,17 +338,7 @@ dataaimporter <-
 if(typemesure != "Thermie") stop(paste0("Complément des données non développés pour le type de mesures ",typemesure))
   
 ## Formatage des données ##
-# if(testit::has_warning(dataaimporter %>% mutate(chsta_date = format(dmy(chsvi_date), format="%Y-%m-%d"))) == FALSE){
-#   dataaimporter <- 
-#     dataaimporter %>% 
-#     mutate(chsvi_date = format(dmy(chsvi_date), format="%Y-%m-%d"))
-# }
-# 
-# if(testit::has_warning(dataaimporter %>% mutate(chsta_date = format(ymd(chsvi_date), format="%Y-%m-%d"))) == FALSE){
-#   dataaimporter <- 
-#     dataaimporter %>% 
-#     mutate(chsvi_date = format(ymd(chsvi_date), format="%Y-%m-%d"))
-# }
+# Réalisé dans BDD.format
 
 ## Filtrage des données ##
 dataaimporter <- 
@@ -363,39 +362,39 @@ dataaimporter <- read_excel(Localisation, sheet = 1)
 ## Transformation ##
 dataaimporter <- 
   dataaimporter %>% 
-  rename_at(vars(contains("CodeRDT")), funs(str_replace(., "CodeRDT", "coderhj"))) %>%
-  rename_at(vars(contains("X")), funs(str_replace(., "X", "coord_x"))) %>%
-  #rename_at(vars(contains("XLIIE")), funs(str_replace(., "XLIIE", "coord_x"))) %>%
-  rename_at(vars(contains("Y")), funs(str_replace(., "Y", "coord_y"))) %>%
-  #rename_at(vars(contains("YLIIE")), funs(str_replace(., "YLIIE", "coord_y"))) %>%
-  rename_at(vars(contains("LIIE")), funs(str_replace(., "LIIE", ""))) %>%
-  rename_at(vars(contains("TypeCoord")), funs(str_replace(., "TypeCoord", "coord_type"))) %>%
-  rename_at(vars(contains("CommuneINSEE")), funs(str_replace(., "CommuneINSEE", "commune"))) %>%
-  rename_at(vars(contains("Ecosystème")), funs(str_replace(., "Ecosystème", "milieu"))) %>%
-  rename_at(vars(contains("Code hydro")), funs(str_replace(., "Code hydro", "milieucodehydro"))) %>%
-  rename_at(vars(contains("ReseauThermie")), funs(str_replace(., "ReseauThermie", "reseauthermietype"))) %>%
-  rename_at(vars(contains("Thermie")), funs(str_replace(., "Thermie", "suivithermie"))) %>%
-  rename_at(vars(contains("Piezo")), funs(str_replace(., "Piezo", "suivipiezo"))) %>%
-  rename_at(vars(contains("Hydro")), funs(str_replace(., "Hydro", "suivihydro"))) %>%
-  rename_at(vars(contains("Type")), funs(str_replace(., "Type", "suivihydro"))) %>%
-  rename_at(vars(contains("O2")), funs(str_replace(., "O2", "suivio2"))) %>%
-  rename_at(vars(contains("Pluvio")), funs(str_replace(., "Pluvio", "suivipluvio"))) %>%
-  rename_at(vars(contains("CodCONT")), funs(str_replace(., "CodCONT", "codecontextepdpg"))) %>%
-  rename_at(vars(contains("Sous_bassi")), funs(str_replace(., "Sous_bassi", "sousbassin"))) %>%
-  rename_at(vars(contains("DistSource")), funs(str_replace(., "DistSource", "distancesource"))) %>%
-  rename_at(vars(contains("Tmm30j")), funs(str_replace(., "Tmm30j", "temperaturemax"))) %>%
-  rename_at(vars(contains("Sectionmou")), funs(str_replace(., "Sectionmou", "sectionmouillee"))) %>%
-  rename_at(vars(contains("LLitMin")), funs(str_replace(., "LLitMin", "largeurlitmineur"))) %>%
-  rename_at(vars(matches("LLitEti")), funs(str_replace(., "LLitEti", "largeurlitetiage"))) %>%
-  rename_at(vars(starts_with("NTT")), funs(str_replace(., "NTT", "typetheorique"))) %>%
-  rename_at(vars(matches("0NGFéchelle")), funs(str_replace(., "0NGFéchelle", "zcapteur"))) %>%
-  rename_at(vars(contains("ProfSondeE")), funs(str_replace(., "ProfSondeE", "profsonde"))) %>%
-  rename_at(vars(contains("SurfaceBV")), funs(str_replace(., "SurfaceBV", "surfacebassinversant"))) %>%
-  rename_at(vars(contains("Remarque")), funs(str_replace(., "Remarque", "remarques"))) %>%
-  rename_all(funs(str_to_lower(.))) %>% 
-  rename_all(funs(str_replace(., "[[:punct:]]", "_"))) %>% 
-  rename_all(funs(str_replace(., "chsta_", ""))) %>% # car parfois déjà présent devant certains noms de colonnes dans excel
-  rename_all(funs(str_c("chsta_",.))) %>% 
+  rename_at(vars(contains("CodeRDT")), list(~str_replace(., "CodeRDT", "coderhj"))) %>%
+  rename_at(vars(contains("X")), list(~str_replace(., "X", "coord_x"))) %>%
+  #rename_at(vars(contains("XLIIE")), list(~str_replace(., "XLIIE", "coord_x"))) %>%
+  rename_at(vars(contains("Y")), list(~str_replace(., "Y", "coord_y"))) %>%
+  #rename_at(vars(contains("YLIIE")), list(~str_replace(., "YLIIE", "coord_y"))) %>%
+  rename_at(vars(contains("LIIE")), list(~str_replace(., "LIIE", ""))) %>%
+  rename_at(vars(contains("TypeCoord")), list(~str_replace(., "TypeCoord", "coord_type"))) %>%
+  rename_at(vars(contains("CommuneINSEE")), list(~str_replace(., "CommuneINSEE", "commune"))) %>%
+  rename_at(vars(contains("Ecosystème")), list(~str_replace(., "Ecosystème", "milieu"))) %>%
+  rename_at(vars(contains("Code hydro")), list(~str_replace(., "Code hydro", "milieucodehydro"))) %>%
+  rename_at(vars(contains("ReseauThermie")), list(~str_replace(., "ReseauThermie", "reseauthermietype"))) %>%
+  rename_at(vars(contains("Thermie")), list(~str_replace(., "Thermie", "suivithermie"))) %>%
+  rename_at(vars(contains("Piezo")), list(~str_replace(., "Piezo", "suivipiezo"))) %>%
+  rename_at(vars(contains("Hydro")), list(~str_replace(., "Hydro", "suivihydro"))) %>%
+  rename_at(vars(contains("Type")), list(~str_replace(., "Type", "suivihydro"))) %>%
+  rename_at(vars(contains("O2")), list(~str_replace(., "O2", "suivio2"))) %>%
+  rename_at(vars(contains("Pluvio")), list(~str_replace(., "Pluvio", "suivipluvio"))) %>%
+  rename_at(vars(contains("CodCONT")), list(~str_replace(., "CodCONT", "codecontextepdpg"))) %>%
+  rename_at(vars(contains("Sous_bassi")), list(~str_replace(., "Sous_bassi", "sousbassin"))) %>%
+  rename_at(vars(contains("DistSource")), list(~str_replace(., "DistSource", "distancesource"))) %>%
+  rename_at(vars(contains("Tmm30j")), list(~str_replace(., "Tmm30j", "temperaturemax"))) %>%
+  rename_at(vars(contains("Sectionmou")), list(~str_replace(., "Sectionmou", "sectionmouillee"))) %>%
+  rename_at(vars(contains("LLitMin")), list(~str_replace(., "LLitMin", "largeurlitmineur"))) %>%
+  rename_at(vars(matches("LLitEti")), list(~str_replace(., "LLitEti", "largeurlitetiage"))) %>%
+  rename_at(vars(starts_with("NTT")), list(~str_replace(., "NTT", "typetheorique"))) %>%
+  rename_at(vars(matches("0NGFéchelle")), list(~str_replace(., "0NGFéchelle", "zcapteur"))) %>%
+  rename_at(vars(contains("ProfSondeE")), list(~str_replace(., "ProfSondeE", "profsonde"))) %>%
+  rename_at(vars(contains("SurfaceBV")), list(~str_replace(., "SurfaceBV", "surfacebassinversant"))) %>%
+  rename_at(vars(contains("Remarque")), list(~str_replace(., "Remarque", "remarques"))) %>%
+  rename_all(list(~str_to_lower(.))) %>% 
+  rename_all(list(~str_replace(., "[[:punct:]]", "_"))) %>% 
+  rename_all(list(~str_replace(., "chsta_", ""))) %>% # car parfois déjà présent devant certains noms de colonnes dans excel
+  rename_all(list(~str_c("chsta_",.))) %>% 
   mutate(chsta_coord_x = ifelse(is.na(chsta_coord_x) & "chsta_coord_xl93" %in% names(.), chsta_coord_xl93, chsta_coord_x)) %>% 
   mutate(chsta_coord_y = ifelse(is.na(chsta_coord_y) & "chsta_coord_yl93" %in% names(.), chsta_coord_yl93, chsta_coord_y)) %>% 
   mutate(chsta_coord_x = ifelse(is.na(chsta_coord_x) & "chsta_coord_xliie" %in% names(.), chsta_coord_xliie, chsta_coord_x)) %>% 

@@ -2,8 +2,12 @@
 #'
 #' Cette fonction permet d'exporter un dataframe (avec deux colonnes X et Y) ou un sf en Lambert 93 dans un shapefile/geojson/kml/excel
 #' @name SIG.export
-#' @param sata Dataframe à exporter
+#' @param data Dataframe à exporter
 #' @param nomfichier Nom du fichier de sortie
+#' @param shp Export au format shapefile (\code{true} par défaut)
+#' @param kml Export au format kml (\code{true} par défaut)
+#' @param geojson Export au format geojson (\code{true} par défaut)
+#' @param excel Export au format excel (\code{true} par défaut)
 #' @keywords stations poissons
 #' @import DBI
 #' @import dplyr
@@ -20,7 +24,11 @@
 
 SIG.export <- function(
   data = Stations,
-  nomfichier = "Export_stations")
+  nomfichier = "Export_stations",
+  shp = TRUE,
+  kml = TRUE,
+  geojson = TRUE, 
+  excel = TRUE)
 {
 
 #### Détection du format d'entrée ####
@@ -35,26 +43,37 @@ if("xlambert" %in% colnames(data) == TRUE) data <- data %>% st_as_sf(coords = c(
 #if("X" %in% colnames(data) == FALSE) stop(paste0(data, " ne contient pas de colonnes X et Y"))
 }
 
+if(Datatype == "sf"){data <- data %>% st_transform(2154)}
+
 #### Vérifications ####
 if("sf" %in% class(data) == FALSE) stop(paste0("Impossible de spatialiser ",data))
 
 ##### Exportation #####
 
 # Export en shp #
+if(shp == TRUE){
 st_write(data, paste0(nomfichier, ".shp"), delete_layer = TRUE)
+}
+
+# Export en geojson #
+if(geojson == TRUE){
+  st_write(data, dsn = paste0(nomfichier, ".geojson"), driver='GeoJSON', update=TRUE)
+}
+
+# Export en excel #
+if(excel == TRUE){
+  #openxlsx::write.xlsx(st_set_geometry(data, NULL), paste0(nomfichier, ".xlsx"), sheetName = "Feuille1", row.names = F, showNA = F)
+  st_write(data, dsn = paste0(nomfichier, ".xlsx"), layer = str_replace(nomfichier, "-", "_"), driver = "XLSX", layer_options = "OVERWRITE=true")
+}
 
 # Export en kml #
+if(kml == TRUE){
 data %>% 
   mutate(name = ifelse("chsta_coderhj" %in% names(.), chsta_coderhj, NA)) %>% 
   mutate(name = ifelse("nom" %in% names(.), nom, NA)) %>% # pour la table de multifish
   st_transform(4326) %>% 
   st_write(dsn = paste0(nomfichier, ".kml"), driver='kml', update=TRUE)
+}
 
-# Export en geojson #
-st_write(data, dsn = paste0(nomfichier, ".geojson"), driver='GeoJSON', update=TRUE)
-
-# Export en excel #
-#openxlsx::write.xlsx(st_set_geometry(data, NULL), paste0(nomfichier, ".xlsx"), sheetName = "Feuille1", row.names = F, showNA = F)
-st_write(data, dsn = paste0(nomfichier, ".xlsx"), layer = str_replace(nomfichier, "-", "_"), driver = "XLSX", layer_options = "OVERWRITE=true")
 
 } # Fin de la fonction

@@ -4,9 +4,17 @@
 \alias{SIG.export}
 \title{Export de données en shp}
 \arguments{
-\item{sata}{Dataframe à exporter}
+\item{data}{Dataframe à exporter}
 
 \item{nomfichier}{Nom du fichier de sortie}
+
+\item{shp}{Export au format shapefile (\code{true} par défaut)}
+
+\item{kml}{Export au format kml (\code{true} par défaut)}
+
+\item{geojson}{Export au format geojson (\code{true} par défaut)}
+
+\item{excel}{Export au format excel (\code{true} par défaut)}
 }
 \description{
 Cette fonction permet d'exporter un dataframe (avec deux colonnes X et Y) ou un sf en Lambert 93 dans un shapefile/geojson/kml/excel

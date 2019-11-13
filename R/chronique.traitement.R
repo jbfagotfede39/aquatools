@@ -44,6 +44,7 @@ chronique.traitement <- function(
 #### Évaluation des choix ####
   typemesure <- match.arg(typemesure)
   archivage <- match.arg(archivage)
+  if(export == F) archivage <- "Aucun"
   
 #### Vérification des répertoires ####
 if(export == TRUE){
@@ -56,10 +57,11 @@ if(export == TRUE){
   dir.create(paste0("./",projet, "/Sorties/Résultats/"), showWarnings = FALSE, recursive = FALSE)
   dir.create(paste0("./",projet, "/Sorties/Stations/"), showWarnings = FALSE, recursive = FALSE)
   dir.create(paste0("./",projet, "/Sorties/Vues/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/absolu-fixé/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/absolu-libre/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/relatif-fixé/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/relatif-libre/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Interannuelles"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_absolu-fixé/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_absolu-libre/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_relatif-fixé/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_relatif-libre/"), showWarnings = FALSE, recursive = FALSE)
 }
 
 if(file.exists(paste0("./",projet, "/Sorties/")) == TRUE & file.exists(paste0("./",projet, "/Sorties/Données/")) == FALSE){
@@ -76,10 +78,11 @@ if(file.exists(paste0("./",projet, "/Sorties/")) == TRUE & file.exists(paste0(".
   
 if(file.exists(paste0("./",projet, "/Sorties/")) == TRUE & file.exists(paste0("./",projet, "/Sorties/Vues/")) == FALSE){
   dir.create(paste0("./",projet, "/Sorties/Vues/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/absolu-fixé/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/absolu-libre/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/relatif-fixé/"), showWarnings = FALSE, recursive = FALSE)
-  dir.create(paste0("./",projet, "/Sorties/Vues/relatif-libre/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Interannuelles"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_absolu-fixé/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_absolu-libre/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_relatif-fixé/"), showWarnings = FALSE, recursive = FALSE)
+  dir.create(paste0("./",projet, "/Sorties/Vues/Annuelles_relatif-libre/"), showWarnings = FALSE, recursive = FALSE)
 }
 }
   
@@ -117,8 +120,18 @@ DataTravail <-
     ungroup()
 # ça pourra crasher par ici lorsqu'on fera un essai mixant chmes_typemesure == "Thermie" avec un autre chmes_typemesure à cause de la jointure à réaliser et un nb de champ différent (absence de TRF$DateDebutDegresJours et la suite)
 
+DataTravail <- 
+  DataTravail %>% 
+    group_by(Coderhj, Typemesure) %>% 
+    summarise(min = min(AnneeVMM),
+              max = max(AnneeVMM)) %>% 
+    mutate(PeriodeTotale = paste0(min, " - ", max)) %>% 
+    select(-min,-max) %>% 
+    left_join(DataTravail, by = c("Coderhj", "Typemesure"))
+
 ##### Sorties graphiques #####
-### Chronique complète ###
+  
+#### Sortie graphique Chronique complète ####
 ## Type de mesures spécifié ##
 if(all(export & "chmes_typemesure" %in% colnames(data)) == TRUE){
 # Y libre sans vmm30j
@@ -140,7 +153,8 @@ if(all(export & "chmes_typemesure" %in% colnames(data)) == TRUE){
   }
 
 ## Type de mesures non spécifié ##
-if(all(export & "chmes_typemesure" %in% colnames(data)) != TRUE){
+if(export == T){
+if(all("chmes_typemesure" %in% colnames(data)) != TRUE){
   warning("Vérification nécessaire car plusieurs typemesure donc ce paramètre n'est pas pris en compte dans les sorties graphiques")
 # Y libre sans vmm30j
   data %>%
@@ -158,6 +172,7 @@ if(all(export & "chmes_typemesure" %in% colnames(data)) != TRUE){
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol) %>%
     purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Complet", typemesure = "Thermie", Ymin=-1, Ymax=30, Vmm30j=T, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
+  }
 }
 
 ### Chronique incomplète ###
@@ -182,7 +197,8 @@ data %>%
 }
 
 ## Type de mesures non spécifié ##
-if(all(export & "chmes_typemesure" %in% colnames(data)) != TRUE){
+if(export == T){
+if(all("chmes_typemesure" %in% colnames(data)) != TRUE){
   warning("Vérification nécessaire car plusieurs typemesure donc ce paramètre n'est pas pris en compte dans les sorties graphiques")
 # Y libre sans vmm30j
   data %>%
@@ -200,7 +216,16 @@ if(all(export & "chmes_typemesure" %in% colnames(data)) != TRUE){
   data %>%
     group_split(chmes_coderhj, chmes_anneebiol) %>%
     purrr::map_dfr(~ chronique.figure(data = ., Titre = as.character(paste0(unique(unlist(.$chmes_coderhj))," - ",unique(unlist(.$chmes_anneebiol)))), duree = "Relatif", typemesure = "Thermie", Ymin=-1, Ymax=30, Vmm30j=T, save=T, projet = projet, format=".png")) # Fonctionne si plusieurs années
+  }
 }
+
+
+#### Sortie graphique boxplot interannuel ####
+  if(all(export & "chmes_typemesure" %in% colnames(data) & n_distinct(data$chmes_typemesure) == 1) == TRUE){
+    data %>%
+      group_split(chmes_coderhj, chmes_typemesure) %>% 
+      purrr::map_dfr(~ chronique.figure.interannuelle(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj))), typemesure = unique(.$chmes_typemesure), save=T, projet = projet, format=".png"))
+  }
 
 ##### Sortie stations #####
 if(export == TRUE & dep39 == TRUE){
@@ -208,15 +233,24 @@ listeStations <- data %>% distinct(chmes_coderhj)
 
 ## Connexion à la BDD ##
 dbD <- BDD.ouverture("Data")
-listeStations <- sf::st_read(dbD, query = "SELECT * FROM fd_production.chroniques_stations;") %>% filter(chsta_coderhj %in% listeStations$chmes_coderhj) %>% collect() %>% select(chsta_coderhj:chsta_departement, chsta_coord_x:chsta_coord_type, chsta_fonctionnement:chsta_reseauthermietype)
-
+listeStations <- sf::st_read(dbD, query = "SELECT * FROM fd_production.chroniques_stations;") %>% filter(chsta_coderhj %in% listeStations$chmes_coderhj) %>% collect() %>% select(chsta_coderhj:chsta_departement, chsta_coord_x:chsta_coord_type, chsta_fonctionnement:chsta_reseauthermietype, chsta_altitude, chsta_distancesource, chsta_typetheorique)
+communes <- sf::st_read(dbD, query = "SELECT * FROM fd_referentiels.topographie_communes;") %>% filter(tpcomm_departement_insee == 39 | tpcomm_departement_insee == 25 | tpcomm_departement_insee == 01)
+contextesPDPG <- sf::st_read(dbD, query = "SELECT * FROM fd_referentiels.hydrographie_contextespdpg;")
+HER <- sf::st_read(dbD, query = "SELECT * FROM fd_referentiels.hydrographie_hydroecoregions;")
+Commentaires <- tbl(dbD, in_schema("fd_production", "chroniques_commentaires")) %>% collect(n = Inf)
 SIG.export(listeStations, paste0("./",projet, "/Sorties/Stations/", format(now(), format="%Y-%m-%d"), "_Stations"))
+DBI::dbDisconnect(dbD)
 }
 
 ##### Sortie résultats élaborés #####
 if(export == TRUE & dep39 == TRUE){
 DataTravailSIG <- listeStations %>% left_join(DataTravail %>% mutate(intervalMax = as.numeric(sub(",", ".", IntervalleMax))), by = c("chsta_coderhj" = "Coderhj"))
-SIG.export(DataTravailSIG, paste0("./",projet, "/Sorties/Résultats/", format(now(), format="%Y-%m-%d"), "_Résultats"))
+DataTravailSIG <- DataTravailSIG %>% left_join(communes %>% st_drop_geometry() %>% select(tpcomm_commune_insee, tpcomm_commune_libelle), by = c('chsta_commune' = "tpcomm_commune_insee"))
+DataTravailSIG <- DataTravailSIG %>% st_join(HER) %>% select(-id)
+DataTravailSIG <- DataTravailSIG %>% st_join(contextesPDPG %>% select(hycont_contexte_code))
+DataTravailSIG <- DataTravailSIG %>% left_join(Commentaires %>% select(chres_coderhj, chres_typemesure, chres_anneebiol, chres_commentaire), by = c('chsta_coderhj' = "chres_coderhj", "AnneeVMM" = "chres_anneebiol", "Typemesure" = "chres_typemesure"))
+SIG.export(DataTravailSIG, paste0("./",projet, "/Sorties/Résultats/", format(now(), format="%Y-%m-%d"), "_Résultats"), shp = F)
+SIG.export(DataTravailSIG, paste0("./",projet, "/Sorties/Résultats/", "Atlas_Résultats"), shp = F, excel = F, kml = F)
 }
 
 if(export == TRUE & dep39 == FALSE){

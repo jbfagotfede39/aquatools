@@ -26,6 +26,7 @@ BDD.format <- function(
 
   ###### Contexte ######
   if(traitementforce == "TRUE"){Type <- match.arg(Type)} # Évaluation des choix
+  if(Type == "MI") warning("Attention le type par défaut est MI")
   
   ###### MI ######
   Testtraitementforce <- 0
@@ -274,6 +275,9 @@ BDD.format <- function(
     data$chsvi_capteur <- str_replace(data$chsvi_capteur, "\\..*", "") # On supprime d'éventuels .0 à la fin
     data$chsvi_capteur <- str_replace(data$chsvi_capteur, "O", "0") # On supprime d'éventuels O par des 0
     
+    # Transformation des unités
+    data$chsvi_unite <- str_replace(data$chsvi_unite, "degré Celsius", "°C")
+
     # Transformation des actions
     data$chsvi_action <- dplyr::recode(data$chsvi_action,
                                  "disparue" = "Disparue",
@@ -314,7 +318,7 @@ BDD.format <- function(
   
   # Capteurs #
   if(all(colnames(data) %in% colnames(Capteurs))) {
-    data$id <- row_number(data$chcap_numerocapteur) + max(Capteurs$id, na.rm = TRUE) # Pour incrémenter les id à partir du dernier
+    data$id <- row_number(data$chcap_numerocapteur) + as.numeric(dbGetQuery(dbD, "SELECT MAX(id) FROM fd_production.chroniques_capteurs;")) # Pour incrémenter les id à partir du dernier
   }
   
   # Stations #
@@ -334,16 +338,19 @@ BDD.format <- function(
   
   # Résultats #
   if(length(colnames(data)) > 22) {
-    if(colnames(data)[22] == "ValRemarqJours.DateVMoyJMaxPer") {
-      colnames(data) <- 
+    if(colnames(data)[45] == "Percentile90diurneAB"){
+      data <- 
         data %>% 
-        colnames() %>% 
-        paste0("chres_",.) %>% 
-        gsub("[[:punct:]]", "_", .) %>% 
-        tolower()
-      data <-
-        data %>% 
-        mutate(chres_aquatoolsversion = packageVersion("aquatools"))
+        rename_all(list(~ stringi::stri_trans_general(., "latin-ascii"))) %>% # Pour remplacer les caractères accentués par les mêmes sans accents
+        rename_all(list(~ paste0("chres_", .))) %>%
+        rename_all(list(~ gsub("[[:punct:]]", "_", .))) %>%
+        rename_all(list(~ tolower(.))) %>% 
+        mutate(chres_aquatoolsversion = packageVersion("aquatools") %>% as.character()) %>% 
+        mutate(id = row_number(chres_vmaxmoy24h) + as.numeric(dbGetQuery(dbD, "SELECT MAX(id) FROM fd_production.chroniques_resultats;"))) %>% # Pour incrémenter les id à partir du dernier
+        mutate(`_modif_utilisateur` = NA_character_) %>% 
+        mutate(`_modif_type` = NA_character_) %>% 
+        mutate(`_modif_date` = NA) %>% 
+        select(id, everything(), `_modif_utilisateur`, `_modif_type`,`_modif_date`)
     }
   } # fin de travail sur les résultats
   } # Fin de travail sur les chroniques

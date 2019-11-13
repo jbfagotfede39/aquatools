@@ -171,17 +171,24 @@ SynthesePersonnel <- as.data.frame(SynthesePersonnel)
   Detail$Date <- as.character(Detail$Date)
   Detail <- as.data.frame(Detail)
   
+  ##### Extraction des données théoriques/réalisées ####
+  Comparaison <- tbl(dbD, dbplyr::in_schema("fd_production", "tpstravail_recapitulatif")) %>% filter(tpswrecap_projet == projet) %>% collect() %>% 
+    group_by(tpswrecap_programmation, tpswrecap_poste) %>% 
+    reshape2::dcast(tpswrecap_poste + tpswrecap_detail ~ tpswrecap_programmation , value.var = "tpswrecap_jours", fun.aggregate=sum)
+  
   ##### Écriture du fichier excel #####
   tempsprojet <- createWorkbook()
   feuilleSynthesePersonnel <- createSheet(wb=tempsprojet, sheetName="SynthèsePersonnel")
   feuilleSynthesePoste <- createSheet(wb=tempsprojet, sheetName="SynthèsePoste")
   feuilleDetail <- createSheet(wb=tempsprojet, sheetName="Détail")
+  feuilleComparaison <- createSheet(wb=tempsprojet, sheetName="Comparaison")
   addDataFrame(x=SynthesePersonnel, sheet=feuilleSynthesePersonnel, row.names=FALSE)
   addDataFrame(x=SynthesePoste, sheet=feuilleSynthesePoste, row.names=FALSE)
   addDataFrame(x=Detail, sheet=feuilleDetail, row.names=FALSE)
+  addDataFrame(x=Comparaison, sheet=feuilleComparaison, row.names=FALSE)
   saveWorkbook(tempsprojet, paste0(format(now(), format="%Y-%m-%d"), "_", projet, "_récapitulatif_coût_personnel.xlsx"))
   
-  l <- list(SynthesePoste = SynthesePoste, SynthesePersonnel = SynthesePersonnel, Detail = Detail)
+  l <- list(SynthesePoste = SynthesePoste, SynthesePersonnel = SynthesePersonnel, Detail = Detail, Comparaison = Comparaison)
   openxlsx::write.xlsx(l, file = paste0(format(now(), format="%Y-%m-%d"), "_", projet, "_récapitulatif_coût_personnel.xlsx"))
   
 } # Fin de la fonction

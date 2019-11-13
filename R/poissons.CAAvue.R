@@ -7,17 +7,17 @@
 #' @import ggplot2
 #' @examples
 #' poissons.CAAvue(data)
-#' poissons.CAAvue(data, save=T)
+#' poissons.CAAvue(data, export=T)
 #' poissons.CAA("MAD6-2") %>% poissons.CAAvue()
-#' poissons.CAA("MAD6-2") %>% poissons.CAAvue(save = T)
+#' poissons.CAA("MAD6-2") %>% poissons.CAAvue(export = T)
 
 ##### -------------- A FAIRE -------------- #####
-# Intégrer dans une chaîne cette fonction et poissons.CAA au sein de poissons.exportation
+# 
 # -------------- A FAIRE -------------- #
 
 poissons.CAAvue <- function(
   data = data,
-  save = F,
+  export = FALSE,
   format = ".png"
   )
   {
@@ -38,14 +38,14 @@ poissons.CAAvue <- function(
   ggNTT <- ggNTT + geom_bar(stat="identity")
   ggNTT <- ggNTT + facet_grid(Date ~ .)
   ggNTT <- ggNTT + labs(x = "Espèce", y = "Cote d'abondance (/5)", fill= "Date", title = Contexte$Station)
-  ggNTT <- ggNTT +theme_linedraw()
-  ggNTT <- ggNTT  + scale_fill_manual(values = PaletteAnnees)
+  ggNTT <- ggNTT + theme_linedraw()
+  ggNTT <- ggNTT + scale_fill_manual(values = PaletteAnnees)
   ggNTT <- ggNTT + theme(legend.position = 'none', panel.grid.minor = element_blank()) # Pour mettre la légende en haut + enlever les lignes blanches horizontales des 0,5
   ggNTT <- ggNTT + ylim(0,5)
   ggNTT
   
   #### Sortie ####
-  if(save==T){ggsave(file=paste("Vue_CAA_CAR_", Contexte$Station, format, sep=""))}
-  if(save==F){return(ggNTT)}
+  if(export == TRUE){ggsave(file=paste("./",Contexte$Station,"/PoissonsCA/CA_",Contexte$Station, format, sep=""), width = 15, height = 15, units = ("cm"))}
+  if(export == FALSE){return(ggNTT)}
   
 } # Fin de la fonction

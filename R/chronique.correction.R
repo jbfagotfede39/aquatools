@@ -44,7 +44,7 @@ chronique.correction <- function(data, cCodeRDT = "BONbaro", cCapteur = "P0352",
   
   ##### Suppression de la ligne fausse #####
   data <-
-    anti_join(data, LigneFausse)
+    anti_join(data, LigneFausse, by = c("id", "chmes_coderhj", "chmes_capteur", "chmes_date", "chmes_heure", "chmes_valeur", "chmes_unite", "chmes_typemesure", "chmes_validation", "chmes_mode_acquisition", "chmes_mode_integration", "_modif_utilisateur", "_modif_type", "_modif_date"))
   
   ##### Écritures des lignes juste et fausse/corrigée #####
   LigneJuste <- LigneFausse
