@@ -24,11 +24,11 @@ poissons.exportation <- function(
 {
 
 ##### -------------- A FAIRE -------------- #####
-# Intégrer dans une chaîne cette fonction et poissons.CAA/poissons.CAAvue
+# 
 # -------------- A FAIRE -------------- #  
 
 #### Évaluation des choix ####
-
+warning("Cette fonction va être dépréciée : incluse dans poissons.traitement()")
 
 #### Vérification des répertoires ####
 

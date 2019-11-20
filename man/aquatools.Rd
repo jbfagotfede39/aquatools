@@ -3,7 +3,6 @@
 \docType{package}
 \name{aquatools}
 \alias{aquatools}
-\alias{aquatools-package}
 \title{aquatools.}
 \description{
 aquatools.

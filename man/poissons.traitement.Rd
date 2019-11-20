@@ -3,6 +3,13 @@
 \name{poissons.traitement}
 \alias{poissons.traitement}
 \title{Traitement semi-automatisé de données piscicoles}
+\arguments{
+\item{data}{Jeu de données en entrée (captures issues de poissons.captures)}
+
+\item{export}{\code{FALSE} par défault. Permet d'exporter les données}
+
+\item{commentaires}{\code{FALSE} par défault. Permet d'extraire le commentaire associé aux opérations}
+}
 \description{
 Cette fonction permet de traiter de manière semi-automatisée des données piscicoles (histogrammes, graphiques CAA/CAR, etc.)
 }

@@ -13,11 +13,11 @@
 #' @import knitr
 #' @export
 #' @examples
-#' poissons.fiche("AIN18-4", "2013-09-27", commentaires = FALSE)
+#' poissons.fiche("SOR10-2", "2015-05-19", commentaires = FALSE)
 
 poissons.fiche <- function(
-  station="AIN18-4",
-  date="2013-09-27",
+  station="SOR10-2",
+  date="2015-05-19",
   commentaires = FALSE)
 {
 

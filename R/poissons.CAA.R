@@ -10,7 +10,7 @@
 #' poissons.CAA("MAD6-2")
 
 ##### -------------- A FAIRE -------------- #####
-# 
+# Attention pour les echantillonnages de la même année car faceting par année et pas par date 
 ##### -------------- A FAIRE -------------- #####
 
 poissons.CAA <- function(
@@ -28,6 +28,7 @@ poissons.CAA <- function(
   #### Import ntt_caR observées ####
   Resultats <- 
     poissons.resultats(data.frame(Nom = station), Sortie = "Complet") %>% 
+    filter(modedepeche != "CMN")%>% 
     select(nom,modedepeche,datedebut.x, codeespece, coderdt, coteabondancenumerique, coteabondanceponderale, typetheorique) %>%
     arrange(nom, datedebut.x, codeespece) %>% 
     rowwise() %>% # Pour grouper les données par ligne pour avoir le min

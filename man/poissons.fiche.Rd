@@ -14,6 +14,6 @@
 Cette fonction permet de créer une fiche de synthèse des résultats de pêche
 }
 \examples{
-poissons.fiche("AIN18-4", "2013-09-27", commentaires = FALSE)
+poissons.fiche("SOR10-2", "2015-05-19", commentaires = FALSE)
 }
 \keyword{poissons}

@@ -26,7 +26,7 @@ poissons.classes <- function(
   #### Calcul des classes de taille ####
   Captures <-
     Captures %>% 
-    mutate(classetaille = case_when(.$taillemoy < 100 ~ "< 10",
+    mutate(classetaille = case_when(.$taillemoy < 100 ~ "< 100",
                                     .$taillemoy >= 100 & .$taillemoy < 150 ~ "100 - 150",
                                     .$taillemoy >= 150 & .$taillemoy < 200 ~ "150 - 200",
                                     .$taillemoy >= 200 ~ "200 et +",

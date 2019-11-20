@@ -14,7 +14,7 @@
 #' poissons.IPR(data.frame(Station = "SOR10-2", Date = "2012-11-03"), expertise = FALSE)
 
 ##### TODO LIST #####
-
+# Ré-écriture nécessaire afin de réduire au maximum le volume de données à transférer
 #####################
 
 #library(aquatools);library(dplyr);library(lubridate);library(RSQLite)
@@ -41,26 +41,26 @@ poissons.IPR <- function(
 
   ## Format de dates ##
   IPR$dateipr <- ymd(IPR$dateipr)
-  IPR$dateipr <- format(IPR$dateipr, "%Y-%m-%d")
   
   ## Simplification ##
   IPR <- 
     IPR %>%
     rename(Station = nom, Date = dateipr) %>% 
     arrange(Station, Date) %>% 
-    rename(CodeSIERMC = codesiermc, Altitude = altitude, Classe = classe, Score = score, Qualite = qualite, AvisExpertCourt = avisexpertcourt, AvisExpert = avisexpert, Especes = especes)
+    rename(CodeSIERMC = codesiermc, Altitude = altitude, Classe = classe, Score = score, Qualite = qualite, AvisExpertCourt = avisexpertcourt, AvisExpert = avisexpert, Especes = especes) %>% 
+    mutate(N = str_count(.$Especes, ",") + 1)
   
   # Travail sur toutes les opérations #
   if(dim(ListeOperations)[1] == 0 & expertise == TRUE){
   IPR <-
     IPR %>% 
-    select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes)
+    select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes, N)
   }
   
   if(dim(ListeOperations)[1] == 0 & expertise == FALSE){
     IPR <-
       IPR %>% 
-      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes)
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes, N)
   }
   
   # Travail sur quelques opérations #
@@ -70,7 +70,7 @@ poissons.IPR <- function(
       IPR %>% 
       mutate(Cle = paste0(Station, " - ", Date)) %>% 
       filter(Cle %in% ListeOperations$Cle) %>% 
-      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes)
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, AvisExpertCourt, AvisExpert, Especes, N)
   }
   
   if(dim(ListeOperations)[1] != 0 & expertise == FALSE){
@@ -79,7 +79,7 @@ poissons.IPR <- function(
       IPR %>% 
       mutate(Cle = paste0(Station, " - ", Date)) %>% 
       filter(Cle %in% ListeOperations$Cle) %>% 
-      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes)
+      select(Station, CodeSIERMC, Altitude, Date, Classe, Score, Qualite, Especes, N)
   }
   
   # Rendu du résultat #

@@ -5,7 +5,10 @@
 #' @param station Code RHJ de la station
 #' @param date Date de la pêche
 #' @keywords poissons
-#' @import dplyr RSQLite xlsx lubridate
+#' @import dplyr 
+#' @import gridExtra
+#' @import lubridate
+#' @import xlsx 
 #' @export
 #' @examples
 #' poissons.brut("SOR10-2", "2015-05-19")
@@ -109,16 +112,23 @@ poissons.brut <- function(
   colnames(Elabores)<-c("Station", "Date","Espèce","P1","P2","P3","Effectif estimé","Ind/10a","IC Ind/10a","Biomasse estimée (g)","g/ha","IC g/ha", "CAN", "CAP")
   
   ###### Écriture des fichiers ######
-  ## Captures ##
+  ## Captures excel ##
   write.xlsx(x = Captures, file = paste0(station, "_", date, "_captures.xlsx"),
              sheetName = paste0(station, " ", date), row.names = F)
   
-  ## Résultats calculés ##
+  ## Résultats calculés excel ##
   SortieResultats <- createWorkbook()
   feuillebruts <- createSheet(wb=SortieResultats, sheetName="Bruts")
   feuillecalcules <- createSheet(wb=SortieResultats, sheetName="Calculés")
   addDataFrame(x=Bruts, sheet=feuillebruts, row.names=FALSE)
   addDataFrame(x=Elabores, sheet=feuillecalcules, row.names=FALSE)
   saveWorkbook(SortieResultats, paste0(station, "_", date, "_résultats.xlsx"))
+  
+  ## Résultats calculés png ##
+  Elabores <- Elabores %>% mutate(Date = format(Date, format="%Y-%m-%d"))
+  Elabores <- Elabores %>% mutate_all(funs(replace(., is.na(.), "")))
+  png(paste0(station, "_", date, "_résultats.png", sep=""), height = 25*nrow(Elabores), width = 60*ncol(Elabores))
+  grid.table(Elabores, rows = NULL)
+  dev.off()
 
 } # Fin de la fonction

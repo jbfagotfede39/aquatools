@@ -3,12 +3,19 @@
 \name{poissons.CAAvue}
 \alias{poissons.CAAvue}
 \title{Affichage de graphes piscicoles}
+\arguments{
+\item{data}{Jeu de données en entrée (cotes d'abondance issues de poissons.CAA)}
+
+\item{export}{\code{FALSE} par défault. Permet d'exporter les données}
+
+\item{format}{Défini le format d'enregistrement (par défaut .png)}
+}
 \description{
 Cette fonction permet de créer des comparaisons entre les espèces attendues et observées. Le jeu de données doit en entrée doit être issu de poissons.CAA
 }
 \examples{
 poissons.CAAvue(data)
-poissons.CAAvue(data, export=T)
+poissons.CAAvue(data, export = T)
 poissons.CAA("MAD6-2") \%>\% poissons.CAAvue()
 poissons.CAA("MAD6-2") \%>\% poissons.CAAvue(export = T)
 }
