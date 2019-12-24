@@ -21,6 +21,19 @@ poissons.fiche <- function(
   commentaires = FALSE)
 {
 
+## Copie des logos ##
+
+adresselogo <-
+  find.package("aquatools") %>%
+  paste0("/extdata/FD39aveccadre.png")
+file_copy(adresselogo, "./", overwrite = TRUE)
+
+adresseroseau <-
+  find.package("aquatools") %>%
+  paste0("/extdata/roseaux.jpg")
+file_copy(adresseroseau, "./", overwrite = TRUE)
+      
+  
 if(commentaires == FALSE) fileName <- system.file("extdata", "ModeleRenduPeche.Rnw", package = "aquatools") else fileName <- system.file("extdata", "ModeleRenduPecheCommente.Rnw", package = "aquatools")
 ModeleRenduPeche <- readChar(fileName, file.info(fileName)$size)
 
@@ -43,5 +56,9 @@ for(i in 1:length(liste)){
   temp <- list.files(path=".", pattern = (paste0(liste[i],"$")))
   file.remove(temp)
 }
+
+## Suppression des logos ##
+file_delete("./FD39aveccadre.png")
+file_delete("./roseaux.jpg")
 
 } # Fin de la fonction

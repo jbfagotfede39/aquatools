@@ -9,6 +9,7 @@
 #' @import RSQLite
 #' @import DBI 
 #' @import lubridate
+#' @param periode Permet de limiter la durée des données traitées : 10ans (par défaut), 20ans, Complet , 4campagnes
 #' @export
 #' @examples
 #' poissons.resultats()
@@ -17,12 +18,14 @@
 
 poissons.resultats <- function(
   ListeStations = data.frame(Nom = character(0)),
-  Sortie = c("Simple","Propre","Complet")
+  Sortie = c("Simple","Propre","Complet"),
+  periode = c("10ans","20ans","Complet","4campagnes")
 )
   {
   
   ## Évaluation des choix ##
   Sortie <- match.arg(Sortie)
+  periode <- match.arg(periode)
   
   ## Ouverture de la BDD ##
   dbP <- BDD.ouverture(Type = "Poissons")
@@ -65,13 +68,20 @@ poissons.resultats <- function(
   Resultats$densitenumeriqueestimee <- round(Resultats$densitenumeriqueestimee,1)
   Resultats$densiteponderaleestimee <- round(Resultats$densiteponderaleestimee,1)
   
-  ##### Filtrage #####
+  ##### Filtrage station #####
 if(dim(ListeStations)[1] != 0){
   Resultats <-
     Resultats %>% 
     filter(nom %in% ListeStations$Nom) %>% 
     arrange(codeespece)
 }
+  
+  ##### Limitation temporelle des résultats #####
+  if(periode == "10ans") limitetemporelle <- now()-years(10)
+  if(periode == "20ans") limitetemporelle <- now()-years(20)
+  if(periode == "Complet") limitetemporelle <- now()-years(100)
+  if(periode == "4campagnes") limitetemporelle <- Resultats %>% distinct(datedebut.x) %>% arrange(desc(datedebut.x)) %>% pull() %>% nth(4)
+  Resultats <- Resultats %>% filter(datedebut.x >= limitetemporelle)
   
   ##### Simplification #####
 if(dim(ListeStations)[1] == 0 & Sortie == "Simple"){

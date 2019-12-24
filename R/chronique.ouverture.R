@@ -53,14 +53,18 @@ if(Type == "Mesures"){
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")}
     }
     
+    if(nbcolonnes == 4){
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc")}
+    }
+    
     if(nbcolonnes == 6){
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcccc")}
     }
     
-if(nbcolonnes == 3 | nbcolonnes == 6){names(dataaimporter)[1] <- c('Date')}
-if(nbcolonnes == 3 | nbcolonnes == 6){names(dataaimporter)[2] <- c('Heure')}
-if(nbcolonnes == 3 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
-if(nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
+if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[1] <- c('Date')}
+if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[2] <- c('Heure')}
+if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
+if(nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
 if(nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
 if(nbcolonnes == 6){names(dataaimporter)[6] <- c('asup3')}
 
@@ -92,8 +96,10 @@ dataaimporter <-
   }
   
 if(typemesure == "Piézométrie"){
-  typecapteur = readline(prompt = "Type de capteur piézométrique (Hobo ou Diver) : ")
-  typedonnee = readline(prompt = "Type de mesure piézométrique (Baro ou Piézo) : ")
+  typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) : ")
+  typedonnee = readline(prompt = "Type de mesure piézométrique 1 (Baro) ou 2 (Piézo) : ")
+  typecapteur <- ifelse(typecapteur == 1, "Hobo", "Diver")
+  typedonnee <- ifelse(typedonnee == 1, "Baro", "Piézo")
   
   if(typecapteur == "Diver"){
     dataaimporter <- 

@@ -3,14 +3,22 @@
 #' Récupère l'ensemble des données de résultats de Maxifish dans un dataframe
 #' @name poissons.resultats.BDD
 #' @keywords donnees
-#' @import DBI dplyr RSQLite
+#' @import DBI
+#' @import dplyr 
+#' @import RSQLite
+#' @param periode Permet de limiter la durée des données traitées : 10ans (par défaut), 20ans, Complet , 4campagnes
 #' @export
 #' @examples
 #' poissons.resultats.BDD()
 
-poissons.resultats.BDD <- function(){
+poissons.resultats.BDD <- function(
+  periode = c("10ans","20ans","Complet","4campagnes")
+  )
   
-  #library("RSQLite");library("dplyr")
+  {
+  
+  ## Évaluation des choix ##
+  periode <- match.arg(periode)
   
   ## Ouverture de la BDD ##
   dbP <- BDD.ouverture(Type = "Poissons")
@@ -38,6 +46,13 @@ poissons.resultats.BDD <- function(){
   Resultats <- left_join(Resultats, Ecosystemes, by = c("codeecosysteme.x" = "codeecosysteme"))
   Communes <- Communes %>% select(codecommune, commune)
   Resultats <- left_join(Resultats, Communes, by = c("codecommune"))
+  
+  ##### Limitation temporelle des résultats #####
+  if(periode == "10ans") limitetemporelle <- now()-years(10)
+  if(periode == "20ans") limitetemporelle <- now()-years(20)
+  if(periode == "Complet") limitetemporelle <- now()-years(100)
+  if(periode == "4campagnes") limitetemporelle <- Resultats %>% distinct(datedebut.x) %>% arrange(desc(datedebut.x)) %>% pull() %>% nth(4)
+  Resultats <- Resultats %>% filter(datedebut.x >= limitetemporelle)
   
   ##### Simplification #####
 #  Resultats <- 

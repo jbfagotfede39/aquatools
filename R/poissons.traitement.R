@@ -40,6 +40,7 @@ poissons.traitement <- function(
   
   #### Vérifications générales ####
   if(Contexte$nStations > 1) stop("Différentes stations dans les captures à analyser - Cas à développer")
+  if(export == F){warning("Export désactivé")}
   
   #### Vérification des répertoires ####
   if(export == TRUE){
@@ -71,6 +72,7 @@ poissons.traitement <- function(
   if(export == F){CAAvue <- CA %>% poissons.CAAvue(export = F)}
   
   #### Sortie des histogrammes ####
+  if(export == T){
   ### Histogramme annuel ###
   data %>%
     group_split(codeespece, year(datedebut)) %>% 
@@ -80,8 +82,10 @@ poissons.traitement <- function(
   data %>% 
     group_split(codeespece) %>% 
     purrr::map_dfr(~ poissons.histogramme(., export = T))
+  }
   
   #### Sortie des données excel et pdf ####
+  if(export == T){
   ## Déplacement dans le bon répertoire ##
   setwd(paste0("./",Contexte$Nom,"/PoissonsTableau"))
 
@@ -102,5 +106,6 @@ poissons.traitement <- function(
   #### Remise du répertoire courant ####
   setwd("..") # On remonte dans le répertoire de la station
   setwd("..") # On remonte au répertoire courant initial
+  }
   
 } # Fin de la fonction

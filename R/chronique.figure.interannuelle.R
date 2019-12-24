@@ -33,7 +33,7 @@ chronique.figure.interannuelle <- function(
   Vminmax=T,
   Ymin=-1,
   Ymax=30,
-  affichage = c("boxplot", "violon"),
+  style = c("boxplot", "violon"),
   save=F,
   projet = as.character(NA),
   format=".png")
@@ -41,7 +41,7 @@ chronique.figure.interannuelle <- function(
   
   ## Évaluation des choix
   typemesure <- match.arg(typemesure)
-  affichage <- match.arg(affichage)
+  style <- match.arg(style)
   
 ##### -------------- A FAIRE -------------- #####
 # 
@@ -90,7 +90,7 @@ chronique.figure.interannuelle <- function(
     chronique.traitement(export = F)
   
   ##### Collecte des valeurs remarquables #####
-  ValeursRemarquables <- dataanalysees %>% select(Typemesure, Coderhj, Annee, NbJ, VMinI, VMaxI, VMoyJMinPer, VMoyJMaxPer, VMoyMoy30J)
+  ValeursRemarquables <- dataanalysees %>% select(Typemesure, Coderhj, Annee, NbJ, VMinI, VMaxI, VMoyJMinPer, VMoyJMaxPer, VMaxMoy30J)
   
   ValeursRemarquablesMinI <- 
     ValeursRemarquables %>% 
@@ -108,14 +108,14 @@ chronique.figure.interannuelle <- function(
     ValeursRemarquables %>% 
     arrange(desc(Annee)) %>% 
     slice(1:10) %>% # pour ne conserver que les dix années les plus récentes
-    #group_by(Typemesure, Coderhj, Annee) %>% 
+    group_by(Typemesure, Coderhj) %>% 
     summarise(
-      VMinVMM = min(VMoyMoy30J),
-      VMaxVMM = max(VMoyMoy30J),
-      VMoyVMM = mean(VMoyMoy30J),
+      VMinVMM = min(VMaxMoy30J),
+      VMaxVMM = max(VMaxMoy30J),
+      VMoyVMM = mean(VMaxMoy30J),
       NVMM = n(),
-      AnneeVMinVMM = Annee[VMoyMoy30J == min(VMoyMoy30J)],
-      AnneeVMaxVMM = Annee[VMoyMoy30J == max(VMoyMoy30J)]
+      AnneeVMinVMM = Annee[VMaxMoy30J == min(VMaxMoy30J)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples,
+      AnneeVMaxVMM = Annee[VMaxMoy30J == max(VMaxMoy30J)][1] # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
     ) %>% 
     mutate(Annee = "Vmm30j")
   
@@ -161,8 +161,8 @@ if(is.na(Ymin)) positionNbJ <- min(data$chmes_valeur)+0.25
 if(!is.na(Ymin)) positionNbJ <- Ymin+0.25
 
 ggboxplot <- ggplot(data, aes(as.character(chmes_anneebiol), chmes_valeur))
-if(affichage == "boxplot"){ggboxplot <- ggboxplot + geom_boxplot()}
-if(affichage == "violon"){ggboxplot <- ggboxplot + geom_violin()}
+if(style == "boxplot"){ggboxplot <- ggboxplot + geom_boxplot()}
+if(style == "violon"){ggboxplot <- ggboxplot + geom_violin()}
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) ggboxplot <- ggboxplot + ylim(0,as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggboxplot <- ggboxplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
 ggboxplot <- ggboxplot + labs(x = "Année", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
@@ -170,7 +170,7 @@ ggboxplot <- ggboxplot + theme_bw()
 # Ajout des valeurs journalières annuelles remarquables #
 ggboxplot <- ggboxplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMoyJMinPer), colour = "#5f90ff")
 ggboxplot <- ggboxplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMoyJMaxPer), colour = "red")
-ggboxplot <- ggboxplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMoyMoy30J), colour = "orange")
+ggboxplot <- ggboxplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMaxMoy30J), colour = "orange")
 ggboxplot <- ggboxplot + geom_text(data = ValeursRemarquables, aes(as.character(Annee), positionNbJ, label=paste0(NbJ, " j.")), size = 2.5)
 # Ajout des valeurs instantannées pluriannuelles remarquables #
 ggboxplot <- ggboxplot + geom_point(data = ValeursRemarquablesMinI, aes(as.character(Annee), VMinI), colour = "#5f90ff")
@@ -188,7 +188,9 @@ if(Contexte$nAnneebiol != 1) ggboxplot <- ggboxplot + geom_text(data = ValeursRe
 ggboxplot
 
 if(save==T){
-  ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle",typemesureTitreSortie,Titre,format,sep=""))
+  if(style=="boxplot")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle",typemesureTitreSortie,Titre,format,sep=""))
+  if(style=="violon")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle_violon",typemesureTitreSortie,Titre,format,sep=""))
+  
 }
 if(save==F){return(ggboxplot)}
 } # Fin de la fonction

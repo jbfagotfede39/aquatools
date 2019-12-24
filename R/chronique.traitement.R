@@ -32,7 +32,8 @@ chronique.traitement <- function(
   export = T,
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie"),
   dep39 = F,
-  archivage = c("Aucun","Partiel","Complet") 
+  archivage = c("Aucun","Partiel","Complet"),
+  style = c("boxplot","violon") 
   )
 {
 
@@ -44,6 +45,7 @@ chronique.traitement <- function(
 #### Évaluation des choix ####
   typemesure <- match.arg(typemesure)
   archivage <- match.arg(archivage)
+  style <- match.arg(style)
   if(export == F) archivage <- "Aucun"
   
 #### Vérification des répertoires ####
@@ -222,9 +224,14 @@ if(all("chmes_typemesure" %in% colnames(data)) != TRUE){
 
 #### Sortie graphique boxplot interannuel ####
   if(all(export & "chmes_typemesure" %in% colnames(data) & n_distinct(data$chmes_typemesure) == 1) == TRUE){
+    # Boxplot
     data %>%
       group_split(chmes_coderhj, chmes_typemesure) %>% 
-      purrr::map_dfr(~ chronique.figure.interannuelle(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj))), typemesure = unique(.$chmes_typemesure), save=T, projet = projet, format=".png"))
+      purrr::map_dfr(~ chronique.figure.interannuelle(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj))), typemesure = unique(.$chmes_typemesure), style = "boxplot", save=T, projet = projet, format=".png"))
+    # Violon
+    data %>%
+      group_split(chmes_coderhj, chmes_typemesure) %>% 
+      purrr::map_dfr(~ chronique.figure.interannuelle(data = ., Titre = as.character(paste0(unique(.$chmes_coderhj))), typemesure = unique(.$chmes_typemesure), style = "violon", save=T, projet = projet, format=".png"))
   }
 
 ##### Sortie stations #####
@@ -234,7 +241,7 @@ listeStations <- data %>% distinct(chmes_coderhj)
 ## Connexion à la BDD ##
 dbD <- BDD.ouverture("Data")
 listeStations <- sf::st_read(dbD, query = "SELECT * FROM fd_production.chroniques_stations;") %>% filter(chsta_coderhj %in% listeStations$chmes_coderhj) %>% collect() %>% select(chsta_coderhj:chsta_departement, chsta_coord_x:chsta_coord_type, chsta_fonctionnement:chsta_reseauthermietype, chsta_altitude, chsta_distancesource, chsta_typetheorique)
-communes <- sf::st_read(dbD, query = "SELECT * FROM fd_referentiels.topographie_communes;") %>% filter(tpcomm_departement_insee == 39 | tpcomm_departement_insee == 25 | tpcomm_departement_insee == 01)
+communes <- sf::st_read(dbD, query = "SELECT * FROM fd_referentiels.topographie_communes WHERE (tpcomm_departement_insee = '39' OR tpcomm_departement_insee = '25' OR tpcomm_departement_insee = '01');")
 contextesPDPG <- sf::st_read(dbD, query = "SELECT * FROM fd_referentiels.hydrographie_contextespdpg;")
 HER <- sf::st_read(dbD, query = "SELECT * FROM fd_referentiels.hydrographie_hydroecoregions;")
 Commentaires <- tbl(dbD, in_schema("fd_production", "chroniques_commentaires")) %>% collect(n = Inf)

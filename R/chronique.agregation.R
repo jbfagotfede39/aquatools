@@ -28,7 +28,7 @@ chronique.agregation <- function(
 # Ajout d'un paramètre saison ? Il semble nécessaire de réaliser le calcul à la main pour établir la saison, pas inclus dans lubridate : https://github.com/tidyverse/lubridate/issues/611
 # Ajout d'un paramètre année civile ?
 # Ajout d'un paramètre saison naturelle (équinoxe et solstice) ? https://stackoverflow.com/questions/9500114/find-which-season-a-particular-date-belongs-to
-# Il faudra faire une fonction commune (entre chronique.figure, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
+# Il faudra faire une fonction commune (entre chronique.figure, chronique.figure.cumul, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
 # -------------- A FAIRE -------------- #
 
 
@@ -57,7 +57,7 @@ Contexte <-
   bind_cols(Contexte)
 
 if("chmes_typemesure" %in% colnames(data) == FALSE){
-  data <- data %>% mutate(chmes_typemesure = NA)
+  data <- data %>% mutate(chmes_typemesure = NA_character_)
 }
 
 #### Pas d'agrégation ####
@@ -89,10 +89,16 @@ ValJours <-
         VMaxJ = max(chmes_valeur),
         VAmpliJ = VMaxJ-VMinJ,
         VarJ = var(chmes_valeur),
-        NMesuresJ = n()
+        NMesuresJ = n(),
       ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_date")
   ) %>% 
-  select(chmes_coderhj, chmes_typemesure, chmes_date, VMinJ:VAmpliJ, VAmpliSigneJ, VarJ, NMesuresJ)
+  ungroup() %>% 
+  formatage.annee.biologique() %>% 
+  group_by(chmes_anneebiol) %>% 
+  mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
+  ungroup() %>% 
+  group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>%
+  select(chmes_coderhj, chmes_typemesure, chmes_date, VMinJ:VAmpliJ, VAmpliSigneJ, VarJ, NMesuresJ, SommeMoyJ)
 
 if(complement == TRUE){
   ValJours <-

@@ -3,6 +3,9 @@
 \name{poissons.resultats.BDD}
 \alias{poissons.resultats.BDD}
 \title{Extraction des données des résultats de Maxifish}
+\arguments{
+\item{periode}{Permet de limiter la durée des données traitées : 10ans (par défaut), 20ans, Complet , 4campagnes}
+}
 \description{
 Récupère l'ensemble des données de résultats de Maxifish dans un dataframe
 }

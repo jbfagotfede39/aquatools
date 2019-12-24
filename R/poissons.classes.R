@@ -30,7 +30,8 @@ poissons.classes <- function(
                                     .$taillemoy >= 100 & .$taillemoy < 150 ~ "100 - 150",
                                     .$taillemoy >= 150 & .$taillemoy < 200 ~ "150 - 200",
                                     .$taillemoy >= 200 ~ "200 et +",
-                                    TRUE ~ "autre"))
+                                    TRUE ~ "autre")) %>% 
+    mutate(classetaille = ifelse(is.na(taillemoy), NA_character_, classetaille)) # Cas des tailles moyennes vides quand non saisies
   
   #### Sortie des résultats ####
   return(Captures)

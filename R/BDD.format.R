@@ -23,6 +23,9 @@ BDD.format <- function(
   Type = c("MI", "Chroniques", "PC")
   )
 {
+  
+  ##### Évaluation des choix #####
+  Type <- match.arg(Type)
 
   ###### Contexte ######
   if(traitementforce == "TRUE"){Type <- match.arg(Type)} # Évaluation des choix
@@ -214,6 +217,7 @@ BDD.format <- function(
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUMERCANTINE", "VOUmercantine", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUPATORNAY", "VOUpatornay", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOUSURCHAUFFANT", "VOUsurchauffant", chsvi_coderhj)) %>% 
+      mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "VOGBARO", "VOGbaro", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONBARO", "BONbaro", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONLAC", "BONlac", chsvi_coderhj)) %>% 
       mutate(chsvi_coderhj = ifelse(chsvi_coderhj == "BONSEUIL", "BONseuil", chsvi_coderhj)) %>% 
@@ -304,7 +308,7 @@ BDD.format <- function(
       data %>% 
       mutate(chsvi_action = ifelse(grepl("Dépose", chsvi_remarques), "Dépose", chsvi_action))
     }
-    if(dim(filter(data, !(chsvi_action == "Disparue"|chsvi_action == "Pose"|chsvi_action == "Dépose"|chsvi_action == "Relève"|chsvi_action == "Mesure manuelle")))[1] > 0) stop("Action saisie de type inconnu")
+    if(dim(filter(data, !(chsvi_action == "Disparue"|chsvi_action == "Pose"|chsvi_action == "Dépose"|chsvi_action == "Relève"|chsvi_action == "Mesure manuelle"|chsvi_action == "Entretien")))[1] > 0) stop("Action saisie de type inconnu")
     
     # Transformation des formats
     data$id <- as.integer(data$id)
@@ -353,6 +357,9 @@ BDD.format <- function(
         select(id, everything(), `_modif_utilisateur`, `_modif_type`,`_modif_date`)
     }
   } # fin de travail sur les résultats
+  
+  DBI::dbDisconnect(dbD)
+  
   } # Fin de travail sur les chroniques
   
   ##### PC #####

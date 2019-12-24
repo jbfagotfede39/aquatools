@@ -18,8 +18,8 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
-#' @import ggplot2 
 #' @import dplyr
+#' @import ggplot2 
 #' @export
 #' @examples
 #' chronique.figure(data)
@@ -41,17 +41,18 @@ chronique.figure <- function(
     format=".png")
   {
 
+  
+  ##### -------------- A FAIRE -------------- #####
+  # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
+  # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
+  # Changer ordre max/min/moy dans légende par Max/Moy/Min
+  # Il faudra faire une fonction commune (entre chronique.figure, chronique.figure.cumul, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
+  # -------------- A FAIRE -------------- #
+  
   ## Évaluation des choix
   typemesure <- match.arg(typemesure)
   duree <- match.arg(duree)
 
-##### -------------- A FAIRE -------------- #####
-  # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
-  # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
-  # Changer ordre max/min/moy dans légende par Max/Moy/Min
-  # Il faudra faire une fonction commune (entre chronique.figure, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
-  # -------------- A FAIRE -------------- #
-  
 ##### Mise au format des données #####
 ## Transformation du format des dates
 if(class(data$chmes_date) != "Date"){#data$chmes_date <- as.Date(data$chmes_date,format="%Y-%m-%d") # ancien format du 08/04/19

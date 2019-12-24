@@ -5,6 +5,8 @@
 \title{Collecte des données de CAA et CAR pour une station donnée}
 \arguments{
 \item{station}{Code RHJ de la station ("MAD6-2")}
+
+\item{periode}{Permet de limiter la durée des données traitées : 10ans (par défaut), 20ans, Complet , 4campagnes}
 }
 \description{
 Cette fonction permet de synthétiser les données de cotes d'abondance attendues et observées pour une station donnée

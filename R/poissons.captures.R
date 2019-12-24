@@ -25,12 +25,9 @@ poissons.captures <- function(
   codePlacette = FALSE,
   codeOperation = FALSE)
 {
-  
-#library("RSQLite");library("dplyr")
-  
-  
+
 ## Ouverture de la BDD ##
-  dbP <- BDD.ouverture(Type = "Poissons")
+dbP <- BDD.ouverture(Type = "Poissons")
 
 ##### Récupération des données #####
 Captures <- tbl(dbP,"captures") %>% collect(n = Inf)
@@ -119,7 +116,7 @@ Captures %>%
                                .$nombre != 1 ~ .$taillemoy)) # Afin de compléter les tailles pour les poissons individuels
 
 ##### Nettoyage des 0 #####
-if(dim(Captures)[1] != 0) Captures[Captures == 0] <- ""
+if(dim(Captures)[1] != 0) Captures[Captures == 0] <- NA
 if(dim(Captures)[1] == 0) warning("Aucune capture correspondante")
 
 return(Captures)

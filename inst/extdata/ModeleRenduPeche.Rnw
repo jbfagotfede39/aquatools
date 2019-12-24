@@ -1,11 +1,11 @@
 %%%%% À faire %%%%%
-
+% refaire marcher la fonction align si possible
 % Rajouter les pages suivants par espèce.
 % Faire le calcul sur l'ensemble des données de la station (pas que la pêche en question) des courbes taille-poids
 
 %%%%% %%%%% %%%%% %%%%%
 
-\documentclass{article} %{book}`
+\documentclass[a4paper,12pt,twoside]{report}%{book}`
   %%% Encodage
    \usepackage[utf8]{inputenc}
    \usepackage[T1]{fontenc}
@@ -19,23 +19,32 @@
    \usepackage{textcomp} % Pour avoir le symbole pourmille \textperthousand
    \usepackage{pifont} % pour avoir des symboles sympas, notamment une coche et une croix
 
-   %%% Bibliographie
-	 \usepackage[backend=bibtex,bibstyle=authoryear, style=authoryear]{biblatex}
-   \bibliography{biblio}
 
 %----------------------------------------------------------------------------------------
 %  Figures et les tableaux
 %----------------------------------------------------------------------------------------
    \usepackage{graphicx}
-   \usepackage[margin=1cm]{geometry} 
+   \usepackage[margin=2cm]{geometry} 
 	 \usepackage{subfigure}
 	 \usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}} %  Définition de nouveaux alignements
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}} %  Définition de nouveaux alignements
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}} %  Définition de nouveaux alignements
    \usepackage{multicol}
+   \usepackage{colortbl}
 	 \usepackage[table]{xcolor}
    \usepackage{rotating} % Afin de tourner les tableaux
    \usepackage{longtable} % pour les tableaux sur plusieurs pages
 
-\begin{document}
+%	En-tête et pied-de-page
+%----------------------------------------------------------------------------------------
+\usepackage{fancyhdr} % Pour avoir une en-tête et un pied de page
+\usepackage{caption} 
+\usepackage{titlesec} 
+
+\captionsetup{}
+
+%\titlespacing*{\section}{0pt}{1pt}{4pt}
 
 <<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
@@ -52,16 +61,14 @@ opts_chunk$set(
 
 <<library>>=
 library(aquatools)
-library(dplyr)
-library(foreign)
-library(gdata)
+library(fs)
 library(ggplot2)
 library(lubridate)
 library(readxl)
 library(reshape2)
 library(RSQLite)
 library(scales)
-library(xlsx)
+library(tidyverse)
 library(xtable)
 @
 
@@ -71,9 +78,23 @@ library(xtable)
 Resultats <- poissons.resultats.BDD() # Avec Aquatools
 Resultats$datedebut.x <- ymd(Resultats$datedebut.x)
 @
-\IfFileExists{/Users/imac27/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}{\includegraphics[width=0.15\textwidth]{/Users/imac27/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}}{\includegraphics[width=0.15\textwidth]{/Volumes/Fixe-FD39/NAS-Outils/Logos/FD39/FD39-V3/FD39.png}}
-%\includegraphics[width=0.15\textwidth]{FD39.png} 
+	
+\pagestyle{fancy}
+ \renewcommand\headrulewidth{0.5pt}
+	 \renewcommand\footrulewidth{0.5pt}
+	
 
+ \fancyhead [R]{\includegraphics[width=0.1\textwidth]{FD39aveccadre.png}}
+ 
+ \fancyfoot[C]{FJPPMA}
+ 
+ \fancyfoot[R]{\dashrule[1mm]{1.5cm}{0.5} {\thepage} | \pageref{LastPage}}
+ \fancyfoot[L]{\includegraphics[width=0.08\textwidth]{roseaux.jpg}}
+ 
+
+\begin{document}
+
+\section*{\color{blue}Fiche inventaire piscicole}
 <<parametres, results='asis', fig.show='hold'>>=
 Parametres <-
 Resultats %>%
@@ -81,25 +102,36 @@ Resultats %>%
   filter(datedebut.x == "2015-05-19") %>%
   select(datedebut.x, nomecosysteme, commune, xlambert, ylambert, gestionnaire, nombreanodes, nombredepassages, longueurprospectee, largeurlameeau, surface, temperatureeau, oxygenationmgl, oxygenationpourcent, conductiviteeau, pheau)
 
-Parametres <- unique(Parametres)
-colnames(Parametres) <- c("Date","Cours d'eau","Commune","Coordonnée X","Coordonnée Y","Gestionnaire", "Nombre d'anodes", "Nombre de passages", "Longueur (m)", "Largeur (m)", "Surface (m2)", "Température", "Oxygénation (mg/l)", "Oxygénation (%)", "Conductivité", "pH")
-#Parametres$Date <- ymd_hms(Parametres$Date)
-#Parametres$Date <- paste(day(Parametres$Date), month(Parametres$Date), year(Parametres$Date),sep="-")
+colnames(Parametres) <- c("Date","Cours d'eau","Commune","Coordonnée X","Coordonnée Y","Gestionnaire", "Nombre d'anodes", "Nombre de passages", "Longueur (m)", "Largeur (m)", "Surface (m2)", "Température", "Oxygénation (mg/l)", "Pourcentage d'oxygénation", "Conductivité", "pH")  
 
-Parametres <- t(Parametres)
+############ Création de la colonne titre ######
+Parametres <- 
+  unique(Parametres) %>%
+  mutate(Date = paste0 (year(Date),"-",month(Date),"-",day(Date))) %>%
+  gather("Champ", "Contenu","Date":"pH") %>%
+  distinct()
 
-tabParametres <- xtable(Parametres, caption = "Paramètres", label="Parametres")
-rws <- seq(1, (nrow(Parametres)), by = 2)
-col <- rep("\\rowcolor[gray]{0.85}", length(rws))
+  if(nrow(Parametres) != 0){Parametres <- 
+    Parametres %>% 
+    dplyr::na_if(0)}
+  
+tabParametres <- xtable(Parametres)
+addtorow <- list()
+addtorow$pos <- list(-1,-1)
+addtorow$command <- c("\\rowcolor{black}",
+                          "\\multicolumn{2}{c}{\\large \\textcolor{white}{Données station}}\\\\\n")
+align(tabParametres)<-c("|L","|C{5cm}","|C{10cm}|")
 print(tabParametres,
   table.placement="!htbp",
   caption.placement="top", 
-  include.rownames=TRUE,
+  include.rownames=FALSE,
   include.colnames=FALSE,
+  sanitize.text.function = identity,
   #floating.environment='sidewaystable', # pour avoir un tableau tourné
-  scalebox=0.95, # afin de réduire la taille globale du tableau
-  add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
-  )
+  scalebox=1, # afin de réduire la taille globale du tableau
+   hline.after = c(0,nrow(tabParametres)),
+  add.to.row = addtorow) # pour les couleurs
+
 
 # Il manque l'opérateur, le lieu-dit, 
 @
@@ -131,24 +163,38 @@ temporaire <-
   temporaire$nom <- "TOTAL"
   Bruts <- merge(Bruts, temporaire, all=T)
   
-  Bruts <- Bruts %>% 
+  Bruts <- 
+    Bruts %>% 
     select(nom, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, nombretotalcaptures, densitenumeriquebrute, biomassetotalecapturee, densiteponderalebrute) %>% 
     arrange(desc(nom))
+    
+  if(nrow(Bruts) != 0){Bruts <- 
+    Bruts %>% 
+    dplyr::na_if(0)}
 
 colnames(Bruts)<-c("","Espèce","P1","P2","P3","Nb total","Ind/10a", "Biomasse (g)", "g/ha")
-tabBruts <- xtable(Bruts, caption = "Résultats bruts", label="tabbruts")
+tabBruts <- xtable(Bruts,caption = "Résultats bruts")
 digits(tabBruts)<-c(0,0,0,0,0,0,0,1,0,1)
 rws <- seq(1, (nrow(Bruts)), by = 2)
 col <- rep("\\rowcolor[gray]{0.85}", length(rws))
+align(tabBruts) <- c("L","C{1.5cm}","C{1.5cm}","C{0.85cm}","C{0.75cm}","C{0.75cm}","C{2cm}","C{1.5cm}","C{2.5cm}","C{2cm}")
+
+addtorow <- list()
+addtorow$pos <- list(-1,-1)
+addtorow$command <- c("\\rowcolor{black}",
+                          "\\multicolumn{7}{c}{\\large \\textcolor{white}{Effectifs}}& \\multicolumn{2}{c}{\\large \\textcolor{white}{Biomasses}}\\\\\n")
+
+
 print(tabBruts,
   table.placement="!htbp",
   caption.placement="top", 
   include.rownames=FALSE,
+  hline.after = c(-1,nrow(tabBruts)), 
   #floating.environment='sidewaystable', # pour avoir un tableau tourné
   #scalebox=0.75, # afin de réduire la taille globale du tableau
-  add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
+  #add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
+  add.to.row = addtorow
   )
-
 @
 
 <<tabelabores, results='asis'>>=
@@ -182,22 +228,46 @@ Resultats %>%
   
   # Remise en ordre des colonnes et renommage #
   
-  Elabores <- Elabores %>% 
-  select(nom, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, estimationeffectifnumerique, densitenumeriqueestimee, intervalleconfiancedensitenum, estimationeffectifponderal, densiteponderaleestimee, intervalleconfiancedensitepond, coteabondancenumerique, coteabondanceponderale)
-
-colnames(Elabores)<-c("","Espèce","P1","P2","P3","Eff. est.","Ind/10a","IC Ind/10a","Biom. est. (g)","g/ha","IC g/ha", "CAN", "CAP")
-tabElabores <- xtable(Elabores, caption = "Résultats estimés", label="tabelabores")
-digits(tabElabores)<-c(0,0,0,0,0,0,0,1,1,0,1,1,1,0)
+  Elabores <- 
+    Elabores %>% 
+    mutate(densitenumeriqueestimee = case_when(
+      intervalleconfiancedensitenum < 10 ~ paste0("\\color[HTML]{000100}", densitenumeriqueestimee),
+      intervalleconfiancedensitenum < 25 ~ paste0("\\color[HTML]{FFCC10}", densitenumeriqueestimee),
+      intervalleconfiancedensitenum > 25 ~ paste0("\\color[HTML]{FF5510}", densitenumeriqueestimee)))%>% 
+    mutate(densiteponderaleestimee = case_when(
+      intervalleconfiancedensitenum < 10 ~ paste0("\\color[HTML]{000100}", densiteponderaleestimee),
+      intervalleconfiancedensitenum < 25 ~ paste0("\\color[HTML]{FFCC10}", densiteponderaleestimee),
+      intervalleconfiancedensitenum > 25 ~ paste0("\\color[HTML]{FF5510}", densiteponderaleestimee)))%>% 
+  select(nom, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, estimationeffectifnumerique, densitenumeriqueestimee , estimationeffectifponderal, densiteponderaleestimee,  coteabondancenumerique, coteabondanceponderale)  
+  if(nrow(Elabores) != 0){Elabores <- 
+    Elabores %>% 
+    dplyr::na_if(0)}
+  
+  
+colnames(Elabores)<-c("","Espèce","P1","P2","P3","Eff. est.","Ind/10a","Biom. est. (g)","g/ha", "CAN", "CAP")
+tabElabores <- xtable(Elabores,caption = "Résultats élaborés")
+digits(tabElabores)<-c(0,0,0,0,0,0,0,0,0,0,0,0)
 rws <- seq(1, (nrow(Elabores)), by = 2)
 col <- rep("\\rowcolor[gray]{0.85}", length(rws))
+
+
+align(tabElabores) <- c("L","C{1.5cm}","C{1.25cm}","C{0.85cm}","C{0.75cm}","C{0.75cm}","C{1.4cm}","C{1.5cm}","C{2.5cm}","C{1.65cm}","C{1cm}","C{1cm}")
+addtorow8 <- list()
+addtorow8$pos <- list(-1,-1)
+addtorow8$command <- c("\\rowcolor{black}",
+                          " \\multicolumn{7}{c}{\\large \\textcolor{white}{Effectifs}}& \\multicolumn{2}{c}{\\large \\textcolor{white}{Biomasses}} & \\multicolumn{2}{c}{\\large \\textcolor{white}{Abondances}}\\\\\n")
+
 print(tabElabores,
   table.placement="!htbp",
   caption.placement="top", 
   include.rownames=FALSE,
+  hline.after = c(-1,nrow(tabElabores)), 
+     sanitize.text.function = identity,
   #floating.environment='sidewaystable', # pour avoir un tableau tourné
   #scalebox=0.75, # afin de réduire la taille globale du tableau
-  add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
-  )
+ #add.to.row = list(pos = as.list(rws), command = col) # pour les couleurs
+  
+  add.to.row = addtorow8)
 
 @
 

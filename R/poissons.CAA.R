@@ -4,6 +4,7 @@
 #' @name poissons.CAA
 #' @keywords poissons
 #' @param station Code RHJ de la station ("MAD6-2")
+#' @param periode Permet de limiter la durée des données traitées : 10ans (par défaut), 20ans, Complet , 4campagnes
 #' @export
 #' @import tidyverse
 #' @examples
@@ -27,7 +28,7 @@ poissons.CAA <- function(
   
   #### Import ntt_caR observées ####
   Resultats <- 
-    poissons.resultats(data.frame(Nom = station), Sortie = "Complet") %>% 
+    poissons.resultats(data.frame(Nom = station), Sortie = "Complet", periode = periode) %>% 
     filter(modedepeche != "CMN")%>% 
     select(nom,modedepeche,datedebut.x, codeespece, coderdt, coteabondancenumerique, coteabondanceponderale, typetheorique) %>%
     arrange(nom, datedebut.x, codeespece) %>% 
@@ -38,13 +39,6 @@ poissons.CAA <- function(
     mutate(NbrModedepeche = n_distinct(modedepeche)) %>%
     ungroup() %>% 
     mutate(datedebut.x = as.character(datedebut.x))
-  
-  # Limitation temporelle des résultats #
-  if(periode == "10ans") limitetemporelle <- now()-years(10)
-  if(periode == "20ans") limitetemporelle <- now()-years(20)
-  if(periode == "Complet") limitetemporelle <- now()-years(100)
-  if(periode == "4campagnes") limitetemporelle <- Resultats %>% distinct(datedebut.x) %>% arrange(desc(datedebut.x)) %>% pull() %>% nth(4)
-  Resultats <- Resultats %>% filter(datedebut.x >= limitetemporelle)
 
   ## Contexte global ##
   Contexte <-

@@ -49,13 +49,19 @@ chronique.analyse <- function(
   if(dim(Contexte)[1] == 0) stop("Aucune donnée dans la chronique à analyser")
   if(dim(Contexte)[1] > 1) stop("Différentes stations dans la chronique à analyser")
   
-  # Annee
-  Contexte <- 
-    data %>% 
+  Contexte <-
+    data %>%
     summarise(
-      Annee = median(year(chmes_date))
-    ) %>% 
+      DateMin = min(chmes_date),
+      DateMax = max(chmes_date),
+    ) %>%
+    mutate(AnneeFinaleDebut = ifelse(month(DateMin) == 10 | month(DateMin) == 11 | month(DateMin) == 12, year(DateMin)+1, year(DateMin))) %>% 
+    mutate(AnneeFinaleFin = ifelse(month(DateMax) >= 1 & month(DateMax) <= 9, year(DateMax), year(DateMax)+1)) %>% 
+    mutate(Annee = ifelse(AnneeFinaleDebut == AnneeFinaleFin, AnneeFinaleFin, NA_integer_)) %>% 
+    select(Annee) %>% 
     bind_cols(Contexte)
+  
+  if(is.na(Contexte$Annee)){stop("Calcul de l'année incomplet")}
   
   # chmes_typemesure
   if(testit::has_error(data %>% 
@@ -76,12 +82,15 @@ chronique.analyse <- function(
   #DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
   
   ##### Valeurs remarquables instantanées #####
-  ValRemarqInstant <- DataTravail[[5]]
+  ValRemarqInstant <- 
+    DataTravail[[5]] %>% 
+    group_by(chmes_coderhj, chmes_typemesure)
   
   ##### Valeurs remarquables journalières #####
   ### Statistiques par jour ###
   ValJours <- 
     DataTravail[[2]] %>% 
+    ungroup() %>% 
     mutate(Nref = 24/pasdetemps) %>% 
     mutate(VMaxMoy7j = RcppRoll::roll_mean(VMaxJ, 7, align = "right", fill = NA)) %>% 
     mutate(VMaxMoy30j = RcppRoll::roll_mean(VMaxJ, 30, align = "right", fill = NA)) %>% 
@@ -94,6 +103,7 @@ chronique.analyse <- function(
   ### Valeurs remarquables ###
   ValRemarqJours <-
     ValJours %>% 
+    group_by(chmes_coderhj, chmes_typemesure) %>% 
     summarise(
       VMoyJMinPer = round(min(VMoyJ),1),
       DateVMoyJMinPer = chmes_date[VMoyJ == min(VMoyJ)][1], # le [1] permet d'afficher la première occurence dans le cas d'occurences multiples
@@ -108,13 +118,13 @@ chronique.analyse <- function(
   ##### Valeurs remarquables sur année biologique #####
   ValRemarqAB <- 
     DataTravail[[4]] %>% 
-    ungroup() %>% 
-    select(VMinAB, DateVMinAB, VMaxAB, DateVMaxAB, Percentile10AB, Percentile25AB, Percentile50AB, Percentile75AB, Percentile90AB, Percentile90diurneAB)
+    select(chmes_coderhj, chmes_typemesure, VMinAB, DateVMinAB, VMaxAB, DateVMaxAB, Percentile10AB, Percentile25AB, Percentile50AB, Percentile75AB, Percentile90AB, Percentile90diurneAB)
   
   ##### Valeurs remarquables sur périodes mobiles #### 
   ## Calcul V Maxmoy 30 jours ## (Sens FD71)
   ValRemarqPeriodesMobiles <-
     ValJours %>% 
+    group_by(chmes_coderhj, chmes_typemesure) %>% 
     filter(!is.na(VMoyMoy30j)) %>% 
     summarise(
       VMoyMoy30J = max(VMoyMoy30j)
@@ -123,6 +133,7 @@ chronique.analyse <- function(
   ## Calcul V Maxmoy 30 jours ## (Sens Verneaux)
   ValRemarqPeriodesMobiles <-
     ValJours %>% 
+    group_by(chmes_coderhj, chmes_typemesure) %>% 
     filter(!is.na(VMaxMoy30j)) %>% 
     summarise(
       VMaxMoy30J = max(VMaxMoy30j),
@@ -134,6 +145,7 @@ chronique.analyse <- function(
   ## Calcul V Maxmoy 7 jours ##
   ValRemarqPeriodesMobiles <-
     ValJours %>% 
+    group_by(chmes_coderhj, chmes_typemesure) %>% 
     filter(!is.na(VMaxMoy7j)) %>% 
     summarise(
       VMaxMoy7J = max(VMaxMoy7j),
@@ -171,6 +183,7 @@ chronique.analyse <- function(
   ##### Qualité des données #####
   Qualite <-
     data %>% 
+    group_by(chmes_coderhj, chmes_typemesure) %>% 
     summarise(
       DateDPeriode = data$chmes_date[1], ## Date début période ##
       DateFPeriode = data$chmes_date[dim(data)[1]], ## Date fin période ##
@@ -375,7 +388,7 @@ Complet <-
   left_join(ValRemarqInstant, by = c("chmes_coderhj", "chmes_typemesure")) %>% 
   left_join(ValRemarqJours, by = c("chmes_coderhj", "chmes_typemesure")) %>% 
   left_join(ValRemarqPeriodesMobiles, by = c("chmes_coderhj", "chmes_typemesure")) %>% 
-  bind_cols(ValRemarqAB) %>% 
+  left_join(ValRemarqAB, by = c("chmes_coderhj", "chmes_typemesure")) %>% 
   bind_cols(Episodes)
 
 if(typemesure != "Thermie"){

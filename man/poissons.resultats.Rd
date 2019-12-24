@@ -7,6 +7,8 @@
 \item{ListeStations}{Dataframe contenant un colonne "Nom" avec le code de la station (RHJ)}
 
 \item{Sortie}{Forme du dataframe de sortie - \code{Simple} (par défault), \code{Propre} (format diffusable, avec stations) ou \code{Complet} (tous les champs)}
+
+\item{periode}{Permet de limiter la durée des données traitées : 10ans (par défaut), 20ans, Complet , 4campagnes}
 }
 \description{
 Cette fonction permet de collecter les différents résultats pour une liste donnée de stations

@@ -4,9 +4,11 @@
 \alias{chronique.stations}
 \title{Listage des stations de chroniques}
 \arguments{
-\item{Nom}{Nom recherché}
+\item{Territoire}{Territoire concerné. Unique ou sous forme de vecteur (c("Villerserine", "Villers-Robert") par exemple)}
 
-\item{Recherche}{Type de données recherchées}
+\item{Echelle}{Échelle spatiale de la synthèse (commune, canton, communauté de communes, département, région, contexte de PDPG, Hydro-écorégion, entité GEMAPI, Maître d'ouvrage, Milieu, Bassin versant, Sous-bassin versant, Polygone autre)}
+
+\item{Sortie}{Forme du dataframe de sortie - \code{Simple} (par défault), \code{Propre} (format diffusable, avec stations) ou \code{Complet} (tous les champs)}
 }
 \description{
 Cette fonction permet de lister les stations de la BDD Chroniques
