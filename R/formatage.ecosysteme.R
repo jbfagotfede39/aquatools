@@ -1,99 +1,168 @@
-#' Mise en acronymes des écosystèmes ou inversement
+#' Mise en data des écosystèmes ou inversement
 #'
-#' Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
+#' Cette fonction permet de mettre en data des noms d'écosystèmes ou de transformer des data en noms des écosystèmes
 #' @name formatage.ecosysteme
-#' @param acronymes Dataframe contenant les données à transformer
-#' @param Operation Type de transformation que l'on souhaite réaliser
-#' @export
+#' @param data Dataframe contenant les données à transformer
+#' @param Operation Type de transformation que l'on souhaite réaliser (\code{Simplification} ou \code{Expansion})
+#' @param ColonneEntree Champ contenant la donnée d'entrée
+#' @param ColonneSortie Champ recevant la donnée de sortie (peut être identique au champs d'entrée si on le souhaite)
+#' @import glue
 #' @import stringr
 #' @import tidyverse
+#' @export
 #' @examples
-#' formatage.ecosysteme(data$Station, Operation = "Simplification")
-#' PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Operation = "Simplification")
-#' data %>% stations.coderhj(DistSource = F) %>% formatage.ecosysteme(Operation = "Expansion")
+#' formatage.ecosysteme(data, Operation = "Expansion", ColonneEntree = "chsta_coderhj", ColonneSortie = "chsta_ecosysteme")
+#' formatage.ecosysteme(data, Operation = "Simplification", ColonneEntree = "chsta_ecosysteme", ColonneSortie = "chsta_ecosysteme")
 
 ##### TODO LIST #####
-# La mise en acronymes devrait moyennement fonctionner, car se basait précédemment que sur une colonne
+# Ne fonctionne pour l'instant pas avec les entrées géographiques
 #####################
 
 formatage.ecosysteme <- function(
-  acronymes = data,
-  Operation = c("Simplification", "Expansion")
+  data,
+  Operation = c("Simplification", "Expansion"),
+  ColonneEntree = NA_character_,
+  ColonneSortie = NA_character_
   )
   {
 
   ## Évaluation des choix
   Operation <- match.arg(Operation)
+  
+  ## Tests ##
+if(nchar(ColonneEntree) == 0) stop("Pas de champs en entrée")
+if(nchar(ColonneSortie) == 0) stop("Pas de champs de sortie")
+if(ColonneEntree %in% names(data) == FALSE) stop(paste0("Le champs ", ColonneEntree, " est absent du dataframe d'entrée"))
 
   ##### Expansion #####
 if(Operation == "Expansion"){
-acronymes <-
-  acronymes %>% 
-  left_join(formatage.abreviation() %>% filter(Type == "Écosystème"), by = c(codemilieu = "Acronyme")) %>% 
-  select(-Type, -codemilieu) %>% 
-  rename(Ecosysteme = Definition)
-}
 
+  dataNomColonnes <- data
+  
+  data <-
+    data %>% 
+    rename(coderhj := !!ColonneEntree) %>% 
+    stations.coderhj(ColonneEntree = "coderhj", ColonneSortie = "coderhj2", DistSource = F) %>% # Permet de supprimer les distances à la source des stations qui en auraient
+    rename(!!ColonneEntree := coderhj) %>% 
+    rename(coderhj := coderhj2) %>% 
+    left_join(formatage.abreviation(thematique = "Écosystème", formatage = "Propre"), by = c("coderhj" = "Abréviation")) %>% 
+    rename(Sortie = Définition)
+
+  
+  #### Test de complétude ####
+  test <- data %>% dplyr::filter(is.na(Sortie))
+  if(nrow(test) != 0) warning(paste0("Présence d'écosystème(s) impossible(s) à étendre : "), glue_collapse(unique(test$coderhj), ", ", last = " et "))
+  
+#### Renommage final ####
+if(ColonneEntree == ColonneSortie){data <- data %>% select(-coderhj) %>% select(-matches(ColonneEntree)) %>% rename(!!ColonneSortie := Sortie)}
+if(ColonneEntree != ColonneSortie){
+  if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% select(-matches(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent
+  if(!(ColonneSortie %in% colnames(data))){data <- data %>% rename(!!ColonneSortie := Sortie)} # Attention l'ordre de ces deux étapes est important
+}
+  
+  #### Ré-ordonnancement ####
+  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% select(match(colnames(dataNomColonnes),names(.)))}
+  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
+  
+}
+  
   ##### Simplification #####
 if(Operation == "Simplification"){
+  
+  dataNomColonnes <- data
+  
   #### Mise en minuscule ####
   # Afin de s'affranchir des problèmes de casse
-  acronymes <-
-    acronymes %>% 
-    str_to_lower()
+  
+  DataRef <- 
+    formatage.abreviation(thematique = "Écosystème", formatage = "Propre") %>% 
+    mutate(definition = str_to_lower(Définition))
+  
+  data <-
+    data %>% 
+    rename(definitionoriginale := !!ColonneEntree) %>% 
+    mutate(definitionsale = str_to_lower(definitionoriginale)) %>% 
+    left_join(DataRef, by = c("definitionsale" = "definition")) %>% 
+    select(-definitionsale)
+  
+  #### Exceptions manuelles ####
+  data <-
+    data %>%
+    dplyr::filter(is.na(Abréviation)) %>% 
+    select(-(Abréviation:Définition)) %>% 
+    mutate(definitionoriginale = case_when(
+      grepl("Abbaye", definitionoriginale) ~ "Lac de l'Abbaye",
+      grepl("Antre", definitionoriginale) ~ "Lac d'Antre",
+      grepl("ascencière|assencière", definitionoriginale) ~ "Lac de l'Assencière",
+      grepl("Ilay|Motte", definitionoriginale) ~ "Lac d'Ilay",
+      grepl("Val", definitionoriginale) & grepl("lac", definitionoriginale) ~ "Lac du Val"
+    )
+    ) %>% 
+    mutate(definitionsale = str_to_lower(definitionoriginale)) %>% 
+    left_join(DataRef, by = c("definitionsale" = "definition")) %>% 
+    select(-definitionsale) %>% 
+    dplyr::union(data %>% dplyr::filter(!is.na(Abréviation))) # Ne fonctionne pour l'instant pas avec les entrées géographiques -> union impossible
 
-  #### Détection et remplacement ####
-acronymes[str_detect(acronymes, "abbaye")] <- "ABB"
-acronymes[str_detect(acronymes, "antre")] <- "ANT"
-acronymes[str_detect(acronymes, "assencière")] <- "ASS"
-acronymes[str_detect(acronymes, "bellefontaine")] <- "BEL"
-acronymes[str_detect(acronymes, "bez")] <- "BEZ"
-acronymes[str_detect(acronymes, "bonlieu")] <- "BON"
-acronymes[str_detect(acronymes, "brenet")] <- "BRN"
-acronymes[str_detect(acronymes, "chalain")] <- "CHN"
-acronymes[str_detect(acronymes, "chanon")] <- "CAO"
-acronymes[str_detect(acronymes, "clairvaux pet")] <- "PCL"
-acronymes[str_detect(acronymes, "clairvaux grd")] <- "GCL"
-acronymes[str_detect(acronymes, "chambly")] <- "CHY"
-acronymes[str_detect(acronymes, "dame")] <- "DAM"
-acronymes[str_detect(acronymes, "embouteilleux")] <- "EMB"
-acronymes[str_detect(acronymes, "etival")] <- "GET"
-acronymes[str_detect(acronymes, "petit etival")] <- "PET"
-acronymes[str_detect(acronymes, "fauge")] <- "FAU"
-acronymes[str_detect(acronymes, "plasne")] <- "FDP"
-acronymes[str_detect(acronymes, "fioget")] <- "FIO"
-acronymes[str_detect(acronymes, "ilay")] <- "ILA"
-acronymes[str_detect(acronymes, "lamoura")] <- "LAM"
-acronymes[str_detect(acronymes, "lautrey")] <- "LAU"
-acronymes[str_detect(acronymes, "petit maclu")] <- "PMA"
-acronymes[str_detect(acronymes, "grand maclu")] <- "GMA"
-acronymes[str_detect(acronymes, "mortes")] <- "MOR"
-acronymes[str_detect(acronymes, "narlay")] <- "NAR"
-acronymes[str_detect(acronymes, "onoz")] <- "ONO"
-acronymes[str_detect(acronymes, "penne")] <- "PEN"
-acronymes[str_detect(acronymes, "ratay")] <- "RAT"
-acronymes[str_detect(acronymes, "truites")] <- "RGT"
-acronymes[str_detect(acronymes, "rousses")] <- "ROU"
-acronymes[str_detect(acronymes, "rosay")] <- "ROS"
-acronymes[str_detect(acronymes, "val")] <- "LVA"
-acronymes[str_detect(acronymes, "vernois")] <- "VER"
-acronymes[str_detect(acronymes, "viremont")] <- "VIR"
-acronymes[str_detect(acronymes, "viry")] <- "VRY"
-acronymes[str_detect(acronymes, "blye")] <- "BLY"
-acronymes[str_detect(acronymes, "bolozon")] <- "CIZ"
-acronymes[str_detect(acronymes, "coiselet")] <- "COI"
-acronymes[str_detect(acronymes, "cuttura")] <- "CUT"
-acronymes[str_detect(acronymes, "etables")] <- "ETA"
-acronymes[str_detect(acronymes, "lavancia")] <- "LAV"
-acronymes[str_detect(acronymes, "ravilloles")] <- "RAV"
-acronymes[str_detect(acronymes, "mortier")] <- "MOT"
-acronymes[str_detect(acronymes, "vouglans")] <- "VOU"
+  #### Exceptions manuelles ####
+# data[str_detect(data, "bellefontaine")] <- "BEL"
+# data[str_detect(data, "bez")] <- "BEZ"
+# data[str_detect(data, "bonlieu")] <- "BON"
+# data[str_detect(data, "brenet")] <- "BRN"
+# data[str_detect(data, "chalain")] <- "CHN"
+# data[str_detect(data, "chanon")] <- "CAO"
+# data[str_detect(data, "clairvaux pet")] <- "PCL"
+# data[str_detect(data, "clairvaux grd")] <- "GCL"
+# data[str_detect(data, "chambly")] <- "CHY"
+# data[str_detect(data, "dame")] <- "DAM"
+# data[str_detect(data, "embouteilleux")] <- "EMB"
+# data[str_detect(data, "etival")] <- "GET"
+# data[str_detect(data, "petit etival")] <- "PET"
+# data[str_detect(data, "fauge")] <- "FAU"
+# data[str_detect(data, "plasne")] <- "FDP"
+# data[str_detect(data, "fioget")] <- "FIO"
+# data[str_detect(data, "lamoura")] <- "LAM"
+# data[str_detect(data, "lautrey")] <- "LAU"
+# data[str_detect(data, "petit maclu")] <- "PMA"
+# data[str_detect(data, "grand maclu")] <- "GMA"
+# data[str_detect(data, "mortes")] <- "MOR"
+# data[str_detect(data, "narlay")] <- "NAR"
+# data[str_detect(data, "onoz")] <- "ONO"
+# data[str_detect(data, "penne")] <- "PEN"
+# data[str_detect(data, "ratay")] <- "RAT"
+# data[str_detect(data, "truites")] <- "RGT"
+# data[str_detect(data, "rousses")] <- "ROU"
+# data[str_detect(data, "rosay")] <- "ROS"
+# data[str_detect(data, "vernois")] <- "VER"
+# data[str_detect(data, "viremont")] <- "VIR"
+# data[str_detect(data, "viry")] <- "VRY"
+# data[str_detect(data, "blye")] <- "BLY"
+# data[str_detect(data, "bolozon")] <- "CIZ"
+# data[str_detect(data, "coiselet")] <- "COI"
+# data[str_detect(data, "cuttura")] <- "CUT"
+# data[str_detect(data, "etables")] <- "ETA"
+# data[str_detect(data, "lavancia")] <- "LAV"
+# data[str_detect(data, "ravilloles")] <- "RAV"
+# data[str_detect(data, "mortier")] <- "MOT"
+# data[str_detect(data, "vouglans")] <- "VOU"
 
   #### Test de complétude ####
-  if(all(grepl("^[[:upper:]]+$", acronymes)) != T) warning(paste0("Certain(s) cas non traité(s) : ",unique(acronymes[!grepl("^[[:upper:]]+$", acronymes)])))
+test <- data %>% dplyr::filter(is.na(Abréviation))
+if(nrow(test) != 0) warning(paste0("Présence d'écosystème(s) impossible(s) à simplifier : "), glue::glue_collapse(unique(test$definitionoriginale), ", ", last = " et "))
+
+  #### Renommage final ####
+  if(ColonneEntree == ColonneSortie){data <- data %>% select(-definitionoriginale) %>% select(-matches(ColonneEntree)) %>% rename(!!ColonneSortie := Abréviation)}
+  if(ColonneEntree != ColonneSortie){
+    if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% select(-matches(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent
+    if(!(ColonneSortie %in% colnames(data))){data <- data %>% rename(!!ColonneEntree := definitionoriginale, !!ColonneSortie := Abréviation)} # Attention l'ordre de ces deux étapes est important
+  }
+  
+  #### Ré-ordonnancement ####
+  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% select(match(colnames(dataNomColonnes),names(.)))}
+  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
+
 }
   
 #### Retour du tableau complet ####
-return(acronymes)
+return(data)
   
 } # Fin de la fonction

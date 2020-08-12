@@ -3,11 +3,16 @@
 \name{formatage.annee.biologique}
 \alias{formatage.annee.biologique}
 \title{Reformatage de dates en année biologique}
+\usage{
+formatage.annee.biologique(data = data, datedebutanneebiol = "10-01")
+}
 \arguments{
 \item{data}{Jeu de données contenant une colonne chmes_date ou chsvi_date au format Date}
+
+\item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)}
 }
 \description{
-Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne chmes_anneebiol
+Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne chmes_anneebiol ou chsvi_anneebiol
 }
 \examples{
 formatage.annee.biologique(data)

@@ -2,17 +2,28 @@
 % Please edit documentation in R/formatage.ecosysteme.R
 \name{formatage.ecosysteme}
 \alias{formatage.ecosysteme}
-\title{Mise en acronymes des écosystèmes ou inversement}
+\title{Mise en data des écosystèmes ou inversement}
+\usage{
+formatage.ecosysteme(
+  data,
+  Operation = c("Simplification", "Expansion"),
+  ColonneEntree = NA_character_,
+  ColonneSortie = NA_character_
+)
+}
 \arguments{
-\item{acronymes}{Dataframe contenant les données à transformer}
+\item{data}{Dataframe contenant les données à transformer}
 
-\item{Operation}{Type de transformation que l'on souhaite réaliser}
+\item{Operation}{Type de transformation que l'on souhaite réaliser (\code{Simplification} ou \code{Expansion})}
+
+\item{ColonneEntree}{Champ contenant la donnée d'entrée}
+
+\item{ColonneSortie}{Champ recevant la donnée de sortie (peut être identique au champs d'entrée si on le souhaite)}
 }
 \description{
-Cette fonction permet de mettre en acronymes des noms d'écosystèmes ou de transformer des acronymes en noms des écosystèmes
+Cette fonction permet de mettre en data des noms d'écosystèmes ou de transformer des data en noms des écosystèmes
 }
 \examples{
-formatage.ecosysteme(data$Station, Operation = "Simplification")
-PC$pcmes_coderhj <- formatage.ecosysteme(PC$pcmes_coderhj, Operation = "Simplification")
-data \%>\% stations.coderhj(DistSource = F) \%>\% formatage.ecosysteme(Operation = "Expansion")
+formatage.ecosysteme(data, Operation = "Expansion", ColonneEntree = "chsta_coderhj", ColonneSortie = "chsta_ecosysteme")
+formatage.ecosysteme(data, Operation = "Simplification", ColonneEntree = "chsta_ecosysteme", ColonneSortie = "chsta_ecosysteme")
 }

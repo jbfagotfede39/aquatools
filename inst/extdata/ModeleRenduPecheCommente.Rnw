@@ -276,12 +276,14 @@ print(tabElabores,
 <<Avis, results='asis'>>=
 Avis <-
 Resultats %>%
-  filter(nom == "SOR10-2") %>%
-  filter(datedebut.x == "2015-05-19") %>%
-  select(avisexpert.x) %>% 
-  distinct()
+  dplyr::filter(nom == "SOR10-2") %>%
+  dplyr::filter(datedebut.x == "2015-05-19") %>%
+  dplyr::select(avisexpert.x) %>% 
+  dplyr::distinct() %>% 
+  dplyr::pull()
 #Avis[1,1] <- str_replace(Avis[1,1], "\", "\\") # Afin d'ajouter des double slash au lieu des simples afin qu'ils ne soient pas compilés par latex
-cat(Avis[1,1])
+#cat(Avis[1,1])
+cat(Avis)
 @
 
 

@@ -5,30 +5,36 @@
 #' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
 #' @param projet Nom du projet
 #' @param complement Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut). Uniquement pour les valeurs journalières
+#' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)
 #' @param export Si \code{TRUE}, exporte les résultats (\code{FALSE} par défaut)
 #' @keywords chronique
-#' @import lubridate
 #' @import openxlsx
 #' @import tidyverse
 #' @export
 #' @examples
 #' DataTravail <- chronique.agregation(data)
 #' DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
+#' DataTravail %>% purrr::pluck(2)
+#' chronique.agregation() %>% magrittr::extract2(2)
 #' chronique.agregation(data, export = T) # Export sous forme de fichier excel avec 5 onglets
 
 chronique.agregation <- function(
   data = data,
-  projet = as.character(NA),
+  projet = NA_character_,
   complement = FALSE,
+  datedebutanneebiol = "10-01",
   export = FALSE
 )
 {
 
 ##### -------------- A FAIRE -------------- #####
+# Ajouter une option qui permet de tout agréger comme actuellement (tout par défault, comme auj.), ou seulement à la granularité qu'on souhaite (gain de temps de traitement) -> modif dans chronique.figure.cumul pour utilisation de la journée seulement (suppression des pluck)
+# Traitement multi-site en ajoutant une paramètre de group_by()
 # Ajout d'un paramètre saison ? Il semble nécessaire de réaliser le calcul à la main pour établir la saison, pas inclus dans lubridate : https://github.com/tidyverse/lubridate/issues/611
 # Ajout d'un paramètre année civile ?
 # Ajout d'un paramètre saison naturelle (équinoxe et solstice) ? https://stackoverflow.com/questions/9500114/find-which-season-a-particular-date-belongs-to
 # Il faudra faire une fonction commune (entre chronique.figure, chronique.figure.cumul, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
+# Faire un outil de regroupement des données brutes au format large à partir de la fin du code de 2020-02-13_Export_suivi_FUR_format_DCE.R  
 # -------------- A FAIRE -------------- #
 
 
@@ -38,9 +44,13 @@ data <-
   data %>% 
   mutate(chmes_date = ymd(chmes_date)) %>% 
   mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
-  filter(is.na(chmes_valeur) == F) %>% 
+  dplyr::filter(is.na(chmes_valeur) == F) %>% 
   arrange(Time) %>% 
   select(-Time)
+
+data <- 
+  data %>% 
+  formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) # nécessaire pour le calcul des percentiles et les degrés-jours cumulés
 
 ##### Contexte de la chronique #####
 Contexte <- 
@@ -66,6 +76,7 @@ ValInstantanees <-
 if(complement == TRUE){
   # ValInstantanees <-
   # ValInstantanees %>%
+  # ungroup() %>% 
   # complete(chmes_date = seq.Date(min(chmes_date), max(chmes_date), by="hour"))
 }
 
@@ -74,7 +85,7 @@ ValJours <-
   data %>% 
   mutate(Time = ymd_hms(paste(chmes_date,chmes_heure,"_"))) %>% 
   group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>%
-  filter(chmes_valeur == max(chmes_valeur) | chmes_valeur == min(chmes_valeur)) %>%
+  dplyr::filter(chmes_valeur == max(chmes_valeur) | chmes_valeur == min(chmes_valeur)) %>%
   arrange(Time) %>%
   summarise(
     VAmpliSigneJ = last(chmes_valeur) - first(chmes_valeur)
@@ -93,7 +104,7 @@ ValJours <-
       ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_date")
   ) %>% 
   ungroup() %>% 
-  formatage.annee.biologique() %>% 
+  formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
   group_by(chmes_anneebiol) %>% 
   mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
   ungroup() %>% 
@@ -103,7 +114,10 @@ ValJours <-
 if(complement == TRUE){
   ValJours <-
     ValJours %>%
-    complete(chmes_date = seq.Date(min(chmes_date), max(chmes_date), by="day"))
+    ungroup() %>% 
+    group_by(chmes_coderhj, chmes_typemesure) %>% 
+    complete(chmes_date = seq.Date(min(chmes_date), max(chmes_date), by="day")) %>% 
+    ungroup()
 }
 
 #### Agrégation par mois ####
@@ -111,7 +125,7 @@ ValMois <-
   data %>% 
   mutate(chmes_mois = paste0(year(chmes_date), "-", month(chmes_date))) %>% 
   group_by(chmes_coderhj, chmes_typemesure, chmes_mois) %>%
-  filter(chmes_valeur == max(chmes_valeur) | chmes_valeur == min(chmes_valeur)) %>%
+  dplyr::filter(chmes_valeur == max(chmes_valeur) | chmes_valeur == min(chmes_valeur)) %>%
   arrange(chmes_date) %>%
   summarise(
     VAmpliSigneM = last(chmes_valeur) - first(chmes_valeur)
@@ -147,23 +161,26 @@ ValMois <-
 if(complement == TRUE){
   # ValMois <-
   #   ValMois %>%
-  #   complete(chmes_mois = seq.Date(min(chmes_mois), max(chmes_mois), by="month"))
+  #   ungroup() %>% 
+  #   group_by(chmes_coderhj, chmes_typemesure) %>% 
+  #   complete(chmes_mois = seq.Date(min(chmes_mois), max(chmes_mois), by="month")) %>%
+  #   ungroup()
   warning("Le complément par mois n'est pas développé")
 }
 
 #### Agrégation par année biologique ####
 ValAnneeBiol <-
   data %>% 
-  formatage.annee.biologique() %>% 
+  formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
   group_by(chmes_coderhj, chmes_typemesure, chmes_anneebiol) %>%
-  filter(chmes_valeur == max(chmes_valeur) | chmes_valeur == min(chmes_valeur)) %>%
+  dplyr::filter(chmes_valeur == max(chmes_valeur) | chmes_valeur == min(chmes_valeur)) %>%
   arrange(chmes_date) %>%
   summarise(
     VAmpliSigneAB = last(chmes_valeur) - first(chmes_valeur)
   ) %>% 
   left_join(
     data %>% 
-    formatage.annee.biologique() %>% 
+    formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
     group_by(chmes_coderhj, chmes_typemesure, chmes_anneebiol) %>% 
     summarise(
       VMinAB = min(chmes_valeur),
@@ -184,7 +201,7 @@ ValAnneeBiol <-
       summarise(
         VMoyJ = mean(chmes_valeur)) %>% 
       ungroup() %>% 
-      formatage.annee.biologique() %>% 
+      formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
       group_by(chmes_coderhj, chmes_typemesure, chmes_anneebiol) %>% 
       summarise(
         SommeMoyJAB = sum(VMoyJ)) %>% 
@@ -197,12 +214,12 @@ PercentilesCalcules <-
   data %>% 
   group_by(chmes_anneebiol) %>% 
   mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
-  filter(between(hour(Time), 8, 18)) %>% 
+  dplyr::filter(between(hour(Time), 8, 18)) %>% 
   select(-Time) %>% 
   mutate(rang = percent_rank(chmes_valeur)) %>% 
-  filter(rang <= 0.9) %>% 
+  dplyr::filter(rang <= 0.9) %>% 
   arrange(desc(rang)) %>% 
-  filter(row_number() == 1) %>% 
+  dplyr::filter(row_number() == 1) %>% 
   select(chmes_anneebiol, chmes_valeur) %>% 
   rename(Percentile90diurneAB = chmes_valeur)
 
@@ -216,9 +233,9 @@ for(i in 1:length(Percentiles)){
     data %>% 
     group_by(chmes_anneebiol) %>% 
     mutate(rang = percent_rank(chmes_valeur)) %>% 
-    filter(rang <= Percentile) %>% 
+    dplyr::filter(rang <= Percentile) %>% 
     arrange(desc(rang)) %>% 
-    filter(row_number() == 1) %>% 
+    dplyr::filter(row_number() == 1) %>% 
     select(chmes_anneebiol, chmes_valeur) %>% 
     rename(!!paste0('Percentile',quo_name(Percentile*100),'AB') := chmes_valeur) %>% 
     left_join(PercentilesCalcules, by = "chmes_anneebiol")
@@ -230,7 +247,10 @@ ValAnneeBiol <-
 if(complement == TRUE){
   # ValAnneeBiol <-
   #   ValAnneeBiol %>%
-  #   complete(chmes_anneebiol = seq.Date(min(chmes_anneebiol), max(chmes_anneebiol), by="year"))
+  #   ungroup() %>% 
+  #   group_by(chmes_coderhj, chmes_typemesure) %>% 
+  #   complete(chmes_anneebiol = seq.Date(min(chmes_anneebiol), max(chmes_anneebiol), by="year")) %>%
+  #   ungroup()
   warning("Le complément par année biologique n'est pas développé")
   }
 
@@ -257,6 +277,6 @@ if(export == FALSE){
 ## Export vers xlsx ##
 if(export == TRUE){
   l <- list(ValInstantanees = ValInstantanees, ValJours = ValJours, ValMois = ValMois, ValAnneeBiol = ValAnneeBiol, ValComplet = ValComplet)
-  openxlsx::write.xlsx(l, file = paste0("./",projet, "/Sorties/Données/",Contexte$chmes_coderhj, "_données.xlsx"))
+  openxlsx::write.xlsx(l, file = paste0("./",projet, "/Sorties/Données/Agrégations_diverses/",Contexte$chmes_coderhj, "_données.xlsx"))
 }
 } # Fin de la fonction

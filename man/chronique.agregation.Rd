@@ -3,12 +3,23 @@
 \name{chronique.agregation}
 \alias{chronique.agregation}
 \title{Agrégation de chroniques}
+\usage{
+chronique.agregation(
+  data = data,
+  projet = NA_character_,
+  complement = FALSE,
+  datedebutanneebiol = "10-01",
+  export = FALSE
+)
+}
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 
 \item{projet}{Nom du projet}
 
 \item{complement}{Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut). Uniquement pour les valeurs journalières}
+
+\item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)}
 
 \item{export}{Si \code{TRUE}, exporte les résultats (\code{FALSE} par défaut)}
 }
@@ -18,6 +29,8 @@ Cette fonction permet d'agréger des chroniques de mesures (température, niveau
 \examples{
 DataTravail <- chronique.agregation(data)
 DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
+DataTravail \%>\% purrr::pluck(2)
+chronique.agregation() \%>\% magrittr::extract2(2)
 chronique.agregation(data, export = T) # Export sous forme de fichier excel avec 5 onglets
 }
 \keyword{chronique}

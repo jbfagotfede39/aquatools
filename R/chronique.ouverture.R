@@ -2,11 +2,14 @@
 #'
 #' Cette fonction permet d'ouvrir de manière semi-automatisée des fichiers de chroniques
 #' @name chronique.ouverture
-#' @param Type Type de données en entrée (Mesures, Suivis, Stations)
+#' @param Type Type de données en entrée (Mesures, Suivis, Stations, Commentaires)
 #' @param typemesure Défini le type de données (Thermie, Piézométrie, etc.)
 #' @param Localisation Localisation relative du fichier (à partir de /NAS-DATA/)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
-#' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms)
+#' @param nbcolonnes Nombre de colonnes concernées
+#' @param typefichier Type de fichier : .csv (par défaut) ou excel
+#' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)
+#' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
 #' @import lubridate
 #' @import stringr
@@ -18,13 +21,14 @@
 #' chronique.ouverture("Suivi", "Thermie", "/NAS-DATA/Chroniques/Saisie_JB/2019-01-18_PDPG/Saisie_cahier_terrain_PDPG_V2.xlsx")
 
 chronique.ouverture <- function(
-  Type = c("Mesures", "Suivis", "Stations"),
-  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie", "Télétransmission"),
-  Localisation = as.character(NA),
-  skipvalue = 0,
-  nbcolonnes = 6,
+  Type = c("Mesures", "Suivis", "Stations", "Commentaires"),
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
+  Localisation = NA_character_,
+  skipvalue = 9,
+  nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
-  typedate = c("ymd", "dmy", "mdy", "dmy_hms")
+  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
+  formatmacmasalmo = F
 )
 {
   
@@ -45,11 +49,13 @@ if(Type == "Mesures"){
   if(typemesure == "Thermie"){
     if(nbcolonnes == 2){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "cc")}
       names(dataaimporter)[1] <- c('DateHeure')
       names(dataaimporter)[2] <- c('Valeur')
     }
     
     if(nbcolonnes == 3){
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")}
     }
     
@@ -57,32 +63,67 @@ if(Type == "Mesures"){
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc")}
     }
     
+    if(nbcolonnes == 5){
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctccc")}
+    }
+    
     if(nbcolonnes == 6){
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcccc")}
     }
     
-if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[1] <- c('Date')}
-if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[2] <- c('Heure')}
-if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
-if(nbcolonnes == 4 | nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
-if(nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
-if(nbcolonnes == 6){names(dataaimporter)[6] <- c('asup3')}
-
 if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développer")
 
-## Nettoyage ##
-dataaimporter <-
-  dataaimporter %>% 
-  select(Date, Heure, Valeur)
+if(formatmacmasalmo == F){
+  if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[1] <- c('Date')}
+  if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[2] <- c('Heure')}
+  if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
+  if(nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
+  if(nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
+  if(nbcolonnes == 6){names(dataaimporter)[6] <- c('asup3')}
+  }
 
+if(formatmacmasalmo == T){
+  if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[1] <- c('Heure')}
+  if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[2] <- c('Date')}
+  if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
+  }
+
+## Nettoyage ##
 if(testit::has_warning(ymd(dataaimporter$Date)) == FALSE & typedate == "ymd") dataaimporter$Date <- ymd(dataaimporter$Date)
 if(testit::has_warning(dmy(dataaimporter$Date)) == FALSE & typedate == "dmy") dataaimporter$Date <- dmy(dataaimporter$Date)
 if(testit::has_warning(mdy(dataaimporter$Date)) == FALSE & typedate == "mdy") dataaimporter$Date <- mdy(dataaimporter$Date)
-#if(testit::has_warning(ymd_hms(dataaimporter$Date)) == FALSE) dataaimporter$Date <- ymd_hms(dataaimporter$Date)
-if(testit::has_warning(dmy_hms(dataaimporter$Date)) == FALSE & typedate == "dmy_hms") dataaimporter$Date <- dmy_hms(dataaimporter$Date)
+if(testit::has_warning(ymd_hms(dataaimporter$DateHeure)) == FALSE & typedate == "ymd_hms"){
+  dataaimporter <-
+    dataaimporter %>% 
+    mutate(DateHeure = ymd_hms(DateHeure)) %>% 
+    mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
+    mutate(Heure = format(DateHeure, format="%H:%M:%S"))
+}
+if(testit::has_warning(dmy_hm(dataaimporter$DateHeure)) == FALSE & typedate == "dmy_hm"){
+  dataaimporter <-
+    dataaimporter %>% 
+    mutate(DateHeure = dmy_hm(DateHeure)) %>% 
+    mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
+    mutate(Heure = format(DateHeure, format="%H:%M:%S"))
+}
+if(testit::has_warning(dmy_hms(dataaimporter$DateHeure)) == FALSE & typedate == "dmy_hms"){
+  dataaimporter <-
+    dataaimporter %>% 
+    mutate(DateHeure = dmy_hms(DateHeure)) %>% 
+    mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
+    mutate(Heure = format(DateHeure, format="%H:%M:%S"))
+}
+
+# Cas où les heures sont au format 1899-12-31 00:00:00 (POSIXct avec str ou dttm en tibble) :
+if(inherits(dataaimporter$Heure, "POSIXct")){ #dataaimporter[[2]] car avec macma on peut avoir un ordre de champs différents
+  dataaimporter <-
+    dataaimporter %>% 
+    mutate(Heure = format(Heure, format="%H:%M:%S"))
+}
 
 dataaimporter <-
   dataaimporter %>% 
+  select(Date, Heure, Valeur) %>% 
   mutate(Date = format(Date, format="%Y-%m-%d")) %>% 
   mutate(Date = ymd(Date)) %>% 
   mutate(Heure = as.character(Heure)) %>% 
@@ -154,7 +195,9 @@ if(typemesure == "Piézométrie"){
       read_delim(Localisation, skip = debutData, delim=",", col_types = str_dup("c", nColonnes), col_names = F, n_max = nData) %>% 
       rename(Date = "X2") %>% 
       filter(!is.na(Date)) %>% 
-      mutate(Date = dmy(Date))
+      mutate(Date = dmy(Date)) %>% 
+      mutate(Date = as.character(format(Date, format="%Y-%m-%d"))) #%>% 
+      #mutate(.[[3]] = as.numeric( sub(",", ".", .[[3]])))
     
     ## Travail des données de VOU ##
     if(station == "VOUmercantine" | station == "VOUsurchauffant" | station == "AIN22-2" | station == "AIN37-2"){
@@ -163,6 +206,7 @@ if(typemesure == "Piézométrie"){
         select(2:3,5) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = emetteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Barométrie") %>%
         mutate(unite = "mBar")
 
@@ -171,6 +215,7 @@ if(typemesure == "Piézométrie"){
         select(2,3,8) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Thermie") %>%
         mutate(unite = "°C")
     }
@@ -183,6 +228,7 @@ if(typemesure == "Piézométrie"){
           select(2,3,7) %>%
           rename(Heure = 2, Valeur = 3) %>%
           mutate(Capteur = capteur) %>%
+          mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
           mutate(typemesure = "Piézométrie brute") %>%
           mutate(unite = "cmH2O")
         
@@ -192,6 +238,7 @@ if(typemesure == "Piézométrie"){
           select(2,3,9) %>%
           rename(Heure = 2, Valeur = 3) %>%
           mutate(Capteur = capteur) %>%
+          mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
           mutate(typemesure = "Piézométrie compensée") %>%
           mutate(unite = "cmH2O")
         
@@ -212,6 +259,7 @@ if(typemesure == "Piézométrie"){
         select(2,3,7) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Oxygénation") %>%
         mutate(unite = "mg/L")
       
@@ -221,6 +269,7 @@ if(typemesure == "Piézométrie"){
         select(2,3,9) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Oxygénation") %>%
         mutate(unite = "%")
       
@@ -230,6 +279,7 @@ if(typemesure == "Piézométrie"){
         select(2,3,10) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Oxygénation") %>%
         mutate(unite = "torr")
       
@@ -243,6 +293,7 @@ if(typemesure == "Piézométrie"){
         select(2,3,28) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Piézométrie brute") %>%
         mutate(unite = "kPa")
       
@@ -252,6 +303,7 @@ if(typemesure == "Piézométrie"){
         select(2,3,31) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Piézométrie compensée") %>%
         mutate(unite = "cmH2O")
       
@@ -290,21 +342,30 @@ dataaimporter <-
 
 #### Suivis ####
 if(Type == "Suivis"){
-## Chargement des données ##
-dbD <- BDD.ouverture("Data")
-SuiviTerrain <- tbl(dbD, in_schema("fd_production", "chroniques_suiviterrain")) %>% collect(n = 2) %>% arrange(chsvi_coderhj)
+SuiviTerrain <- 
+  structure(list(id = numeric(0), chsvi_mo = logical(0), chsvi_coderhj = character(0), 
+                 chsvi_typesuivi = character(0), chsvi_operateurs = logical(0), 
+                 chsvi_date = logical(0), chsvi_heure = logical(0), chsvi_capteur = logical(0), 
+                 chsvi_valeur = logical(0), chsvi_unite = character(0), chsvi_action = logical(0), 
+                 chsvi_fonctionnement = logical(0), chsvi_qualite = character(0), 
+                 chsvi_actionafaire = logical(0), chsvi_remarques = logical(0), 
+                 `_modif_utilisateur` = logical(0), `_modif_type` = logical(0), 
+                 `_modif_date` = logical(0)), class = c("tbl_df", "tbl", "data.frame"
+                 ), row.names = c(NA, 0L))
 
 dataaimporter <- read_excel(Localisation, sheet = 1)
 
 ## Renommage des champs ##
 dataaimporter <- 
   dataaimporter %>% 
-  rename_at(vars(matches("Valeur manuelle")), list(~str_replace(., "Valeur manuelle", "chsvi_valeur"))) %>%
   rename_at(vars(matches("Valeur")), list(~str_replace(., "Valeur", "chsvi_valeur"))) %>%
+  rename_at(vars(matches("Valeur manuelle")), list(~str_replace(., "Valeur manuelle", "chsvi_valeur"))) %>%
+  rename_at(vars(matches("Température manuelle")), list(~str_replace(., "Température manuelle", "chsvi_valeur"))) %>%
   rename_at(vars(matches("Tmanuelle")), list(~str_replace(., "Tmanuelle", "chsvi_valeur"))) %>%
   rename_at(vars(matches("MO")), list(~str_replace(., "MO", "chsvi_mo"))) %>%
   rename_at(vars(matches("Maître d'ouvrage")), list(~str_replace(., "Maître d'ouvrage", "chsvi_mo"))) %>%
   rename_at(vars(matches("Operateurs")), list(~str_replace(., "Operateurs", "chsvi_operateurs"))) %>%
+  rename_at(vars(matches("Opérateur")), list(~str_replace(., "Opérateur", "chsvi_operateurs"))) %>%
   rename_at(vars(matches("Opérateurs")), list(~str_replace(., "Opérateurs", "chsvi_operateurs"))) %>%
   rename_at(vars(matches("CodeRDT")), list(~str_replace(., "CodeRDT", "chsvi_coderhj"))) %>%
   rename_at(vars(matches("Station")), list(~str_replace(., "Station", "chsvi_coderhj"))) %>%
@@ -339,7 +400,7 @@ dataaimporter <-
   #mutate(chsvi_typesuivi = ifelse("chsvi_typesuivi" %in% names(.) & typemesure == "Piézométrie", chsvi_typesuivi, "Piézométrie")) %>% # Ne convient pas car écrase l'ancienne valeur
   #mutate(chsvi_unite = ifelse("chsvi_unite" %in% names(.) & typemesure == "Piézométrie", chsvi_unite, as.character(NA))) %>% # Ne convient pas car écrase l'ancienne valeur
   mutate(chsvi_qualite = ifelse("chsvi_qualite" %in% names(.), chsvi_qualite, as.character(NA))) %>% 
-  mutate(id = as.numeric(""))
+  mutate(id = NA_integer_)
 
 if(typemesure != "Thermie") stop(paste0("Complément des données non développés pour le type de mesures ",typemesure))
   
@@ -349,14 +410,13 @@ if(typemesure != "Thermie") stop(paste0("Complément des données non développ�
 ## Filtrage des données ##
 dataaimporter <- 
   dataaimporter %>% 
-  filter(!is.na(chsvi_date)) #%>% 
-  # mutate(chsvi_heure = format(ymd_hms(chsvi_heure), format="%H:%M:%S"))
+  filter(!is.na(chsvi_date))
   
 ## Modification de l'ordre des champs ##
 dataaimporter <- 
   dataaimporter %>% 
-  select(match(colnames(SuiviTerrain),names(.)))
-
+  {if (!("Modification" %in% names(dataaimporter))) select(., match(colnames(SuiviTerrain), names(.))) else .} %>%
+  {if ("Modification" %in% names(dataaimporter)) select(., match(colnames(SuiviTerrain), names(.)), contains("Modification")) else .} # Afin de conserver temporaire une hypothétique colonne Modification qui permet de repérer les lignes modifiées dans le cas de nettoyages massifs
 }
 
 #### Stations ####
@@ -547,7 +607,40 @@ dataaimporter <-
 ## Test ##
 if(dataaimporter %>% filter(is.na(chsta_coord_x)) %>% nrow() > 0) stop("Présence de stations sans coordonnées")
 }
+
+#### Commentaires ####
+if(Type == "Commentaires"){
+  ## Chargement des données ##
+  Commentaires <-
+    structure(
+      list(
+        id = 2:3,
+        chres_coderhj = c("ORA2-7", "ANG0-7"),
+        chres_typemesure = c("Thermie", "Thermie"),
+        chres_anneebiol = c(2018L,
+                            2014L),
+        chres_commentaire = c(
+          "Test commentaire",
+          "La chronique de température fait état d'une amplitude totale annuelle moyenne, avec une température médiane assez faible. Les variations intra-journalières sont assez réduites, mais augmentent légèrement à partir du printemps et durant la période estivale. Les pics de chaleur restent toutefois à des valeurs peu importantes."
+        ),
+        `_modif_utilisateur` = c("jb", "jb"),
+        `_modif_type` = c("I",
+                          "I"),
+        `_modif_date` = structure(
+          c(1571991458.03569, 1574241840.5954),
+          class = c("POSIXct", "POSIXt"),
+          tzone = ""
+        )
+      ),
+      row.names = 1:2,
+      class = c("tbl_df",
+                "tbl", "data.frame")
+    )
   
+  dataaimporter <- read_excel(Localisation, sheet = 1)
+  if(all(names(dataaimporter) %in% names(Commentaires)) == FALSE) stop("Le fichier source de commentaires contient des noms de colonne à corriger")
+}
+
 #### Sortie des résultats ####
 return(dataaimporter)
   

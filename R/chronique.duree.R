@@ -1,10 +1,11 @@
 #' Chroniques existantes
 #'
-#' Cette fonction permet de visualiser les chroniques existantes
+#' Cette fonction permet de visualiser les chroniques existantes et leur statut de validation
 #' @name chronique.duree
 #' @param Data Jeu de données issu de la matrice "Mesures" des chroniques
 #' @keywords chronique
-#' @import dplyr lubridate forcats
+#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.duree(Mesures)
@@ -22,7 +23,7 @@ chronique.duree <- function(Mesures)
 
 gg <- ggplot(Mesures, aes(x=chmes_date, y = fct_reorder(chmes_coderhj, chmes_date), color = chmes_validation))
 gg <- gg + geom_line()
-gg <- gg + labs(y = "Station") # Pour changer le titre
+gg <- gg + labs(y = "Station", x = "Date", colour = "Validation") # Pour changer le titre
 gg <- gg + theme_bw()
 gg
 

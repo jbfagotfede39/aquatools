@@ -3,6 +3,9 @@
 \name{BV.ComByCoordL93}
 \alias{BV.ComByCoordL93}
 \title{Recherche de caractéristiques administratives d'un point}
+\usage{
+BV.ComByCoordL93(X = as.numeric(0), Y = as.numeric(0))
+}
 \arguments{
 \item{X}{Coordonnée X à rechercher (Lambert 93)}
 
@@ -13,10 +16,10 @@ Cette fonction permet de fournir les caractéristiques géographiques d'un point
 }
 \examples{
 BV.ComByCoordL93(936722,6603736)
-data \%>\% rowwise() \%>\% mutate(Commune = BV.ComByCoordL93(X,Y) \%>\% select(name) \%>\% as.character())
-data \%>\% rowwise() \%>\% mutate(codeInsee = BV.ComByCoordL93(X,Y) \%>\% select(codeInsee) \%>\% as.character())
-data \%>\% rowwise() \%>\% mutate(Departement = BV.ComByCoordL93(X,Y) \%>\% select(codeDepartement) \%>\% as.character())
-data \%>\% rowwise() \%>\% mutate(Region = BV.ComByCoordL93(X,Y) \%>\% select(codeRegion) \%>\% as.character())
-data \%>\% rowwise() \%>\% mutate(Population = BV.ComByCoordL93(X,Y) \%>\% select(population) \%>\% as.character())
-data \%>\% rowwise() \%>\% mutate(Surface = BV.ComByCoordL93(X,Y) \%>\% select(surface) \%>\% as.character())
+data \%>\% rowwise() \%>\% mutate(Commune = BV.ComByCoordL93(X,Y) \%>\% select(name) \%>\% as.character()) \%>\% ungroup()
+data \%>\% rowwise() \%>\% mutate(codeInsee = BV.ComByCoordL93(X,Y) \%>\% select(codeInsee) \%>\% as.character()) \%>\% ungroup()
+data \%>\% rowwise() \%>\% mutate(Departement = BV.ComByCoordL93(X,Y) \%>\% select(codeDepartement) \%>\% as.character()) \%>\% ungroup()
+data \%>\% rowwise() \%>\% mutate(Region = BV.ComByCoordL93(X,Y) \%>\% select(codeRegion) \%>\% as.character()) \%>\% ungroup()
+data \%>\% rowwise() \%>\% mutate(Population = BV.ComByCoordL93(X,Y) \%>\% select(population) \%>\% as.character()) \%>\% ungroup()
+data \%>\% rowwise() \%>\% mutate(Surface = BV.ComByCoordL93(X,Y) \%>\% select(surface) \%>\% as.character()) \%>\% ungroup()
 }

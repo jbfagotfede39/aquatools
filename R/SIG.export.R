@@ -49,12 +49,6 @@ if(Datatype == "sf"){data <- data %>% st_transform(2154)}
 if("sf" %in% class(data) == FALSE) stop(paste0("Impossible de spatialiser ",data))
 
 ##### Exportation #####
-
-# Export en shp #
-if(shp == TRUE){
-st_write(data, paste0(nomfichier, ".shp"), delete_layer = TRUE)
-}
-
 # Export en geojson #
 if(geojson == TRUE){
   st_write(data, dsn = paste0(nomfichier, ".geojson"), driver='GeoJSON', update=TRUE)
@@ -73,6 +67,11 @@ data %>%
   mutate(name = ifelse("nom" %in% names(.), nom, NA)) %>% # pour la table de multifish
   st_transform(4326) %>% 
   st_write(dsn = paste0(nomfichier, ".kml"), driver='kml', update=TRUE)
+}
+
+# Export en shp #
+if(shp == TRUE){
+  st_write(data, paste0(nomfichier, ".shp"), delete_layer = TRUE)
 }
 
 

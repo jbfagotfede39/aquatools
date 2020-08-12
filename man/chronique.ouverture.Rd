@@ -3,8 +3,23 @@
 \name{chronique.ouverture}
 \alias{chronique.ouverture}
 \title{Ouverture de fichiers de chroniques}
+\usage{
+chronique.ouverture(
+  Type = c("Mesures", "Suivis", "Stations", "Commentaires"),
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
+    "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
+    "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
+    "Pluviométrie"),
+  Localisation = NA_character_,
+  skipvalue = 9,
+  nbcolonnes = 2,
+  typefichier = c(".csv", "excel"),
+  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
+  formatmacmasalmo = F
+)
+}
 \arguments{
-\item{Type}{Type de données en entrée (Mesures, Suivis, Stations)}
+\item{Type}{Type de données en entrée (Mesures, Suivis, Stations, Commentaires)}
 
 \item{typemesure}{Défini le type de données (Thermie, Piézométrie, etc.)}
 
@@ -12,7 +27,13 @@
 
 \item{skipvalue}{Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)}
 
-\item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms)}
+\item{nbcolonnes}{Nombre de colonnes concernées}
+
+\item{typefichier}{Type de fichier : .csv (par défaut) ou excel}
+
+\item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)}
+
+\item{formatmacmasalmo}{Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)}
 }
 \description{
 Cette fonction permet d'ouvrir de manière semi-automatisée des fichiers de chroniques

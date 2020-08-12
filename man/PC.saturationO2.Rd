@@ -3,6 +3,9 @@
 \name{PC.saturationO2}
 \alias{PC.saturationO2}
 \title{Saturation en oxygène}
+\usage{
+PC.saturationO2(data)
+}
 \arguments{
 \item{data}{Jeu de données (contenant une colonne Thermie et une colonne Oxygenation)}
 }

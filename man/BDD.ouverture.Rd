@@ -3,6 +3,12 @@
 \name{BDD.ouverture}
 \alias{BDD.ouverture}
 \title{Chargement des bases de données}
+\usage{
+BDD.ouverture(
+  Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie",
+    "Temps de travail", "Data")
+)
+}
 \arguments{
 \item{Type}{Type de base de données. Chroniques par défaut}
 }
@@ -12,8 +18,7 @@ Cette fonction permet de charger les bases de données de la fédération
 \examples{
 BDD.ouverture()
 BDD.ouverture(Type = "Poissons")
-BDD.ouverture(Type = "Data")
-db <- BDD.ouverture()
-db <- BDD.ouverture(Type = "Poissons")
-head(tbl(db,"SuiviTerrain"), 10) \%>\% collect()
+dbD <- BDD.ouverture(Type = "Data")
+dbP <- BDD.ouverture(Type = "Poissons")
+tbl(dbD, in_schema("fd_production", "chroniques_commentaires")) \%>\% collect(n = Inf)
 }

@@ -3,8 +3,30 @@
 \name{chronique.ajout}
 \alias{chronique.ajout}
 \title{Ajout de données brutes de chronique}
+\usage{
+chronique.ajout(
+  data,
+  cCodeRHJ = "BONbaro",
+  cCapteur = "P0352",
+  cDate = "2014-12-27",
+  cHeure = "19:00:00",
+  cUnite = "°C",
+  cTypeMesure = "Thermie",
+  cNvelleValeur = 15,
+  cValidation = "Validé",
+  cModeAcquisition = "Estimé"
+)
+}
 \arguments{
 \item{data}{Chronique à modifier}
+
+\item{cCodeRHJ}{CodeRHJ à ajouter}
+
+\item{cCapteur}{Capteur à ajouter}
+
+\item{cDate}{Date à ajouter}
+
+\item{cHeure}{Heure à ajouter}
 
 \item{cUnite}{\code{°C} (par défault)}
 
@@ -20,6 +42,6 @@
 Permet d'ajouter des données brutes de chronique présentant des valeurs aberrantes. ATTENTION : ne gère pas les ID
 }
 \examples{
-chronique.ajout(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnite = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")
+chronique.ajout(data, cCodeRHJ = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnite = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")
 }
 \keyword{chronique}

@@ -3,6 +3,18 @@
 \name{chronique.suppression}
 \alias{chronique.suppression}
 \title{Suppression de données brutes de chronique}
+\usage{
+chronique.suppression(
+  data,
+  cCodeRDT = "BONbaro",
+  cCapteur = "P0352",
+  cDate = "2014-12-27",
+  cHeure = "19:00:00",
+  cTypeMesure = "Thermie",
+  cValeur = 15,
+  cValidation = "Validé"
+)
+}
 \arguments{
 \item{data}{Chronique à modifier}
 

@@ -3,17 +3,30 @@
 \name{stations.coderhj}
 \alias{stations.coderhj}
 \title{Extraire la distance à la source ou le code écosystème du coderhj}
+\usage{
+stations.coderhj(
+  data,
+  DistSource = T,
+  ColonneEntree = NA_character_,
+  ColonneSortie = NA_character_
+)
+}
 \arguments{
-\item{data}{Dataframe contenant une colonne coderhj}
+\item{data}{Dataframe contenant au moins la colonne ColonneEntree}
 
 \item{DistSource}{Si \code{T} (par défaut), extrait la distance à la source - Extrait sinon le code de l'écosystème}
+
+\item{ColonneEntree}{Champ contenant la donnée d'entrée}
+
+\item{ColonneSortie}{Champ recevant la donnée de sortie (peut être identique au champs d'entrée si on le souhaite)}
 }
 \description{
 Cette fonction permet d'extraire la distance à la source ou le code écosystème à partir du coderhj
 }
 \examples{
-stations.coderhj(data)
-stations.coderhj(data, DistSource = F)
-arrange(coderhj, Date) \%>\% stations.coderhj(DistSource = F)
+stations.coderhj(data, ColonneEntree = "test", ColonneSortie = "V3")
+stations.coderhj(data, ColonneEntree = "test", ColonneSortie = "test")
+stations.coderhj(data, ColonneEntree = "test", ColonneSortie = "V3", DistSource = F)
+stations.coderhj(data, ColonneEntree = "test", ColonneSortie = "test", DistSource = F)
 }
 \keyword{stations}

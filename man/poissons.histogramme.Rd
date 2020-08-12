@@ -3,6 +3,14 @@
 \name{poissons.histogramme}
 \alias{poissons.histogramme}
 \title{Affichage d'histogrammes taille-effectif}
+\usage{
+poissons.histogramme(
+  Captures = Captures,
+  Titre = "",
+  format = ".png",
+  export = F
+)
+}
 \arguments{
 \item{Captures}{Dataframe contenant les captures}
 }

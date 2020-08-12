@@ -51,8 +51,8 @@ poissons.histogramme <- function(
     MdMsMeCs <- MdMsMeCs + theme_linedraw() 
     MdMsMeCs <- MdMsMeCs + theme(strip.text = element_text(size = rel(1)))
     MdMsMeCs <-  MdMsMeCs + theme (axis.text.x = element_text(face="bold", size=8))
-    if(max(Captures$nombre) < 5){MdMsMeCs <-  MdMsMeCs + ylim(0,5)}
-    if(max(Captures$nombre) < 5){MdMsMeCs <- MdMsMeCs + xlim (0,300)}
+    if(max(CapturesV2$nombre) < 5){MdMsMeCs <-  MdMsMeCs + ylim(0,5)}
+    if(max(CapturesV2$nombre) < 5){MdMsMeCs <- MdMsMeCs + xlim (0,300)}
     MdMsMeCs <- MdMsMeCs + theme(legend.position='none')
     MdMsMeCs
     

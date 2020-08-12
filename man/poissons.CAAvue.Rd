@@ -3,6 +3,9 @@
 \name{poissons.CAAvue}
 \alias{poissons.CAAvue}
 \title{Affichage de graphes piscicoles}
+\usage{
+poissons.CAAvue(data = data, export = FALSE, format = ".png")
+}
 \arguments{
 \item{data}{Jeu de données en entrée (cotes d'abondance issues de poissons.CAA)}
 

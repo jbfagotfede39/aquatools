@@ -11,10 +11,9 @@
 #' @examples
 #' BDD.ouverture()
 #' BDD.ouverture(Type = "Poissons")
-#' BDD.ouverture(Type = "Data")
-#' db <- BDD.ouverture()
-#' db <- BDD.ouverture(Type = "Poissons")
-#' head(tbl(db,"SuiviTerrain"), 10) %>% collect()
+#' dbD <- BDD.ouverture(Type = "Data")
+#' dbP <- BDD.ouverture(Type = "Poissons")
+#' tbl(dbD, in_schema("fd_production", "chroniques_commentaires")) %>% collect(n = Inf)
 
 ##### TODO LIST #####
 #
@@ -35,12 +34,16 @@ if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "imac27.local"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "Client_imacJB"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "Client_imacJB.local"){UtilisateurFD <- "jb"}
+  if(system('uname -n',intern=T) == "Client_imacJB.cloud.peche-jura.com"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "Client_MacBookJB"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "Client_MacBookJB.local"){UtilisateurFD <- "jb"}
+  if(system('uname -n',intern=T) == "Client_MacBookJB.cloud.peche-jura.com"){UtilisateurFD <- "jb"}
+  if(system('uname -n',intern=T) == "MacBookJB.cloud.peche-jura.com"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "MacBookJB.local"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "MacBookJB"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "MBP-de-Adrien"){UtilisateurFD <- "adrien"}
 if(system('uname -n',intern=T) == "MBP-de-Adrien.local"){UtilisateurFD <- "adrien"}
+if(system('uname -n',intern=T) == "MBP-de-Adrien.cloud.peche-jura.com"){UtilisateurFD <- "adrien"}
 if(system('uname -n',intern=T) == "macbook-pro-de-adrien"){UtilisateurFD <- "adrien"}
 if(system('uname -n',intern=T) == "macbook-pro-de-adrien.home"){UtilisateurFD <- "adrien"}
 if(system('uname -n',intern=T) == "macbook-pro-de-adrien.local"){UtilisateurFD <- "adrien"}
@@ -49,6 +52,7 @@ if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <
 if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.home"){UtilisateurFD <- "adrien"}
 if(system('uname -n',intern=T) == "Client_MBP-de-Adrien"){UtilisateurFD <- "adrien"}
 if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.local"){UtilisateurFD <- "adrien"}
+if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.cloud.peche-jura.com"){UtilisateurFD <- "adrien"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){UtilisateurFD <- "quentin"}
@@ -157,55 +161,76 @@ if(Type == "Data" & exists("dbD") == TRUE){
     RPostgreSQL::dbDisconnect(dbD)}
   }
 
-if(Type == "Data"){
+# if(Type == "Data"){
+#   
+#   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
+#     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+#                                   dbname = "eaux-jura-sig-data",
+#                                   host = '192.168.1.102',
+#                                   #host = '80.11.169.205',
+#                                   port = 3254,
+#                                   user = UtilisateurFD,
+#                                   password = keyring::key_get("eaux-jura-sig-data")
+#     )
+#   }else{
+#     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+#                                   dbname = "eaux-jura-sig-data",
+#                                   #host = '192.168.1.102',
+#                                   host = '80.11.169.205',
+#                                   port = 3254,
+#                                   user = UtilisateurFD,
+#                                   password = keyring::key_get("eaux-jura-sig-data")
+#     )
+#   }
+# }
   
-  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
-    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                  dbname = "eaux-jura-sig-data",
-                                  host = '192.168.1.100',
-                                  #host = '80.11.169.205',
-                                  port = 3254,
-                                  user = UtilisateurFD,
-                                  password = keyring::key_get("eaux-jura-sig-data")
-    )
-  }else{
-    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                  dbname = "eaux-jura-sig-data",
-                                  #host = '192.168.1.100',
-                                  host = '80.11.169.205',
-                                  port = 3254,
-                                  user = UtilisateurFD,
-                                  password = keyring::key_get("eaux-jura-sig-data")
-    )
+  if(Type == "Data"){
+      dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                                    dbname = "eaux-jura-sig-data",
+                                    host = "database.eaux-jura.com",
+                                    port = 3254,
+                                    user = UtilisateurFD,
+                                    password = keyring::key_get("eaux-jura-sig-data")
+      )
   }
-}
   
 if(Type == "Poissons" & exists("dbP") == TRUE){
   if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
     RPostgreSQL::dbDisconnect(dbP)}
   }
   
-if(Type == "Poissons"){
+# if(Type == "Poissons"){
+#   
+#   if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
+#     dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+#                                   dbname = "multifish",
+#                                   host = '192.168.1.102',
+#                                   #host = '80.11.169.205',
+#                                   port = 3254,
+#                                   user = UtilisateurFD,
+#                                   password = keyring::key_get("multifish")
+#     )
+#   }else{
+#     dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+#                                   dbname = "multifish",
+#                                   #host = '192.168.1.102',
+#                                   host = '80.11.169.205',
+#                                   port = 3254,
+#                                   user = UtilisateurFD,
+#                                   password = keyring::key_get("multifish")
+#       )
+#     }
+#   }
   
-  if(strsplit(system('system_profiler SPNetworkDataType | grep RouterHardwareAddress',intern=T), "RouterHardwareAddress=")[[1]][2] == "04:92:26:6c:9a:d8"){
-    dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                  dbname = "multifish",
-                                  host = '192.168.1.100',
-                                  #host = '80.11.169.205',
-                                  port = 3254,
-                                  user = UtilisateurFD,
-                                  password = keyring::key_get("multifish")
-    )
-  }else{
-    dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                  dbname = "multifish",
-                                  #host = '192.168.1.100',
-                                  host = '80.11.169.205',
-                                  port = 3254,
-                                  user = UtilisateurFD,
-                                  password = keyring::key_get("multifish")
+  if(Type == "Poissons"){
+
+      dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                                    dbname = "multifish",
+                                    host = "database.eaux-jura.com",
+                                    port = 3254,
+                                    user = UtilisateurFD,
+                                    password = keyring::key_get("multifish")
       )
-    }
   }
 
 # if(Type == "Chroniques"){return(dbC)}

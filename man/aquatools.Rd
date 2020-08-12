@@ -4,6 +4,3 @@
 \name{aquatools}
 \alias{aquatools}
 \title{aquatools.}
-\description{
-aquatools.
-}

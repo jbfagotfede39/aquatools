@@ -9,6 +9,7 @@
 #' @param seuilexcesdefaut Seuil en-deça duquel les dépassements sont testés par défaut, sinon ils sont testés par excès (valeur de 12 par défaut).
 #' @param degresjours Calcul des degrés/jours (\code{FALSE} par défault)
 #' @keywords chronique
+#' @import glue
 #' @import lubridate
 #' @import RcppRoll
 #' @import tidyverse
@@ -18,7 +19,7 @@
 
 chronique.analyse <- function(
   data = data,
-  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Oxygénation", "Hydrologie", "Pluviométrie"),
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
   pasdetemps = 1,
   seuils = c(25,22,19,15,4),
   seuilexcesdefaut = 12,
@@ -174,7 +175,7 @@ chronique.analyse <- function(
     mutate(VMaxMoy30J = round(VMaxMoy30J,1)) %>% 
     mutate(VMaxMoy24H = round(VMaxMoy24H,1))
   
-  if(ValRemarqPeriodesMobiles$VMaxMoy7J < ValRemarqPeriodesMobiles$VMaxMoy30J) stop("Pb dans calcul Vmm")
+  if(ValRemarqPeriodesMobiles$VMaxMoy7J < ValRemarqPeriodesMobiles$VMaxMoy30J) warning(glue("Pb dans calcul Vmm pour {Contexte$chmes_coderhj}"))
 
   ## Extraction de l'année du VMM ##
   AnneeVMM <- as.data.frame(year(ValRemarqPeriodesMobiles$DateFinVMaxMoy30J))

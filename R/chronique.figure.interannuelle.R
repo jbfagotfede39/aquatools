@@ -5,15 +5,12 @@
 #' @param data Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur
 #' @param Titre Titre du graphique (vide par défaut)
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
-#' @param Vmm30j Si \code{FALSE} (par défault), n'affiche pas les
-#'    Vmm30j.  Si \code{TRUE}, les affiche.
-#' @param Vminmax Si \code{TRUE} (par défault), affiche pas les
-#'    valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche pas.
 #' @param Ymin Valeur minimale de l'axe des Y (-1 par défaut)
 #' @param Ymax Valeur maximale de l'axe des Y (aucune par défaut)
+#' @param affichagevide Si \code{TRUE} (par défault), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats
 #' @param style En forme de boxplot (par défaut) ou de violon
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les
-#'    figures.  Si \code{TRUE}, les enregistre.
+#'    figures. Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
@@ -22,21 +19,20 @@
 #' @export
 #' @examples
 #' chronique.figure.interannuelle(data)
-#' data %>% chronique.figure.interannuelle()
+#' data %>% chronique.resultats.filtrage() %>% chronique.figure.interannuelle()
 #' chronique.figure.interannuelle(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
 
 chronique.figure.interannuelle <- function(
   data = data,
-  Titre="",
-  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
-  Vmm30j=F,
-  Vminmax=T,
-  Ymin=-1,
-  Ymax=30,
+  Titre = "",
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
+  Ymin = -1,
+  Ymax = 30,
+  affichagevide = TRUE,
   style = c("boxplot", "violon"),
-  save=F,
-  projet = as.character(NA),
-  format=".png")
+  save = F,
+  projet = NA_character_,
+  format = ".png")
 {
   
   ## Évaluation des choix
@@ -44,8 +40,10 @@ chronique.figure.interannuelle <- function(
   style <- match.arg(style)
   
 ##### -------------- A FAIRE -------------- #####
-# 
-# -------------- A FAIRE -------------- #
+# Implantation de chronique.contexte()
+# Implantation de chronique.figure.parametres()
+# Vérifier qu'il y a bien un filtre sur les dix dernières années ?
+##### ##### ##### ##### ##### ##### ##### ##### 
 
   ##### Contexte de la chronique #####
   # Calcul du nombre de stations ##
@@ -87,8 +85,14 @@ chronique.figure.interannuelle <- function(
   #### Calcul des valeurs remarquables ####
   dataanalysees <-
     data %>% 
-    chronique.traitement(export = F)
+    chronique.traitement(export = F, filtrage = F)
   
+  #### Affichage des années vides ####
+  data <-
+    data %>% 
+    {if(affichagevide == TRUE) complete(., chmes_coderhj, chmes_typemesure, chmes_anneebiol = seq(min(chmes_anneebiol), max(chmes_anneebiol)))
+      else .}
+
   ##### Collecte des valeurs remarquables #####
   ValeursRemarquables <- dataanalysees %>% select(Typemesure, Coderhj, Annee, NbJ, VMinI, VMaxI, VMoyJMinPer, VMoyJMaxPer, VMaxMoy30J)
   

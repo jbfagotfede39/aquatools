@@ -3,24 +3,20 @@
 \name{profil.lac}
 \alias{profil.lac}
 \title{Création de profils verticaux lacustres}
+\usage{
+profil.lac(
+  PC,
+  param = c("O2mg", "O2pourc", "cond", "ph", "temp", "redox", "chlorophylles",
+    "phycocyanines", "secchi")
+)
+}
 \arguments{
-\item{O2mg}{Pour réaliser un profil de concentration en oxygène dissous}
-
-\item{O2pourc}{Pour réaliser un profil de saturation en oxygène dissous}
-
-\item{Cond}{Pour réaliser un profil de conductivité}
-
-\item{ph}{Pour réaliser un profil de pH}
-
-\item{temp}{Pour réaliser un profil de température}
+\item{param}{Paramètre physico-chimique à représenter (O2mg, O2pourc, cond, ph, temp, redox, chlorophylles, phycocyanines, secchi)}
 }
 \description{
 Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques
 }
 \examples{
-profil.lac(PC, param="O2mg")
-profil.lac(PC, param="O2pourc")
-profil.lac(PC, param="Cond")
-profil.lac(PC, param="ph")
-#' profil.lac(PC, param="temp")
+profil.lac(PC, param = "O2mg")
+PC \%>\% profil.lac(param = "redox")
 }

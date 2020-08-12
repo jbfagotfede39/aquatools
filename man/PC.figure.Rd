@@ -3,6 +3,9 @@
 \name{PC.figure}
 \alias{PC.figure}
 \title{Représentation de résultats de PC}
+\usage{
+PC.figure(PC)
+}
 \arguments{
 \item{PC}{Jeu de données issu de la BDD PC}
 }

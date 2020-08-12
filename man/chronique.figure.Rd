@@ -3,12 +3,31 @@
 \name{chronique.figure}
 \alias{chronique.figure}
 \title{Représentation de chroniques}
+\usage{
+chronique.figure(
+  data = data,
+  Titre = "",
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
+    "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
+    "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
+    "Pluviométrie"),
+  duree = c("Complet", "Relatif"),
+  complement = FALSE,
+  Vmm30j = F,
+  Vminmax = T,
+  Ymin = -1,
+  Ymax = NA,
+  save = F,
+  projet = as.character(NA),
+  format = ".png"
+)
+}
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur}
 
 \item{Titre}{Titre du graphique (vide par défaut)}
 
-\item{typemesure}{Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data}
+\item{typemesure}{Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, \code{Piézométrie compensée}, \code{Piézométrie NGF}, \code{Oxygénation}, \code{Hydrologie}, \code{Pluviométrie}.}
 
 \item{duree}{Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.}
 

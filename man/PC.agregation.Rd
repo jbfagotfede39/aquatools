@@ -3,6 +3,9 @@
 \name{PC.agregation}
 \alias{PC.agregation}
 \title{Agrégation de paramètres physio-chimiques}
+\usage{
+PC.agregation(PC)
+}
 \arguments{
 \item{PC}{Jeu de données}
 }

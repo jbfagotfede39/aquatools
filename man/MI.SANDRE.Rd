@@ -3,6 +3,9 @@
 \name{MI.SANDRE}
 \alias{MI.SANDRE}
 \title{Ajout des taxons et codes SANDRE}
+\usage{
+MI.SANDRE(data)
+}
 \description{
 Ajout des codes SANDRE et du nom du taxon de rang inférieur (espèce -> genre -> etc.) à partir d'un tableau issu de MI.systematique
 }

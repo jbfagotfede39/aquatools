@@ -3,6 +3,9 @@
 \name{poissons.classes}
 \alias{poissons.classes}
 \title{Calcul de classes de taille piscicoles}
+\usage{
+poissons.classes(Captures = Captures)
+}
 \arguments{
 \item{Captures}{Dataframe contenant les captures}
 }

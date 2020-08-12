@@ -3,6 +3,14 @@
 \name{MI.indices}
 \alias{MI.indices}
 \title{Calcul d'indices et de listes de MI}
+\usage{
+MI.indices(
+  DataTravail = MI.captures(MI.operations(Sortie = "Complet")),
+  Sortie = c("indices", "listefaunistiqueGlobale", "listefaunistiqueMAG20",
+    "listefaunistiqueDCEPrelevement", "listefaunistiqueDCEPhase",
+    "listefaunistiqueDCEequivalentIBGN", "listefaunistiqueIBGN")
+)
+}
 \arguments{
 \item{DataTravail}{Dataframe contenant les données de captures issues de MI.indices()}
 

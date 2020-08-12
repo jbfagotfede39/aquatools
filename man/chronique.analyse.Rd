@@ -3,6 +3,19 @@
 \name{chronique.analyse}
 \alias{chronique.analyse}
 \title{Analyse de chroniques}
+\usage{
+chronique.analyse(
+  data = data,
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
+    "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
+    "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
+    "Pluviométrie"),
+  pasdetemps = 1,
+  seuils = c(25, 22, 19, 15, 4),
+  seuilexcesdefaut = 12,
+  degresjours = F
+)
+}
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 

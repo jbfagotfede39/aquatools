@@ -4,7 +4,7 @@
 #' @name chronique.figure
 #' @param data Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur
 #' @param Titre Titre du graphique (vide par défaut)
-#' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
+#' @param typemesure Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, \code{Piézométrie compensée}, \code{Piézométrie NGF}, \code{Oxygénation}, \code{Hydrologie}, \code{Pluviométrie}.
 #' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
 #' @param complement Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut)
 #' @param Vmm30j Si \code{FALSE} (par défault), n'affiche pas les
@@ -18,8 +18,8 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
-#' @import dplyr
 #' @import ggplot2 
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.figure(data)
@@ -29,7 +29,7 @@
 chronique.figure <- function(
     data = data,
     Titre="",
-    typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
+    typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
     duree = c("Complet", "Relatif"),
     complement = FALSE,
     Vmm30j=F,
@@ -43,6 +43,7 @@ chronique.figure <- function(
 
   
   ##### -------------- A FAIRE -------------- #####
+  # Enlever le é de fixé dans les noms de fichiers pour faciliter l'interopérabilité avec windows
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
   # Changer ordre max/min/moy dans légende par Max/Moy/Min
@@ -59,7 +60,7 @@ if(class(data$chmes_date) != "Date"){#data$chmes_date <- as.Date(data$chmes_date
 data$chmes_date <- ymd(data$chmes_date)}
   
 #### Test de cohérence ####
-if("chmes_unite" %in% colnames(data) & (data %>% filter(chmes_unite == "kPa") %>% count() %>% pull() != 0)) warning("Attention pour les piézo, des données en kPa seront représentées avec une échelle en cm d'eau, alors que 1 kPa = 10,1972 cm d'H2O")
+if("chmes_unite" %in% colnames(data)){if(data %>% dplyr::filter(chmes_unite == "kPa") %>% count() %>% pull() != 0) warning("Attention pour les piézo, des données en kPa seront représentées avec une échelle en cm d'eau, alors que 1 kPa = 10,1972 cm d'H2O")}
   
 ##### Contexte de la chronique #####
 # Calcul du nombre de stations ##
@@ -73,7 +74,7 @@ if("chmes_typemesure" %in% colnames(data) == FALSE){
 }
 
 if(Contexte$nStations == 0) stop("Aucune donnée dans la chronique à analyser")
-if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer à partir du rapport N2000 Vogna et de 2019-05-15_Calcul_résultats_chroniques_Vouglans.R")
+if(Contexte$nStations > 1) warning("Différentes stations dans la chronique à analyser - Cas en test à partir du rapport N2000 Vogna et de 2019-05-15_Calcul_résultats_chroniques_Vouglans.R")
   
 # chmes_typemesure
   if(testit::has_error(data %>% 
@@ -89,9 +90,22 @@ if(Contexte$nStations > 1) stop("Différentes stations dans la chronique à anal
   Contexte$nJours <- n_distinct(data$chmes_date)
   
 #### Valeurs remarquables journalières ####
-if(complement == FALSE) DataTravail <- chronique.agregation(data)
-if(complement == TRUE) DataTravail <- chronique.agregation(data, complement = T)
-syntjour <- DataTravail[[2]]
+  if(Contexte$nStations == 1){
+    if(complement == FALSE) DataTravail <- chronique.agregation(data)
+    if(complement == TRUE) DataTravail <- chronique.agregation(data, complement = T)
+    syntjour <- DataTravail %>% purrr::pluck(2)
+  }
+  
+  if(Contexte$nStations > 1){
+    listeStations <- distinct(data, chmes_coderhj) %>% dplyr::pull()
+    for(i in 1:Contexte$nStations){
+      DataTravail <- data %>% dplyr::filter(chmes_coderhj == listeStations %>% purrr::pluck(i))
+      if(complement == FALSE){DataTravail <- chronique.agregation(DataTravail)}
+      if(complement == TRUE){DataTravail <- chronique.agregation(DataTravail, complement = T)}
+      if(i == 1){syntjour <- DataTravail %>% purrr::pluck(2)}
+      if(i != 1){syntjour <- syntjour %>% dplyr::union(DataTravail %>% purrr::pluck(2))}
+    }
+  }
 
 ## Calcul de la Vmm30j ##
 if(Contexte$nJours < 30 & Vmm30j == T){
@@ -101,7 +115,7 @@ if(Contexte$nJours < 30 & Vmm30j == T){
 
 if(Vmm30j == T & Contexte$nStations == 1){
 ###T Moymax 30 J
-  syntjourSansAgregation <- syntjour %>% filter(!is.na(VMaxJ)) # Si on fait un complément du jeu de données
+syntjourSansAgregation <- syntjour %>% dplyr::filter(!is.na(VMaxJ)) # Si on fait un complément du jeu de données
 cumuleVMaxJ <- numeric(length(syntjourSansAgregation$VMaxJ)-30)
 for (i in 1:length(syntjourSansAgregation$VMaxJ)){
   if (i+29<=length(syntjourSansAgregation$VMaxJ)) cumuleVMaxJ[i]<-sum(syntjourSansAgregation$VMaxJ[i:(i+29)])}  
@@ -161,12 +175,16 @@ if(typemesure == "Pluviométrie"){
   legendeTitre = "Pluviométrie :"
   typemesureTitreSortie = "_pluviométrie_"
 }
+  
+#### Palette ####
+data(PaletteSite)
 
 ##### Plot temps relatif sur l'échantillon de données #####
 ## Version grisée avec enveloppe sur fond clair (min/max) ##
 plotrelatif <- ggplot(syntjour, aes(chmes_date))
 if(Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha=0.2)
 if(Contexte$nStations != 1) plotrelatif <- plotrelatif + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
+if(Contexte$nStations != 1) plotrelatif <- plotrelatif + scale_colour_manual(values = PaletteSite)
 if(Vmm30j == T & Contexte$nStations == 1){
   plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
   plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)
@@ -197,6 +215,7 @@ if(duree == "Relatif"){
   plotabsolu <- ggplot(syntjour, aes(chmes_date))
   if(Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha=0.2)
   if(Contexte$nStations != 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
+  if(Contexte$nStations != 1) plotabsolu <- plotabsolu + scale_colour_manual(values = PaletteSite)
   if(Vmm30j == T & Contexte$nStations == 1){
     plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
     plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)

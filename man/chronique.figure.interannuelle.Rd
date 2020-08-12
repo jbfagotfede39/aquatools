@@ -3,6 +3,23 @@
 \name{chronique.figure.interannuelle}
 \alias{chronique.figure.interannuelle}
 \title{Comparaison interannuelles de chroniques}
+\usage{
+chronique.figure.interannuelle(
+  data = data,
+  Titre = "",
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
+    "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
+    "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
+    "Pluviométrie"),
+  Ymin = -1,
+  Ymax = 30,
+  affichagevide = TRUE,
+  style = c("boxplot", "violon"),
+  save = F,
+  projet = NA_character_,
+  format = ".png"
+)
+}
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur}
 
@@ -10,20 +27,16 @@
 
 \item{typemesure}{Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data}
 
-\item{Vmm30j}{Si \code{FALSE} (par défault), n'affiche pas les
-Vmm30j.  Si \code{TRUE}, les affiche.}
-
-\item{Vminmax}{Si \code{TRUE} (par défault), affiche pas les
-valeurs journalières minimales et maximales.  Si \code{FALSE}, ne les affiche pas.}
-
 \item{Ymin}{Valeur minimale de l'axe des Y (-1 par défaut)}
 
 \item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
 
+\item{affichagevide}{Si \code{TRUE} (par défault), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats}
+
 \item{style}{En forme de boxplot (par défaut) ou de violon}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
-figures.  Si \code{TRUE}, les enregistre.}
+figures. Si \code{TRUE}, les enregistre.}
 
 \item{projet}{Nom du projet}
 
@@ -34,7 +47,7 @@ Cette fonction permet de représenter des chroniques de mesures (température, n
 }
 \examples{
 chronique.figure.interannuelle(data)
-data \%>\% chronique.figure.interannuelle()
+data \%>\% chronique.resultats.filtrage() \%>\% chronique.figure.interannuelle()
 chronique.figure.interannuelle(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
 }
 \keyword{chronique}

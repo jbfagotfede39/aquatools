@@ -3,8 +3,32 @@
 \name{chronique.correction}
 \alias{chronique.correction}
 \title{Correction de données brutes de chronique}
+\usage{
+chronique.correction(
+  data,
+  cCodeRHJ = "BONbaro",
+  cCapteur = "P0352",
+  cDate = "2014-12-27",
+  cHeure = "19:00:00",
+  cValeur = 985.3,
+  cTypeMesure = "Piézométrie",
+  cNvelleValeur = 700
+)
+}
 \arguments{
 \item{data}{Chronique à modifier}
+
+\item{cCodeRHJ}{CodeRHJ à modifier}
+
+\item{cCapteur}{Capteur à modifier}
+
+\item{cDate}{Date à modifier}
+
+\item{cHeure}{Heure à modifier}
+
+\item{cValeur}{Valeur à modifier}
+
+\item{cTypeMesure}{Type de mesure à modifier}
 
 \item{cNvelleValeur}{Valeur de remplacement}
 }
@@ -12,6 +36,6 @@
 Permet de corriger des données brutes de chronique présentant des valeurs aberrantes. ATTENTION : ne gère pas les ID
 }
 \examples{
-chronique.correction(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cValeur = 985.3, cTypeMesure = "Piézométrie", cNvelleValeur = 700)
+chronique.correction(data, cCodeRHJ = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cValeur = 985.3, cTypeMesure = "Piézométrie", cNvelleValeur = 700)
 }
 \keyword{chronique}

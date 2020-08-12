@@ -3,6 +3,16 @@
 \name{SIG.export}
 \alias{SIG.export}
 \title{Export de données en shp}
+\usage{
+SIG.export(
+  data = Stations,
+  nomfichier = "Export_stations",
+  shp = TRUE,
+  kml = TRUE,
+  geojson = TRUE,
+  excel = TRUE
+)
+}
 \arguments{
 \item{data}{Dataframe à exporter}
 
