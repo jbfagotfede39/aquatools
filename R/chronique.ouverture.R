@@ -137,9 +137,12 @@ dataaimporter <-
   }
   
 if(typemesure == "Piézométrie"){
-  typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) : ")
+  typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) : ")
   typedonnee = readline(prompt = "Type de mesure piézométrique 1 (Baro) ou 2 (Piézo) : ")
-  typecapteur <- ifelse(typecapteur == 1, "Hobo", "Diver")
+  if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3)) {stop("Valeur non disponible")}
+  if (typecapteur == 1) {typecapteur <- "Hobo"}
+  if (typecapteur == 2) {typecapteur <- "Diver"}
+  if (typecapteur == 3) {typecapteur <- "VuSitu"}
   typedonnee <- ifelse(typedonnee == 1, "Baro", "Piézo")
   
   if(typecapteur == "Diver"){
@@ -156,6 +159,17 @@ if(typemesure == "Piézométrie"){
     dataaimporter <- 
       read_csv2(Localisation, skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie"))
   }
+  if(typecapteur == "VuSitu"){
+    dataaimporter <- 
+      read_csv2(Localisation, skip = 1, col_names = c("Date","Pression","Thermie", "Piézométrie"), col_types = "cccc") %>%
+      mutate(Thermie = as.numeric(sub(",", ".", Thermie))) %>% 
+      mutate(Piézométrie = as.numeric(sub(",", ".", Piézométrie))) %>% 
+      mutate(Date = ymd_hms(Date)) %>%
+      mutate(Heure = format(Date, format="%H:%M:%S")) %>% 
+      mutate(Datefine = Date) %>% 
+      mutate(Date = ymd(format(Date, format="%Y-%m-%d"))) %>% 
+      select(Date, Heure, Piézométrie, Thermie)
+  }
   
   dataaimporter <- 
     dataaimporter %>% 
@@ -164,7 +178,7 @@ if(typemesure == "Piézométrie"){
     tidyr::gather(typemesure, Valeur, Piézométrie:Thermie) %>% 
     mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
     mutate(unite = ifelse(typemesure == "Piézométrie" & typecapteur == "Hobo", "kPa", unite)) %>% 
-    mutate(unite = ifelse(typemesure == "Piézométrie" & typecapteur == "Diver", "cm H2O", unite)) %>% 
+    mutate(unite = ifelse(typemesure == "Piézométrie" & (typecapteur == "Diver" | typecapteur == "VuSitu"), "cm H2O", unite)) %>% 
     mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Baro", "Thermie barométrique", typemesure)) %>% 
     mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Piézo", "Thermie piézométrique", typemesure)) %>% 
     mutate(typemesure = ifelse(typemesure == "Piézométrie" & typedonnee == "Baro", "Barométrie", typemesure)) %>% 

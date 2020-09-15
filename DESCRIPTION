@@ -1,16 +1,13 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.124
+Version: 0.0.125
 Encoding: UTF-8
 Authors@R: person("Jean-Baptiste", "Fagot", email = "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Description: aquatools contains multiple tools to treat French freshwater data
 Depends:
     R (>= 3.5.0)
 Imports:
-    car,
     DBI,
-    dplyr,
-    fmsb,
     FSA,
     ggplot2,
     knitr,
@@ -18,13 +15,10 @@ Imports:
     magrittr,
     RcppRoll,
     reshape2,
-    RSQLite,
-    rgdal,
     rvest,
-    sp,
+    sf,
     stringr,
-    tidyverse,
-    xlsx
+    tidyverse
 License: What license is it under?
 URL: https://github.com/jbfagotfede39/aquatools
 BugReports: https://github.com/jbfagotfede39/aquatools/issues

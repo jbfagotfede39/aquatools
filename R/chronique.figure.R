@@ -43,6 +43,7 @@ chronique.figure <- function(
 
   
   ##### -------------- A FAIRE -------------- #####
+  # Remplacer l'appel de data_frame() par tibble()
   # Enlever le é de fixé dans les noms de fichiers pour faciliter l'interopérabilité avec windows
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
