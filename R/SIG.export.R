@@ -11,11 +11,12 @@
 #' @keywords stations poissons
 #' @import DBI
 #' @import dplyr
-#' @import RSQLite 
+#' @import glue 
 #' @import sf
 #' @export
 #' @examples
-#' SIG.export(Stations, "Export_stations")
+#' SIG.export(Stations, glue("{today()}_Export_stations"))
+#' Stations %>% SIG.export("Stations", shp = F, kml = F, excel = F)
 #' DataToAdd %>% st_as_sf(coords = c("XLong", "YLat"), crs = 4269) %>% st_transform(2154) %>% SIG.export("GCL_Bathy_points_bruts")
 
 ##### TODO LIST #####
@@ -24,7 +25,7 @@
 
 SIG.export <- function(
   data = Stations,
-  nomfichier = "Export_stations",
+  nomfichier = glue("{today()}_Export_stations"),
   shp = TRUE,
   kml = TRUE,
   geojson = TRUE, 
@@ -56,8 +57,8 @@ if(geojson == TRUE){
 
 # Export en excel #
 if(excel == TRUE){
-  #openxlsx::write.xlsx(st_set_geometry(data, NULL), paste0(nomfichier, ".xlsx"), sheetName = "Feuille1", row.names = F, showNA = F)
-  st_write(data, dsn = paste0(nomfichier, ".xlsx"), layer = str_replace(nomfichier, "-", "_"), driver = "XLSX", layer_options = "OVERWRITE=true")
+  openxlsx::write.xlsx(st_set_geometry(data, NULL), paste0(nomfichier, ".xlsx"), sheetName = "Feuille1", row.names = F, showNA = F)
+  #st_write(data, dsn = paste0(nomfichier, ".xlsx"), layer = str_replace(nomfichier, "-", "_"), driver = "XLSX", layer_options = "OVERWRITE=true") # Pratique mais génère un message d'avertissement à l'ouverture du fichier dans excel
 }
 
 # Export en kml #

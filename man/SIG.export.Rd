@@ -6,7 +6,7 @@
 \usage{
 SIG.export(
   data = Stations,
-  nomfichier = "Export_stations",
+  nomfichier = glue("{today()}_Export_stations"),
   shp = TRUE,
   kml = TRUE,
   geojson = TRUE,
@@ -30,7 +30,8 @@ SIG.export(
 Cette fonction permet d'exporter un dataframe (avec deux colonnes X et Y) ou un sf en Lambert 93 dans un shapefile/geojson/kml/excel
 }
 \examples{
-SIG.export(Stations, "Export_stations")
+SIG.export(Stations, glue("{today()}_Export_stations"))
+Stations \%>\% SIG.export("Stations", shp = F, kml = F, excel = F)
 DataToAdd \%>\% st_as_sf(coords = c("XLong", "YLat"), crs = 4269) \%>\% st_transform(2154) \%>\% SIG.export("GCL_Bathy_points_bruts")
 }
 \keyword{poissons}
