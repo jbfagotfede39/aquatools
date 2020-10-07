@@ -25,14 +25,8 @@ BDD.ouverture <- function(
   
   ## Évaluation des choix
   Type <- match.arg(Type)
-  
-## Connexion à la BDD ##
-# drv <- dbDriver("SQLite")
 
 #### Utilisateur ####
-# Création de la variable
-UtilisateurFD <- NA_character_
-
 # Détection en fonction de la machine
 if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "imac27.local"){UtilisateurFD <- "jb"}
@@ -62,6 +56,7 @@ if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "que
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
+if(system('uname -n',intern=T) == "rstudio-server" & RStudio.Version()$mode == "server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE)) UtilisateurFD <- NA_character_
 
 # Demande du nom d'utilisateur si celui-ci est vide après la détection automatique #
 if(!is.na(UtilisateurFD)){
