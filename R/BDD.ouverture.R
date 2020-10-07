@@ -58,47 +58,78 @@ if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD 
 if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
 if(system('uname -n',intern=T) == "rstudio-server" & RStudio.Version()$mode == "server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE)) UtilisateurFD <- NA_character_
 
-# Demande du nom d'utilisateur si celui-ci est vide après la détection automatique #
+#### Création de la connexion ####
+## Si utilisateur connu ##
 if(!is.na(UtilisateurFD)){
-  MotdepasseFD <- keyring::key_get("eaux-jura-sig-data")
+  if(Type == "Data" & exists("dbD") == TRUE){
+    if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
+      RPostgreSQL::dbDisconnect(dbD)}
+  }
+  if(Type == "Data"){
+    
+    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                                  dbname = "eaux-jura-sig-data",
+                                  host = "database.eaux-jura.com",
+                                  port = 3254,
+                                  user = UtilisateurFD,
+                                  password = keyring::key_get("eaux-jura-sig-data")
+    )
+  }
+  
+  if(Type == "Poissons" & exists("dbP") == TRUE){
+    if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
+      RPostgreSQL::dbDisconnect(dbP)}
+  }
+  if(Type == "Poissons"){
+    dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                                  dbname = "multifish",
+                                  host = "database.eaux-jura.com",
+                                  port = 3254,
+                                  user = UtilisateurFD,
+                                  password = keyring::key_get("multifish")
+    )
+  }
 }
 
+## Si utilisateur inconnu ##
 if(is.na(UtilisateurFD)){
   UtilisateurFD <- rstudioapi::showPrompt(
-    title = "Nom d'utilisateur", message = "Nom d'utilisateur", default = ""
+    title = "Nom d'utilisateur", message = "Nom d'utilisateur", default = "" # Demande du nom d'utilisateur si celui-ci est vide après la détection automatique #
   )
-  MotdepasseFD <- rstudioapi::askForPassword(prompt = "Mot de passe")
+  MotdepasseFD <- rstudioapi::askForPassword(prompt = "Mot de passe") # Demande du mdp si celui-ci est vide après la détection automatique #
+
+  if(Type == "Data" & exists("dbD") == TRUE){
+    if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
+      RPostgreSQL::dbDisconnect(dbD)}
+  }
+  if(Type == "Data"){
+    
+    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                                  dbname = "eaux-jura-sig-data",
+                                  host = "database.eaux-jura.com",
+                                  port = 3254,
+                                  user = UtilisateurFD,
+                                  password = MotdepasseFD
+    )
+  }
+  
+  if(Type == "Poissons" & exists("dbP") == TRUE){
+    if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
+      RPostgreSQL::dbDisconnect(dbP)}
+  }
+  if(Type == "Poissons"){
+    dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+                                  dbname = "multifish",
+                                  host = "database.eaux-jura.com",
+                                  port = 3254,
+                                  user = UtilisateurFD,
+                                  password = MotdepasseFD
+    )
+  }
+  
 }
 
-#### Création de la connexion ####
-if(Type == "Data" & exists("dbD") == TRUE){
-  if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
-    RPostgreSQL::dbDisconnect(dbD)}
-  }
-if(Type == "Data"){
-  
-      dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                    dbname = "eaux-jura-sig-data",
-                                    host = "database.eaux-jura.com",
-                                    port = 3254,
-                                    user = UtilisateurFD,
-                                    password = keyring::key_get("eaux-jura-sig-data")
-      )
-  }
-  
-if(Type == "Poissons" & exists("dbP") == TRUE){
-  if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
-    RPostgreSQL::dbDisconnect(dbP)}
-  }
-if(Type == "Poissons"){
-      dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
-                                    dbname = "multifish",
-                                    host = "database.eaux-jura.com",
-                                    port = 3254,
-                                    user = UtilisateurFD,
-                                    password = keyring::key_get("multifish")
-      )
-  }
+
 
 #### Sortie de la connexion ####
 if(Type == "Poissons"){return(dbP)}
