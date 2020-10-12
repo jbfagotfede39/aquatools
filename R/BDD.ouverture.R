@@ -56,7 +56,10 @@ if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "que
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
-if(system('uname -n',intern=T) == "rstudio-server" & RStudio.Version()$mode == "server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE)) UtilisateurFD <- NA_character_
+
+if(exists("UtilisateurFD") == FALSE){
+  if(system('uname -n',intern=T) == "rstudio-server" & RStudio.Version()$mode == "server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE)) UtilisateurFD <- NA_character_
+}
 
 #### Création de la connexion ####
 ## Si utilisateur connu ##
