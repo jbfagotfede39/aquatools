@@ -8,8 +8,6 @@
 #' @param duree Si \code{Relatif} (par défault), affichage uniquement de la période concernée. Si \code{Complet}, affichage de l'année complète.  
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)
 #' @param legendemax Nombre d'éléments maximum dans la légende (15 par défaut)
-#' @param Ymin Valeur minimale de l'axe des Y (-1 par défaut)
-#' @param Ymax Valeur maximale de l'axe des Y (aucune par défaut)
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @param etiquette Affichage des étiquettes de chroniques (\code{FALSE} (par défault))
@@ -21,7 +19,6 @@
 #' chronique.figure.cumul(data)
 #' MesuresTest %>% chronique.figure.cumul()
 #' MesuresTest %>% chronique.agregation(datedebutanneebiol = "03-01") %>% purrr::pluck(2) %>% chronique.figure.cumul(datedebutanneebiol = "03-01")
-# Pour du multisite voir rapport SMISA 2018 -> il faut faire évoluer chronique.agregation pour du multisite
 
 chronique.figure.cumul <- function(
   data = data,
@@ -30,8 +27,6 @@ chronique.figure.cumul <- function(
   duree = c("Relatif", "Complet"),
   datedebutanneebiol = "10-01",
   legendemax = 15,
-  Ymin=-10,
-  Ymax=NA,
   save=F,
   projet = NA_character_,
   etiquette = F,
@@ -39,7 +34,6 @@ chronique.figure.cumul <- function(
 {
   
   ##### -------------- A FAIRE -------------- #####
-  # Intégration à chronique.traitement ?
   # Possibilité de terminer le graphique pour une somme de degré jours finale, avec la date la plus tardive pour lensemble des chroniques ? (https://drsimonj.svbtle.com/label-line-ends-in-time-series-with-ggplot2)
   # Valeur de degrés jours libre ou à partir dune table de référence par stade par espèce ?
   # Affiner l'affichage des étiquettes avec https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html
@@ -76,7 +70,7 @@ chronique.figure.cumul <- function(
   if(Contexte$ntypemesure == 1) typemesure <- as.character(Contexte$typemesure)
   
   if(typemesure == "Pluviométrie" | typemesure == "Hydrologie"){
-    stop("Modes de calcul à modifier")
+    stop(glue('Mode de calcul à modifier pour typemesure = {typemesure}'))
   }
   
   #### Test ####
@@ -90,7 +84,14 @@ chronique.figure.cumul <- function(
   legendeTitre <- parametres$legendeTitre
   typemesureTitreSortie <- parametres$typemesureTitreSortie
   
-  if(nchar(Titre) == 0) Titre <- Contexte$station
+  if(nchar(Titre) == 0){
+    if(Contexte$nannee != 1 | Contexte$nstation != 1) Titre <- Contexte$station
+    if(Contexte$nannee == 1 & Contexte$nstation == 1) Titre <- glue('{Contexte$station}_{Contexte$annee}')
+  }
+  
+  if(nchar(Titre) != 0){
+    if(Contexte$nannee == 1 & Contexte$nstation == 1 & Titre == Contexte$station) Titre <- glue('{Contexte$station}_{Contexte$annee}')
+  }
 
 #### Représentation graphique ####
   if(Contexte$nannee != 1 | Contexte$nstation != 1){
@@ -131,21 +132,20 @@ if (etiquette == T) {
   ## Relatif ##
   if(duree == "Relatif"){
     plotrelatif <- ggplot(syntjour, aes(chmes_date, y = SommeMoyJ))
+    if(Contexte$nannee == 1 & Contexte$nstation == 1) plotrelatif <- plotrelatif + geom_line()
     if(Contexte$nannee != 1 & Contexte$nstation == 1) plotrelatif <- plotrelatif + geom_line(aes(, colour = as.character(chmes_anneebiol)))
     if(Contexte$nannee == 1 & Contexte$nstation != 1) plotrelatif <- plotrelatif + geom_line(aes(y = SommeMoyJ, colour = chmes_coderhj))
     if(Contexte$nannee != 1 & Contexte$nstation != 1 & etiquette == F) plotrelatif <- plotrelatif + geom_line(aes(y = SommeMoyJ, colour = Cle))
     if(Contexte$nannee != 1 & Contexte$nstation != 1 & etiquette == T) plotrelatif <- plotrelatif + geom_line(aes(y = SommeMoyJ, colour = Cle))
     plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b")
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotrelatif <- plotrelatif + ylim(0,as.numeric(Ymax))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotrelatif <- plotrelatif + ylim(as.numeric(Ymin),as.numeric(Ymax))
     if(Contexte$nannee != 1 | Contexte$nstation != 1) plotrelatif <- plotrelatif + scale_colour_manual(values = PaletteCouples)
-    plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
+    plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=str_replace(Titre, "_", " - "), color = legendeTitre) # Pour changer le titre
     plotrelatif <- plotrelatif + theme_bw()
     if(Contexte$nannee * Contexte$nstation > legendemax) plotrelatif <- plotrelatif + theme(legend.position = "none") # | etiquette == T
     if(etiquette == T) plotrelatif <- plotrelatif + geom_label_repel(aes(label = Cle, colour = Cle), data = syntjour_sub, force = 5, size=3, show.legend = F, min.segment.length = unit(0.05,"cm"))
     plotrelatif
     if(save==T){
-      if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle_cumul",typemesureTitreSortie,Titre,format,sep=""))
+      ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle_cumul",typemesureTitreSortie,Titre,format,sep=""))
     }
     if(save==F){return(plotrelatif)}
   }

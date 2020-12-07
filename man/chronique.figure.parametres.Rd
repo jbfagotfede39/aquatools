@@ -4,12 +4,15 @@
 \alias{chronique.figure.parametres}
 \title{Paramétrisation des vues de chroniques}
 \usage{
-chronique.figure.parametres(data = data, typefigure = c("valeurs", "cumul"))
+chronique.figure.parametres(
+  data = data,
+  typefigure = c("valeurs", "cumul", "vmm30j")
+)
 }
 \arguments{
 \item{data}{Data.frame issu de la fonction chronique.contexte()}
 
-\item{typefigure}{Type de figure qui est à paramétriser : \code{valeurs} (par défault) ou \code{cumul}}
+\item{typefigure}{Type de figure qui est à paramétriser : \code{valeurs} (par défault), \code{cumul} ou \code{vmm30j}}
 }
 \description{
 Cette fonction permet de sélectionner automatiquement les paramètres de légende des représentations graphiques de chroniques à partir des données issues de chronique.contexte

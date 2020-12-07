@@ -14,7 +14,7 @@
 #' Resultats %>% chronique.resultats.filtrage(datefperiode = "08-01")
 
 ##### TODO LIST #####
-# 
+# Créer une fonction plus générale pour le renommage initial des champs, à ensuite également utiliser dans chronique.resultat.filtrage() + chronique.cle() + chronique.resultats.periode
 #####################
 
 chronique.resultats.filtrage <- function(

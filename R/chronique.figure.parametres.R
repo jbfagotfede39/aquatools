@@ -3,7 +3,7 @@
 #' Cette fonction permet de sélectionner automatiquement les paramètres de légende des représentations graphiques de chroniques à partir des données issues de chronique.contexte
 #' @name chronique.figure.parametres
 #' @param data Data.frame issu de la fonction chronique.contexte()
-#' @param typefigure Type de figure qui est à paramétriser : \code{valeurs} (par défault) ou \code{cumul}
+#' @param typefigure Type de figure qui est à paramétriser : \code{valeurs} (par défault), \code{cumul} ou \code{vmm30j}
 #' @keywords chronique
 #' @export
 #' @examples
@@ -21,7 +21,7 @@
 
 chronique.figure.parametres <- function(
   data = data,
-  typefigure = c("valeurs", "cumul")
+  typefigure = c("valeurs", "cumul", "vmm30j")
 )
 {
   
@@ -39,7 +39,7 @@ chronique.figure.parametres <- function(
   
   #### Tests ####
   if(any(names(data) == names(contextereference)) == FALSE) stop("Les données d'entrée ne sont pas au format de sortie de chronique.contexte")
-  if(Contexte$ntypemesure != 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
+  if(data$ntypemesure != 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
 
   #### Création des objets vides pour tests ultérieurs ####
   legendeY <- NA_character_
@@ -57,9 +57,13 @@ chronique.figure.parametres <- function(
     }
     if(typefigure == "cumul"){
       legendeY <- "Somme des degrés-jours"
-      if(Contexte$nannee == 1 & Contexte$nstation == 1) legendeTitre <- "Année biologique"
-      if(Contexte$nannee != 1 & Contexte$nstation == 1) legendeTitre <- "Années biologiques"
-      if(Contexte$nannee != 1 & Contexte$nstation != 1) legendeTitre <- "Couples station-année"
+      if(data$nannee == 1 & data$nstation == 1) legendeTitre <- "Année biologique"
+      if(data$nannee != 1 & data$nstation == 1) legendeTitre <- "Années biologiques"
+      if(data$nannee != 1 & data$nstation != 1) legendeTitre <- "Couples station-année"
+    }
+    if(typefigure == "vmm30j"){
+      legendeY <- "Tmm30j (°C)"
+      legendeTitre <- "Températures :"
     }
   }
   

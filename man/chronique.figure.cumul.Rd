@@ -12,8 +12,6 @@ chronique.figure.cumul(
   duree = c("Relatif", "Complet"),
   datedebutanneebiol = "10-01",
   legendemax = 15,
-  Ymin = -10,
-  Ymax = NA,
   save = F,
   projet = NA_character_,
   etiquette = F,
@@ -32,10 +30,6 @@ chronique.figure.cumul(
 \item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)}
 
 \item{legendemax}{Nombre d'éléments maximum dans la légende (15 par défaut)}
-
-\item{Ymin}{Valeur minimale de l'axe des Y (-1 par défaut)}
-
-\item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 

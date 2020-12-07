@@ -40,6 +40,7 @@ chronique.figure.interannuelle <- function(
   style <- match.arg(style)
   
 ##### -------------- A FAIRE -------------- #####
+# Remplacer l'appel de data_frame() par tibble()
 # Implantation de chronique.contexte()
 # Implantation de chronique.figure.parametres()
 # Vérifier qu'il y a bien un filtre sur les dix dernières années ?

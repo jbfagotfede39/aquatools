@@ -44,7 +44,6 @@ chronique.figure <- function(
   
   ##### -------------- A FAIRE -------------- #####
   # Remplacer l'appel de data_frame() par tibble()
-  # Enlever le é de fixé dans les noms de fichiers pour faciliter l'interopérabilité avec windows
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
   # Changer ordre max/min/moy dans légende par Max/Moy/Min
@@ -202,10 +201,10 @@ if(duree == "Relatif"){
   if(save==T){
     if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre",typemesureTitreSortie,Titre,format,sep=""))
     if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixé/relatif-fixé",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixé/relatif-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotrelatif avec Ymax fixé et Ymin libre non programmé")
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotrelatif avec Ymax libre et Ymin fixé non programmé")
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixe/relatif-fixe",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixe/relatif-fixe-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotrelatif avec Ymax fixe et Ymin libre non programmé")
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotrelatif avec Ymax libre et Ymin fixe non programmé")
     }
   if(save==F){return(plotrelatif)}
 }
@@ -234,10 +233,10 @@ if(duree == "Complet"){
   if(save==T){
     if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre",typemesureTitreSortie,Titre,format,sep=""))
     if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixé/absolu-fixé",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixé/absolu-fixé-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotabsolu avec Ymax fixé et Ymin libre non programmé")
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotabsolu avec Ymax libre et Ymin fixé non programmé")
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixe/absolu-fixe",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixe/absolu-fixe-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotabsolu avec Ymax fixe et Ymin libre non programmé")
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotabsolu avec Ymax libre et Ymin fixe non programmé")
     }
   if(save==F){return(plotabsolu)}
 }

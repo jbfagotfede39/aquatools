@@ -6,6 +6,7 @@
 \usage{
 chronique.figure.longitudinale(
   data = data,
+  Titre = "",
   save = F,
   projet = NA_character_,
   format = ".png"
@@ -14,8 +15,9 @@ chronique.figure.longitudinale(
 \arguments{
 \item{data}{Data.frame issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de chsta_milieu et de chsta_distancesource}
 
-\item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
-figures. Si \code{TRUE}, les enregistre.}
+\item{Titre}{Titre du graphique (vide par défaut)}
+
+\item{save}{Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 
 \item{projet}{Nom du projet}
 

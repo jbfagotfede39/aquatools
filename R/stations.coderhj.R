@@ -19,6 +19,7 @@
 ##### TODO LIST #####
 # [A-Z]* doit fonctionner, plus simple que trois lignes...
 # Faire que les champs soient rangés après comme au départ, en enregistant préalablement à part le dataframe d'entrée puis select(matches)
+# 
 #####################
 
 stations.coderhj <- function(
@@ -64,7 +65,7 @@ if(ColonneEntree %in% names(data) == FALSE) stop(paste0("Le champs ", ColonneEnt
   #### Renommage final ####
   if(ColonneEntree == ColonneSortie){data <- data %>% select(-coderhj) %>% rename(!!ColonneSortie := Sortie)}
   if(ColonneEntree != ColonneSortie){
-    if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% select(-matches(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent
+    if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% select(-ends_with(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent - On utilise ends_with au lieu de matches pour le cas de chsta_distancesource qui couvre également chsta_distancesource_confluencedrainprincipal et qui supprime cette dernière sans qu'on le veuille
     if(!(ColonneSortie %in% colnames(data))){data <- data %>% rename(!!ColonneEntree := coderhj, !!ColonneSortie := Sortie)} # Attention l'ordre de ces deux étapes est important
   }
   

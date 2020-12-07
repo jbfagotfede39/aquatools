@@ -378,9 +378,9 @@ dataaimporter <-
   rename_at(vars(matches("Tmanuelle")), list(~str_replace(., "Tmanuelle", "chsvi_valeur"))) %>%
   rename_at(vars(matches("MO")), list(~str_replace(., "MO", "chsvi_mo"))) %>%
   rename_at(vars(matches("Maître d'ouvrage")), list(~str_replace(., "Maître d'ouvrage", "chsvi_mo"))) %>%
-  rename_at(vars(matches("Operateurs")), list(~str_replace(., "Operateurs", "chsvi_operateurs"))) %>%
-  rename_at(vars(matches("Opérateur")), list(~str_replace(., "Opérateur", "chsvi_operateurs"))) %>%
-  rename_at(vars(matches("Opérateurs")), list(~str_replace(., "Opérateurs", "chsvi_operateurs"))) %>%
+  rename_at(vars(ends_with("Operateurs")), list(~str_replace(., "Operateurs", "chsvi_operateurs"))) %>%
+  rename_at(vars(ends_with("Opérateur")), list(~str_replace(., "Opérateur", "chsvi_operateurs"))) %>%
+  rename_at(vars(ends_with("Opérateurs")), list(~str_replace(., "Opérateurs", "chsvi_operateurs"))) %>%
   rename_at(vars(matches("CodeRDT")), list(~str_replace(., "CodeRDT", "chsvi_coderhj"))) %>%
   rename_at(vars(matches("Station")), list(~str_replace(., "Station", "chsvi_coderhj"))) %>%
   rename_at(vars(matches("TypeSuivi")), list(~str_replace(., "TypeSuivi", "chsvi_typesuivi"))) %>%
@@ -430,7 +430,7 @@ dataaimporter <-
 dataaimporter <- 
   dataaimporter %>% 
   {if (!("Modification" %in% names(dataaimporter))) select(., match(colnames(SuiviTerrain), names(.))) else .} %>%
-  {if ("Modification" %in% names(dataaimporter)) select(., match(colnames(SuiviTerrain), names(.)), contains("Modification")) else .} # Afin de conserver temporaire une hypothétique colonne Modification qui permet de repérer les lignes modifiées dans le cas de nettoyages massifs
+  {if ("Modification" %in% names(dataaimporter)) select(., match(colnames(SuiviTerrain), names(.)), contains("Modification")) else .} # Afin de conserver temporairement une hypothétique colonne Modification qui permet de repérer les lignes modifiées dans le cas de nettoyages massifs
 }
 
 #### Stations ####

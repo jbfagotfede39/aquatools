@@ -12,6 +12,7 @@
 #' Contexte <- chronique.contexte(chronique.mesures("DRO6-8"))
 
 ##### TODO LIST #####
+# Créer une fonction plus générale pour le renommage initial des champs, à ensuite également utiliser dans chronique.resultat.filtrage() + chronique.cle() + chronique.resultats.periode
 # Intérêt de créer ? pour mesures Contexte$njours <- n_distinct(syntjour$chmes_date) + total pour les résultats à partir de la colonne concernée ? -> Si modification, le retranscrire dans chronique.figure.parametres
 #####################
 
@@ -33,9 +34,11 @@ chronique.contexte <- function(
     rename_at(vars(contains("chmes_coderhj")), list( ~ str_replace(., "chmes_coderhj", "coderhj"))) %>% 
     rename_at(vars(contains("chsta_coderhj")), list( ~ str_replace(., "chsta_coderhj", "coderhj"))) %>% 
     rename_at(vars(contains("chres_coderhj")), list( ~ str_replace(., "chres_coderhj", "coderhj"))) %>% 
+    rename_at(vars(contains("Coderhj")), list( ~ str_replace(., "Coderhj", "coderhj"))) %>% 
     # Type de mesures
     rename_at(vars(contains("chmes_typemesure")), list( ~ str_replace(., "chmes_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("chres_typemesure")), list( ~ str_replace(., "chres_typemesure", "typemesure"))) %>% 
+    rename_at(vars(contains("Typemesure")), list( ~ str_replace(., "Typemesure", "typemesure"))) %>% 
     # Année
     rename_at(vars(contains("chmes_anneebiol")), list( ~ str_replace(., "chmes_anneebiol", "annee"))) %>%
     rename_at(vars(contains("chres_anneevmm")), list( ~ str_replace(., "chres_anneevmm", "annee"))) %>%  

@@ -9,7 +9,7 @@
 #' PC.agregation(PC)
 
 ##### TODO LIST #####
-
+# Il faudrait créer un "tous PCB"
 #####################
 
 PC.agregation <- function(
@@ -138,7 +138,8 @@ PC.agregation <- function(
           pcmes_valeur = sum(pcmes_valeur, na.rm = T)
         ) %>% 
         mutate(pcmes_valeur = dplyr::na_if(pcmes_valeur, 0)) %>% 
-        mutate(pcmes_coderemarque = ifelse(is.na(pcmes_valeur), "2", "1")) %>% 
+        # {if(nrow(.) != 0) mutate(pcmes_coderemarque = ifelse(is.na(pcmes_valeur), "2", "1")) else .} %>% # Pour rendre pcmes_coderemarque en tant que chr plutôt que lgl si aucune valeur dans le dataframe
+        {if(nrow(.) == 0) mutate(., pcmes_coderemarque = NA_character_) else .} %>% # Pour rendre pcmes_coderemarque en tant que chr plutôt que lgl si aucune valeur dans le dataframe
         mutate(pcmes_parametresandre = 6276) %>%
         mutate(pcmes_parametrenom = "Pesticides (somme)") %>% 
         mutate(pcmes_parametresandre = as.character(pcmes_parametresandre))
