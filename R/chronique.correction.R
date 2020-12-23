@@ -11,7 +11,7 @@
 #' @param cTypeMesure Type de mesure à modifier
 #' @param cNvelleValeur Valeur de remplacement
 #' @keywords chronique
-#' @import DBI dplyr lubridate RSQLite stringr
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.correction(data, cCodeRHJ = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cValeur = 985.3, cTypeMesure = "Piézométrie", cNvelleValeur = 700)

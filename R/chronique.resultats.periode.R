@@ -5,7 +5,6 @@
 #' @param data Data.frame issu de la fonction chronique.resultats ou de la base de données Chroniques
 #' @param typeperiode Type de période que l'on souhaite calculer : période totale (\code{Enveloppe} : 2014-2018), ou période fractionnée (\code{Detail} : 2014-2015;2017;2019-2020, par défaut)
 #' @keywords chronique
-#' @import glue
 #' @import tidyverse
 #' @export
 #' @examples

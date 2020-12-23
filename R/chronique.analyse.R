@@ -9,8 +9,6 @@
 #' @param seuilexcesdefaut Seuil en-deça duquel les dépassements sont testés par défaut, sinon ils sont testés par excès (valeur de 12 par défaut).
 #' @param degresjours Calcul des degrés/jours (\code{FALSE} par défault)
 #' @keywords chronique
-#' @import glue
-#' @import lubridate
 #' @import RcppRoll
 #' @import tidyverse
 #' @export

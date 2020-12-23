@@ -9,10 +9,8 @@
 #' @param geojson Export au format geojson (\code{true} par défaut)
 #' @param excel Export au format excel (\code{true} par défaut)
 #' @keywords stations poissons
-#' @import DBI
-#' @import dplyr
-#' @import glue 
 #' @import sf
+#' @import tidyverse 
 #' @export
 #' @examples
 #' SIG.export(Stations, glue("{today()}_Export_stations"))

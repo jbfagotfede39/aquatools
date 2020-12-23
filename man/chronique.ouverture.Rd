@@ -5,7 +5,7 @@
 \title{Ouverture de fichiers de chroniques}
 \usage{
 chronique.ouverture(
-  Type = c("Mesures", "Suivis", "Stations", "Commentaires"),
+  Type = c("Mesures", "Suivis", "Stations", "Commentaires", "Capteurs"),
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
@@ -19,7 +19,7 @@ chronique.ouverture(
 )
 }
 \arguments{
-\item{Type}{Type de données en entrée (Mesures, Suivis, Stations, Commentaires)}
+\item{Type}{Type de données en entrée (Mesures, Suivis, Stations, Commentaires, Capteurs)}
 
 \item{typemesure}{Défini le type de données (Thermie, Piézométrie, etc.)}
 

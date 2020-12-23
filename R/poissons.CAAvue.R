@@ -7,7 +7,7 @@
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords poissons
 #' @export
-#' @import ggplot2
+#' @import tidyverse
 #' @examples
 #' poissons.CAAvue(data)
 #' poissons.CAAvue(data, export = T)

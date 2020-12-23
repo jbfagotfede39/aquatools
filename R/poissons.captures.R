@@ -8,10 +8,8 @@
 #' @param codeCapture Affichage du codecapture - \code{FALSE} (par défault) 
 #' @param codePlacette Affichage du codeplacette - \code{FALSE} (par défault) 
 #' @param codeOperation Affichage du codeoperation - \code{FALSE} (par défault) 
-#' @import dplyr 
-#' @import RSQLite 
 #' @import DBI 
-#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' poissons.captures()

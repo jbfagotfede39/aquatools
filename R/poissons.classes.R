@@ -4,8 +4,7 @@
 #' @name poissons.classes
 #' @param Captures Dataframe contenant les captures
 #' @keywords poissons
-#' @import dplyr
-#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' poissons.classes(Captures)

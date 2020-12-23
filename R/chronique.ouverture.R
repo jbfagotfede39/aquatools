@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet d'ouvrir de manière semi-automatisée des fichiers de chroniques
 #' @name chronique.ouverture
-#' @param Type Type de données en entrée (Mesures, Suivis, Stations, Commentaires)
+#' @param Type Type de données en entrée (Mesures, Suivis, Stations, Commentaires, Capteurs)
 #' @param typemesure Défini le type de données (Thermie, Piézométrie, etc.)
 #' @param Localisation Localisation relative du fichier (à partir de /NAS-DATA/)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
@@ -11,8 +11,6 @@
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
-#' @import lubridate
-#' @import stringr
 #' @import tidyverse
 #' @export
 #' @examples
@@ -21,7 +19,7 @@
 #' chronique.ouverture("Suivi", "Thermie", "/NAS-DATA/Chroniques/Saisie_JB/2019-01-18_PDPG/Saisie_cahier_terrain_PDPG_V2.xlsx")
 
 chronique.ouverture <- function(
-  Type = c("Mesures", "Suivis", "Stations", "Commentaires"),
+  Type = c("Mesures", "Suivis", "Stations", "Commentaires", "Capteurs"),
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
   Localisation = NA_character_,
   skipvalue = 9,
@@ -505,7 +503,10 @@ dataaimporter <-
   mutate(chsta_suivipiezo = ifelse("chsta_suivipiezo" %in% names(.), chsta_suivipiezo, NA)) %>% 
   mutate(chsta_suivio2 = ifelse("chsta_suivio2" %in% names(.), chsta_suivio2, NA)) %>% 
   mutate(chsta_suivipluvio = ifelse("chsta_suivipluvio" %in% names(.), chsta_suivipluvio, NA)) %>% 
+  mutate(chsta_typetheorique = ifelse("chsta_typetheorique" %in% names(.), chsta_typetheorique, NA)) %>% 
   mutate(chsta_altitude = ifelse("chsta_altitude" %in% names(.), chsta_altitude, NA)) %>% 
+  mutate(chsta_codecontextepdpg = ifelse("chsta_codecontextepdpg" %in% names(.), chsta_codecontextepdpg, NA)) %>% 
+  mutate(chsta_sprep = ifelse("chsta_sprep" %in% names(.), chsta_sprep, NA)) %>% 
   mutate(chsta_distancesource = ifelse("chsta_distancesource" %in% names(.), chsta_distancesource, NA)) %>% 
   mutate(chsta_temperaturemax = ifelse("chsta_temperaturemax" %in% names(.), chsta_temperaturemax, NA)) %>% 
   mutate(chsta_sectionmouillee = ifelse("chsta_sectionmouillee" %in% names(.), chsta_sectionmouillee, NA)) %>% 
@@ -513,7 +514,6 @@ dataaimporter <-
   mutate(chsta_largeurlitmineur = ifelse("chsta_largeurlitmineur" %in% names(.), chsta_largeurlitmineur, NA)) %>% 
   mutate(chsta_largeurlitetiage = ifelse("chsta_largeurlitetiage" %in% names(.), chsta_largeurlitetiage, NA)) %>% 
   mutate(chsta_pente = ifelse("chsta_pente" %in% names(.), chsta_pente, NA)) %>% 
-  mutate(chsta_typetheorique = ifelse("chsta_typetheorique" %in% names(.), chsta_typetheorique, NA)) %>% 
   mutate(chsta_carteign = ifelse("chsta_carteign" %in% names(.), chsta_carteign, NA)) %>% 
   mutate(chsta_rive = ifelse("chsta_rive" %in% names(.), chsta_rive, NA)) %>% 
   mutate(chsta_ancrage = ifelse("chsta_ancrage" %in% names(.), chsta_ancrage, NA)) %>% 
@@ -526,11 +526,12 @@ dataaimporter <-
   mutate(chsta_profsonde = ifelse("chsta_profsonde" %in% names(.), chsta_profsonde, NA)) %>% 
   mutate(chsta_substrats = ifelse("chsta_substrats" %in% names(.), chsta_substrats, NA)) %>% 
   mutate(chsta_distberge = ifelse("chsta_distberge" %in% names(.), chsta_distberge, NA)) %>% 
+  mutate(chsta_ombrage = ifelse("chsta_ombrage" %in% names(.), chsta_ombrage, NA)) %>% 
+  mutate(chsta_facies = ifelse("chsta_facies" %in% names(.), chsta_facies, NA)) %>% 
   mutate(chsta_numphoto = ifelse("chsta_numphoto" %in% names(.), chsta_numphoto, NA)) %>% 
   mutate(chsta_zbouchon = ifelse("chsta_zbouchon" %in% names(.), chsta_zbouchon, NA)) %>% 
   mutate(chsta_typez = ifelse("chsta_typez" %in% names(.), chsta_typez, NA)) %>% 
   mutate(chsta_hcapteurbouchon = ifelse("chsta_hcapteurbouchon" %in% names(.), chsta_hcapteurbouchon, NA)) %>% 
-  mutate(chsta_codecontextepdpg = ifelse("chsta_codecontextepdpg" %in% names(.), chsta_codecontextepdpg, NA)) %>% 
   mutate(chsta_url = ifelse("chsta_url" %in% names(.), chsta_url, NA)) %>% 
   mutate(chsta_module = ifelse("chsta_module" %in% names(.), round(as.numeric(chsta_module),3), NA)) %>% 
   mutate(chsta_qmna5 = ifelse("chsta_qmna5" %in% names(.), chsta_qmna5, NA)) %>% 
@@ -559,7 +560,6 @@ dataaimporter <-
          chsta_sousbassin,
          chsta_commune,
          chsta_departement,
-         chsta_codecontextepdpg,
          chsta_pays,
          chsta_coord_x,
          chsta_coord_y,
@@ -572,7 +572,10 @@ dataaimporter <-
          chsta_suivihydro,
          chsta_suivio2,
          chsta_suivipluvio,
+         chsta_typetheorique,
          chsta_altitude,
+         chsta_codecontextepdpg,
+         chsta_sprep,
          chsta_distancesource,
          chsta_distancesource_confluencedrainprincipal,
          chsta_temperaturemax,
@@ -581,7 +584,6 @@ dataaimporter <-
          chsta_largeurlitmineur,
          chsta_largeurlitetiage,
          chsta_pente,
-         chsta_typetheorique,
          chsta_surfacebassinversant,
          chsta_carteign,
          chsta_rive,
@@ -596,6 +598,8 @@ dataaimporter <-
          chsta_profsonde,
          chsta_substrats,
          chsta_distberge,
+         chsta_ombrage,
+         chsta_facies,
          chsta_numphoto,
          chsta_zcapteur,
          chsta_zbouchon,
@@ -621,6 +625,7 @@ dataaimporter <-
 ## Test ##
 if(dataaimporter %>% filter(is.na(chsta_coord_x)) %>% nrow() > 0) stop("Présence de stations sans coordonnées")
 }
+
 
 #### Commentaires ####
 if(Type == "Commentaires"){
@@ -654,6 +659,23 @@ if(Type == "Commentaires"){
   dataaimporter <- read_excel(Localisation, sheet = 1)
   if(all(names(dataaimporter) %in% names(Commentaires)) == FALSE) stop("Le fichier source de commentaires contient des noms de colonne à corriger")
 }
+
+
+#### Capteurs ####
+if(Type == "Capteurs"){
+  ## Chargement des données ##
+  Capteurs <-
+    structure(list(chcap_proprietaire = character(0), chcap_typecapteur = character(0), 
+                   chcap_modelecapteur = character(0), chcap_numerocapteur = character(0), 
+                   chcap_etat = character(0), chcap_projet = character(0), chcap_originecapteur = character(0), 
+                   chcap_datedebut = character(0), chcap_datefin = character(0), 
+                   chcap_remarques = character(0)), row.names = integer(0), class = c("tbl_df", 
+                                                                                      "tbl", "data.frame"))
+  
+  dataaimporter <- read_excel(Localisation, sheet = 1)
+  if(all(names(dataaimporter) %in% names(Capteurs)) == FALSE) stop("Le fichier source des capteurs contient des noms de colonne à corriger")
+}
+
 
 #### Sortie des résultats ####
 return(dataaimporter)

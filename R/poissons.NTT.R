@@ -5,7 +5,7 @@
 #' @param Données Dataframe issu de poissons.stations()
 #' @keywords poissons
 #' @export
-#' @import dplyr
+#' @import tidyverse
 #' @examples
 #' poissons.NTT(station)
 

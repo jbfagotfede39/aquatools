@@ -8,7 +8,7 @@
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @keywords chronique
-#' @import ggplot2
+#' @import RColorBrewer
 #' @import tcltk
 #' @import tidyverse
 #' @export
@@ -79,7 +79,7 @@ chronique.figure.longitudinale <- function(
     # data(PaletteAnnees) # Couleurs trop proches pour années successives
     if(Contexte$nannee <= 11){PaletteCouples <- RColorBrewer::brewer.pal(Contexte$nannee, "Spectral")} #Set3
     if(Contexte$nannee > 11){
-      colourCount <- length(unique(syntjour$Cle))
+      colourCount <- Contexte$nannee
       getPalette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral")) #Set3
       PaletteCouples <- getPalette(colourCount)
     }
@@ -90,7 +90,7 @@ chronique.figure.longitudinale <- function(
   gg <- gg + geom_line()
   gg <- gg + ylim(0, 29)
   gg <- gg + labs(x = "Distance à la source (km)", y = expression(Tmm30j~(degree*C)), colour = "Milieu - Année biologique") # Pour changer le titre
-  if(Contexte$nannee != 1 | Contexte$nstation != 1) gg <- gg + scale_colour_manual(values = PaletteCouples)
+  # if(Contexte$nannee != 1 | Contexte$nstation != 1) gg <- gg + scale_colour_manual(values = PaletteCouples)
   gg <- gg + theme_bw()
   gg <- gg + theme(axis.title.x = element_text(size=10),
                    axis.title.y = element_text(size=10)

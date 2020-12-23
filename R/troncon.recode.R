@@ -5,7 +5,7 @@
 #' @name troncon.recode
 #' @param data Chronique à valider
 #' @keywords data
-#' @import tidyverse 
+#' @import tidyverse
 #' @export
 #' @examples
 #' troncon.recode(data)

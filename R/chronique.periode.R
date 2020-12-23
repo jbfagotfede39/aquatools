@@ -5,7 +5,7 @@
 #' @param Début Date de début (2015-02-01 14:00:00)
 #' @param Fin Date de fin (2015-02-04 14:00:00)
 #' @keywords chronique
-#' @import dplyr lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.periode(Data, "2015-02-04 11:00:00", )

@@ -4,7 +4,6 @@
 #' @name PC.figure
 #' @param PC Jeu de données issu de la BDD PC
 #' @import tidyverse
-#' @import tibble
 #' @export
 #' @examples
 #' PC.figure(PC)

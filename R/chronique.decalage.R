@@ -6,8 +6,7 @@
 #' @param decalage Valeur de décalage (en jours, positif pour avancer ou négatif pour reculer) à calculer par soustration des deux dates au format lubridate
 #' @param recalcul Les dates/heures présentes doivent-elles être entièrement re-calculées, et si oui, depuis le début ou la fin avec l'écart considéré (\code{non} (par défaut), \code{debut} ou \code{fin})
 #' @keywords chronique
-#' @import dplyr 
-#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' ymd_hms("2017-07-05 11:40:00")-ymd_hms("2010-05-24 21:44:00")

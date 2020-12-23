@@ -12,8 +12,6 @@
 #' @keywords chronique
 #' @keywords poissons
 #' @export
-#' @import glue
-#' @import stringr
 #' @import tidyverse
 #' @examples
 #' chronique.figure.preferendums()

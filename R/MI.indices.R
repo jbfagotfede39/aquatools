@@ -5,10 +5,8 @@
 #' @param DataTravail Dataframe contenant les données de captures issues de MI.indices()
 #' @param Sortie Forme du dataframe de sortie - \code{indices} (par défault), \code{listefaunistiqueGlobale}, \code{listefaunistiqueMAG20}, \code{listefaunistiqueDCEPrelevement}, \code{listefaunistiqueDCEPhase}, \code{listefaunistiqueDCEequivalentIBGN}, \code{listefaunistiqueIBGN}
 #' @keywords donnees
-#' @import dplyr 
-#' @import RSQLite
 #' @import DBI
-#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' MI.indices(DataTravail)

@@ -4,11 +4,7 @@
 #' @name chronique.hydroreel
 #' @param url url hydroréel de la station
 #' @keywords chronique
-#' @import dplyr
-#' @import lubridate
-#' @import rvest
-#' @import stringr
-#' @import xml2
+#' @import tidyverse
 #' @export 
 #' @examples
 #' chronique.hydroreel(url)

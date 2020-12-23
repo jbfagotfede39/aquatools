@@ -4,7 +4,6 @@
 #' @name chronique.duree
 #' @param Data Jeu de données issu de la matrice "Mesures" des chroniques
 #' @keywords chronique
-#' @import lubridate
 #' @import tidyverse
 #' @export
 #' @examples

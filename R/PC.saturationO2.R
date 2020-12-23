@@ -4,7 +4,7 @@
 #' @name PC.saturationO2
 #' @param data Jeu de données (contenant une colonne Thermie et une colonne Oxygenation)
 #' @keywords Physico-chimie
-#' @import dplyr
+#' @import tidyverse
 #' @export
 #' @examples
 #' PC.saturationO2(data)

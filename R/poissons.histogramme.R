@@ -4,8 +4,7 @@
 #' @name poissons.histogramme
 #' @param Captures Dataframe contenant les captures
 #' @keywords poissons
-#' @import dplyr
-#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' poissons.histogramme(Captures)

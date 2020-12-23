@@ -4,7 +4,7 @@
 #' @name chronique.complete
 #' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
 #' @keywords chronique
-#' @import lubridate dplyr
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.complete(data)

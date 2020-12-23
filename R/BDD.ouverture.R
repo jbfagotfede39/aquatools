@@ -3,10 +3,9 @@
 #' Cette fonction permet de charger les bases de données de la fédération
 #' @name BDD.ouverture
 #' @param Type Type de base de données. Chroniques par défaut
-#' @import dbplyr
-#' @import dplyr
 #' @import keyring
 #' @import RPostgreSQL
+#' @import tidyverse
 #' @export
 #' @examples
 #' BDD.ouverture()
@@ -30,6 +29,8 @@ BDD.ouverture <- function(
 # Détection en fonction de la machine
 if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "imac27.local"){UtilisateurFD <- "jb"}
+if(system('uname -n',intern=T) == "iMacdeJBaptisteEthernet"){UtilisateurFD <- "jb"}
+if(system('uname -n',intern=T) == "iMacdeJBaptisteEthernet.local"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "Client_imacJB"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "Client_imacJB.local"){UtilisateurFD <- "jb"}
 if(system('uname -n',intern=T) == "Client_imacJB.cloud.peche-jura.com"){UtilisateurFD <- "jb"}

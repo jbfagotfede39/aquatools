@@ -6,7 +6,6 @@
 #' @param N 
 #' @keywords chronique
 #' @import tidyverse
-#' @import lubridate
 #' @export
 #' @examples
 #' chronique.tendance(data)

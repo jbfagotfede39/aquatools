@@ -18,7 +18,6 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
-#' @import ggplot2 
 #' @import tidyverse
 #' @export
 #' @examples

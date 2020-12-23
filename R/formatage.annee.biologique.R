@@ -5,7 +5,7 @@
 #' @param data Jeu de données contenant une colonne chmes_date ou chsvi_date au format Date
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)
 #' @keywords donnees
-#' @import lubridate
+#' @import tidyverse
 #' @export
 #' @examples
 #' formatage.annee.biologique(data)

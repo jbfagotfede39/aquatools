@@ -10,7 +10,7 @@
 #' @param cTypeMesure \code{Thermie} (par défault)
 #' @param cValeur Valeur à supprimer
 #' @keywords chronique
-#' @import dplyr lubridate stringr
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.suppression(data, cCodeRDT = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cTypeMesure = "Thermie", cValeur = 15, cValidation = "Validé")

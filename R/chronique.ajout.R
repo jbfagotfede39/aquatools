@@ -13,7 +13,7 @@
 #' @param cValidation \code{Validé} (par défault)
 #' @param cModeAcquisition \code{Estimé} (par défault)
 #' @keywords chronique
-#' @import dplyr lubridate stringr
+#' @import tidyverse
 #' @export
 #' @examples
 #' chronique.ajout(data, cCodeRHJ = "BONbaro", cCapteur = "P0352", cDate = "2014-12-27", cHeure = "19:00:00", cUnite = "°C", cTypeMesure = "Thermie", cNvelleValeur = 15, cValidation = "Validé", cModeAcquisition = "Estimé")

@@ -4,6 +4,7 @@
 #' @name chronique.contexte
 #' @param data Data.frame issu des fonctions chronique.mesures, chronique.agregation ou chronique.resultats
 #' @keywords chronique
+#' @import glue
 #' @import tidyverse
 #' @export
 #' @examples
@@ -41,8 +42,9 @@ chronique.contexte <- function(
     rename_at(vars(contains("Typemesure")), list( ~ str_replace(., "Typemesure", "typemesure"))) %>% 
     # Année
     rename_at(vars(contains("chmes_anneebiol")), list( ~ str_replace(., "chmes_anneebiol", "annee"))) %>%
-    rename_at(vars(contains("chres_anneevmm")), list( ~ str_replace(., "chres_anneevmm", "annee"))) %>%  
-    rename_at(vars(contains("AnneeVMM")), list( ~ str_replace(., "AnneeVMM", "annee"))) %>% 
+    rename_at(vars(contains("Annee")), list( ~ str_replace(., "Annee", "annee"))) %>% 
+    # rename_at(vars(contains("chres_anneevmm")), list( ~ str_replace(., "chres_anneevmm", "annee"))) %>%  
+    # rename_at(vars(contains("AnneeVMM")), list( ~ str_replace(., "AnneeVMM", "annee"))) %>% 
     # Milieu
     rename_at(vars(contains("chsta_milieu")), list( ~ str_replace(., "chsta_milieu", "milieu")))
   

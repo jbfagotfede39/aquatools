@@ -9,7 +9,6 @@
 #' @param TempsDiff Différence de temps attendue entre 2 valeurs successives (1 par défault)
 #' @keywords chronique
 #' @import DBI 
-#' @import RSQLite
 #' @import tidyverse
 #' @export
 #' @examples

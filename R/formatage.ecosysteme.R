@@ -6,8 +6,6 @@
 #' @param Operation Type de transformation que l'on souhaite réaliser (\code{Simplification} ou \code{Expansion})
 #' @param ColonneEntree Champ contenant la donnée d'entrée
 #' @param ColonneSortie Champ recevant la donnée de sortie (peut être identique au champs d'entrée si on le souhaite)
-#' @import glue
-#' @import stringr
 #' @import tidyverse
 #' @export
 #' @examples

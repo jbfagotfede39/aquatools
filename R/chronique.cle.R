@@ -44,8 +44,10 @@ chronique.cle <- function(
     {if("chres_typemesure" %in% colnames(.)) mutate(., typemesure = chres_typemesure) else .} %>% 
     {if("Typemesure" %in% colnames(.)) mutate(., typemesure = Typemesure) else .} %>% 
     # Année
-    {if("chres_anneevmm" %in% colnames(.)) mutate(., annee = chres_anneevmm) else .} %>% 
-    {if("AnneeVMM" %in% colnames(.)) mutate(., annee = AnneeVMM) else .} %>% 
+    # {if("chres_anneevmm" %in% colnames(.)) mutate(., annee = chres_anneevmm) else .} %>% # Basée sur l'année de VMM (mais parfois deux même année VMM lors de la présence d'un morceau d'année qui s'arrête en février)
+    # {if("AnneeVMM" %in% colnames(.)) mutate(., annee = AnneeVMM) else .} %>%  # Basée sur l'année de VMM (mais parfois deux même année VMM lors de la présence d'un morceau d'année qui s'arrête en février)
+    {if("chres_annee" %in% colnames(.)) mutate(., annee = chres_annee) else .} %>% 
+    {if("Annee" %in% colnames(.)) mutate(., annee = Annee) else .} %>% 
     {if("chmes_anneebiol" %in% colnames(.)) mutate(., annee = chmes_anneebiol) else .} %>% 
     {if("chres_anneebiol" %in% colnames(.)) mutate(., annee = chres_anneebiol) else .} %>% 
     # Milieu
