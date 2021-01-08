@@ -60,8 +60,9 @@ if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD 
 if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
 
 if(exists("UtilisateurFD") == FALSE){
-  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('uname -n',intern=T) == "jb") UtilisateurFD <- "jb"
-  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('uname -n',intern=T) == "adrien") UtilisateurFD <- "adrien"
+  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('whoami',intern=T) == "jb") UtilisateurFD <- "jb"
+  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('whoami',intern=T) == "adrien") UtilisateurFD <- "adrien"
+  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "automate"
   
   if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & exists(UtilisateurFD) == FALSE) UtilisateurFD <- NA_character_
 }
