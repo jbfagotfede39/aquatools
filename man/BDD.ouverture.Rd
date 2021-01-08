@@ -6,11 +6,14 @@
 \usage{
 BDD.ouverture(
   Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie",
-    "Temps de travail", "Data")
+    "Temps de travail", "Data"),
+  motdepasse = NA_character_
 )
 }
 \arguments{
 \item{Type}{Type de base de données. Chroniques par défaut}
+
+\item{motdepasse}{Mot de passe du portefeuille keyring, si accès côté RStudio server}
 }
 \description{
 Cette fonction permet de charger les bases de données de la fédération

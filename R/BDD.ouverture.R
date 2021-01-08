@@ -3,6 +3,7 @@
 #' Cette fonction permet de charger les bases de données de la fédération
 #' @name BDD.ouverture
 #' @param Type Type de base de données. Chroniques par défaut
+#' @param motdepasse Mot de passe du portefeuille keyring, si accès côté RStudio server
 #' @import keyring
 #' @import RPostgreSQL
 #' @import rstudioapi
@@ -20,12 +21,18 @@
 #####################
 
 BDD.ouverture <- function(
-                           Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie", "Temps de travail", "Data"))
+  Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie", "Temps de travail", "Data"),
+  motdepasse = NA_character_
+  )
 {
   
   ## Évaluation des choix
   Type <- match.arg(Type)
 
+  #### Version serveur ou version client classique ####
+  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE)) client <- "serveur"
+  if(exists("client") == FALSE) client <- "machineordinaire"
+  
 #### Utilisateur ####
 # Détection en fonction de la machine
 if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "jb"}
@@ -60,13 +67,16 @@ if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD 
 if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
 
 if(exists("UtilisateurFD") == FALSE){
-  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('whoami',intern=T) == "jb") UtilisateurFD <- "jb"
-  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('whoami',intern=T) == "adrien") UtilisateurFD <- "adrien"
-  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "automate"
+  if(client == "serveur" & system('whoami',intern=T) == "jb") UtilisateurFD <- "jb"
+  if(client == "serveur" & system('whoami',intern=T) == "adrien") UtilisateurFD <- "adrien"
+  if(client == "serveur" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "automate"
   
-  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE) & exists(UtilisateurFD) == FALSE) UtilisateurFD <- NA_character_
+  if(client == "serveur" & exists("UtilisateurFD") == FALSE) UtilisateurFD <- NA_character_
 }
 
+  #### Vérification présence mot de passe ####
+  if(client == "serveur" & is.na(motdepasse)) stop("Pas de mot de passe portefeuille keyring fourni alors que nécessaire")
+  
 #### Création de la connexion ####
 ## Si utilisateur connu ##
 if(!is.na(UtilisateurFD)){
@@ -81,8 +91,11 @@ if(!is.na(UtilisateurFD)){
                                   host = "database.eaux-jura.com",
                                   port = 3254,
                                   user = UtilisateurFD,
-                                  password = keyring::key_get("eaux-jura-sig-data")
-    )
+                                  password = ifelse(client == "machineordinaire", 
+                                                    keyring::key_get("eaux-jura-sig-data", username = UtilisateurFD),
+                                                    motdepasse
+                                                    )
+                                  )
   }
   
   if(Type == "Poissons" & exists("dbP") == TRUE){
@@ -95,8 +108,11 @@ if(!is.na(UtilisateurFD)){
                                   host = "database.eaux-jura.com",
                                   port = 3254,
                                   user = UtilisateurFD,
-                                  password = keyring::key_get("multifish")
-    )
+                                  password = ifelse(client == "machineordinaire", 
+                                                    keyring::key_get("multifish", username = UtilisateurFD),
+                                                    motdepasse
+                                                    )    
+                                  )
   }
 }
 
