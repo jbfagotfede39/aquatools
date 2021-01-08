@@ -25,6 +25,8 @@ BDD.refreshMV(
 \item{url}{URL où télécharger le jeu de données, si nécessaire}
 
 \item{localisation}{Répertoire de stockage des fichiers à télécharger sur le serveur postgres/postgis, si nécessaire. Exemple : "/data/"}
+
+\item{motdepasse}{Mot de passe du portefeuille keyring, pour connexion autonome}
 }
 \description{
 Cette fonction permet de rafraîchir les vues matérialisées des bases de données. Fonction à exécuter dans R depuis une machine ayant accès des droits pour lancer une requête dans la BDD

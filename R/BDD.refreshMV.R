@@ -6,6 +6,7 @@
 #' @param serveurbddip IP du serveur de la base de données postgres/postgis
 #' @param serveurbddutilisateur Utilisateur du serveur de la base de données postgres/postgis
 #' @param serveurbddport Port de connexion ssh du serveur de la base de données postgres/postgis. 22 par défaut
+#' @param motdepasse Mot de passe du portefeuille keyring, pour connexion autonome
 #' @param url URL où télécharger le jeu de données, si nécessaire
 #' @param localisation Répertoire de stockage des fichiers à télécharger sur le serveur postgres/postgis, si nécessaire. Exemple : "/data/"
 #' @import glue
@@ -63,12 +64,9 @@ if(!is.na(url)){
   
   #### Rafraîchissement de la vue matérialisée
   ## Connexion ##
-  dbD <- BDD.ouverture("Data")
+  dbD <- BDD.ouverture("Data", motdepasse)
   
   ## Envoi de la requête ##
   dbGetQuery(dbD, glue("REFRESH MATERIALIZED VIEW {table};"))
-  
-  ## Déconnexion ##
-  RPostgreSQL::dbDisconnect(dbD)
   
 } # Fin de la fonction

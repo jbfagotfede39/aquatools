@@ -69,7 +69,7 @@ if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
 if(exists("UtilisateurFD") == FALSE){
   if(client == "serveur" & system('whoami',intern=T) == "jb") UtilisateurFD <- "jb"
   if(client == "serveur" & system('whoami',intern=T) == "adrien") UtilisateurFD <- "adrien"
-  if(client == "serveur" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "automate"
+  if(client == "serveur" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas priopriétaire de celles-ci
   
   if(client == "serveur" & exists("UtilisateurFD") == FALSE) UtilisateurFD <- NA_character_
 }
