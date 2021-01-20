@@ -30,7 +30,12 @@ BDD.ouverture <- function(
   Type <- match.arg(Type)
 
   #### Version serveur ou version client classique ####
-  if(system('uname -n',intern=T) == "rstudio-server" & grepl(system('lsb_release -d',intern=T) %>% str_replace("Description:\tUbuntu ", "") %>% str_replace(" LTS", ""), "20.04.1", fixed = TRUE)) client <- "serveur"
+  if(system('uname -n',intern=T) == "rstudio-server"){
+    if(grepl(system('lsb_release -d',intern=T) %>% 
+            str_replace("Description:\tUbuntu ", "") %>% 
+            str_replace(" LTS", ""), "20.04.1", fixed = TRUE)){
+      client <- "serveur"}
+  }
   if(exists("client") == FALSE) client <- "machineordinaire"
   
 #### Utilisateur ####
