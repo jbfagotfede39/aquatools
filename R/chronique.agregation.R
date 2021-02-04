@@ -34,6 +34,7 @@ chronique.agregation <- function(
 # Ajout d'un paramètre année civile ?
 # Ajout d'un paramètre saison naturelle (équinoxe et solstice) ? https://stackoverflow.com/questions/9500114/find-which-season-a-particular-date-belongs-to
 # Il faudra faire une fonction commune (entre chronique.figure, chronique.figure.cumul, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
+# Utiliser chronique.renommage.variables() pour pouvoir agréger les données chmesgr_date
 # Faire un outil de regroupement des données brutes au format large à partir de la fin du code de 2020-02-13_Export_suivi_FUR_format_DCE.R  
 # -------------- A FAIRE -------------- #
 
@@ -46,7 +47,7 @@ data <-
   mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
   dplyr::filter(is.na(chmes_valeur) == F) %>% 
   arrange(Time) %>% 
-  select(-Time)
+  dplyr::select(-Time)
 
 data <- 
   data %>% 
@@ -109,7 +110,7 @@ ValJours <-
   mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
   ungroup() %>% 
   group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>%
-  select(chmes_coderhj, chmes_typemesure, chmes_date, VMinJ:VAmpliJ, VAmpliSigneJ, VarJ, NMesuresJ, SommeMoyJ)
+  dplyr::select(chmes_coderhj, chmes_typemesure, chmes_date, VMinJ:VAmpliJ, VAmpliSigneJ, VarJ, NMesuresJ, SommeMoyJ)
 
 if(complement == TRUE){
   ValJours <-
@@ -144,7 +145,7 @@ ValMois <-
       NMesuresM = n()
     ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_mois")
   ) %>% 
-  select(chmes_coderhj, chmes_typemesure, chmes_mois, VMinM:VAmpliM, VAmpliSigneM, VarM, NMesuresM) %>% 
+  dplyr::select(chmes_coderhj, chmes_typemesure, chmes_mois, VMinM:VAmpliM, VAmpliSigneM, VarM, NMesuresM) %>% 
   left_join(
     data %>% 
       group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>% 
@@ -155,7 +156,7 @@ ValMois <-
       group_by(chmes_coderhj, chmes_typemesure, chmes_mois) %>% 
       summarise(
         SommeMoyJM = sum(VMoyJ)) %>% 
-      select(chmes_coderhj, chmes_typemesure, chmes_mois, SommeMoyJM)
+      dplyr::select(chmes_coderhj, chmes_typemesure, chmes_mois, SommeMoyJM)
       , by = c("chmes_coderhj", "chmes_typemesure", "chmes_mois"))
 
 if(complement == TRUE){
@@ -194,7 +195,7 @@ ValAnneeBiol <-
       DateVMaxAB = paste(chmes_date, chmes_heure, sep = " ")[chmes_valeur == max(chmes_valeur)][1]
     ), by = c("chmes_coderhj", "chmes_typemesure", "chmes_anneebiol")
   ) %>% 
-  select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, VMinAB:VAmpliAB, VAmpliSigneAB, VarAB, NMesuresAB, DateVMinAB, DateVMaxAB) %>% 
+  dplyr::select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, VMinAB:VAmpliAB, VAmpliSigneAB, VarAB, NMesuresAB, DateVMinAB, DateVMaxAB) %>% 
   left_join(
     data %>% 
       group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>% 
@@ -205,7 +206,7 @@ ValAnneeBiol <-
       group_by(chmes_coderhj, chmes_typemesure, chmes_anneebiol) %>% 
       summarise(
         SommeMoyJAB = sum(VMoyJ)) %>% 
-      select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, SommeMoyJAB)
+      dplyr::select(chmes_coderhj, chmes_typemesure, chmes_anneebiol, SommeMoyJAB)
   , by = c("chmes_coderhj", "chmes_typemesure", "chmes_anneebiol"))
 
 ## Calcul des percentiles ##
@@ -215,12 +216,12 @@ PercentilesCalcules <-
   group_by(chmes_anneebiol) %>% 
   mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
   dplyr::filter(between(hour(Time), 8, 18)) %>% 
-  select(-Time) %>% 
+  dplyr::select(-Time) %>% 
   mutate(rang = percent_rank(chmes_valeur)) %>% 
   dplyr::filter(rang <= 0.9) %>% 
   arrange(desc(rang)) %>% 
   dplyr::filter(row_number() == 1) %>% 
-  select(chmes_anneebiol, chmes_valeur) %>% 
+  dplyr::select(chmes_anneebiol, chmes_valeur) %>% 
   rename(Percentile90diurneAB = chmes_valeur)
 
 # Calcul des autres percentiles #
@@ -236,7 +237,7 @@ for(i in 1:length(Percentiles)){
     dplyr::filter(rang <= Percentile) %>% 
     arrange(desc(rang)) %>% 
     dplyr::filter(row_number() == 1) %>% 
-    select(chmes_anneebiol, chmes_valeur) %>% 
+    dplyr::select(chmes_anneebiol, chmes_valeur) %>% 
     rename(!!paste0('Percentile',quo_name(Percentile*100),'AB') := chmes_valeur) %>% 
     left_join(PercentilesCalcules, by = "chmes_anneebiol")
 }

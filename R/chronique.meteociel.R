@@ -7,6 +7,7 @@
 #' @param anneerecherche Année recherchée, au format 2020
 #' @keywords chronique
 #' @import glue
+#' @import lubridate
 #' @import rvest
 #' @import tidyverse
 #' @export
@@ -65,7 +66,7 @@ chronique.meteociel <- function(
   dataV3 <-
     dataV2 %>% 
     filter(date != "") %>% # pour supprimer le total
-    filter(!grepl("\\*", precipitations)) %>% # pour supprimer la journée en cours, qui se termine par (*)
+    filter(date != glue('{wday(today(), label = TRUE, abbr = TRUE)}. {mday(today())}')) %>% # pour supprimer la journée en cours, qui se termine par (*)
     filter(!grepl("---", precipitations)) %>% # pour supprimer la journée en cours, peut contenir --- (les journées sans mesures contiennent également ça)
     mutate(tmax = str_replace(tmax, " °C", "")) %>% # suppression des degrés, plus propre et sans warning que conversion directe en numeric
     mutate(tmin = str_replace(tmin, " °C", "")) %>% # suppression des degrés, plus propre et sans warning que conversion directe en numeric

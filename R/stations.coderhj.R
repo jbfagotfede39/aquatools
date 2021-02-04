@@ -58,20 +58,20 @@ if(ColonneEntree %in% names(data) == FALSE) stop(paste0("Le champs ", ColonneEnt
       mutate(Sortie = str_extract(temp, "[A-Z][A-Z][A-Z][A-Z]")) %>% 
       mutate(Sortie = ifelse(is.na(Sortie), str_extract(temp, "[A-Z][A-Z][A-Z]"), Sortie)) %>% 
       mutate(Sortie = ifelse(grepl(" A ", coderhj), NA, Sortie)) %>% # Pour négliger les coderhj qui contiennent en réalité le nom DCE de la station
-      select(-temp) %>% 
+      dplyr::select(-temp) %>% 
       mutate(Sortie = as.character(Sortie))
   }
 
   #### Renommage final ####
-  if(ColonneEntree == ColonneSortie){data <- data %>% select(-coderhj) %>% rename(!!ColonneSortie := Sortie)}
+  if(ColonneEntree == ColonneSortie){data <- data %>% dplyr::select(-coderhj) %>% rename(!!ColonneSortie := Sortie)}
   if(ColonneEntree != ColonneSortie){
-    if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% select(-ends_with(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent - On utilise ends_with au lieu de matches pour le cas de chsta_distancesource qui couvre également chsta_distancesource_confluencedrainprincipal et qui supprime cette dernière sans qu'on le veuille
+    if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% dplyr::select(-ends_with(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent - On utilise ends_with au lieu de matches pour le cas de chsta_distancesource qui couvre également chsta_distancesource_confluencedrainprincipal et qui supprime cette dernière sans qu'on le veuille
     if(!(ColonneSortie %in% colnames(data))){data <- data %>% rename(!!ColonneEntree := coderhj, !!ColonneSortie := Sortie)} # Attention l'ordre de ces deux étapes est important
   }
   
   #### Ré-ordonnancement ####
-  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% select(match(colnames(dataNomColonnes),names(.)))}
-  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
+  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% dplyr::select(match(colnames(dataNomColonnes),names(.)))}
+  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% dplyr::select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
   
 
   #### Restitution des données ####

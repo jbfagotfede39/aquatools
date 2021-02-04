@@ -1,31 +1,42 @@
 Package: aquatools
 Title: Tools for freshwater managers
 Version: 0.0.134
-Encoding: UTF-8
-Authors@R: person("Jean-Baptiste", "Fagot", email = "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
-Description: aquatools contains multiple tools to treat French freshwater data
+Authors@R: 
+    person(given = "Jean-Baptiste",
+           family = "Fagot",
+           role = c("aut", "cre"),
+           email = "jean-baptiste.fagot@peche-jura.com")
+Description: aquatools contains multiple tools to treat
+    French freshwater data
+License: What license is it under?
+URL: https://github.com/jbfagotfede39/aquatools
+BugReports: https://github.com/jbfagotfede39/aquatools/issues
 Depends:
     R (>= 3.5.0)
 Imports:
     DBI,
-    FSA,
+    dplyr,
     glue,
     keyring,
-    knitr,
     lubridate,
-    magrittr,
     openxlsx,
+    purrr,
+    raster,
     RColorBrewer,
     RcppRoll,
     rgeoapi,
     RPostgreSQL,
-    reshape2,
     rstudioapi,
     rvest,
     sf,
-    tidyverse
-License: What license is it under?
-URL: https://github.com/jbfagotfede39/aquatools
-BugReports: https://github.com/jbfagotfede39/aquatools/issues
+    stringi,
+    stringr,
+    tcltk,
+    testit,
+    tidyr,
+    tidyverse,
+    units,
+    xml2
+Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

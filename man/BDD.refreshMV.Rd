@@ -32,5 +32,5 @@ BDD.refreshMV(
 Cette fonction permet de rafraîchir les vues matérialisées des bases de données. Fonction à exécuter dans R depuis une machine ayant accès des droits pour lancer une requête dans la BDD
 }
 \examples{
-BDD.refreshMV(table <- "fd_referentiels.hydrographie_bdtopagecoursdeau", serveurbddip = "192.168.1.102", serveurbddutilisateur = "ubuntu", serveurbddport = 22, motdepasse = motdepasse, url <- "http://services.sandre.eaufrance.fr/telechargement/geo/ETH/BDTopage/2019/CoursEau/CoursEau_FXX-shp.zip", localisation <- "/data/")
+BDD.refreshMV(table <- "fd_referentiels.hydrographie_bdtopagecoursdeau", serveurbddip = "192.168.1.102", serveurbddutilisateur = "ubuntu", serveurbddport = 22, motdepasse = motdepasse, url = "http://services.sandre.eaufrance.fr/telechargement/geo/ETH/BDTopage/2019/CoursEau/CoursEau_FXX-shp.zip", localisation = "/data/")
 }

@@ -75,7 +75,7 @@ chronique.figure.parametres <- function(
     }
   }
   
-  if(typemesure == "Piézométrie" | typemesure == "Piézométrie brute" | typemesure == "Piézométrie compensée"){
+  if(typemesure == "Piézométrie" | typemesure == "Piézométrie brute" | typemesure == "Piézométrie compensée" | typemesure == "Piézométrie calée"){
     if(typefigure == "valeurs"){
       legendeY <- "Hauteur d'eau (cm)"
       legendeTitre <- "Piézométrie :"
@@ -119,14 +119,13 @@ chronique.figure.parametres <- function(
       legendeTitre <- "Pluviométrie :"
     }
     if(typefigure == "cumul"){
-      stop("Légendes à modifier")
-      legendeY = expression(Précipitations~(L/m^2))
+      legendeY = expression(Précipitations~cumulées~(L/m^2))
       legendeTitre = "Pluviométrie :"
     }
   }
   
   #### Tests ####
-  if(is.na(legendeY)) stop("Paramètres de titres de figure à créer")
+  if(is.na(as.character(legendeY))) stop("Paramètres de titres de figure à créer")
   if(is.na(legendeTitre)) stop("Paramètres de titres de figure à créer")
   if(is.na(typemesureTitreSortie)) stop("Paramètres de titres de figure à créer")
   

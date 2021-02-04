@@ -50,7 +50,7 @@ if("sf" %in% class(data) == FALSE) stop(paste0("Impossible de spatialiser ",data
 ##### Exportation #####
 # Export en geojson #
 if(geojson == TRUE){
-  st_write(data, dsn = paste0(nomfichier, ".geojson"), driver='GeoJSON', update=TRUE)
+  st_write(data, dsn = paste0(nomfichier, ".geojson"), driver='GeoJSON', overwrite = TRUE)
 }
 
 # Export en excel #
@@ -65,12 +65,12 @@ data %>%
   mutate(name = ifelse("chsta_coderhj" %in% names(.), chsta_coderhj, NA)) %>% 
   mutate(name = ifelse("nom" %in% names(.), nom, NA)) %>% # pour la table de multifish
   st_transform(4326) %>% 
-  st_write(dsn = paste0(nomfichier, ".kml"), driver='kml', update=TRUE)
+  st_write(dsn = paste0(nomfichier, ".kml"), driver='kml', overwrite = TRUE)
 }
 
 # Export en shp #
 if(shp == TRUE){
-  st_write(data, paste0(nomfichier, ".shp"), delete_layer = TRUE)
+  st_write(data, paste0(nomfichier, ".shp"), overwrite = TRUE)
 }
 
 

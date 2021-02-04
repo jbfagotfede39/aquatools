@@ -46,7 +46,7 @@ chronique.figure.preferendums <- function(
   gg <- ggplot(PoissonsPreferendumsThermiques %>% 
                  {if (listeEspeces != "Toutes espèces") filter(codeespece %in% listeEspeces) else .} %>% # filtrage des espèces s'il y a lieu
                  {if (staderecherche != "Tous stades") filter(., stade == staderecherche) else .} %>% # filtrage du stade s'il y a lieu
-                 select(codeespece, stade, seuil, value) %>% 
+                 dplyr::select(codeespece, stade, seuil, value) %>% 
                  pivot_wider(names_from = seuil, values_from = value) %>% 
                  {if (!("Optimal_max" %in% names(.))) mutate(Optimal_max = NA) else .} %>% # Création du champ Optimal_max si absent
                  mutate(Resistance_min = ifelse(!is.na(Resistance_max) & stade != "Reproduction", Optimal_max, NA)) %>% 
@@ -56,7 +56,7 @@ chronique.figure.preferendums <- function(
                  mutate(classe = ifelse(grepl("Resistance", seuil), "Zone de résistance", classe)) %>% 
                  mutate(niveau = ifelse(grepl("min", seuil), "min", NA_character_)) %>% 
                  mutate(niveau = ifelse(grepl("max", seuil), "max", niveau)) %>% 
-                 select(codeespece, stade, classe, niveau, value) %>% 
+                 dplyr::select(codeespece, stade, classe, niveau, value) %>% 
                  pivot_wider(names_from = niveau, values_from = value),
                aes(factor(codeespece,listeSp), colour = classe)) 
   gg <- gg + geom_linerange(aes(ymin = min, ymax = max), size=3)

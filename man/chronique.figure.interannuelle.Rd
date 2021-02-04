@@ -14,7 +14,8 @@ chronique.figure.interannuelle(
   Ymin = -1,
   Ymax = 30,
   affichagevide = TRUE,
-  style = c("boxplot", "violon"),
+  style = c("boxplot", "violon", "courbes"),
+  datedebutanneebiol = "10-01",
   save = F,
   projet = NA_character_,
   format = ".png"
@@ -33,7 +34,9 @@ chronique.figure.interannuelle(
 
 \item{affichagevide}{Si \code{TRUE} (par défault), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats}
 
-\item{style}{En forme de boxplot (par défaut) ou de violon}
+\item{style}{En forme de boxplot (par défaut) ou de violon ou de courbes}
+
+\item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
 figures. Si \code{TRUE}, les enregistre.}
@@ -49,5 +52,6 @@ Cette fonction permet de représenter des chroniques de mesures (température, n
 chronique.figure.interannuelle(data)
 data \%>\% chronique.resultats.filtrage() \%>\% chronique.figure.interannuelle()
 chronique.figure.interannuelle(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
+chronique.figure.interannuelle(dataVOG4, affichagevide = F, style = "courbes")
 }
 \keyword{chronique}

@@ -17,7 +17,7 @@ formatage.annee.biologique <- function(
 
 ##### TODO LIST #####
 # Il faudrait ajouter un test pour connaître le coltype du champ qui contient la chaîne date # if(inherits(data %>% select(contains("date"), -`_modif_date`), "date") == FALSE)stop("Le champ de date en entrée doit être au format date") # À amélorier car ne fonctionne pas en l'état
-# 
+# Utiliser la fonction chronique.renommage.variables() pour pouvoir utiliser la fonction avec chmesgr_date
 #####################
   #### Vérifications ####
   if(nchar(datedebutanneebiol) != 5) stop("Mauvais format de date de départ")
@@ -25,7 +25,7 @@ formatage.annee.biologique <- function(
   #### Calculs ####
   data <- 
     data %>% 
-    {if("chmes_anneebiol" %in% names(data) == T) select(., -chmes_anneebiol) else .} # On l'enlève si elle existe déjà pour être certain de calculer avec la bonne date de seuil
+    {if("chmes_anneebiol" %in% names(data) == T) dplyr::select(., -chmes_anneebiol) else .} # On l'enlève si elle existe déjà pour être certain de calculer avec la bonne date de seuil
   
 ### Ancien fonctionnement qu'on maintient par sécurité ###
 if (datedebutanneebiol == "10-01") {
@@ -72,7 +72,7 @@ if (datedebutanneebiol == "10-01") {
     ## Nettoyage des données ##
     data <- 
       data %>% 
-      select(-datesansannee, -datedebutanneebiol)
+      dplyr::select(-datesansannee, -datedebutanneebiol)
   }
   
 return(data)

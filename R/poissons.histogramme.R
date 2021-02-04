@@ -25,11 +25,11 @@ poissons.histogramme <- function(
   data(PalettePoissons) # Pour charger la liste complète des espèces
   
   #### Contexte ####
-  Contexte <- Captures %>% select(nom) %>% distinct() %>% ungroup()
-  Contexte$nbannees <- Captures %>% select(datedebut) %>% mutate(Annee = year(datedebut)) %>% n_distinct()
-  if(Contexte$nbannees == 1) Contexte <- Captures %>% select(datedebut) %>% mutate(Annee = year(datedebut)) %>% distinct() %>% ungroup() %>% bind_cols(Contexte)
-  Contexte$nbespeces <- Captures %>% select(codeespece) %>% n_distinct()
-  if(Contexte$nbespeces == 1) Contexte <- Captures %>% select(codeespece) %>% distinct() %>% ungroup() %>% bind_cols(Contexte)
+  Contexte <- Captures %>% dplyr::select(nom) %>% distinct() %>% ungroup()
+  Contexte$nbannees <- Captures %>% dplyr::select(datedebut) %>% mutate(Annee = year(datedebut)) %>% n_distinct()
+  if(Contexte$nbannees == 1) Contexte <- Captures %>% dplyr::select(datedebut) %>% mutate(Annee = year(datedebut)) %>% distinct() %>% ungroup() %>% bind_cols(Contexte)
+  Contexte$nbespeces <- Captures %>% dplyr::select(codeespece) %>% n_distinct()
+  if(Contexte$nbespeces == 1) Contexte <- Captures %>% dplyr::select(codeespece) %>% distinct() %>% ungroup() %>% bind_cols(Contexte)
   
   #### Calcul des classes de taille ####
   if("classetaille" %in% colnames(Captures) == FALSE){
@@ -82,9 +82,28 @@ poissons.histogramme <- function(
     if(export==F){return(MdMsMUeCa)}
   }
   
+  #### Traitement multi-date mono-station ####
+    ### Multi-dates mono-station multi-espece classe sans ###
+  if(nrow(distinct(Captures, nom, datedebut, codeespece)) != 1){
+    MUdMsMUeCs <- ggplot(Captures, aes(x=taillemoy)) + geom_bar(aes(weight = nombre), width=1.5, fill="steelblue")
+    MUdMsMUeCs <- MUdMsMUeCs + labs(y = "Nombre d'individus", x = "Taille moyenne (mm)",title = paste0(Contexte$nom, " - ", Contexte$codeespece )) 
+    MUdMsMUeCs <- MUdMsMUeCs + theme_linedraw() 
+    MUdMsMUeCs <- MUdMsMUeCs + facet_wrap(datedebut~.,scales='fixed')
+    MUdMsMUeCs <- MUdMsMUeCs + theme(strip.text = element_text(size = rel(1)))
+    MUdMsMUeCs <-  MUdMsMUeCs + theme (axis.text.x = element_text(face="bold", size=8))
+    if(max(CapturesV2$nombre) < 5){MUdMsMUeCs <-  MUdMsMUeCs + ylim(0,5)}
+    if(max(CapturesV2$nombre) < 5){MUdMsMUeCs <- MUdMsMUeCs + xlim (0,300)}
+    MUdMsMUeCs <- MUdMsMUeCs + theme(legend.position='none')
+    MUdMsMUeCs
+    
+    # Exportation/sortie #
+    if(export==T){ggsave(paste0("./", Contexte$nom,"/PoissonsHistogramme/Interannuelle/SansClasse/","PoissonsHistogramme-Interannuelle-SansClasse-", Contexte$nom, "_", Contexte$codeespece, format , sep=""))}
+    if(export==F){return(MUdMsMUeCs)}
+  }
+    
+    ### Multi-dates mono-station multi-espece classe avec ###
   if(nrow(distinct(Captures, nom, datedebut)) != 1){
     warning("Attention il y a plusieurs couples nom, datedebut, dans le jeu de données : représentations mono-date mono-station impossibles")
-    ### Multi-dates mono-station multi-espece classe avec ###
     MUdMsMUeCa <- ggplot(Captures, aes(x = classetaille, y=nombre, fill = codeespece)) + geom_bar(stat="identity", position=position_dodge())
     MUdMsMUeCa <- MUdMsMUeCa + scale_fill_manual(values = PalettePoissons)
     MUdMsMUeCa <- MUdMsMUeCa + labs(y = "Nombre d'individus", x = "Taille moyenne (mm)", title = paste0(Contexte$nom," - ",Contexte$codeespece))
@@ -97,7 +116,7 @@ poissons.histogramme <- function(
     MUdMsMUeCa
     
     # Exportation/sortie #
-    if(export==T){ggsave(paste0("./",Contexte$nom,"/PoissonsHistogramme/Interannuelle/","PoissonsHistogramme-Interannuelle-",Contexte$nom,"_",Contexte$codeespece,format , sep=""))}
+    if(export==T){ggsave(paste0("./",Contexte$nom,"/PoissonsHistogramme/Interannuelle/Classe/","PoissonsHistogramme-Interannuelle-",Contexte$nom,"_",Contexte$codeespece,format , sep=""))}
     if(export==F){return(MUdMsMUeCa)}
   }
   

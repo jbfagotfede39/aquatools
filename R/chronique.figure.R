@@ -42,11 +42,11 @@ chronique.figure <- function(
 
   
   ##### -------------- A FAIRE -------------- #####
-  # Remplacer l'appel de data_frame() par tibble()
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
   # Changer ordre max/min/moy dans légende par Max/Moy/Min
   # Il faudra faire une fonction commune (entre chronique.figure, chronique.figure.cumul, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
+  # Il faudrait de chmes_validation persiste après l'agrégation s'il est présent, car on pourrait ensuite faire une représentation avec des couleurs différentes selons l'état de validation de la chronique
   # -------------- A FAIRE -------------- #
   
   ## Évaluation des choix
@@ -65,7 +65,7 @@ if("chmes_unite" %in% colnames(data)){if(data %>% dplyr::filter(chmes_unite == "
 # Calcul du nombre de stations ##
 if("chmes_coderhj" %in% colnames(data)) Contexte <- tibble(nStations = n_distinct(data$chmes_coderhj))
 if("chmes_coderhj" %in% colnames(data) == FALSE){
-  Contexte <- data_frame(nStations = 1)
+  Contexte <- tibble(nStations = 1)
   data <- data %>% mutate(chmes_coderhj = NA)
 }
 if("chmes_typemesure" %in% colnames(data) == FALSE){
@@ -149,7 +149,7 @@ if(typemesure == "Barométrie"){
   legendeTitre = "Barométrie :"
   typemesureTitreSortie = "_barométrie_"
   }
-if(typemesure == "Piézométrie" | typemesure == "Piézométrie brute" | typemesure == "Piézométrie compensée"){
+if(typemesure == "Piézométrie" | typemesure == "Piézométrie brute" | typemesure == "Piézométrie compensée"  | typemesure == "Piézométrie calée"){
   legendeY = "Hauteur d'eau (cm)"
   legendeTitre = "Piézométrie :"
   typemesureTitreSortie = "_piézométrie_"

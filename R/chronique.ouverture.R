@@ -121,7 +121,7 @@ if(inherits(dataaimporter$Heure, "POSIXct")){ #dataaimporter[[2]] car avec macma
 
 dataaimporter <-
   dataaimporter %>% 
-  select(Date, Heure, Valeur) %>% 
+  dplyr::select(Date, Heure, Valeur) %>% 
   mutate(Date = format(Date, format="%Y-%m-%d")) %>% 
   mutate(Date = ymd(Date)) %>% 
   mutate(Heure = as.character(Heure)) %>% 
@@ -155,7 +155,10 @@ if(typemesure == "Piézométrie"){
   }
   if(typecapteur == "Hobo"){
     dataaimporter <- 
-      read_csv2(Localisation, skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie"))
+      read_csv2(Localisation, skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie")) %>% 
+      {if(typedate == "dmy") mutate(., Date = as.character(format(dmy(Date), format="%Y-%m-%d"))) else .} %>% 
+      mutate(Date = ymd(Date))
+      
   }
   if(typecapteur == "VuSitu"){
     dataaimporter <- 
@@ -166,7 +169,7 @@ if(typemesure == "Piézométrie"){
       mutate(Heure = format(Date, format="%H:%M:%S")) %>% 
       mutate(Datefine = Date) %>% 
       mutate(Date = ymd(format(Date, format="%Y-%m-%d"))) %>% 
-      select(Date, Heure, Piézométrie, Thermie)
+      dplyr::select(Date, Heure, Piézométrie, Thermie)
   }
   
   dataaimporter <- 
@@ -215,7 +218,7 @@ if(typemesure == "Piézométrie"){
     if(station == "VOUmercantine" | station == "VOUsurchauffant" | station == "AIN22-2" | station == "AIN37-2"){
       dataaimporterPartie1 <-
         dataaimporter %>%
-        select(2:3,5) %>%
+        dplyr::select(2:3,5) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = emetteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -224,7 +227,7 @@ if(typemesure == "Piézométrie"){
 
       dataaimporterPartie2 <-
         dataaimporter %>%
-        select(2,3,8) %>%
+        dplyr::select(2,3,8) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -237,7 +240,7 @@ if(typemesure == "Piézométrie"){
         # Piézo brute
         dataaimporterPartie3 <-
           dataaimporter %>%
-          select(2,3,7) %>%
+          dplyr::select(2,3,7) %>%
           rename(Heure = 2, Valeur = 3) %>%
           mutate(Capteur = capteur) %>%
           mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -247,7 +250,7 @@ if(typemesure == "Piézométrie"){
         # Piézo nette
         dataaimporterPartie4 <-
           dataaimporter %>%
-          select(2,3,9) %>%
+          dplyr::select(2,3,9) %>%
           rename(Heure = 2, Valeur = 3) %>%
           mutate(Capteur = capteur) %>%
           mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -268,7 +271,7 @@ if(typemesure == "Piézométrie"){
       # O2 concentration
       dataaimporterPartie3 <-
         dataaimporter %>%
-        select(2,3,7) %>%
+        dplyr::select(2,3,7) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -278,7 +281,7 @@ if(typemesure == "Piézométrie"){
       # O2 saturation
       dataaimporterPartie4 <-
         dataaimporter %>%
-        select(2,3,9) %>%
+        dplyr::select(2,3,9) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -288,7 +291,7 @@ if(typemesure == "Piézométrie"){
       # O2 pression
       dataaimporterPartie5 <-
         dataaimporter %>%
-        select(2,3,10) %>%
+        dplyr::select(2,3,10) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -302,7 +305,7 @@ if(typemesure == "Piézométrie"){
       # Piézo brute
       dataaimporterPartie6 <-
         dataaimporter %>%
-        select(2,3,28) %>%
+        dplyr::select(2,3,28) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -312,7 +315,7 @@ if(typemesure == "Piézométrie"){
       # Piézo nette
       dataaimporterPartie7 <-
         dataaimporter %>%
-        select(2,3,31) %>%
+        dplyr::select(2,3,31) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -397,8 +400,8 @@ dataaimporter <-
   rename_at(vars(matches("chsvi_action à réaliser lors de la prochaine visite")), list(~str_replace(., "chsvi_action à réaliser lors de la prochaine visite", "chsvi_actionafaire"))) %>%
   rename_at(vars(matches("ToDo")), list(~str_replace(., "ToDo", "chsvi_actionafaire"))) %>%
   rename_at(vars(matches("A faire Printemps 2019")), list(~str_replace(., "A faire Printemps 2019", "chsvi_actionafaire"))) %>%
-  select(-contains("SuiviTerrainID")) %>% 
-  select(-contains("saisie")) %>% 
+  dplyr::select(-contains("SuiviTerrainID")) %>% 
+  dplyr::select(-contains("saisie")) %>% 
   #rename( = ``) %>% 
   mutate('_modif_utilisateur' = NA) %>% 
   mutate('_modif_type' = NA) %>% 
@@ -427,8 +430,8 @@ dataaimporter <-
 ## Modification de l'ordre des champs ##
 dataaimporter <- 
   dataaimporter %>% 
-  {if (!("Modification" %in% names(dataaimporter))) select(., match(colnames(SuiviTerrain), names(.))) else .} %>%
-  {if ("Modification" %in% names(dataaimporter)) select(., match(colnames(SuiviTerrain), names(.)), contains("Modification")) else .} # Afin de conserver temporairement une hypothétique colonne Modification qui permet de repérer les lignes modifiées dans le cas de nettoyages massifs
+  {if (!("Modification" %in% names(dataaimporter))) dplyr::select(., match(colnames(SuiviTerrain), names(.))) else .} %>%
+  {if ("Modification" %in% names(dataaimporter)) dplyr::select(., match(colnames(SuiviTerrain), names(.)), contains("Modification")) else .} # Afin de conserver temporairement une hypothétique colonne Modification qui permet de repérer les lignes modifiées dans le cas de nettoyages massifs
 }
 
 #### Stations ####
@@ -477,13 +480,13 @@ dataaimporter <-
   mutate(chsta_coord_y = ifelse(is.na(chsta_coord_y) & "chsta_coord_yl93" %in% names(.), chsta_coord_yl93, chsta_coord_y)) %>% 
   mutate(chsta_coord_x = ifelse(is.na(chsta_coord_x) & "chsta_coord_xliie" %in% names(.), chsta_coord_xliie, chsta_coord_x)) %>% 
   mutate(chsta_coord_y = ifelse(is.na(chsta_coord_y) & "chsta_coord_yliie" %in% names(.), chsta_coord_yliie, chsta_coord_y)) %>% 
-  select(-(matches("chsta_stationid"))) %>% 
-  select(-(matches("chsta_coord_xliie"))) %>% 
-  select(-(matches("chsta_coord_yliie"))) %>% 
-  select(-(matches("chsta_coord_xl93"))) %>% 
-  select(-(matches("chsta_coord_yl93"))) %>% 
-  select(-(matches("chsta_coord_xamont"))) %>% 
-  select(-(matches("chsta_coord_yaval"))) %>% 
+  dplyr::select(-(matches("chsta_stationid"))) %>% 
+  dplyr::select(-(matches("chsta_coord_xliie"))) %>% 
+  dplyr::select(-(matches("chsta_coord_yliie"))) %>% 
+  dplyr::select(-(matches("chsta_coord_xl93"))) %>% 
+  dplyr::select(-(matches("chsta_coord_yl93"))) %>% 
+  dplyr::select(-(matches("chsta_coord_xamont"))) %>% 
+  dplyr::select(-(matches("chsta_coord_yaval"))) %>% 
   rowwise() %>% 
   mutate(chsta_distancesource_confluencedrainprincipal = ifelse("chsta_distancesource_confluencedrainprincipal" %in% names(.), chsta_distancesource_confluencedrainprincipal, NA)) %>% 
   mutate(chsta_milieucodehydro = ifelse("chsta_milieucodehydro" %in% names(.), chsta_milieucodehydro, NA)) %>% 
@@ -545,12 +548,12 @@ dataaimporter <-
   mutate(chsta_q300 = ifelse("chsta_q300" %in% names(.), chsta_q300, NA)) %>% 
   mutate(chsta_surfacebassinversant = ifelse("chsta_surfacebassinversant" %in% names(.), chsta_surfacebassinversant, NA)) %>% 
   ungroup() %>% 
-  # select(-(matches("chsta_afaire"))) %>%
-  # select(-(matches("chsta_numcarte"))) %>%
-  # select(-(matches("chsta_projection"))) %>%
-  # select(-(matches("chsta_type"))) %>%
-  # select(-(matches("chsta_profondeur"))) %>%
-  select(chsta_coderhj,
+  # dplyr::select(-(matches("chsta_afaire"))) %>%
+  # dplyr::select(-(matches("chsta_numcarte"))) %>%
+  # dplyr::select(-(matches("chsta_projection"))) %>%
+  # dplyr::select(-(matches("chsta_type"))) %>%
+  # dplyr::select(-(matches("chsta_profondeur"))) %>%
+  dplyr::select(chsta_coderhj,
          chsta_codemo,
          chsta_codesie,
          chsta_mo,
@@ -620,7 +623,7 @@ dataaimporter <-
   mutate('_modif_utilisateur' = NA) %>% 
   mutate('_modif_type' = NA) %>% 
   mutate('_modif_date' = NA) %>% 
-  select(id, everything(), '_modif_utilisateur', '_modif_type', '_modif_date')
+  dplyr::select(id, everything(), '_modif_utilisateur', '_modif_type', '_modif_date')
 
 ## Test ##
 if(dataaimporter %>% filter(is.na(chsta_coord_x)) %>% nrow() > 0) stop("Présence de stations sans coordonnées")

@@ -38,6 +38,7 @@ chronique.figure.cumul <- function(
   # Valeur de degrés jours libre ou à partir dune table de référence par stade par espèce ?
   # Affiner l'affichage des étiquettes avec https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html
   # Il faudrait améliorer le ttt multi-site pour une année et multi-site pour plusieurs années en ouvrant chronique.agregation à ce cas
+  # Création d'une fonction chronique.palette(), à mutualiser avec chronique.figure.cumul() et chronique.figure.interannuelle()
   # -------------- A FAIRE -------------- #
   
   ## Évaluation des choix
@@ -49,12 +50,29 @@ chronique.figure.cumul <- function(
   if(class(data$chmes_date) != "Date"){
     data$chmes_date <- ymd(data$chmes_date)}
   
-  ## Complément et reformatage des données ##
+  ## Agrégation journalière si nécessaire ##
+  if(!("chmes_heure" %in% names(data)) & "chmesgr_coderhj_id" %in% names(data)){
+    syntjour <-
+      data %>% 
+      arrange(chmes_date) %>% 
+      mutate(VMoyJ = chmesgr_valeur) %>% # on part de données journalières déjà agrégées
+      formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
+      group_by(chmesgr_coderhj_id, chmes_anneebiol) %>% 
+      mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
+      ungroup()
+    }
+  
+  if("chmes_heure" %in% names(data)) {
   syntjour <- 
     data %>% 
     ungroup() %>% 
     chronique.agregation() %>% 
-    purrr::pluck(2) %>% 
+    purrr::pluck(2)
+  }
+  
+  ## Calcul de l'année biologique ##
+  syntjour <- 
+    syntjour %>% 
     formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol)
   
   # Recalage sur une année arbritraire commune afin de pouvoir comparer les dates ensembles
@@ -69,7 +87,7 @@ chronique.figure.cumul <- function(
   #### Paramétrisation ####
   if(Contexte$ntypemesure == 1) typemesure <- as.character(Contexte$typemesure)
   
-  if(typemesure == "Pluviométrie" | typemesure == "Hydrologie"){
+  if(typemesure == "Hydrologie"){
     stop(glue('Mode de calcul à modifier pour typemesure = {typemesure}'))
   }
   

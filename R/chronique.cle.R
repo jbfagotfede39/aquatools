@@ -36,11 +36,13 @@ chronique.cle <- function(
     data %>% 
     # Stations
     {if("chmes_coderhj" %in% colnames(.)) mutate(., coderhj = chmes_coderhj) else .} %>% 
+    {if("chmesgr_coderhj_id" %in% colnames(.)) mutate(., coderhj = chmesgr_coderhj_id) else .} %>% 
     {if("chsta_coderhj" %in% colnames(.)) mutate(., coderhj = chsta_coderhj) else .} %>% 
     {if("chres_coderhj" %in% colnames(.)) mutate(., coderhj = chres_coderhj) else .} %>% 
     {if("Coderhj" %in% colnames(.)) mutate(., coderhj = Coderhj) else .} %>% 
     # Type de mesures
     {if("chmes_typemesure" %in% colnames(.)) mutate(., typemesure = chmes_typemesure) else .} %>% 
+    {if("chmesgr_typemesure" %in% colnames(.)) mutate(., typemesure = chmesgr_typemesure) else .} %>% 
     {if("chres_typemesure" %in% colnames(.)) mutate(., typemesure = chres_typemesure) else .} %>% 
     {if("Typemesure" %in% colnames(.)) mutate(., typemesure = Typemesure) else .} %>% 
     # Année
@@ -76,12 +78,12 @@ chronique.cle <- function(
     {if(formatcle == "SAT") mutate(., Cle = as.character(glue("{coderhj}_{annee}_{typemesure}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "SATD") mutate(., Cle = as.character(glue("{coderhj}_{annee}_{typemesure}_{nbj}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "MA") mutate(., Cle = as.character(glue("{milieu}_{annee}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
-    {if("coderhj" %in% colnames(.)) select(., -coderhj) else .}  %>% 
-    {if("typemesure" %in% colnames(.)) select(., -typemesure) else .}  %>% 
-    {if("annee" %in% colnames(.)) select(., -annee) else .}  %>% 
-    {if("milieu" %in% colnames(.)) select(., -milieu) else .}  %>% 
-    {if("nbj" %in% colnames(.)) select(., -nbj) else .} %>% 
-    select(Cle, everything())
+    {if("coderhj" %in% colnames(.)) dplyr::select(., -coderhj) else .}  %>% 
+    {if("typemesure" %in% colnames(.)) dplyr::select(., -typemesure) else .}  %>% 
+    {if("annee" %in% colnames(.)) dplyr::select(., -annee) else .}  %>% 
+    {if("milieu" %in% colnames(.)) dplyr::select(., -milieu) else .}  %>% 
+    {if("nbj" %in% colnames(.)) dplyr::select(., -nbj) else .} %>% 
+    dplyr::select(Cle, everything())
 
   #### Affichage des résultats ####
   return(Vue)

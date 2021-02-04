@@ -57,7 +57,7 @@ chronique.analyse <- function(
     mutate(AnneeFinaleDebut = ifelse(month(DateMin) == 10 | month(DateMin) == 11 | month(DateMin) == 12, year(DateMin)+1, year(DateMin))) %>% 
     mutate(AnneeFinaleFin = ifelse(month(DateMax) >= 1 & month(DateMax) <= 9, year(DateMax), year(DateMax)+1)) %>% 
     mutate(Annee = ifelse(AnneeFinaleDebut == AnneeFinaleFin, AnneeFinaleFin, NA_integer_)) %>% 
-    select(Annee) %>% 
+    dplyr::select(Annee) %>% 
     bind_cols(Contexte)
   
   if(is.na(Contexte$Annee)){stop("Calcul de l'année incomplet")}
@@ -117,7 +117,7 @@ chronique.analyse <- function(
   ##### Valeurs remarquables sur année biologique #####
   ValRemarqAB <- 
     DataTravail[[4]] %>% 
-    select(chmes_coderhj, chmes_typemesure, VMinAB, DateVMinAB, VMaxAB, DateVMaxAB, Percentile10AB, Percentile25AB, Percentile50AB, Percentile75AB, Percentile90AB, Percentile90diurneAB)
+    dplyr::select(chmes_coderhj, chmes_typemesure, VMinAB, DateVMinAB, VMaxAB, DateVMaxAB, Percentile10AB, Percentile25AB, Percentile50AB, Percentile75AB, Percentile90AB, Percentile90diurneAB)
   
   ##### Valeurs remarquables sur périodes mobiles #### 
   ## Calcul V Maxmoy 30 jours ## (Sens FD71)
@@ -261,7 +261,7 @@ Seuil <- seuils[i]
     fill(EpisodeVmax2) %>% 
     mutate(EpisodeVmax2 = ifelse(is.na(EpisodeVmax), NA, EpisodeVmax2)) %>% 
     mutate(EpisodeVmax = EpisodeVmax2) %>% 
-    select(-depassementVmax, -differenceVmax, -EpisodeVmax2)
+    dplyr::select(-depassementVmax, -differenceVmax, -EpisodeVmax2)
   
 if(Seuil >= seuilexcesdefaut) AnalyseSeuils <- AnalyseSeuils %>% rename(!!paste0('EpisodesSup',quo_name(Seuil)) := EpisodeVmax)
 if(Seuil < seuilexcesdefaut) AnalyseSeuils <- AnalyseSeuils %>% rename(!!paste0('EpisodesInf',quo_name(Seuil)) := EpisodeVmax)
@@ -283,7 +283,7 @@ if(Seuil < seuilexcesdefaut) AnalyseSeuils <- AnalyseSeuils %>% rename(!!paste0(
     fill(EpisodeVmax2) %>% 
     mutate(EpisodeVmax2 = ifelse(is.na(EpisodeVmax), NA, EpisodeVmax2)) %>% 
     mutate(EpisodeVmax = EpisodeVmax2) %>% 
-    select(-depassementVmax, -differenceVmax, -EpisodeVmax2) 
+    dplyr::select(-depassementVmax, -differenceVmax, -EpisodeVmax2) 
   
   if(Seuil >= seuilexcesdefaut) AnalyseSeuils <- AnalyseSeuilsTemp %>% rename(!!paste0('EpisodesSup',quo_name(Seuil)) := EpisodeVmax) %>% left_join(AnalyseSeuils, by = c("chmes_date", "chmes_heure", "chmes_valeur", "chmes_coderhj", "chmes_typemesure", "chmes_anneebiol"))
   if(Seuil < seuilexcesdefaut) AnalyseSeuils <- AnalyseSeuilsTemp %>% rename(!!paste0('EpisodesInf',quo_name(Seuil)) := EpisodeVmax) %>% left_join(AnalyseSeuils, by = c("chmes_date", "chmes_heure", "chmes_valeur", "chmes_coderhj", "chmes_typemesure", "chmes_anneebiol"))
@@ -292,7 +292,7 @@ if(Seuil < seuilexcesdefaut) AnalyseSeuils <- AnalyseSeuils %>% rename(!!paste0(
 }
 
 ## Analyse des épisodes ##
-ListeEpisodes <- AnalyseSeuils %>% select(contains("Episodes")) %>% names() %>% rev()
+ListeEpisodes <- AnalyseSeuils %>% dplyr::select(contains("Episodes")) %>% names() %>% rev()
 
 # Nb total d'heures et nb de jours où on atteint au moins une fois la valeur
 for(i in 1:length(seuils)){
@@ -369,12 +369,12 @@ for(i in 1:length(seuils)){
   if(i == 1){
     Episodes <- 
       Episodesdesordonnes %>% 
-      select(matches(as.character(seuils[length(seuils) + 1 - i]))) # pour avoir les valeurs par ordre de l'appel
+      dplyr::select(matches(as.character(seuils[length(seuils) + 1 - i]))) # pour avoir les valeurs par ordre de l'appel
   }
   if(i != 1){
     Episodes <- 
       Episodesdesordonnes %>% 
-      select(matches(as.character(seuils[length(seuils) + 1 - i]))) %>% # pour avoir les valeurs par ordre de l'appel
+      dplyr::select(matches(as.character(seuils[length(seuils) + 1 - i]))) %>% # pour avoir les valeurs par ordre de l'appel
       bind_cols(Episodes)
   }
 }
@@ -410,7 +410,7 @@ Complet <-
   Complet %>%
   rename_at(vars(matches("chmes_coderhj")), list( ~ str_replace(., "chmes_coderhj", "Coderhj"))) %>%
   rename_at(vars(matches("chmes_typemesure")), list( ~ str_replace(., "chmes_typemesure", "Typemesure"))) %>% 
-  select(Typemesure, Coderhj, Annee, AnneeVMM, everything())
+  dplyr::select(Typemesure, Coderhj, Annee, AnneeVMM, everything())
 
   #### Sortie des résultats ####
   return(Complet)

@@ -33,11 +33,13 @@ chronique.contexte <- function(
     data %>% 
     # Stations
     rename_at(vars(contains("chmes_coderhj")), list( ~ str_replace(., "chmes_coderhj", "coderhj"))) %>% 
+    rename_at(vars(contains("chmesgr_coderhj_id")), list( ~ str_replace(., "chmesgr_coderhj_id", "coderhj"))) %>% 
     rename_at(vars(contains("chsta_coderhj")), list( ~ str_replace(., "chsta_coderhj", "coderhj"))) %>% 
     rename_at(vars(contains("chres_coderhj")), list( ~ str_replace(., "chres_coderhj", "coderhj"))) %>% 
     rename_at(vars(contains("Coderhj")), list( ~ str_replace(., "Coderhj", "coderhj"))) %>% 
     # Type de mesures
     rename_at(vars(contains("chmes_typemesure")), list( ~ str_replace(., "chmes_typemesure", "typemesure"))) %>% 
+    rename_at(vars(contains("chmesgr_typemesure")), list( ~ str_replace(., "chmesgr_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("chres_typemesure")), list( ~ str_replace(., "chres_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("Typemesure")), list( ~ str_replace(., "Typemesure", "typemesure"))) %>% 
     # Année

@@ -67,42 +67,42 @@ if(nchar(station) == 0 & nchar(date) != 0){
 if(codeCapture == FALSE & codePlacette == FALSE & codeOperation == FALSE){
 Captures <- 
   Captures %>%
-   select(nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+   dplyr::select(nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 if(codeCapture == FALSE & codePlacette == FALSE & codeOperation == TRUE){
   Captures <- 
     Captures %>%
-    select(codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+    dplyr::select(codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 if(codeCapture == FALSE & codePlacette == TRUE & codeOperation == FALSE){
   Captures <- 
     Captures %>%
-    select(codeplacette, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+    dplyr::select(codeplacette, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 if(codeCapture == FALSE & codePlacette == TRUE & codeOperation == TRUE){
   Captures <- 
     Captures %>%
-    select(codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+    dplyr::select(codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 if(codeCapture == TRUE & codePlacette == FALSE & codeOperation == FALSE){
   Captures <- 
     Captures %>%
-    select(codecapture, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+    dplyr::select(codecapture, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 if(codeCapture == TRUE & codePlacette == FALSE & codeOperation == TRUE){
   Captures <- 
     Captures %>%
-    select(codecapture, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+    dplyr::select(codecapture, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 if(codeCapture == TRUE & codePlacette == TRUE & codeOperation == FALSE){
   Captures <- 
     Captures %>%
-    select(codecapture, codeplacette, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+    dplyr::select(codecapture, codeplacette, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 if(codeCapture == TRUE & codePlacette == TRUE & codeOperation == TRUE){
   Captures <- 
     Captures %>%
-    select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+    dplyr::select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
 
 ##### Calcul d'une colonne taille (avec la taille moyenne pour les lots) #####
 Captures <- 

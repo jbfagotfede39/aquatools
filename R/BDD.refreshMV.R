@@ -15,7 +15,7 @@
 #' @import tidyverse
 #' @export
 #' @examples
-#' BDD.refreshMV(table <- "fd_referentiels.hydrographie_bdtopagecoursdeau", serveurbddip = "192.168.1.102", serveurbddutilisateur = "ubuntu", serveurbddport = 22, motdepasse = motdepasse, url <- "http://services.sandre.eaufrance.fr/telechargement/geo/ETH/BDTopage/2019/CoursEau/CoursEau_FXX-shp.zip", localisation <- "/data/")
+#' BDD.refreshMV(table <- "fd_referentiels.hydrographie_bdtopagecoursdeau", serveurbddip = "192.168.1.102", serveurbddutilisateur = "ubuntu", serveurbddport = 22, motdepasse = motdepasse, url = "http://services.sandre.eaufrance.fr/telechargement/geo/ETH/BDTopage/2019/CoursEau/CoursEau_FXX-shp.zip", localisation = "/data/")
 
 ##### TODO LIST #####
 #

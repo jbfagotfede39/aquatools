@@ -52,15 +52,15 @@ if(Operation == "Expansion"){
   if(nrow(test) != 0) warning(paste0("Présence d'écosystème(s) impossible(s) à étendre : "), glue_collapse(unique(test$coderhj), ", ", last = " et "))
   
 #### Renommage final ####
-if(ColonneEntree == ColonneSortie){data <- data %>% select(-coderhj) %>% select(-matches(ColonneEntree)) %>% rename(!!ColonneSortie := Sortie)}
+if(ColonneEntree == ColonneSortie){data <- data %>% dplyr::select(-coderhj) %>% dplyr::select(-matches(ColonneEntree)) %>% rename(!!ColonneSortie := Sortie)}
 if(ColonneEntree != ColonneSortie){
-  if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% select(-matches(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent
+  if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% dplyr::select(-matches(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent
   if(!(ColonneSortie %in% colnames(data))){data <- data %>% rename(!!ColonneSortie := Sortie)} # Attention l'ordre de ces deux étapes est important
 }
   
   #### Ré-ordonnancement ####
-  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% select(match(colnames(dataNomColonnes),names(.)))}
-  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
+  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% dplyr::select(match(colnames(dataNomColonnes),names(.)))}
+  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% dplyr::select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
   
 }
   
@@ -81,13 +81,13 @@ if(Operation == "Simplification"){
     rename(definitionoriginale := !!ColonneEntree) %>% 
     mutate(definitionsale = str_to_lower(definitionoriginale)) %>% 
     left_join(DataRef, by = c("definitionsale" = "definition")) %>% 
-    select(-definitionsale)
+    dplyr::select(-definitionsale)
   
   #### Exceptions manuelles ####
   data <-
     data %>%
     dplyr::filter(is.na(Abréviation)) %>% 
-    select(-(Abréviation:Définition)) %>% 
+    dplyr::select(-(Abréviation:Définition)) %>% 
     mutate(definitionoriginale = case_when(
       grepl("Abbaye", definitionoriginale) ~ "Lac de l'Abbaye",
       grepl("Antre", definitionoriginale) ~ "Lac d'Antre",
@@ -98,7 +98,7 @@ if(Operation == "Simplification"){
     ) %>% 
     mutate(definitionsale = str_to_lower(definitionoriginale)) %>% 
     left_join(DataRef, by = c("definitionsale" = "definition")) %>% 
-    select(-definitionsale) %>% 
+    dplyr::select(-definitionsale) %>% 
     dplyr::union(data %>% dplyr::filter(!is.na(Abréviation))) # Ne fonctionne pour l'instant pas avec les entrées géographiques -> union impossible
 
   #### Exceptions manuelles ####
@@ -148,15 +148,15 @@ test <- data %>% dplyr::filter(is.na(Abréviation))
 if(nrow(test) != 0) warning(paste0("Présence d'écosystème(s) impossible(s) à simplifier : "), glue::glue_collapse(unique(test$definitionoriginale), ", ", last = " et "))
 
   #### Renommage final ####
-  if(ColonneEntree == ColonneSortie){data <- data %>% select(-definitionoriginale) %>% select(-matches(ColonneEntree)) %>% rename(!!ColonneSortie := Abréviation)}
+  if(ColonneEntree == ColonneSortie){data <- data %>% dplyr::select(-definitionoriginale) %>% dplyr::select(-matches(ColonneEntree)) %>% rename(!!ColonneSortie := Abréviation)}
   if(ColonneEntree != ColonneSortie){
-    if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% select(-matches(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent
+    if(ColonneSortie %in% colnames(data) == TRUE){data <- data %>% dplyr::select(-matches(ColonneSortie))} # Attention l'ordre de ces deux étapes est important, car on fait disparaître ColonneSortie qui est donc ensuite généré car absent
     if(!(ColonneSortie %in% colnames(data))){data <- data %>% rename(!!ColonneEntree := definitionoriginale, !!ColonneSortie := Abréviation)} # Attention l'ordre de ces deux étapes est important
   }
   
   #### Ré-ordonnancement ####
-  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% select(match(colnames(dataNomColonnes),names(.)))}
-  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
+  if(ColonneSortie %in% colnames(dataNomColonnes)){data <- data %>% dplyr::select(match(colnames(dataNomColonnes),names(.)))}
+  if(!(ColonneSortie %in% colnames(dataNomColonnes))){data <- data %>% dplyr::select(match(colnames(dataNomColonnes),names(.)), matches(ColonneSortie))}
 
 }
   
