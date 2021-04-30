@@ -313,7 +313,7 @@ if(typemesure == "Piézométrie"){
       
       
       # Piézo brute
-      if(ncol(dataaimporter) > 20){ # Sinon il n'y a pas les données issues de l'Aquatroll (pas assez d'énergie par exemple)
+      if(ncol(dataaimporter) > 24){ # Sinon il n'y a pas les données issues de l'Aquatroll (pas assez d'énergie par exemple)
       dataaimporterPartie6 <-
         dataaimporter %>%
         dplyr::select(2,3,28) %>%
@@ -339,8 +339,8 @@ if(typemesure == "Piézométrie"){
         bind_rows(dataaimporterPartie3) %>%
         bind_rows(dataaimporterPartie4) %>%
         bind_rows(dataaimporterPartie5) %>%
-        {if(ncol(dataaimporter) > 20) bind_rows(., dataaimporterPartie6) else .} %>%
-        {if(ncol(dataaimporter) > 20) bind_rows(., dataaimporterPartie7) else .} # %>%  Nutriments, conductivité, turbidité à ajouter ensuite
+        {if(ncol(dataaimporter) > 24) bind_rows(., dataaimporterPartie6) else .} %>%
+        {if(ncol(dataaimporter) > 24) bind_rows(., dataaimporterPartie7) else .} # %>%  Nutriments, conductivité, turbidité à ajouter ensuite
         #bind_rows(dataaimporterPartie8)
       
     }
