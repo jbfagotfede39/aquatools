@@ -28,6 +28,7 @@ chronique.analyse <- function(
   ##### -------------- A FAIRE -------------- #####
   # Ajout d'un interrupteur de traitement de thermie/piézo/O2 -> classes d'amplitudes différentes en fct de thermie/piézo/O2 notamment -> chercher valeurs de référence dans biblio)
   # Il faudra faire une fonction commune (entre chronique.figure, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
+  # Implantation de chronique.degresjours()
   # -------------- A FAIRE -------------- #
 
   ##### Mise au format des données #####
@@ -222,7 +223,7 @@ chronique.analyse <- function(
 
   degresjoursAutreEsp <-
     ValJours %>%
-    mutate(TestValeurSup = ifelse(VMoyJ > RefValeurSup, 1, NA)) %>% # identification de la journée passant sous une valeur repère
+    mutate(TestValeurSup = ifelse(VMoyJ > RefValeurSup, 1, NA)) %>% # identification de la journée passant au-dessus une valeur repère
     filter(chmes_date > paste0(year(last(chmes_date)),"-02-01")) %>% # 29 mars
     filter(!is.na(TestValeurSup)) %>%
     #View()
@@ -235,7 +236,7 @@ chronique.analyse <- function(
     mutate(DateFindegresjoursAutreEsp = ymd(DateFindegresjoursAutreEsp)) %>%
     mutate(NbJdegresjoursAutreEsp = as.numeric(DateFindegresjoursAutreEsp - DateDebutdegresjoursAutreEsp))
   
-  ##### Dépassement de valeurs seuils ####1
+  ##### Dépassement de valeurs seuils ####
 # Fonctionnement général : on travail partout avec Vmax, avec un renommage avant et après des champs avec leur valeur réelle + calcul < ou > pour les faibles valeurs ou fortes valeurs
 seuils <- unique(seuils) # En cas de saisie de doublons en entrée
 

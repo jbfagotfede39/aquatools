@@ -58,10 +58,12 @@ if(Type == "Mesures"){
     }
     
     if(nbcolonnes == 4){
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc")}
     }
     
     if(nbcolonnes == 5){
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctccc")}
     }
     
@@ -75,8 +77,10 @@ if(formatmacmasalmo == F){
   if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[1] <- c('Date')}
   if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[2] <- c('Heure')}
   if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
-  if(nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
-  if(nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
+  # if(nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
+  # if(nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
+  if(!(names(dataaimporter)[4] %in% c("chmes_validation", "chmes_mode_acquisition")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[4] <- c('asup1')}
+  if(!(names(dataaimporter)[4] %in% c("chmes_validation", "chmes_mode_acquisition")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[5] <- c('asup2')}
   if(nbcolonnes == 6){names(dataaimporter)[6] <- c('asup3')}
   }
 
@@ -121,7 +125,13 @@ if(inherits(dataaimporter$Heure, "POSIXct")){ #dataaimporter[[2]] car avec macma
 
 dataaimporter <-
   dataaimporter %>% 
-  dplyr::select(Date, Heure, Valeur) %>% 
+  {if ("chmes_validation" %in% names(.)) rename(., "validation" = "chmes_validation") else .} %>%
+  {if ("chmes_mode_acquisition" %in% names(.)) rename(., "mode_acquisition" = "chmes_mode_acquisition") else .} %>%
+  {if ("validation" %in% names(.) & "mode_acquisition" %in% names(.)) dplyr::select(., Date, Heure, Valeur, validation, mode_acquisition) else .} %>%
+  {if ("validation" %in% names(.) & !("mode_acquisition" %in% names(.))) dplyr::select(., Date, Heure, Valeur, validation) else .} %>%
+  {if ("mode_acquisition" %in% names(.) & !("validation" %in% names(.))) dplyr::select(., Date, Heure, Valeur, mode_acquisition) else .} %>%
+  {if (!("validation" %in% names(.) & "mode_acquisition" %in% names(.))) dplyr::select(., Date, Heure, Valeur) else .} %>%
+  # dplyr::select(Date, Heure, Valeur) %>% 
   mutate(Date = format(Date, format="%Y-%m-%d")) %>% 
   mutate(Date = ymd(Date)) %>% 
   mutate(Heure = as.character(Heure)) %>% 
@@ -361,7 +371,7 @@ SuiviTerrain <-
   structure(list(id = numeric(0), chsvi_mo = logical(0), chsvi_coderhj = character(0), 
                  chsvi_typesuivi = character(0), chsvi_operateurs = logical(0), 
                  chsvi_date = logical(0), chsvi_heure = logical(0), chsvi_capteur = logical(0), 
-                 chsvi_valeur = logical(0), chsvi_unite = character(0), chsvi_action = logical(0), 
+                 chsvi_valeur = logical(0), chsvi_profondeur = logical(0), chsvi_unite = character(0), chsvi_action = logical(0), 
                  chsvi_fonctionnement = logical(0), chsvi_qualite = character(0), 
                  chsvi_actionafaire = logical(0), chsvi_remarques = logical(0), 
                  `_modif_utilisateur` = logical(0), `_modif_type` = logical(0), 
@@ -415,6 +425,7 @@ dataaimporter <-
   #mutate(chsvi_typesuivi = ifelse("chsvi_typesuivi" %in% names(.) & typemesure == "Piézométrie", chsvi_typesuivi, "Piézométrie")) %>% # Ne convient pas car écrase l'ancienne valeur
   #mutate(chsvi_unite = ifelse("chsvi_unite" %in% names(.) & typemesure == "Piézométrie", chsvi_unite, as.character(NA))) %>% # Ne convient pas car écrase l'ancienne valeur
   mutate(chsvi_qualite = ifelse("chsvi_qualite" %in% names(.), chsvi_qualite, as.character(NA))) %>% 
+  mutate(chsvi_profondeur = ifelse("chsvi_profondeur" %in% names(.), chsvi_profondeur, as.character(NA))) %>% 
   mutate(id = NA_integer_)
 
 if(typemesure != "Thermie") stop(paste0("Complément des données non développés pour le type de mesures ",typemesure))
@@ -496,6 +507,7 @@ dataaimporter <-
   mutate(chsta_departement = ifelse("chsta_departement" %in% names(.), chsta_departement, NA)) %>% 
   mutate(chsta_pays = ifelse("chsta_pays" %in% names(.), chsta_pays, NA)) %>% 
   mutate(chsta_transmission = ifelse("chsta_transmission" %in% names(.), chsta_transmission, NA)) %>% 
+  mutate(chsta_transmission = ifelse(is.na(chsta_transmission), "Non", chsta_transmission)) %>% 
   mutate(chsta_fonctionnement = ifelse("chsta_fonctionnement" %in% names(.), chsta_fonctionnement, NA)) %>% 
   mutate(chsta_suivithermie = ifelse("chsta_suivithermie" %in% names(.), chsta_suivithermie, NA)) %>% 
   mutate(chsta_codemo = ifelse("chsta_codemo" %in% names(.), chsta_codemo, NA)) %>% 

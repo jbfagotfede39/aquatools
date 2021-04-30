@@ -18,6 +18,7 @@ formatage.annee.biologique <- function(
 ##### TODO LIST #####
 # Il faudrait ajouter un test pour connaître le coltype du champ qui contient la chaîne date # if(inherits(data %>% select(contains("date"), -`_modif_date`), "date") == FALSE)stop("Le champ de date en entrée doit être au format date") # À amélorier car ne fonctionne pas en l'état
 # Utiliser la fonction chronique.renommage.variables() pour pouvoir utiliser la fonction avec chmesgr_date
+# Permettre le traitement de données de PC, en lien avec PC.contexte
 #####################
   #### Vérifications ####
   if(nchar(datedebutanneebiol) != 5) stop("Mauvais format de date de départ")

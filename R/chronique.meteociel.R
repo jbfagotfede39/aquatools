@@ -10,6 +10,7 @@
 #' @import lubridate
 #' @import rvest
 #' @import tidyverse
+#' @import xml2
 #' @export
 #' @examples
 #' DataToAdd <- chronique.meteociel("39013004", 01, 2020)
@@ -60,7 +61,7 @@ chronique.meteociel <- function(
     rename(tmax = `Température max.`) %>% 
     rename(tmin = `Température min.`) %>% 
     rename(precipitations = `Précipitations 24h`) %>% 
-    select(-Ensoleillement)
+    {if ("Ensoleillement" %in% names(.)) dplyr::select(., -Ensoleillement) else .}
   
   ### Nettoyage ###
   dataV3 <-
@@ -106,7 +107,7 @@ chronique.meteociel <- function(
   ### Ré-organisation ###
   dataV6 <-
     dataV5 %>% 
-    select(coderhj_id, capteur_id, date, periodicite, typeagregation, valeur, unite, typemesure, validation, mode_acquisition, mode_integration) %>% 
+    dplyr::select(coderhj_id, capteur_id, date, periodicite, typeagregation, valeur, unite, typemesure, validation, mode_acquisition, mode_integration) %>% 
     rename_all(list(~stringi::stri_trans_general(., "latin-ascii"))) %>% # Pour remplacer les caractères accentués par les mêmes sans accents
     rename_all(list(~paste0("chmesgr_",.))) %>% 
     rename_all(list(~gsub("[[:punct:]]", "_", .))) %>% 

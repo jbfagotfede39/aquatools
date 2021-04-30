@@ -17,6 +17,7 @@
 #' DataTravail %>% purrr::pluck(2)
 #' chronique.agregation() %>% magrittr::extract2(2)
 #' chronique.agregation(data, export = T) # Export sous forme de fichier excel avec 5 onglets
+#' Mesures %>% group_split(chmes_coderhj) %>% purrr::map_dfr(~ chronique.agregation(.) %>% purrr::pluck(2))
 
 chronique.agregation <- function(
   data = data,

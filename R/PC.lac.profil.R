@@ -1,13 +1,14 @@
 #' Création de profils verticaux lacustres
 #'
 #' Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques
-#' @name profil.lac
+#' @name PC.lac.profil
 #' @param param Paramètre physico-chimique à représenter (O2mg, O2pourc, cond, ph, temp, redox, chlorophylles, phycocyanines, secchi)
+#' @keywords physico-chimie
 #' @export
 #' @import tidyverse
 #' @examples
-#' profil.lac(PC, param = "O2mg")
-#' PC %>% profil.lac(param = "redox")
+#' PC.lac.profil(PC, param = "O2mg")
+#' PC %>% PC.lac.profil(param = "redox")
 
 ##### -------------- A FAIRE -------------- #####
 # Il faudra affiner la présentation
@@ -16,7 +17,7 @@
 # Il faudra rajouter un paramètre save=T, en sous option if dans chaque bloc
 ##### -------------- A FAIRE -------------- #####
 
-profil.lac <- function(
+PC.lac.profil <- function(
   PC,
   param = c("O2mg", "O2pourc", "cond", "ph", "temp", "redox", "chlorophylles", "phycocyanines", "secchi")
   )
@@ -26,7 +27,19 @@ profil.lac <- function(
   param <- match.arg(param)
   
   #### Traitement ####
-  if(param=="O2mg"){
+  if(param=="temp"){
+  gg <- ggplot(subset(PC, (pcmes_parametresandre == 1301)), aes(-1*pcmes_profondeurlacustre, pcmes_valeur, colour = as.character(pcmes_date)))
+  gg <- gg + geom_point(stat="identity") 
+  gg <- gg + geom_line(linetype="dashed")
+  if(subset(PC, (pcmes_parametresandre == 1301)) %>% distinct(pcmes_date) %>% nrow() <= 8) gg <- gg + scale_color_manual(
+    values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"))
+  gg <- gg + labs(x = "Profondeur (m)", y = expression(Temperature~(degree*C)), color = "Date") # Pour changer le titre
+  gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
+  gg <- gg + theme_bw()
+  gg
+  }
+  
+  else if(param=="O2mg"){
   gg <- ggplot(subset(PC, (pcmes_parametresandre == 1311)), aes(-1*pcmes_profondeurlacustre, pcmes_valeur, colour = as.character(pcmes_date)))
   gg <- gg + geom_point(stat="identity") 
   gg <- gg + geom_line(linetype="dashed")
@@ -63,27 +76,15 @@ profil.lac <- function(
   }
   
   else if(param=="ph"){
-  gg <- ggplot(subset(PC, (pcmes_parametresandre == 1302)), aes(-1*pcmes_profondeurlacustre, pcmes_valeur, colour = as.character(pcmes_date)))
-  gg <- gg + geom_point(stat="identity")
-  gg <- gg + geom_line(linetype="dashed")
-  if(subset(PC, (pcmes_parametresandre == 1302)) %>% distinct(pcmes_date) %>% nrow() <= 8) gg <- gg + scale_color_manual(
-    values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"))
-  gg <- gg + labs(x = "Profondeur (m)", y = expression(pH~(unite~pH)), color = "Date") # Pour changer le titre
-  gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
-  gg <- gg + theme_bw()
-  gg
-  }
-  
-  else if(param=="temp"){
-  gg <- ggplot(subset(PC, (pcmes_parametresandre == 1301)), aes(-1*pcmes_profondeurlacustre, pcmes_valeur, colour = as.character(pcmes_date)))
-  gg <- gg + geom_point(stat="identity") 
-  gg <- gg + geom_line(linetype="dashed")
-  if(subset(PC, (pcmes_parametresandre == 1301)) %>% distinct(pcmes_date) %>% nrow() <= 8) gg <- gg + scale_color_manual(
-    values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"))
-  gg <- gg + labs(x = "Profondeur (m)", y = expression(Temperature~(degree*C)), color = "Date") # Pour changer le titre
-  gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
-  gg <- gg + theme_bw()
-  gg
+    gg <- ggplot(subset(PC, (pcmes_parametresandre == 1302)), aes(-1*pcmes_profondeurlacustre, pcmes_valeur, colour = as.character(pcmes_date)))
+    gg <- gg + geom_point(stat="identity")
+    gg <- gg + geom_line(linetype="dashed")
+    if(subset(PC, (pcmes_parametresandre == 1302)) %>% distinct(pcmes_date) %>% nrow() <= 8) gg <- gg + scale_color_manual(
+      values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"))
+    gg <- gg + labs(x = "Profondeur (m)", y = expression(pH~(unite~pH)), color = "Date") # Pour changer le titre
+    gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
+    gg <- gg + theme_bw()
+    gg
   }
   
   else if(param=="redox"){

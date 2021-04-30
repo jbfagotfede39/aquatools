@@ -51,6 +51,7 @@ chronique.figure.cumul <- function(
     data$chmes_date <- ymd(data$chmes_date)}
   
   ## Agrégation journalière si nécessaire ##
+  # Données issues de la table chroniques_mesuresgroupees
   if(!("chmes_heure" %in% names(data)) & "chmesgr_coderhj_id" %in% names(data)){
     syntjour <-
       data %>% 
@@ -60,7 +61,20 @@ chronique.figure.cumul <- function(
       group_by(chmesgr_coderhj_id, chmes_anneebiol) %>% 
       mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
       ungroup()
-    }
+  }
+  
+  # Données issues de la fonction chronique.agregation()
+  if(!("chmes_heure" %in% names(data)) & "chmes_coderhj" %in% names(data)){
+    syntjour <-
+      data %>% 
+      ungroup() %>% 
+      arrange(chmes_date) %>% 
+      # mutate(VMoyJ = chmesgr_valeur) %>% # on part de données journalières déjà agrégées
+      formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
+      group_by(chmes_coderhj, chmes_anneebiol) %>% 
+      mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
+      ungroup()
+  }
   
   if("chmes_heure" %in% names(data)) {
   syntjour <- 
@@ -138,8 +152,8 @@ if (etiquette == T) {
   syntjour_sub <-
     syntjour %>%
     group_by(Cle) %>%
-    mutate(percile = ntile(row_number(), Ngroupes)) %>%
-    filter(percile == group_indices()) %>%
+    mutate(percentile = ntile(row_number(), Ngroupes)) %>%
+    filter(percentile == group_indices()) %>%
     filter(VMedJ == max(VMedJ)) %>%
     filter(VMaxJ == max(VMaxJ))
 }

@@ -32,5 +32,6 @@ DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[
 DataTravail \%>\% purrr::pluck(2)
 chronique.agregation() \%>\% magrittr::extract2(2)
 chronique.agregation(data, export = T) # Export sous forme de fichier excel avec 5 onglets
+Mesures \%>\% group_split(chmes_coderhj) \%>\% purrr::map_dfr(~ chronique.agregation(.) \%>\% purrr::pluck(2))
 }
 \keyword{chronique}

@@ -32,6 +32,7 @@ Cette fonction permet d'exporter un dataframe (avec deux colonnes X et Y) ou un 
 \examples{
 SIG.export(Stations, glue("{today()}_Export_stations"))
 Stations \%>\% SIG.export("Stations", shp = F, kml = F, excel = F)
+Resultats \%>\% SIG.export(glue("{today()}_Suivi_MI_BV_Bienne"), shp = F, kml = F, excel = F)
 DataToAdd \%>\% st_as_sf(coords = c("XLong", "YLat"), crs = 4269) \%>\% st_transform(2154) \%>\% SIG.export("GCL_Bathy_points_bruts")
 }
 \keyword{poissons}
