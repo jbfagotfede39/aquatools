@@ -20,7 +20,7 @@
 
 chronique.ouverture <- function(
   Type = c("Mesures", "Suivis", "Stations", "Commentaires", "Capteurs"),
-  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
+  typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie", "Télétransmission"),
   Localisation = NA_character_,
   skipvalue = 9,
   nbcolonnes = 2,
@@ -208,7 +208,7 @@ if(typemesure == "Piézométrie"){
     nColonnes <- str_split(nColonnes, pattern = "\n", simplify = FALSE)[[1]][1] %>% str_count(pattern = ",")+1
     emetteur <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][1] %>% str_replace("^s/n:", "")
     capteur <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][2] %>% str_replace("^s/n:", "")
-    dateCompleteTeletransmission <- dmy_hms(str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][6])
+    dateCompleteTeletransmission <- dmy_hms(str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][6], locale = "en_GB.UTF-8")
     dateTeletransmission <- format(dateCompleteTeletransmission, format="%Y-%m-%d")
     heureTeletransmission <- format(dateCompleteTeletransmission, format="%H:%M:%S")
     valeurTempTeletransmission <- str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][debutData + nData + 3]
@@ -313,6 +313,7 @@ if(typemesure == "Piézométrie"){
       
       
       # Piézo brute
+      if(ncol(dataaimporter) > 20){ # Sinon il n'y a pas les données issues de l'Aquatroll (pas assez d'énergie par exemple)
       dataaimporterPartie6 <-
         dataaimporter %>%
         dplyr::select(2,3,28) %>%
@@ -331,14 +332,15 @@ if(typemesure == "Piézométrie"){
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(typemesure = "Piézométrie compensée") %>%
         mutate(unite = "cmH2O")
+      }
       
       dataaimporterPartie2 <-
         dataaimporterPartie2 %>%
         bind_rows(dataaimporterPartie3) %>%
         bind_rows(dataaimporterPartie4) %>%
         bind_rows(dataaimporterPartie5) %>%
-        bind_rows(dataaimporterPartie6) %>%
-        bind_rows(dataaimporterPartie7) #%>% # Nutriments, conductivité, turbidité à ajouter ensuite
+        {if(ncol(dataaimporter) > 20) bind_rows(., dataaimporterPartie6) else .} %>%
+        {if(ncol(dataaimporter) > 20) bind_rows(., dataaimporterPartie7) else .} # %>%  Nutriments, conductivité, turbidité à ajouter ensuite
         #bind_rows(dataaimporterPartie8)
       
     }

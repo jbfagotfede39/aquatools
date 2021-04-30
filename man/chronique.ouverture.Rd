@@ -9,7 +9,7 @@ chronique.ouverture(
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
-    "Pluviométrie"),
+    "Pluviométrie", "Télétransmission"),
   Localisation = NA_character_,
   skipvalue = 9,
   nbcolonnes = 2,
