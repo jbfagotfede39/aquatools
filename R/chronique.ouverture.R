@@ -208,7 +208,7 @@ if(typemesure == "Piézométrie"){
     nColonnes <- str_split(nColonnes, pattern = "\n", simplify = FALSE)[[1]][1] %>% str_count(pattern = ",")+1
     emetteur <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][1] %>% str_replace("^s/n:", "")
     capteur <- stringr::str_extract_all(Contexte, pattern = "s/n:[0-9]+", simplify = FALSE)[[1]][2] %>% str_replace("^s/n:", "")
-    dateCompleteTeletransmission <- dmy_hms(str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][6], locale = "en_GB.UTF-8")
+    dateCompleteTeletransmission <- dmy_hms(str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][6], locale = "en_US.UTF-8")
     dateTeletransmission <- format(dateCompleteTeletransmission, format="%Y-%m-%d")
     heureTeletransmission <- format(dateCompleteTeletransmission, format="%H:%M:%S")
     valeurTempTeletransmission <- str_split(Contexte, pattern = "\n", simplify = FALSE)[[1]][debutData + nData + 3]
