@@ -7,10 +7,12 @@
 #' @param Localisation Localisation relative du fichier (à partir de /NAS-DATA/)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param nbcolonnes Nombre de colonnes concernées
-#' @param typefichier Type de fichier : .csv (par défaut) ou excel
+#' @param typefichier Type de fichier : \code{.csv} (par défaut) ou \code{excel}
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)
+#' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{NA} par défaut)
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
+#' @import glue
 #' @import tidyverse
 #' @export
 #' @examples
@@ -26,6 +28,7 @@ chronique.ouverture <- function(
   nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
+  typecapteur = c(NA, "Hobo", "Diver", "VuSitu", "miniDOT"),
   formatmacmasalmo = F
 )
 {
@@ -145,12 +148,14 @@ dataaimporter <-
   }
   
 if(typemesure == "Piézométrie"){
+  if(is.na(typecapteur)){
   typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) : ")
-  typedonnee = readline(prompt = "Type de mesure piézométrique 1 (Baro) ou 2 (Piézo) : ")
   if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3)) {stop("Valeur non disponible")}
   if (typecapteur == 1) {typecapteur <- "Hobo"}
   if (typecapteur == 2) {typecapteur <- "Diver"}
   if (typecapteur == 3) {typecapteur <- "VuSitu"}
+  }
+  typedonnee = readline(prompt = "Type de mesure piézométrique 1 (Baro) ou 2 (Piézo) : ")
   typedonnee <- ifelse(typedonnee == 1, "Baro", "Piézo")
   
   if(typecapteur == "Diver"){
@@ -358,6 +363,35 @@ if(typemesure == "Piézométrie"){
     
   }
   
+  if(typemesure == "Oxygénation"){
+    if(is.na(typecapteur)){
+    typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOT) : ")
+    if (!(typecapteur == 1 | typecapteur == 2)) {stop("Valeur non disponible")}
+    if (typecapteur == 1) {typecapteur <- "Hobo"}
+    if (typecapteur == 2) {typecapteur <- "miniDOT"}
+    }
+    
+    if(typecapteur == "miniDOT"){
+      dataaimporter <- 
+        read_csv(Localisation, skip = 3, col_names = c("Time","Tension","Thermie", "Concentration", "Saturation"), col_types = "ddddd") %>%
+        mutate(Time = as_datetime(Time)) %>% 
+        mutate(Date = ymd(format(Time, format="%Y-%m-%d"))) %>% 
+        mutate(Heure = format(Time, format="%H:%M:%S")) %>% 
+        dplyr::select(Date, Heure, Concentration, Saturation, Thermie) %>% 
+        mutate(Saturation = Saturation*100)
+    }
+    
+    dataaimporter <- 
+      dataaimporter %>% 
+      filter(!is.na(Thermie)) %>% 
+      mutate(Heure = as.character(Heure)) %>% 
+      tidyr::gather(typemesure, Valeur, Concentration:Thermie) %>% 
+      mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
+      mutate(unite = ifelse(typemesure == "Concentration", "mg/L", unite)) %>% 
+      mutate(unite = ifelse(typemesure == "Saturation", "%", unite)) %>% 
+      mutate(typemesure = ifelse(grepl("Concentration|Saturation", typemesure), "Oxygénation", typemesure))
+  }
+  
 ## Transformation des champs ##
 dataaimporter <- 
   dataaimporter %>% 
@@ -458,9 +492,7 @@ dataaimporter <-
   dataaimporter %>% 
   rename_at(vars(contains("CodeRDT")), list(~str_replace(., "CodeRDT", "coderhj"))) %>%
   rename_at(vars(contains("X")), list(~str_replace(., "X", "coord_x"))) %>%
-  #rename_at(vars(contains("XLIIE")), list(~str_replace(., "XLIIE", "coord_x"))) %>%
   rename_at(vars(contains("Y")), list(~str_replace(., "Y", "coord_y"))) %>%
-  #rename_at(vars(contains("YLIIE")), list(~str_replace(., "YLIIE", "coord_y"))) %>%
   rename_at(vars(contains("LIIE")), list(~str_replace(., "LIIE", ""))) %>%
   rename_at(vars(contains("TypeCoord")), list(~str_replace(., "TypeCoord", "coord_type"))) %>%
   rename_at(vars(contains("CommuneINSEE")), list(~str_replace(., "CommuneINSEE", "commune"))) %>%
@@ -500,6 +532,7 @@ dataaimporter <-
   dplyr::select(-(matches("chsta_coord_yl93"))) %>% 
   dplyr::select(-(matches("chsta_coord_xamont"))) %>% 
   dplyr::select(-(matches("chsta_coord_yaval"))) %>% 
+  mutate(chsta_codesie = ifelse(!is.na(chsta_codesie) & nchar(chsta_codesie) == 7, glue("0{chsta_codesie}"), chsta_codesie)) %>% 
   rowwise() %>% 
   mutate(chsta_distancesource_confluencedrainprincipal = ifelse("chsta_distancesource_confluencedrainprincipal" %in% names(.), chsta_distancesource_confluencedrainprincipal, NA)) %>% 
   mutate(chsta_milieucodehydro = ifelse("chsta_milieucodehydro" %in% names(.), chsta_milieucodehydro, NA)) %>% 

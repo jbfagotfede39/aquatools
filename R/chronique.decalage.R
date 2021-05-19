@@ -28,7 +28,7 @@ data <-
   data %>% 
     mutate(chmes_date2 = ymd_hms(paste0(chmes_date, " ", chmes_heure)) + ddays(decalage)) %>% 
     mutate(chmes_date = round_date(chmes_date2, "hour")) %>% 
-    select(-chmes_date2) %>% 
+    dplyr::select(-chmes_date2) %>% 
     mutate(chmes_heure = format(chmes_date, format="%H:%M:%S")) %>% 
     mutate(chmes_date = format(chmes_date, format="%Y-%m-%d"))
 
@@ -39,7 +39,7 @@ if(recalcul != "non"){
     mutate(time = ymd_hms(paste0(chmes_date, " ", chmes_heure)))
   
   if(recalcul == "debut"){
-    datedebut <- data %>% mutate(time = ymd_hms(paste0(chmes_date, " ", chmes_heure))) %>% filter(row_number() == 1) %>% select(time) %>% pull() %>% round_date("hour")
+    datedebut <- data %>% mutate(time = ymd_hms(paste0(chmes_date, " ", chmes_heure))) %>% filter(row_number() == 1) %>% dplyr::select(time) %>% pull() %>% round_date("hour")
     
     data <-
       data %>% 
@@ -47,7 +47,7 @@ if(recalcul != "non"){
   }
   
   if(recalcul == "fin"){
-    datefin <- data %>% mutate(time = ymd_hms(paste0(chmes_date, " ", chmes_heure))) %>% filter(row_number() == max(row_number())) %>% select(time) %>% pull() %>% round_date("hour")
+    datefin <- data %>% mutate(time = ymd_hms(paste0(chmes_date, " ", chmes_heure))) %>% filter(row_number() == max(row_number())) %>% dplyr::select(time) %>% pull() %>% round_date("hour")
     
     data <-
       data %>% 
@@ -57,8 +57,8 @@ if(recalcul != "non"){
   data <-
     data %>% 
     mutate(chmes_heure = format(Time, format="%H:%M:%S")) %>% 
-    mutate(chmes_date = format(Time, format="%Y-%m-%d")) %>% 
-    select(-Time, -time)
+    mutate(chmes_date = ymd(format(Time, format="%Y-%m-%d"))) %>% 
+    dplyr::select(-Time, -time)
 }
   
   ##### Retour des données #####
