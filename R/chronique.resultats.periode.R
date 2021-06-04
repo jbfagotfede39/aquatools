@@ -60,7 +60,7 @@ chronique.resultats.periode <- function(
     summarise(min = min(paramannee),
               max = max(paramannee)) %>% 
     mutate(PeriodeTotale = paste0(min, " - ", max)) %>% 
-    select(-min,-max) %>% 
+    dplyr::select(-min,-max) %>% 
     left_join(data, by = c("paramcoderhj", "paramtypemesure")) %>% 
     ungroup()
   }
@@ -85,7 +85,7 @@ chronique.resultats.periode <- function(
   # Format standard sans chres_ pour utilisation autonome de l'outil
   Vue <-
     Vue %>% 
-    select(-contains("param"))
+    dplyr::select(-contains("param"))
   
   #### Affichage des résultats ####
   return(Vue)

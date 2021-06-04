@@ -63,6 +63,7 @@ chronique.figure.interannuelle <- function(
   if(Contexte$nstation > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer")
 
   # Calcul du nombre d'années biologiques ##
+  if(!("chmes_anneebiol" %in% names(data))) data <- data %>% formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol)
   Contexte$nannee <- n_distinct(data$chmes_anneebiol)
   
   # chmes_typemesure
@@ -127,11 +128,12 @@ chronique.figure.interannuelle <- function(
     typemesureTitreSortie = "_pluviométrie_"
   }
   
-  if(is.na(Ymin) & grepl("Thermie", typemesure)) positionNbJ <- min(data$chmes_valeur) + 0.25
-  if(!is.na(Ymin) & grepl("Thermie", typemesure)) positionNbJ <- Ymin + 0.25
-  
-  if(is.na(Ymin) & grepl("Piézométrie", typemesure)) positionNbJ <- min(data$chmes_valeur) + 10
-  if(!is.na(Ymin) & grepl("Piézométrie", typemesure)) positionNbJ <- Ymin + 10
+  if(grepl("Thermie", typemesure)) ecartvisuel <- 0.25
+  if(is.na(Ymin) & grepl("Thermie", typemesure)) positionNbJ <- min(data$chmes_valeur) + ecartvisuel
+  if(!is.na(Ymin) & grepl("Thermie", typemesure)) positionNbJ <- Ymin + ecartvisuel
+  if(grepl("Piézométrie", typemesure)) ecartvisuel <- 0.1*(max(data$chmes_valeur)-min(data$chmes_valeur))
+  if(is.na(Ymin) & grepl("Piézométrie", typemesure)) positionNbJ <- max(data$chmes_valeur) + ecartvisuel
+  if(!is.na(Ymin) & grepl("Piézométrie", typemesure)) positionNbJ <- Ymin + ecartvisuel
   
   #### Cas avec boxplot ou violon ####
   if(style %in% c("boxplot", "violon")){
@@ -191,14 +193,14 @@ ggplot <- ggplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee
 ggplot <- ggplot + geom_text(data = ValeursRemarquables, aes(as.character(Annee), positionNbJ, label=paste0(NbJ, " j.")), size = 2.5)
 # Ajout des valeurs instantannées pluriannuelles remarquables #
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesMinI, aes(as.character(Annee), VMinI), colour = "#5f90ff")
-ggplot <- ggplot + geom_text(data = ValeursRemarquablesMinI, aes(as.character(Annee), VMinI-0.5, label=AnneeEt), size = 2.5)
+ggplot <- ggplot + geom_text(data = ValeursRemarquablesMinI, aes(as.character(Annee), VMinI-2*ecartvisuel, label=AnneeEt), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesMaxI, aes(as.character(Annee), VMaxI), colour = "red")
-ggplot <- ggplot + geom_text(data = ValeursRemarquablesMaxI, aes(as.character(Annee), VMaxI+0.5, label=AnneeEt), size = 2.5)
+ggplot <- ggplot + geom_text(data = ValeursRemarquablesMaxI, aes(as.character(Annee), VMaxI+2*ecartvisuel, label=AnneeEt), size = 2.5)
 # Ajout des Vmm30j pluriannuelles remarquables #
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM), colour = "#5f90ff")
-ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM-0.5, label=AnneeVMinVMM), size = 2.5)
+ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM-2*ecartvisuel, label=AnneeVMinVMM), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM), colour = "red")
-if(Contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM+0.5, label=AnneeVMaxVMM), size = 2.5)
+if(Contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM+2*ecartvisuel, label=AnneeVMaxVMM), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMoyVMM), colour = "orange")
 if(Contexte$nannee == 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " année")), size = 2.5)
 if(Contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " années")), size = 2.5)
@@ -222,6 +224,7 @@ if(Contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquables
       # data(PaletteAnnees) # Couleurs trop proches pour années successives
       if(Contexte$nannee * Contexte$nstation <= 11){PaletteCouples <- RColorBrewer::brewer.pal(Contexte$nannee * Contexte$nstation, "Spectral")} #Set3
       if(Contexte$nannee * Contexte$nstation > 11){
+        syntjour <- syntjour %>% chronique.cle()
         colourCount <- length(unique(syntjour$Cle))
         getPalette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral")) #Set3
         PaletteCouples <- getPalette(colourCount)

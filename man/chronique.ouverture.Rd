@@ -15,6 +15,7 @@ chronique.ouverture(
   nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOT", "EDF"),
   formatmacmasalmo = F
 )
 }
@@ -29,9 +30,11 @@ chronique.ouverture(
 
 \item{nbcolonnes}{Nombre de colonnes concernées}
 
-\item{typefichier}{Type de fichier : .csv (par défaut) ou excel}
+\item{typefichier}{Type de fichier : \code{.csv} (par défaut) ou \code{excel}}
 
 \item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)}
+
+\item{typecapteur}{Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)}
 
 \item{formatmacmasalmo}{Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)}
 }

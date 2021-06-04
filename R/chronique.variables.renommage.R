@@ -14,11 +14,6 @@
 #' Resultats %>% chronique.variables.renommage()
 #' Resultats %>% chronique.variables.renommage(Sortie = "chmesgr")
 
-##### TODO LIST #####
-# Implanter cette fonction dans chronique.resultat.filtrage() + chronique.cle() + chronique.resultats.periode
-# 
-#####################
-
 chronique.variables.renommage <- function(
   data = data,
   formatentree = c("Tous", "chmes", "chmesgr", "chsta", "chsvi", "chres"),

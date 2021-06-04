@@ -9,7 +9,7 @@
 #' @param nbcolonnes Nombre de colonnes concernées
 #' @param typefichier Type de fichier : \code{.csv} (par défaut) ou \code{excel}
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)
-#' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{NA} par défaut)
+#' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
 #' @import glue
@@ -28,19 +28,20 @@ chronique.ouverture <- function(
   nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
-  typecapteur = c(NA, "Hobo", "Diver", "VuSitu", "miniDOT"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOT", "EDF"),
   formatmacmasalmo = F
 )
 {
   
 ##### -------------- A FAIRE -------------- #####
 # Essayer de supprimer l'affichage des tests d'exécution dans le cas des mesures.
-# Remettre le deuxième match.arg : typemesure <- match.arg(typemesure)
+# 
 # -------------- A FAIRE -------------- #
 
 #### Évaluation des choix ####
 Type <- match.arg(Type)
-#typemesure <- match.arg(typemesure) # car deux match.arg semblent mettre le micmac
+typemesure <- match.arg(typemesure)
+typecapteur <- match.arg(typecapteur)
 
 #### Localisation du fichier ####
 Localisation <- adresse.switch(Localisation)
@@ -202,6 +203,7 @@ if(typemesure == "Piézométrie"){
 }
   
   if(typemesure == "Télétransmission"){
+    if(typecapteur == "Non précisé"){
     ## Définition du point de suivi :
     station <- stringr::str_extract_all(Localisation, pattern = "[:alnum:]+__", simplify = FALSE)[[1]][1] %>% str_replace("__", "")
     if(nchar(station) == 1){station <- stringr::str_extract_all(Localisation, pattern = "[:alnum:]+-[:alnum:]+__", simplify = FALSE)[[1]][1] %>% str_replace("__", "")}
@@ -319,19 +321,20 @@ if(typemesure == "Piézométrie"){
       
       # Piézo brute
       if(ncol(dataaimporter) > 24){ # Sinon il n'y a pas les données issues de l'Aquatroll (pas assez d'énergie par exemple)
-      dataaimporterPartie6 <-
-        dataaimporter %>%
-        dplyr::select(2,3,28) %>%
-        rename(Heure = 2, Valeur = 3) %>%
-        mutate(Capteur = capteur) %>%
-        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
-        mutate(typemesure = "Piézométrie brute") %>%
-        mutate(unite = "kPa")
+      # dataaimporterPartie6 <-
+      #   dataaimporter %>%
+      #   dplyr::select(2,3,28) %>%
+      #   rename(Heure = 2, Valeur = 3) %>%
+      #   mutate(Capteur = capteur) %>%
+      #   mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
+      #   mutate(typemesure = "Piézométrie brute") %>%
+      #   mutate(unite = "kPa")
       
       # Piézo nette
       dataaimporterPartie7 <-
         dataaimporter %>%
-        dplyr::select(2,3,31) %>%
+        # dplyr::select(2,3,31) %>%
+        dplyr::select(2,3,30) %>%
         rename(Heure = 2, Valeur = 3) %>%
         mutate(Capteur = capteur) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
@@ -344,7 +347,7 @@ if(typemesure == "Piézométrie"){
         bind_rows(dataaimporterPartie3) %>%
         bind_rows(dataaimporterPartie4) %>%
         bind_rows(dataaimporterPartie5) %>%
-        {if(ncol(dataaimporter) > 24) bind_rows(., dataaimporterPartie6) else .} %>%
+        # {if(ncol(dataaimporter) > 24) bind_rows(., dataaimporterPartie6) else .} %>%
         {if(ncol(dataaimporter) > 24) bind_rows(., dataaimporterPartie7) else .} # %>%  Nutriments, conductivité, turbidité à ajouter ensuite
         #bind_rows(dataaimporterPartie8)
       
@@ -361,10 +364,57 @@ if(typemesure == "Piézométrie"){
         mutate(Valeur = round(Valeur,3)) %>% 
         mutate(coderhj = station)
     
+    }
+    
+    if(typecapteur == "EDF"){
+        dataaimporter <- 
+          read_csv(Localisation, skip = 1) %>% 
+          rename(complet = !!names(.[1])) %>% 
+          filter(!grepl("FIN", complet)) %>% 
+          mutate(ligne = row_number())
+        
+        dataaimporter <-
+          dataaimporter %>% 
+          filter(grepl("SID", complet)) %>% 
+          full_join(tibble(ligne = seq(1, max(dataaimporter$ligne), by = 1)), by = "ligne") %>%
+          arrange(ligne) %>%
+          fill(complet) %>% 
+          rename(localisation = complet) %>% 
+          right_join(dataaimporter, by = "ligne") %>% 
+          dplyr::select(-ligne) %>% 
+          filter(!grepl("SID", complet)) %>% 
+          tidyr::separate(localisation, c("code1", "codemo", "coderhj", "typemesure", "unite", "code3"), sep = ';') %>% 
+          mutate(complet = str_sub(complet, 1, -4)) %>% # Suppression du dernier ; en fin de ligne, car pose pb ensuite
+          tidyr::separate(complet, c("code11", "DateHeure", "valeur"), sep = ';') %>%
+          mutate(DateHeure = dmy_hm(DateHeure)) %>% 
+          mutate(Date = ymd(format(DateHeure, format="%Y-%m-%d"))) %>% 
+          mutate(Heure = format(DateHeure, format="%H:%M:%S")) %>% 
+          dplyr::select(Date, Heure, coderhj, typemesure, valeur)
+        
+        dataaimporter <- 
+          dataaimporter %>% 
+          filter(!is.na(valeur)) %>% 
+          mutate(Heure = as.character(Heure)) %>% 
+          mutate(typemesure = case_when(typemesure == "PL" ~ "Pluviométrie",
+                                        typemesure == "DE" ~ "Hydrologie",
+                                        typemesure == "TA" ~ "Thermie barométrique",
+                                        typemesure == "TE" ~ "Thermie",
+                                        typemesure == "CD" ~ "Conductivité",
+                                        typemesure == "O2" ~ "Oxygénation")
+                 ) %>% 
+          mutate(unite = case_when(typemesure == "Pluviométrie" ~ "mm",
+                                   typemesure == "Hydrologie" ~ "m3/s",
+                                   typemesure == "Thermie barométrique" ~ "°C",
+                                   typemesure == "Thermie" ~ "°C",
+                                   typemesure == "Conductivité" ~ "µS/cm",
+                                   typemesure == "Oxygénation" ~ "mg/L")
+          )
+      }
+      
   }
   
   if(typemesure == "Oxygénation"){
-    if(is.na(typecapteur)){
+    if(typecapteur == "Non précisé"){
     typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOT) : ")
     if (!(typecapteur == 1 | typecapteur == 2)) {stop("Valeur non disponible")}
     if (typecapteur == 1) {typecapteur <- "Hobo"}
@@ -392,6 +442,9 @@ if(typemesure == "Piézométrie"){
       mutate(typemesure = ifelse(grepl("Concentration|Saturation", typemesure), "Oxygénation", typemesure))
   }
   
+  if(typemesure == "Pluviométrie"){
+  }
+  
 ## Transformation des champs ##
 dataaimporter <- 
   dataaimporter %>% 
@@ -407,7 +460,7 @@ SuiviTerrain <-
   structure(list(id = numeric(0), chsvi_mo = logical(0), chsvi_coderhj = character(0), 
                  chsvi_typesuivi = character(0), chsvi_operateurs = logical(0), 
                  chsvi_date = logical(0), chsvi_heure = logical(0), chsvi_capteur = logical(0), 
-                 chsvi_valeur = logical(0), chsvi_profondeur = logical(0), chsvi_unite = character(0), chsvi_action = logical(0), 
+                 chsvi_valeur = logical(0), chsvi_unite = character(0), chsvi_profondeur = logical(0), chsvi_action = logical(0), 
                  chsvi_fonctionnement = logical(0), chsvi_qualite = character(0), 
                  chsvi_actionafaire = logical(0), chsvi_remarques = logical(0), 
                  `_modif_utilisateur` = logical(0), `_modif_type` = logical(0), 

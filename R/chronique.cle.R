@@ -4,7 +4,7 @@
 #' @name chronique.cle
 #' @param data Data.frame issu de la fonction chronique.mesures ou chronique.resultats
 #' @param anneebiologique Si \code{TRUE} (par défault), s'appuie sur l'année biologique lorsque le paramètre année est inclus à la clé
-#' @param formatcle Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA) ou milieu_annee (MA)
+#' @param formatcle Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA), coderhj_typemesure (ST) ou milieu_annee (MA)
 #' @keywords chronique
 #' @import tidyverse
 #' @export
@@ -21,7 +21,7 @@
 chronique.cle <- function(
   data = data,
   anneebiologique = TRUE,
-  formatcle = c("SAT", "SATD", "SA", "MA")
+  formatcle = c("SAT", "SATD", "SA", "ST", "MA")
 )
 {
   
@@ -77,6 +77,7 @@ chronique.cle <- function(
     {if(formatcle == "SA") mutate(., Cle = as.character(glue("{coderhj}_{annee}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "SAT") mutate(., Cle = as.character(glue("{coderhj}_{annee}_{typemesure}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "SATD") mutate(., Cle = as.character(glue("{coderhj}_{annee}_{typemesure}_{nbj}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
+    {if(formatcle == "ST") mutate(., Cle = as.character(glue("{coderhj}_{typemesure}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "MA") mutate(., Cle = as.character(glue("{milieu}_{annee}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if("coderhj" %in% colnames(.)) dplyr::select(., -coderhj) else .}  %>% 
     {if("typemesure" %in% colnames(.)) dplyr::select(., -typemesure) else .}  %>% 
