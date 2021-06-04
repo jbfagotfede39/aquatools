@@ -16,10 +16,6 @@
 #' dbP <- BDD.ouverture(Type = "Poissons")
 #' tbl(dbD, in_schema("fd_production", "chroniques_commentaires")) %>% collect(n = Inf)
 
-##### TODO LIST #####
-#
-#####################
-
 BDD.ouverture <- function(
   Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie", "Temps de travail", "Data"),
   motdepasse = NA_character_

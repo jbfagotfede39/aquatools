@@ -45,7 +45,6 @@ chronique.figure <- function(
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
   # Changer ordre max/min/moy dans légende par Max/Moy/Min
-  # Il faudra faire une fonction commune (entre chronique.figure, chronique.figure.cumul, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
   # Il faudrait de chmes_validation persiste après l'agrégation s'il est présent, car on pourrait ensuite faire une représentation avec des couleurs différentes selons l'état de validation de la chronique
   # -------------- A FAIRE -------------- #
   

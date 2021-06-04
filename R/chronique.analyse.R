@@ -25,12 +25,6 @@ chronique.analyse <- function(
   )
 {
   
-  ##### -------------- A FAIRE -------------- #####
-  # Ajout d'un interrupteur de traitement de thermie/piézo/O2 -> classes d'amplitudes différentes en fct de thermie/piézo/O2 notamment -> chercher valeurs de référence dans biblio)
-  # Il faudra faire une fonction commune (entre chronique.figure, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
-  # Implantation de chronique.degresjours()
-  # -------------- A FAIRE -------------- #
-
   ##### Mise au format des données #####
   
   ## Transformation du format des dates
