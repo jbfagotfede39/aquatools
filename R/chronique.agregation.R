@@ -31,10 +31,7 @@ chronique.agregation <- function(
 ##### -------------- A FAIRE -------------- #####
 # Ajouter une option qui permet de tout agréger comme actuellement (tout par défault, comme auj.), ou seulement à la granularité qu'on souhaite (gain de temps de traitement) -> modif dans chronique.figure.cumul pour utilisation de la journée seulement (suppression des pluck)
 # Traitement multi-site en ajoutant une paramètre de group_by()
-# Ajout d'un paramètre saison ? Il semble nécessaire de réaliser le calcul à la main pour établir la saison, pas inclus dans lubridate : https://github.com/tidyverse/lubridate/issues/611
-# Ajout d'un paramètre année civile ?
 # Ajout d'un paramètre saison naturelle (équinoxe et solstice) ? https://stackoverflow.com/questions/9500114/find-which-season-a-particular-date-belongs-to
-# Il faudra faire une fonction commune (entre chronique.figure, chronique.figure.cumul, chronique.agregation et chronique.analyse) pour créer un contexte propre de chronique
 # Utiliser chronique.renommage.variables() pour pouvoir agréger les données chmesgr_date
 # Faire un outil de regroupement des données brutes au format large à partir de la fin du code de 2020-02-13_Export_suivi_FUR_format_DCE.R  
 # -------------- A FAIRE -------------- #

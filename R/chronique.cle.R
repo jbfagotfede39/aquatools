@@ -12,12 +12,6 @@
 #' Resultats %>% chronique.cle()
 #' Resultats %>% chronique.cle(anneebiologique = F, formatcle = "SA")
 
-##### TODO LIST #####
-# De manière générale, création de nouvelles combinaisons au fil des besoins
-# Ajout de la gestion du paramètre milieu
-# Implémentation de anneebiologique = FALSE
-#####################
-
 chronique.cle <- function(
   data = data,
   anneebiologique = TRUE,

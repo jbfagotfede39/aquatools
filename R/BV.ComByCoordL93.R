@@ -17,10 +17,6 @@
 #' data %>% rowwise() %>% mutate(Population = BV.ComByCoordL93(X,Y) %>% select(population) %>% as.character()) %>% ungroup()
 #' data %>% rowwise() %>% mutate(Surface = BV.ComByCoordL93(X,Y) %>% select(surface) %>% as.character()) %>% ungroup()
 
-##### TODO LIST #####
-#
-#####################
-
 BV.ComByCoordL93 <- function(
   X = as.numeric(0),
   Y = as.numeric(0)
