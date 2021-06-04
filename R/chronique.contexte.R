@@ -13,7 +13,6 @@
 #' Contexte <- chronique.contexte(chronique.mesures("DRO6-8"))
 
 ##### TODO LIST #####
-# Créer une fonction plus générale pour le renommage initial des champs, à ensuite également utiliser dans chronique.resultat.filtrage() + chronique.cle() + chronique.resultats.periode
 # Intérêt de créer ? pour mesures Contexte$njours <- n_distinct(syntjour$chmes_date) + total pour les résultats à partir de la colonne concernée ? -> Si modification, le retranscrire dans chronique.figure.parametres
 #####################
 
