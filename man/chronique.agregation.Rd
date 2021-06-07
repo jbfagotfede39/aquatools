@@ -7,6 +7,11 @@
 chronique.agregation(
   data = data,
   projet = NA_character_,
+  instantanne = TRUE,
+  quotidien = TRUE,
+  mensuel = TRUE,
+  annuel = TRUE,
+  integral = TRUE,
   complement = FALSE,
   datedebutanneebiol = "10-01",
   export = FALSE
@@ -16,6 +21,16 @@ chronique.agregation(
 \item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 
 \item{projet}{Nom du projet}
+
+\item{instantanne}{Si \code{TRUE} (par défaut), sortie des données instantannées}
+
+\item{quotidien}{Si \code{TRUE} (par défaut), agrégation journalière}
+
+\item{mensuel}{Si \code{TRUE} (par défaut), agrégation mensuelle}
+
+\item{annuel}{Si \code{TRUE} (par défaut), agrégation annuelle}
+
+\item{integral}{Si \code{TRUE} (par défaut), agrégation sur l'intégralité de la chronique}
 
 \item{complement}{Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut). Uniquement pour les valeurs journalières}
 
@@ -31,6 +46,7 @@ DataTravail <- chronique.agregation(data)
 DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
 DataTravail \%>\% purrr::pluck(2)
 chronique.agregation() \%>\% magrittr::extract2(2)
+chronique.agregation(instantanne = F, mensuel = F, annuel = F, integral = F)
 chronique.agregation(data, export = T) # Export sous forme de fichier excel avec 5 onglets
 Mesures \%>\% group_split(chmes_coderhj) \%>\% purrr::map_dfr(~ chronique.agregation(.) \%>\% purrr::pluck(2))
 }

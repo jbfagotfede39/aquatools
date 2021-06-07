@@ -49,7 +49,7 @@ chronique.figure.cumul <- function(
   ## Transformation du format des dates
   if(class(data$chmes_date) != "Date"){
     data$chmes_date <- ymd(data$chmes_date)}
-  
+
   ## Agrégation journalière si nécessaire ##
   # Données issues de la table chroniques_mesuresgroupees
   if(!("chmes_heure" %in% names(data)) & "chmesgr_coderhj_id" %in% names(data)){
@@ -80,8 +80,8 @@ chronique.figure.cumul <- function(
   syntjour <- 
     data %>% 
     ungroup() %>% 
-    chronique.agregation() %>% 
-    purrr::pluck(2)
+    chronique.agregation(instantanne = F, mensuel = F, annuel = F, integral = F) %>% 
+    pluck(1)
   }
   
   ## Calcul de l'année biologique ##
@@ -89,9 +89,11 @@ chronique.figure.cumul <- function(
     syntjour %>% 
     formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol)
   
-  # Recalage sur une année arbritraire commune afin de pouvoir comparer les dates ensembles
-  year(syntjour$chmes_date[str_sub(syntjour$chmes_date, 6, 10) >= datedebutanneebiol]) <- 2001 # Année arbitraire afin de pouvoir les projeter toutes ensemble
-  year(syntjour$chmes_date[str_sub(syntjour$chmes_date, 6, 10) < datedebutanneebiol]) <- 2002 # Année arbitraire afin de pouvoir les projeter toutes ensemble
+  # Recalage sur une année arbitraire commune afin de pouvoir comparer/projeter les dates ensembles
+  syntjour <- 
+    syntjour %>% 
+    mutate(chmes_date = ifelse(str_sub(chmes_date, 6, 10) >= datedebutanneebiol, as.character(ymd(format(chmes_date, "2001-%m-%d"))), as.character(ymd(format(chmes_date, "2002-%m-%d"))))) %>%
+    mutate(chmes_date = ymd(chmes_date))
 
   ##### Contexte de la chronique #####
   Contexte <- 
