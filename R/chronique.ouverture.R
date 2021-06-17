@@ -13,6 +13,7 @@
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
 #' @import glue
+#' @import testit
 #' @import tidyverse
 #' @export
 #' @examples
@@ -28,19 +29,16 @@ chronique.ouverture <- function(
   nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOT", "EDF"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF"),
   formatmacmasalmo = F
 )
 {
-  
-##### -------------- A FAIRE -------------- #####
-# Essayer de supprimer l'affichage des tests d'exécution dans le cas des mesures.
-# 
-# -------------- A FAIRE -------------- #
 
 #### Évaluation des choix ####
 Type <- match.arg(Type)
 typemesure <- match.arg(typemesure)
+typefichier <- match.arg(typefichier)
+typedate <- match.arg(typedate)
 typecapteur <- match.arg(typecapteur)
 
 #### Localisation du fichier ####
@@ -415,27 +413,31 @@ if(typemesure == "Piézométrie"){
   
   if(typemesure == "Oxygénation"){
     if(typecapteur == "Non précisé"){
-    typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOT) : ")
+    typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOTindividuel) ou 3 (miniDOTregroupe) : ")
     if (!(typecapteur == 1 | typecapteur == 2)) {stop("Valeur non disponible")}
     if (typecapteur == 1) {typecapteur <- "Hobo"}
-    if (typecapteur == 2) {typecapteur <- "miniDOT"}
+    if (typecapteur == 2) {typecapteur <- "miniDOTindividuel"}
+    if (typecapteur == 3) {typecapteur <- "miniDOTregroupe"}
     }
     
-    if(typecapteur == "miniDOT"){
+    if(typecapteur == "miniDOTindividuel" | typecapteur == "miniDOTregroupe"){
+      if (typecapteur == "miniDOTindividuel") dataaimporter <- read_csv(Localisation, skip = 3, col_names = c("Time","Tension","Thermie", "Concentration", "Saturation"), col_types = "ddddd")
+      if (typecapteur == "miniDOTregroupe") dataaimporter <- read_csv(Localisation, skip = 9, col_names = c("Time", "Time2", "Time3", "Tension", "Thermie", "Concentration", "Saturation", "Autre"), col_types = "dccddddd")
       dataaimporter <- 
-        read_csv(Localisation, skip = 3, col_names = c("Time","Tension","Thermie", "Concentration", "Saturation"), col_types = "ddddd") %>%
+        dataaimporter %>% 
         mutate(Time = as_datetime(Time)) %>% 
         mutate(Date = ymd(format(Time, format="%Y-%m-%d"))) %>% 
         mutate(Heure = format(Time, format="%H:%M:%S")) %>% 
-        dplyr::select(Date, Heure, Concentration, Saturation, Thermie) %>% 
-        mutate(Saturation = Saturation*100)
+        dplyr::select(Date, Heure, Concentration, Thermie, Saturation)
+
+      if(typecapteur == "miniDOTindividuel") dataaimporter <- dataaimporter %>% dplyr::select(-Saturation) %>% PC.saturationO2()
     }
     
     dataaimporter <- 
       dataaimporter %>% 
       filter(!is.na(Thermie)) %>% 
       mutate(Heure = as.character(Heure)) %>% 
-      tidyr::gather(typemesure, Valeur, Concentration:Thermie) %>% 
+      tidyr::gather(typemesure, Valeur, Concentration:Saturation) %>% 
       mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
       mutate(unite = ifelse(typemesure == "Concentration", "mg/L", unite)) %>% 
       mutate(unite = ifelse(typemesure == "Saturation", "%", unite)) %>% 
