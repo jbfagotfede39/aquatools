@@ -7,11 +7,14 @@
 BDD.ouverture(
   Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie",
     "Temps de travail", "Data"),
+  utilisateur = NA_character_,
   motdepasse = NA_character_
 )
 }
 \arguments{
 \item{Type}{Type de base de données. Chroniques par défaut}
+
+\item{utilisateur}{Nom d'utilisateur, si on souhaite en spécifier un}
 
 \item{motdepasse}{Mot de passe du portefeuille keyring, si accès côté RStudio server}
 }

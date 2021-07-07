@@ -3,6 +3,7 @@
 #' Cette fonction permet de charger les bases de données de la fédération
 #' @name BDD.ouverture
 #' @param Type Type de base de données. Chroniques par défaut
+#' @param utilisateur Nom d'utilisateur, si on souhaite en spécifier un
 #' @param motdepasse Mot de passe du portefeuille keyring, si accès côté RStudio server
 #' @import keyring
 #' @import RPostgreSQL
@@ -18,6 +19,7 @@
 
 BDD.ouverture <- function(
   Type = c("Chroniques", "Poissons", "Macroinvertébrés", "Physico-chimie", "Temps de travail", "Data"),
+  utilisateur = NA_character_,
   motdepasse = NA_character_
   )
 {
@@ -45,66 +47,68 @@ BDD.ouverture <- function(
   
 #### Utilisateur ####
 # Détection en fonction de la machine
-if(system('uname -n',intern=T) == "imac27"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "imac27.local"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "iMacdeJBaptisteEthernet"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "iMacdeJBaptisteEthernet.local"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "Client_imacJB"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "Client_imacJB.local"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "Client_imacJB.cloud.peche-jura.com"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "Client_MacBookJB"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "Client_MacBookJB.local"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "Client_MacBookJB.cloud.peche-jura.com"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "MacBookJB.cloud.peche-jura.com"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "MacBookJB.local"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "MacBookJB"){UtilisateurFD <- "jb"}
-if(system('uname -n',intern=T) == "MBP-de-Adrien"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "MBP-de-Adrien.local"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "MBP-de-Adrien.cloud.peche-jura.com"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "macbook-pro-de-adrien"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "macbook-pro-de-adrien.home"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "macbook-pro-de-adrien.local"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.home"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "Client_MBP-de-Adrien"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.local"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.cloud.peche-jura.com"){UtilisateurFD <- "adrien"}
-if(system('uname -n',intern=T) == "iMac-de-Quentin"){UtilisateurFD <- "quentin"}
-if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "quentin"}
-if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){UtilisateurFD <- "quentin"}
-if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD <- "quentin"}
-if(system('uname -n',intern=T) == "postgis" & client == "serveur"){UtilisateurFD <- "automate"}
-if(system('uname -n',intern=T) == "postgis" & client == "shinyserver" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "appshiny"
-
-if(exists("UtilisateurFD") == FALSE){
-  if(client == "serveur" & system('whoami',intern=T) == "jb") UtilisateurFD <- "jb"
-  if(client == "serveur" & system('whoami',intern=T) == "adrien") UtilisateurFD <- "adrien"
-  if(client == "serveur" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
+  if(is.na(utilisateur)){
+    if(system('uname -n',intern=T) == "imac27"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "imac27.local"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "iMacdeJBaptisteEthernet"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "iMacdeJBaptisteEthernet.local"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "Client_imacJB"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "Client_imacJB.local"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "Client_imacJB.cloud.peche-jura.com"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "Client_MacBookJB"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "Client_MacBookJB.local"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "Client_MacBookJB.cloud.peche-jura.com"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "MacBookJB.cloud.peche-jura.com"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "MacBookJB.local"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "MacBookJB"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "MBP-de-Adrien"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "MBP-de-Adrien.local"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "MBP-de-Adrien.cloud.peche-jura.com"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "macbook-pro-de-adrien"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "macbook-pro-de-adrien.home"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "macbook-pro-de-adrien.local"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.local"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "MacBook-Pro-de-Adrien.home"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "Client_MBP-de-Adrien"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.local"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.cloud.peche-jura.com"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "iMac-de-Quentin"){utilisateur <- "quentin"}
+    if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){utilisateur <- "quentin"}
+    if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){utilisateur <- "quentin"}
+    if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){utilisateur <- "quentin"}
+    if(system('uname -n',intern=T) == "postgis" & client == "serveur"){utilisateur <- "automate"}
+    if(system('uname -n',intern=T) == "postgis" & client == "shinyserver" & system('whoami',intern=T) == "ubuntu") utilisateur <- "appshiny"
+  }
   
-  if(client == "serveur" & exists("UtilisateurFD") == FALSE) UtilisateurFD <- NA_character_
-}
+if(is.na("utilisateur") == TRUE){
+  if(client == "serveur" & system('whoami',intern=T) == "jb") utilisateur <- "jb"
+  if(client == "serveur" & system('whoami',intern=T) == "adrien") utilisateur <- "adrien"
+  if(client == "serveur" & system('whoami',intern=T) == "ubuntu") utilisateur <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
+  }
 
   #### Vérification présence mot de passe ####
   if(client == "serveur" & is.na(motdepasse)) stop("Pas de mot de passe portefeuille keyring fourni alors que nécessaire")
   
 #### Création de la connexion ####
 ## Si utilisateur connu ##
-if(!is.na(UtilisateurFD)){
+if(!is.na(utilisateur)){
   if(Type == "Data" & exists("dbD") == TRUE){
     if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
       RPostgreSQL::dbDisconnect(dbD)}
   }
   if(Type == "Data"){
-    if(client == "machineordinaire") motdepasse <- keyring::key_get("eaux-jura-sig-data", username = UtilisateurFD)
-    if(client == "serveur") motdepasse <- motdepasse
-    if(client == "shinyserver") motdepasse <- Sys.getenv("pg_pswd_sig-data-appshiny")
+    if(is.na(motdepasse)){
+      if(client == "machineordinaire") motdepasse <- keyring::key_get("eaux-jura-sig-data", username = utilisateur)
+      if(client == "serveur") motdepasse <- motdepasse
+      if(client == "shinyserver") motdepasse <- Sys.getenv("pg_pswd_sig-data-appshiny")
+    }
     
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
                                   dbname = "eaux-jura-sig-data",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
-                                  user = UtilisateurFD,
+                                  user = utilisateur,
                                   password = motdepasse
                                   )
   }
@@ -118,9 +122,9 @@ if(!is.na(UtilisateurFD)){
                                   dbname = "multifish",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
-                                  user = UtilisateurFD,
+                                  user = utilisateur,
                                   password = ifelse(client == "machineordinaire", 
-                                                    keyring::key_get("multifish", username = UtilisateurFD),
+                                                    keyring::key_get("multifish", username = utilisateur),
                                                     motdepasse
                                                     )    
                                   )
@@ -128,11 +132,11 @@ if(!is.na(UtilisateurFD)){
 }
 
 ## Si utilisateur inconnu ##
-if(is.na(UtilisateurFD)){
-  UtilisateurFD <- rstudioapi::showPrompt(
+if(is.na(utilisateur)){
+  utilisateur <- rstudioapi::showPrompt(
     title = "Nom d'utilisateur", message = "Nom d'utilisateur", default = "" # Demande du nom d'utilisateur si celui-ci est vide après la détection automatique #
   )
-  MotdepasseFD <- rstudioapi::askForPassword(prompt = "Mot de passe") # Demande du mdp si celui-ci est vide après la détection automatique #
+  if(is.na(motdepasse)){motdepasse <- rstudioapi::askForPassword(prompt = "Mot de passe")} # Demande du mdp si celui-ci est vide après la détection automatique #
 
   if(Type == "Data" & exists("dbD") == TRUE){
     if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
@@ -144,8 +148,8 @@ if(is.na(UtilisateurFD)){
                                   dbname = "eaux-jura-sig-data",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
-                                  user = UtilisateurFD,
-                                  password = MotdepasseFD
+                                  user = utilisateur,
+                                  password = motdepasse
     )
   }
   
@@ -158,8 +162,8 @@ if(is.na(UtilisateurFD)){
                                   dbname = "multifish",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
-                                  user = UtilisateurFD,
-                                  password = MotdepasseFD
+                                  user = utilisateur,
+                                  password = motdepasse
     )
   }
   
