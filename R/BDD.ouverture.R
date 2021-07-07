@@ -101,7 +101,10 @@ if(!is.na(utilisateur)){
     if(is.na(motdepasse)){
       if(client == "machineordinaire") motdepasse <- keyring::key_get("eaux-jura-sig-data", username = utilisateur)
       if(client == "serveur") motdepasse <- motdepasse
-      if(client == "shinyserver") motdepasse <- Sys.getenv("pg_pswd_sig-data-appshiny")
+      if(client == "shinyserver"){
+        fileName <- '/srv/shiny-server/conf.txt'
+        motdepasse <- readChar(fileName, file.info(fileName)$size-1)
+      }
     }
     
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
