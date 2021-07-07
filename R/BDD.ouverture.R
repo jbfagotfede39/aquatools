@@ -74,13 +74,13 @@ if(system('uname -n',intern=T) == "iMac-de-Quentin"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){UtilisateurFD <- "quentin"}
 if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){UtilisateurFD <- "quentin"}
-if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
+if(system('uname -n',intern=T) == "postgis" & client == "serveur"){UtilisateurFD <- "automate"}
+if(system('uname -n',intern=T) == "postgis" & client == "shinyserver" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "appshiny"
 
 if(exists("UtilisateurFD") == FALSE){
   if(client == "serveur" & system('whoami',intern=T) == "jb") UtilisateurFD <- "jb"
   if(client == "serveur" & system('whoami',intern=T) == "adrien") UtilisateurFD <- "adrien"
   if(client == "serveur" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
-  if(client == "shinyserver" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "appshiny"
   
   if(client == "serveur" & exists("UtilisateurFD") == FALSE) UtilisateurFD <- NA_character_
 }
