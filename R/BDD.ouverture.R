@@ -26,12 +26,21 @@ BDD.ouverture <- function(
   Type <- match.arg(Type)
 
   #### Version serveur ou version client classique ####
+  ### RStudio server ###
   if(system('uname -n',intern=T) == "rstudio-server"){
     if(grepl(system('lsb_release -d',intern=T) %>% 
             str_replace("Description:\tUbuntu ", "") %>% 
             str_replace(" LTS", ""), "20.04.1", fixed = TRUE)){
       client <- "serveur"}
   }
+  ### Shiny server ###
+  if(system('uname -n',intern=T) == "postgis"){
+    if(grepl(system('lsb_release -d',intern=T) %>% 
+             str_replace("Description:\tUbuntu ", "") %>% 
+             str_replace(" LTS", ""), "18.04.2", fixed = TRUE)){
+      client <- "shinyserver"}
+  }
+  ### Client classique ###
   if(exists("client") == FALSE) client <- "machineordinaire"
   
 #### Utilisateur ####
@@ -70,7 +79,8 @@ if(system('uname -n',intern=T) == "postgis"){UtilisateurFD <- "automate"}
 if(exists("UtilisateurFD") == FALSE){
   if(client == "serveur" & system('whoami',intern=T) == "jb") UtilisateurFD <- "jb"
   if(client == "serveur" & system('whoami',intern=T) == "adrien") UtilisateurFD <- "adrien"
-  if(client == "serveur" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas priopriétaire de celles-ci
+  if(client == "serveur" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
+  if(client == "shinyserver" & system('whoami',intern=T) == "ubuntu") UtilisateurFD <- "appshiny"
   
   if(client == "serveur" & exists("UtilisateurFD") == FALSE) UtilisateurFD <- NA_character_
 }
@@ -86,16 +96,16 @@ if(!is.na(UtilisateurFD)){
       RPostgreSQL::dbDisconnect(dbD)}
   }
   if(Type == "Data"){
+    if(client == "machineordinaire") motdepasse <- keyring::key_get("eaux-jura-sig-data", username = UtilisateurFD)
+    if(client == "serveur") motdepasse <- motdepasse
+    if(client == "shinyserver") motdepasse <- Sys.getenv("pg_pswd_sig-data-appshiny")
     
     dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
                                   dbname = "eaux-jura-sig-data",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
                                   user = UtilisateurFD,
-                                  password = ifelse(client == "machineordinaire", 
-                                                    keyring::key_get("eaux-jura-sig-data", username = UtilisateurFD),
-                                                    motdepasse
-                                                    )
+                                  password = motdepasse
                                   )
   }
   
