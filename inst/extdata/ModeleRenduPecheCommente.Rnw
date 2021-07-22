@@ -1,10 +1,3 @@
-%%%%% À faire %%%%%
-% refaire marcher la fonction align si possible
-% Rajouter les pages suivants par espèce.
-% Faire le calcul sur l'ensemble des données de la station (pas que la pêche en question) des courbes taille-poids
-
-%%%%% %%%%% %%%%% %%%%%
-
 \documentclass[a4paper,12pt,twoside]{report}%{book}`
   %%% Encodage
    \usepackage[utf8]{inputenc}
@@ -60,6 +53,7 @@ opts_chunk$set(
 @
 
 <<library>>=
+library(afd39)
 library(aquatools)
 library(fs)
 library(ggplot2)

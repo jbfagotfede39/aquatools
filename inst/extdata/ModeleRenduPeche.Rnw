@@ -60,6 +60,7 @@ opts_chunk$set(
 @
 
 <<library>>=
+library(afd39)
 library(aquatools)
 library(fs)
 library(ggplot2)
