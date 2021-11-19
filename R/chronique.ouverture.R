@@ -147,7 +147,7 @@ dataaimporter <-
   }
   
 if(typemesure == "Piézométrie"){
-  if(is.na(typecapteur)){
+  if(typecapteur == "Non précisé"){
   typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) : ")
   if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3)) {stop("Valeur non disponible")}
   if (typecapteur == 1) {typecapteur <- "Hobo"}
