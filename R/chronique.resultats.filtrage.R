@@ -7,6 +7,7 @@
 #' @param datefperiode Ne conserver que les résultats dont la date de fin de période est postérieure à la date choisie ("07-15", soit le 15 juillet par défault)
 #' @param nbj Nombre de journées minimales pour chaque résultat à conserver (75 par défault).
 #' @keywords chronique
+#' @importFrom dplyr select
 #' @import tidyverse
 #' @export
 #' @examples
