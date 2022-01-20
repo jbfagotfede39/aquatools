@@ -17,7 +17,7 @@ chronique.degresjours(
 \arguments{
 \item{data}{Data.frame de données journalières issu de la fonction \code{chronique.agregation}}
 
-\item{espece}{Espèce recherchée (vide par défaut - Si complété, va directement chercher les valeurs de référence dans \code{data(PoissonsThermieReproduction)} - Exemple : TRF, BRO)}
+\item{espece}{Espèce recherchée (vide par défaut - Si complété, va directement chercher les valeurs de référence dans \code{data(poissons_thermie_reproduction)} - Exemple : TRF, BRO)}
 
 \item{valeurdeclenchement}{Température de déclenchement de la phase de reproduction (pour recherche automatique de la date de déclenchement)}
 

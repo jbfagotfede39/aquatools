@@ -5,25 +5,27 @@
 \title{Vues des préférendums thermiques des especes piscicoles}
 \usage{
 chronique.figure.preferendums(
-  Titre = "",
   staderecherche = c("Adulte", "Reproduction", "Embryon", "Larve", "Juvénile",
     "Tous stades"),
   tmm30j = 0,
-  listeEspeces = c("Toutes espèces", "BAF", "GRE", "PER", "BLN", "BRO", "ABL", "VAN",
-    "TOX", "HOT", "PES", "CHE", "GAR", "SIL", "SAN", "GOU", "BOU", "SPI", "BRB", "BRE"),
+  liste_especes = c("Toutes espèces", "TRF", "CHA", "LPP", "VAI", "LOF", "OBR", "EPI",
+    "BLE", "BLN", "CHE", "APR", "GOU", "HOT", "TOX", "BAF", "LOT", "SPI", "VAN", "EPT",
+    "BOU", "BRO", "PER", "GAR", "ABL", "CAS", "GRE", "CCO", "SAN", "TAN", "BRB", "BRE",
+    "PES", "ROT", "BBG", "PCH", "SIL"),
+  titre = "",
   save = F,
   projet = NA_character_,
   format = ".png"
 )
 }
 \arguments{
-\item{Titre}{Titre du graphique (vide par défaut)}
-
 \item{staderecherche}{Stade de vie recherché : \code{Adulte} (par défaut), \code{Reproduction}, \code{Embryon}, \code{Larve}, \code{Juvénile} ou \code{Tous stades}}
 
 \item{tmm30j}{Valeur de Tmm30j à représenter : 0 par défaut (aucun affichage)}
 
-\item{listeEspeces}{Liste des espèces à afficher : toutes par défaut}
+\item{liste_especes}{Liste des espèces à afficher : toutes par défaut. Les espèces sont affichées dans l'ordre de saisie.}
+
+\item{titre}{Titre du graphique (vide par défaut)}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 
@@ -39,7 +41,9 @@ chronique.figure.preferendums()
 chronique.figure.preferendums("Reproduction")
 chronique.figure.preferendums("Tous stades", tmm30j = 17.4)
 chronique.figure.preferendums("Toutes espèces", tmm30j = 17.4)
-chronique.figure.preferendums("Adulte", tmm30j = 17.4, c("TRF", "CHA", "VAN", "TOX"))
+chronique.figure.preferendums("Adulte", tmm30j = 17.4, "TRF,CHA,LOG,VAL")
+chronique.figure.preferendums("Adulte", tmm30j = 17.4, liste_especes)
+chronique.figure.preferendums("Adulte", tmm30j = 17.4, .$chsta_sprep)
 }
 \keyword{chronique}
 \keyword{poissons}

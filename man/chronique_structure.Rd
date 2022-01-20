@@ -1,5 +1,5 @@
-\name{chronique.structure}
-\alias{chronique.structure}
+\name{chronique_structure}
+\alias{chronique_structure}
 \docType{data}
 \title{
 Jeu de données de chronique d'exemple - Structure des tibbles uniquement
@@ -7,7 +7,7 @@ Jeu de données de chronique d'exemple - Structure des tibbles uniquement
 \description{
 %%  ~~ A concise (1-5 lines) description of the dataset. ~~
 }
-\usage{data("chronique.structure")}
+\usage{data("chronique_structure")}
 \format{
   Différents tibbles de données relatives à des chroniques d'exemple, pouvant être utilisées avec les fonctions de la même thématique.
   \describe{
@@ -29,7 +29,7 @@ Jeu de données de chronique d'exemple - Structure des tibbles uniquement
 %%  ~~ possibly secondary sources and usages ~~
 }
 \examples{
-data(chronique.structure)
+data(chronique_structure)
 stations_structure
 suivi_structure
 mesures_structure

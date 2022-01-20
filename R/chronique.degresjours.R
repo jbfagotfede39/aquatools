@@ -3,7 +3,7 @@
 #' Cette fonction permet de calcul une date de démarrage et de fin de reproduction à partir de données de degrés-jours
 #' @name chronique.degresjours
 #' @param data Data.frame de données journalières issu de la fonction \code{chronique.agregation}
-#' @param espece Espèce recherchée (vide par défaut - Si complété, va directement chercher les valeurs de référence dans \code{data(PoissonsThermieReproduction)} - Exemple : TRF, BRO)
+#' @param espece Espèce recherchée (vide par défaut - Si complété, va directement chercher les valeurs de référence dans \code{data(poissons_thermie_reproduction)} - Exemple : TRF, BRO)
 #' @param valeurdeclenchement Température de déclenchement de la phase de reproduction (pour recherche automatique de la date de déclenchement)
 #' @param typevaleurdeclenchement Si \code{Montant} (par défault), s'appuie sur une chronique printanière (valeurs croissantes : BRO, OBR, GAR, etc.). Si \code{Descendant}, s'appuie sur une chronique automnale (TRF)
 #' @param nbjourssuccessifsdeclenchement Nombre de jours successifs (\code{2} par défaut) devant afficher une température moyenne supérieure ou inférieure (en fonction de typevaleurdeclenchement) à la valeurdeclenchement
@@ -58,9 +58,9 @@ chronique.degresjours <- function(
   
   #### Recherche des données de référence ####
   if(!is.na(espece)){
-    data(PoissonsThermieReproduction)
+    data(poissons_thermie_reproduction)
     espececoncernee <-
-      PoissonsThermieReproduction %>% 
+      poissons_thermie_reproduction %>% 
       filter(codeespece == espece)
     if(nrow(espececoncernee) == 0) stop(glue("Absence de données de référence pour l'espèce {espece}"))
     valeurdeclenchement <- espececoncernee %>% filter(grepl("Température déclenchement reproduction", parametre)) %>% summarise((mean = mean(value, na.rm = T))) %>% pull()
