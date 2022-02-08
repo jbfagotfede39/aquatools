@@ -11,40 +11,40 @@
 MI.SANDRE <- function(data)
 {
   # Création des champs à partir des espèces #
-  data$Taxon <- ifelse(is.na(data$Espece), NA, data$Espece)
-  data$CodeSANDRE <- ifelse(is.na(data$EspeceCodeSandre), NA, data$EspeceCodeSandre)
+  data$taxon_libelle <- ifelse(is.na(data$sysesp_ranglibelle), NA_character_, data$sysesp_ranglibelle)
+  data$taxon_sandre <- ifelse(is.na(data$sysesp_rangsandre), NA, data$sysesp_rangsandre)
   
   # Application pour les GENRES #
-  data$Taxon <- ifelse(is.na(data$Taxon), # Si taxon vide
-                            ifelse(is.na(data$Genre), NA, data$Genre), # on regarde si genre vide, si vide alors NA, sinon genre ajouté
-                            data$Taxon) # Si taxon pas vide, alors on remet taxon
-  data$CodeSANDRE <- ifelse(is.na(data$CodeSANDRE), # Si CodeSANDRE vide
-                                 ifelse(is.na(data$GenreCodeSandre), NA, data$GenreCodeSandre), # on regarde si GenreCodeSandre vide, si vide alors NA, sinon GenreCodeSandre ajouté
-                                 data$CodeSANDRE) # Si CodeSANDRE pas vide, alors on remet CodeSANDRE
+  data$taxon_libelle <- ifelse(is.na(data$taxon_libelle), # Si taxon vide
+                            ifelse(is.na(data$sysgen_ranglibelle), NA, data$sysgen_ranglibelle), # on regarde si genre vide, si vide alors NA, sinon genre ajouté
+                            data$taxon_libelle) # Si taxon pas vide, alors on remet taxon
+  data$taxon_sandre <- ifelse(is.na(data$taxon_sandre), # Si taxon_sandre vide
+                                 ifelse(is.na(data$sysgen_rangsandre), NA, data$sysgen_rangsandre), # on regarde si sysgen_rangsandre vide, si vide alors NA, sinon sysgen_rangsandre ajouté
+                                 data$taxon_sandre) # Si taxon_sandre pas vide, alors on remet taxon_sandre
 
   # Application pour les SOUS-FAMILLES #  
-  data$Taxon <- ifelse(is.na(data$Taxon), # Si taxon vide
-                            ifelse(is.na(data$SousFamille), NA, data$SousFamille), # on regarde si sous-famille vide, si vide alors NA, sinon sous-famille ajouté
-                            data$Taxon) # Si taxon pas vide, alors on remet taxon
-  data$CodeSANDRE <- ifelse(is.na(data$CodeSANDRE), # Si CodeSANDRE vide
-                                 ifelse(is.na(data$SousFamilleCodeSandre), NA, data$SousFamilleCodeSandre), # on regarde si SousFamilleCodeSandre vide, si vide alors NA, sinon SousFamilleCodeSandre ajouté
-                                 data$CodeSANDRE) # Si CodeSANDRE pas vide, alors on remet CodeSANDRE
+  data$taxon_libelle <- ifelse(is.na(data$taxon_libelle), # Si taxon vide
+                            ifelse(is.na(data$sysssfam_ranglibelle), NA, data$sysssfam_ranglibelle), # on regarde si sous-famille vide, si vide alors NA, sinon sous-famille ajouté
+                            data$taxon_libelle) # Si taxon pas vide, alors on remet taxon
+  data$taxon_sandre <- ifelse(is.na(data$taxon_sandre), # Si taxon_sandre vide
+                                 ifelse(is.na(data$sysssfam_rangsandre), NA, data$sysssfam_rangsandre), # on regarde si sysssfam_rangsandre vide, si vide alors NA, sinon sysssfam_rangsandre ajouté
+                                 data$taxon_sandre) # Si taxon_sandre pas vide, alors on remet taxon_sandre
 
   # Application pour les FAMILLES #
-  data$Taxon <- ifelse(is.na(data$Taxon), # Si taxon vide
-                            ifelse(is.na(data$Famille), NA, data$Famille), # on regarde si famille vide, si vide alors NA, sinon famille ajouté
-                            data$Taxon) # Si taxon pas vide, alors on remet taxon
-  data$CodeSANDRE <- ifelse(is.na(data$CodeSANDRE), # Si CodeSANDRE vide
-                                 ifelse(is.na(data$FamilleCodeSandre), NA, data$FamilleCodeSandre), # on regarde si FamilleCodeSandre vide, si vide alors NA, sinon FamilleCodeSandre ajouté
-                                 data$CodeSANDRE) # Si CodeSANDRE pas vide, alors on remet CodeSANDRE
+  data$taxon_libelle <- ifelse(is.na(data$taxon_libelle), # Si taxon vide
+                            ifelse(is.na(data$sysfam_ranglibelle), NA, data$sysfam_ranglibelle), # on regarde si famille vide, si vide alors NA, sinon famille ajouté
+                            data$taxon_libelle) # Si taxon pas vide, alors on remet taxon
+  data$taxon_sandre <- ifelse(is.na(data$taxon_sandre), # Si taxon_sandre vide
+                                 ifelse(is.na(data$sysfam_rangsandre), NA, data$sysfam_rangsandre), # on regarde si sysfam_rangsandre vide, si vide alors NA, sinon sysfam_rangsandre ajouté
+                                 data$taxon_sandre) # Si taxon_sandre pas vide, alors on remet taxon_sandre
   
   # Application pour les ORDRES #
-  data$Taxon <- ifelse(is.na(data$Taxon), # Si taxon vide
-                            ifelse(is.na(data$Ordre), NA, data$Ordre), # on regarde si ordre vide, si vide alors NA, sinon ordre ajouté
-                            data$Taxon) # Si taxon pas vide, alors on remet taxon
-  data$CodeSANDRE <- ifelse(is.na(data$CodeSANDRE), # Si CodeSANDRE vide
-                                 ifelse(is.na(data$OrdreCodeSandre), NA, data$OrdreCodeSandre), # on regarde si OrdreCodeSandre vide, si vide alors NA, sinon OrdreCodeSandre ajouté
-                                 data$CodeSANDRE) # Si CodeSANDRE pas vide, alors on remet CodeSANDRE
+  data$taxon_libelle <- ifelse(is.na(data$taxon_libelle), # Si taxon vide
+                            ifelse(is.na(data$sysord_ranglibelle), NA, data$sysord_ranglibelle), # on regarde si ordre vide, si vide alors NA, sinon ordre ajouté
+                            data$taxon_libelle) # Si taxon pas vide, alors on remet taxon
+  data$taxon_sandre <- ifelse(is.na(data$taxon_sandre), # Si taxon_sandre vide
+                                 ifelse(is.na(data$sysord_rangsandre), NA, data$sysord_rangsandre), # on regarde si sysord_rangsandre vide, si vide alors NA, sinon sysord_rangsandre ajouté
+                                 data$taxon_sandre) # Si taxon_sandre pas vide, alors on remet taxon_sandre
   
   return(data)
   
