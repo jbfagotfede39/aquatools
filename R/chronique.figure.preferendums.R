@@ -62,9 +62,11 @@ chronique.figure.preferendums <- function(
     if(length(liste_especes_fausses) > 1) message <- glue("{col_red('Attention')} : les espèces {glue_collapse(liste_especes_fausses, ', ', last = ' et ')} ne figurent pas dans la base de référence")
     
     ## Affichage ##
+    if(length(liste_especes_fausses) != 0){
     cli_li(
       c(message)
     )
+    } # Fermeture de la condition d'affichage du message
   }
   
   #### Affichage ####
