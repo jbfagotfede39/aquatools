@@ -38,17 +38,40 @@ chronique.meteociel <- function(
   target_page <- read_html(target_link)
   
   ### Décodage ###
-  data <- 
+  ## Test si la page contient des données ##
+  valeur_retour <-
     target_page %>%
-    html_nodes("center") %>%
-    .[[3]] %>% 
-    html_nodes("table") %>% 
+    html_nodes("body") %>%
     .[[1]] %>% 
+    html_nodes("center") %>%
+    .[[2]] %>% 
+    html_nodes("table") %>% 
+    # .[[2]] %>%
+    .[[1]] %>% 
+    html_text2()
+  
+  if(valeur_retour != "Données non disponibles"){
+  data_collectees <- 
+    target_page %>%
+    html_nodes("body") %>%
+    .[[1]] %>% 
+    html_nodes("center") %>%
+    .[[2]] %>% 
+    html_nodes("table") %>% 
+    .[[2]] %>%
     html_table(header=T) %>% 
     as_tibble()
+  } # Fin du test
   
-  if(nrow(data) == 0){ # Cas où il n'y a pas de donnes disponibles
-    data <- structure(list(Jour = character(0), `Température max.` = character(0), 
+  if(exists("data_collectees") == FALSE){ # Cas où la lecture n'a pas été réalisée
+    data_collectees <- structure(list(Jour = character(0), `Température max.` = character(0), 
+                           `Température min.` = character(0), `Précipitations 24h` = character(0), 
+                           Ensoleillement = logical(0)), row.names = integer(0), class = c("tbl_df", 
+                                                                                           "tbl", "data.frame"))
+  }
+  
+  if(nrow(data_collectees) == 0){ # Cas où il n'y a pas de donnes disponibles
+    data_collectees <- structure(list(Jour = character(0), `Température max.` = character(0), 
                            `Température min.` = character(0), `Précipitations 24h` = character(0), 
                            Ensoleillement = logical(0)), row.names = integer(0), class = c("tbl_df", 
                                                                                            "tbl", "data.frame"))
@@ -56,7 +79,7 @@ chronique.meteociel <- function(
   
   ### Renommage ###
   dataV2 <-
-    data %>% 
+    data_collectees %>% 
     rename(date = Jour) %>%
     rename(tmax = `Température max.`) %>% 
     rename(tmin = `Température min.`) %>% 
