@@ -22,11 +22,6 @@ chronique.meteociel <- function(
 )
 {
   
-  ##### -------------- A FAIRE -------------- #####
-  # 
-  # 
-  # -------------- A FAIRE -------------- #
-  
   #### Évaluation des choix ####
   # Type <- match.arg(Type)
   
@@ -48,7 +43,7 @@ chronique.meteociel <- function(
     html_nodes("table") %>% 
     # .[[2]] %>%
     .[[1]] %>% 
-    html_text2()
+    html_text()
   
   if(valeur_retour != "Données non disponibles"){
   data_collectees <- 
