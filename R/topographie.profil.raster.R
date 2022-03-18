@@ -17,10 +17,6 @@
 #' topographie.profil.raster(raster = mon_raster_regroupe, transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") %>% magrittr::extract2(2)
 #' topographie.profil.raster(raster = "Downloads/RGEALTI_FXX_0895_6595_MNT_LAMB93_IGN69.asc", transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") %>% magrittr::extract2(2)
 
-##### TODO LIST #####
-# 
-#####################
-
 topographie.profil.raster <- function(
   raster = NA_character_,
   epsg = 2154,
@@ -46,29 +42,11 @@ topographie.profil.raster <- function(
   if(epsg == 2154) projection <- "+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" # issu de https://epsg.io/2154 -> PROJ.4
   crs(raster) <- projection
   
-  #### Importation du transect ####
-  if(!(all(class(transect) %in% c("sf", "data.frame")) == TRUE)) stop("Paramètre transect pas au format sf")
-  
-  ### Calcul du transect si nécessaire ###
-  existencetransect <- FALSE
-  if(nrow(transect) == 2 & length(unique(st_geometry_type(transect))) == 1 & unique(st_geometry_type(transect)) == "POINT"){
-    transect <- 
-      transect %>% 
-      st_coordinates() %>% 
-      as.matrix() %>% 
-      st_linestring() %>% 
-      st_sfc(crs = epsg) %>%
-      st_sf()
-    existencetransect <- TRUE
-  }
-  
-  if(nrow(transect) == 1 & length(unique(st_geometry_type(transect))) == 1 & unique(st_geometry_type(transect)) %in% c("LINESTRING", "MULTILINESTRING")){
-  # On ne touche pas à transect car c'est déjà une ligne
-    existencetransect <- TRUE
-  }
-  
-  if(existencetransect == FALSE) stop("Attention le transect n'est pas opérationnel - Fonction ou données en entrée à vérifier")
-  
+  #### Importation/création du transect ####
+  transect <- 
+    transect %>% 
+    topographie.transect()
+
   #### Calcul des valeurs du raster le long du transect ####
   extractionrasterbrute <- raster::extract(raster, transect, 
                                         along = TRUE, cellnumbers = TRUE)
