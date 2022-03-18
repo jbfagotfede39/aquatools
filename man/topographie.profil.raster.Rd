@@ -13,7 +13,7 @@ topographie.profil.raster(
 )
 }
 \arguments{
-\item{raster}{Localisation relative du raster}
+\item{raster}{Raster déjà importé et éventuellement regroupé ou localisation relative du raster}
 
 \item{epsg}{EPSG du raster (\code{2154} par défaut)}
 
@@ -27,6 +27,7 @@ topographie.profil.raster(
 Cette fonction permet de calculer le profil topographique ou autres le long d'un transect à partir d'un raster (MNT, etc.)
 }
 \examples{
+topographie.profil.raster(raster = mon_raster_regroupe, transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") \%>\% magrittr::extract2(2)
 topographie.profil.raster(raster = "Downloads/RGEALTI_FXX_0895_6595_MNT_LAMB93_IGN69.asc", transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") \%>\% magrittr::extract2(2)
 }
 \keyword{topographie}

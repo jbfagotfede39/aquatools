@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet de calculer le profil topographique ou autres le long d'un transect à partir d'un raster (MNT, etc.)
 #' @name topographie.profil.raster
-#' @param raster Localisation relative du raster
+#' @param raster Raster déjà importé et éventuellement regroupé ou localisation relative du raster
 #' @param epsg EPSG du raster (\code{2154} par défaut)
 #' @param transect Dataframe au format sf contenant 2 points ordonnées (départ -> arrivée) ou bien une LINESTRING (cours d'eau par exemple)
 #' @param points_projetes Dataframe au format sf contenant les points que l'on souhaite projeter sur le profil
@@ -14,6 +14,7 @@
 #' @import tidyverse
 #' @export 
 #' @examples
+#' topographie.profil.raster(raster = mon_raster_regroupe, transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") %>% magrittr::extract2(2)
 #' topographie.profil.raster(raster = "Downloads/RGEALTI_FXX_0895_6595_MNT_LAMB93_IGN69.asc", transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") %>% magrittr::extract2(2)
 
 ##### TODO LIST #####
@@ -30,12 +31,17 @@ topographie.profil.raster <- function(
 {
   
   #### Importation du raster ####
-  ### Test ###
+  ### Importation du raster si nécessaire ###
+  if(length(str_subset(raster, ".asc$")) != 0){ # Sinon le raster est déjà importé en tant que tel, ce n'est pas une adresse de fichier
   if(is.na(raster)) stop("Pas de localisation de raster spécifiée")
-  
-  ### Importation et transformation du raster ###
   fichierraster <- adresse.switch(raster)
   raster <- raster(fichierraster)
+  }
+  
+  ### Test qu'on a bien un raster ###
+  if(class(raster)[1] != "RasterLayer") stop("Le raster en entrée n'en est pas un après le pré-traitement")
+  
+  ### Transformation du raster ###
   if(epsg != 2154) stop(glue("EPSG {epsg} différent de 2154 : cas à développer"))
   if(epsg == 2154) projection <- "+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" # issu de https://epsg.io/2154 -> PROJ.4
   crs(raster) <- projection
@@ -66,6 +72,11 @@ topographie.profil.raster <- function(
   #### Calcul des valeurs du raster le long du transect ####
   extractionrasterbrute <- raster::extract(raster, transect, 
                                         along = TRUE, cellnumbers = TRUE)
+  
+  ### Vérification de l'emprise du transect par rapport à celle du raster ###
+  if(is.null(extractionrasterbrute[[1]])) stop("L'emprise du raster est différente de celle du transect")
+  
+  ### Calcul à proprement parler ###
   extractionrasterbrute_df <- purrr::map_dfr(extractionrasterbrute, as_tibble, .id = "ID")
   transect_coords <- xyFromCell(raster, extractionrasterbrute_df$cell) %>% as_tibble()
   jointureAltCoord <- 
@@ -118,8 +129,12 @@ topographie.profil.raster <- function(
     st_as_sf() %>% 
     st_cast("POINT") %>% 
     mutate(point_projete_coord_x = st_coordinates(.)[,1]) %>% 
+    mutate(point_projete_coord_y = st_coordinates(.)[,2]) %>% ## test
     filter((chsta_coord_x != point_projete_coord_x) | chsta_coord_x %in% extremites_transect$chsta_coord_x) %>% # Car on souhaite également conserver le premier/dernier, pour calculer leur distance à l'origine pour les situer sur les graphiques ensuite
-    distinct(chsta_coderhj, chsta_coord_x, chsta_coord_y, point_projete_coord_x) %>% # Car sans ça il persiste un doublon du premier/dernier point du transect
+    # Nettoyage d'un doublon du premier/dernier point du transect
+    rownames_to_column() %>% 
+    filter(grepl(".1", rowname)) %>% 
+    dplyr::select(-rowname) %>% 
     # Calcul de la distance depuis le point de départ du transect
     bind_cols(., 
               st_distance(., extremites_transect %>% 
@@ -136,9 +151,10 @@ topographie.profil.raster <- function(
                               cellnumbers = TRUE) %>% 
                 as_tibble() %>% 
                 dplyr::select(-cells)
-    )
+    ) %>% 
+    rename(valeur_raster = layer)
   
-  names(points_remarquables)[6] <- c("valeur_raster")
+  # names(points_remarquables)[6] <- c("valeur_raster")
   
   ### Calcul de la position à afficher et formatage du type de point ###
   points_remarquables <-
