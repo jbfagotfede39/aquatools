@@ -41,6 +41,8 @@ chronique.contexte <- function(
     rename_at(vars(contains("chmesgr_typemesure")), list( ~ str_replace(., "chmesgr_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("chres_typemesure")), list( ~ str_replace(., "chres_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("Typemesure")), list( ~ str_replace(., "Typemesure", "typemesure"))) %>% 
+    # Unités de mesure
+    rename_at(vars(contains("chmes_unite")), list( ~ str_replace(., "chmes_unite", "unite"))) %>% 
     # Année
     rename_at(vars(contains("chmes_anneebiol")), list( ~ str_replace(., "chmes_anneebiol", "annee"))) %>%
     rename_at(vars(contains("Annee")), list( ~ str_replace(., "Annee", "annee"))) %>% 
@@ -54,20 +56,23 @@ chronique.contexte <- function(
     datarenomees %>% 
     {if("coderhj" %in% colnames(.) == FALSE) mutate(., coderhj = NA_character_) else .} %>% 
     {if("typemesure" %in% colnames(.) == FALSE) mutate(., typemesure = NA_character_) else .} %>% 
+    {if("unite" %in% colnames(.) == FALSE) mutate(., unite = NA_character_) else .} %>% 
     {if("milieu" %in% colnames(.) == FALSE) mutate(., milieu = NA_character_) else .}
     
   #### Calcul des indicateurs numériques ####
   Contexte <- 
     tibble(nstation = n_distinct(datacompletees$coderhj)) %>% 
     add_column(ntypemesure = n_distinct(datacompletees$typemesure)) %>% 
+    add_column(nunite = n_distinct(datacompletees$unite, na.rm = T)) %>% 
     add_column(nannee = n_distinct(datacompletees$annee)) %>% 
-    add_column(nmilieu = n_distinct(datacompletees$milieu))
+    add_column(nmilieu = n_distinct(datacompletees$milieu, na.rm = T))
   
   #### Extraction sous forme de liste ####
   Contexte <- 
     Contexte %>% 
     mutate(station = unique(datacompletees$coderhj) %>% glue_collapse(sep = ";")) %>% 
     add_column(typemesure = unique(datacompletees$typemesure) %>% glue_collapse(., sep = ";")) %>% 
+    add_column(unite = unique(datacompletees$unite) %>% glue_collapse(., sep = ";")) %>% 
     add_column(annee = unique(datacompletees$annee) %>% glue_collapse(., sep = ";")) %>% 
     add_column(milieu = unique(datacompletees$milieu) %>% glue_collapse(., sep = ";"))
  

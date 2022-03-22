@@ -21,6 +21,7 @@ Cette fonction permet de sélectionner automatiquement les paramètres de légen
 chronique.mesures("DRO6-8") \%>\% chronique.contexte() \%>\% chronique.figure.parametres()
 
 parametres <- chronique.mesures("DRO6-8") \%>\% chronique.contexte() \%>\% chronique.figure.parametres()
+unite <- parametres$unite
 legendeY <- parametres$legendeY
 legendeTitre <- parametres$legendeTitre
 typemesureTitreSortie <- parametres$typemesureTitreSortie

@@ -5,19 +5,16 @@
 #' @param data Data.frame issu de la fonction chronique.contexte()
 #' @param typefigure Type de figure qui est à paramétriser : \code{valeurs} (par défault), \code{cumul} ou \code{vmm30j}
 #' @keywords chronique
+#' @import glue
 #' @export
 #' @examples
 #' chronique.mesures("DRO6-8") %>% chronique.contexte() %>% chronique.figure.parametres()
 #' 
 #' parametres <- chronique.mesures("DRO6-8") %>% chronique.contexte() %>% chronique.figure.parametres()
+#' unite <- parametres$unite
 #' legendeY <- parametres$legendeY
 #' legendeTitre <- parametres$legendeTitre
 #' typemesureTitreSortie <- parametres$typemesureTitreSortie
-
-
-##### TODO LIST #####
-# 
-#####################
 
 chronique.figure.parametres <- function(
   data = data,
@@ -30,12 +27,14 @@ chronique.figure.parametres <- function(
   
   #### Contexte des données ####
   contextereference <- structure(list(nstation = integer(0), ntypemesure = integer(0), 
-                             nannee = integer(0), nmilieu = integer(0), station = structure(character(0), class = c("glue", 
-                                                                                                                    "character")), typemesure = structure(character(0), class = c("glue", 
-                                                                                                                                                                                  "character")), annee = structure(character(0), class = c("glue", 
-                                                                                                                                                                                                                                           "character")), milieu = structure(character(0), class = c("glue", 
-                                                                                                                                                                                                                                                                                                     "character"))), row.names = c(NA, 0L), class = c("tbl_df", 
-                                                                                                                                                                                                                                                                                                                                                      "tbl", "data.frame"))
+                                      nunite = integer(0), nannee = integer(0), nmilieu = integer(0), 
+                                      station = structure(character(0), class = c("glue", "character"
+                                      )), typemesure = structure(character(0), class = c("glue", 
+                                                                                         "character")), unite = structure(character(0), class = c("glue", 
+                                                                                                                                                  "character")), annee = structure(character(0), class = c("glue", 
+                                                                                                                                                                                                           "character")), milieu = structure(character(0), class = c("glue", 
+                                                                                                                                                                                                                                                                     "character"))), row.names = integer(0), class = c("tbl_df", 
+                                                                                                                                                                                                                                                                                                                       "tbl", "data.frame"))
   
   #### Tests ####
   if(any(names(data) == names(contextereference)) == FALSE) stop("Les données d'entrée ne sont pas au format de sortie de chronique.contexte")
@@ -48,11 +47,13 @@ chronique.figure.parametres <- function(
   
   #### Ajustement des paramètres en fonction du typemesure ####
   typemesure <- data$typemesure
+  if(is.na(typemesure)) stop("Pas de typemesure de défini")
   
   if(typemesure == "Thermie" | typemesure == "Thermie barométrique" | typemesure == "Thermie piézométrique"){
     typemesureTitreSortie <- "_thermie_"
+    unite <- "°C"
     if(typefigure == "valeurs"){
-      legendeY <- "Température (°C)"
+      legendeY <- glue("Température ({unite})")
       legendeTitre <- "Températures :"
     }
     if(typefigure == "cumul"){
@@ -62,14 +63,16 @@ chronique.figure.parametres <- function(
       if(data$nannee != 1 & data$nstation != 1) legendeTitre <- "Couples station-année"
     }
     if(typefigure == "vmm30j"){
-      legendeY <- "Tmm30j (°C)"
+      legendeY <- glue("Tmm30j ({unite})")
       legendeTitre <- "Températures :"
     }
   }
   
   if(typemesure == "Barométrie"){
     if(typefigure == "valeurs"){
-      legendeY <- "Pression atmosphérique (cm H2O)"
+      # unite <- quote(cm~H2O)
+      unite <- quote(cm~H[2]*O) # À voir à l'usage si ça fonctionne
+      legendeY = bquote("Pression" ~ "atmosphérique" ~ "(" ~ .(unite) ~ ")")
       legendeTitre <- "Barométrie :"
       typemesureTitreSortie <- "_barométrie_"
     }
@@ -77,7 +80,8 @@ chronique.figure.parametres <- function(
   
   if(typemesure == "Piézométrie" | typemesure == "Piézométrie brute" | typemesure == "Piézométrie compensée" | typemesure == "Piézométrie calée"){
     if(typefigure == "valeurs"){
-      legendeY <- "Hauteur d'eau (cm)"
+      unite <- "cm"
+      legendeY <- glue("Hauteur d'eau ({unite})")
       legendeTitre <- "Piézométrie :"
       typemesureTitreSortie <- "_piézométrie_"
     }
@@ -85,7 +89,8 @@ chronique.figure.parametres <- function(
   
   if(typemesure == "Piézométrie NGF"){
     if(typefigure == "valeurs"){
-      legendeY <- "Hauteur d'eau (NGF)"
+      unite <- "m NGF"
+      legendeY <- glue("Hauteur d'eau ({unite})")
       legendeTitre <- "Piézométrie :"
       typemesureTitreSortie <- "_piézométrie_"
     }
@@ -93,7 +98,8 @@ chronique.figure.parametres <- function(
   
   if(typemesure == "Oxygénation"){
     if(typefigure == "valeurs"){
-      legendeY <- expression(Oxygene~dissous~(mg~O[2]/L))
+      unite <- quote(mg~O[2]/L)
+      legendeY = bquote("Oxygène" ~ "dissous" ~ "(" ~ .(unite) ~ ")")
       legendeTitre <- "Oxygénation :"
       typemesureTitreSortie <- "_oxygénation_"
     }
@@ -101,36 +107,39 @@ chronique.figure.parametres <- function(
   
   if(typemesure == "Hydrologie"){
     typemesureTitreSortie <- "_hydrologie_"
+    unite <- quote(m^3/s)
+    legendeTitre <- "Hydrologie :"
     if(typefigure == "valeurs"){
-      legendeY <- expression(Débit~(m^3/s))
-      legendeTitre <- "Hydrologie :"
+      legendeY = bquote("Débit" ~ "(" ~ .(unite) ~ ")")
     }
     if(typefigure == "cumul"){
       stop("Légendes à modifier")
-      legendeY = expression(Débit~(m^3/s))
-      legendeTitre = "Hydrologie :"
+      legendeY = bquote("Débit" ~ "(" ~ .(unite) ~ ")")
     }
   }
   
   if(typemesure == "Pluviométrie"){
     typemesureTitreSortie <- "_pluviométrie_"
+    unite <- quote(L/m^2)
+    legendeTitre <- "Pluviométrie :"
+
     if(typefigure == "valeurs"){
-      legendeY <- expression(Précipitations~(L/m^2))
-      legendeTitre <- "Pluviométrie :"
+      legendeY = bquote("Précipitations" ~ "(" ~ .(unite) ~ ")")
     }
     if(typefigure == "cumul"){
-      legendeY = expression(Précipitations~cumulées~(L/m^2))
-      legendeTitre = "Pluviométrie :"
+      legendeY = bquote("Précipitations" ~ "cumulées" ~ "(" ~ .(unite) ~ ")")
     }
   }
   
   #### Tests ####
-  if(is.na(as.character(legendeY))) stop("Paramètres de titres de figure à créer")
+  if(any(is.na(as.character(unite)))) stop("Paramètres d'unité de figure à créer")
+  if(any(is.na(as.character(legendeY)))) stop("Paramètres de titres de figure à créer")
   if(is.na(legendeTitre)) stop("Paramètres de titres de figure à créer")
   if(is.na(typemesureTitreSortie)) stop("Paramètres de titres de figure à créer")
   
   #### Regroupement des valeurs ####
   parametres <- NULL
+  parametres$unite <- unite
   parametres$legendeY <- legendeY
   parametres$legendeTitre <- legendeTitre
   parametres$typemesureTitreSortie <- typemesureTitreSortie

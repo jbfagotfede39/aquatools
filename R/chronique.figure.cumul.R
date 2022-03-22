@@ -92,8 +92,9 @@ chronique.figure.cumul <- function(
   # Recalage sur une année arbitraire commune afin de pouvoir comparer/projeter les dates ensembles
   syntjour <- 
     syntjour %>% 
-    mutate(chmes_date = ifelse(str_sub(chmes_date, 6, 10) >= datedebutanneebiol, as.character(ymd(format(chmes_date, "2001-%m-%d"))), as.character(ymd(format(chmes_date, "2002-%m-%d"))))) %>%
-    mutate(chmes_date = ymd(chmes_date))
+    formatage.annee.neutre(datedebutanneebiol = datedebutanneebiol) %>% 
+    mutate(chmes_date = chmes_date_anneeneutre) %>% 
+    select(-chmes_date_anneeneutre)
 
   ##### Contexte de la chronique #####
   Contexte <- 
