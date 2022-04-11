@@ -1,6 +1,6 @@
-#' Comparaison interannuelles de chroniques
+#' Dépassements de valeurs seuils de chroniques
 #'
-#' Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.) sous forme de comparaison interannuelle
+#' Cette fonction permet de représenter d'éventuels dépassements de valeurs de référence pour des chroniques de mesures (température, niveaux, etc.) sous forme de comparaison interannuelle
 #' @name chronique.figure.depassementscalendaires
 #' @param data Data.frame issu de chronique.agregation (données journalières)
 #' @param Titre Titre du graphique (vide par défaut)

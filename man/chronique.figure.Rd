@@ -18,7 +18,7 @@ chronique.figure(
   Ymin = -1,
   Ymax = NA,
   save = F,
-  projet = as.character(NA),
+  projet = NA_character_,
   format = ".png"
 )
 }

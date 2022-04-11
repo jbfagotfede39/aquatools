@@ -2,7 +2,7 @@
 % Please edit documentation in R/chronique.figure.depassementscalendaires.R
 \name{chronique.figure.depassementscalendaires}
 \alias{chronique.figure.depassementscalendaires}
-\title{Comparaison interannuelles de chroniques}
+\title{Dépassements de valeurs seuils de chroniques}
 \usage{
 chronique.figure.depassementscalendaires(
   data = data,
@@ -64,7 +64,7 @@ figures. Si \code{TRUE}, les enregistre.}
 \item{style}{En forme de boxplot (par défaut) ou de violon ou de courbes}
 }
 \description{
-Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.) sous forme de comparaison interannuelle
+Cette fonction permet de représenter d'éventuels dépassements de valeurs de référence pour des chroniques de mesures (température, niveaux, etc.) sous forme de comparaison interannuelle
 }
 \examples{
 data \%>\% chronique.agregation() \%>\% purrr::pluck(2) \%>\% chronique.figure.depassementscalendaires()

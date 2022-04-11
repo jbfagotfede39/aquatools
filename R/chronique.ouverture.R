@@ -447,6 +447,28 @@ if(typemesure == "Piézométrie"){
   if(typemesure == "Pluviométrie"){
   }
   
+  if(typemesure == "Hydrologie"){ # Format exporté depuis hydroportail en .csv
+    typefichier <- ".csv"
+    if(typefichier == ".csv"){dataaimporter <- read_csv2(Localisation, show_col_types = FALSE) %>% filter(row_number() > 1)}
+    
+    dataaimporter <-
+      dataaimporter %>% 
+      rename_all(~sub("<", "", .x)) %>%
+      rename_all(~sub(">", "", .x)) %>%
+      mutate(DateHeure = ymd_hms(DtObsElaborHydro)) %>% 
+      mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
+      mutate(Heure = format(DateHeure, format="%H:%M:%S")) %>% 
+      mutate(coderhj = CdSiteHydro) %>%
+      mutate(capteur = "Sonde DREAL") %>%
+      mutate(Valeur = as.numeric(sub(",", ".", ResObsElaborHydro))) %>% 
+      mutate(unite = "L/s") %>%
+      mutate(typemesure = glue("Hydrologie - {TypDeGrdSerieObsElaborHydro}")) %>% 
+      mutate(validation = QualifObsElaborHydro) %>% 
+      mutate(mode_acquisition = MethObsElaborHydro) %>% 
+      filter(is.na(Valeur) != T) %>% 
+      select(coderhj, capteur, Date, Heure, Valeur, unite, typemesure, validation, mode_acquisition)
+  }
+  
 ## Transformation des champs ##
 dataaimporter <- 
   dataaimporter %>% 
@@ -503,7 +525,6 @@ dataaimporter <-
   rename_at(vars(matches("A faire Printemps 2019")), list(~str_replace(., "A faire Printemps 2019", "chsvi_actionafaire"))) %>%
   dplyr::select(-contains("SuiviTerrainID")) %>% 
   dplyr::select(-contains("saisie")) %>% 
-  #rename( = ``) %>% 
   mutate('_modif_utilisateur' = NA) %>% 
   mutate('_modif_type' = NA) %>% 
   mutate('_modif_date' = NA)
@@ -511,12 +532,12 @@ dataaimporter <-
 ## Complément des données ##
 dataaimporter <- 
   dataaimporter %>% 
+  rowwise() %>% 
   mutate(chsvi_typesuivi = ifelse("chsvi_typesuivi" %in% names(.) & typemesure == "Thermie", chsvi_typesuivi, "Thermie")) %>% 
   mutate(chsvi_unite = ifelse("chsvi_unite" %in% names(.) & typemesure == "Thermie", chsvi_unite, "°C")) %>% 
-  #mutate(chsvi_typesuivi = ifelse("chsvi_typesuivi" %in% names(.) & typemesure == "Piézométrie", chsvi_typesuivi, "Piézométrie")) %>% # Ne convient pas car écrase l'ancienne valeur
-  #mutate(chsvi_unite = ifelse("chsvi_unite" %in% names(.) & typemesure == "Piézométrie", chsvi_unite, as.character(NA))) %>% # Ne convient pas car écrase l'ancienne valeur
   mutate(chsvi_qualite = ifelse("chsvi_qualite" %in% names(.), chsvi_qualite, as.character(NA))) %>% 
   mutate(chsvi_profondeur = ifelse("chsvi_profondeur" %in% names(.), chsvi_profondeur, as.character(NA))) %>% 
+  ungroup() %>% 
   mutate(id = NA_integer_)
 
 if(typemesure != "Thermie") stop(paste0("Complément des données non développés pour le type de mesures ",typemesure))
