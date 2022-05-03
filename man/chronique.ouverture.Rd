@@ -11,6 +11,7 @@ chronique.ouverture(
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
     "Pluviométrie", "Télétransmission"),
   Localisation = NA_character_,
+  feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
@@ -26,6 +27,8 @@ chronique.ouverture(
 \item{typemesure}{Défini le type de données (Thermie, Piézométrie, etc.)}
 
 \item{Localisation}{Localisation relative du fichier (à partir de /NAS-DATA/)}
+
+\item{feuille}{Feuille où lire les données dans le cas de l'ouverture d'un fichier excel : \code{1} (par défaut)}
 
 \item{skipvalue}{Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)}
 

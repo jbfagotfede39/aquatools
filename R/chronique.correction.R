@@ -43,14 +43,14 @@ chronique.correction <- function(data, cCodeRHJ = "BONbaro", cCapteur = "P0352",
   
   ##### Remise en commun des morceaux #####
   data <-
-    dplyr::union(data, LigneJuste, by = c("id", "chmes_coderhj", "chmes_capteur", "chmes_date", "chmes_heure", "chmes_valeur", "chmes_unite", "chmes_typemesure", "chmes_validation", "chmes_mode_acquisition", "chmes_mode_integration", "_modif_utilisateur", "_modif_type", "_modif_date"))
+    dplyr::union(data, LigneJuste)
   data <-
-    dplyr::union(data, LigneFausse, by = c("id", "chmes_coderhj", "chmes_capteur", "chmes_date", "chmes_heure", "chmes_valeur", "chmes_unite", "chmes_typemesure", "chmes_validation", "chmes_mode_acquisition", "chmes_mode_integration", "_modif_utilisateur", "_modif_type", "_modif_date"))
+    dplyr::union(data, LigneFausse)
 
   ##### Rangement dans l'ordre chronologique #####
   data <-
     data %>% 
-    arrange(chmes_date, chmes_heure)
+    arrange(chmes_date, chmes_heure, chmes_capteur, chmes_typemesure)
   
   ##### Remise en commun des morceaux #####
   return(data)

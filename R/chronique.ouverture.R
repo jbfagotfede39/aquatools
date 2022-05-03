@@ -5,6 +5,7 @@
 #' @param Type Type de données en entrée (Mesures, Suivis, Stations, Commentaires, Capteurs)
 #' @param typemesure Défini le type de données (Thermie, Piézométrie, etc.)
 #' @param Localisation Localisation relative du fichier (à partir de /NAS-DATA/)
+#' @param feuille Feuille où lire les données dans le cas de l'ouverture d'un fichier excel : \code{1} (par défaut)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param nbcolonnes Nombre de colonnes concernées
 #' @param typefichier Type de fichier : \code{.csv} (par défaut) ou \code{excel}
@@ -25,6 +26,7 @@ chronique.ouverture <- function(
   Type = c("Mesures", "Suivis", "Stations", "Commentaires", "Capteurs"),
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie", "Télétransmission"),
   Localisation = NA_character_,
+  feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
@@ -48,24 +50,24 @@ Localisation <- adresse.switch(Localisation)
 if(Type == "Mesures"){
   if(typemesure == "Thermie"){
     if(nbcolonnes == 2){
-      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "cc")}
       names(dataaimporter)[1] <- c('DateHeure')
       names(dataaimporter)[2] <- c('Valeur')
     }
     
     if(nbcolonnes == 3){
-      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc")}
     }
     
     if(nbcolonnes == 4){
-      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc")}
     }
     
     if(nbcolonnes == 5){
-      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, skip = skipvalue)}
+      if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctccc")}
     }
     
@@ -171,7 +173,8 @@ if(typemesure == "Piézométrie"){
     dataaimporter <- 
       read_csv2(Localisation, skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie")) %>% 
       {if(typedate == "dmy") mutate(., Date = as.character(format(dmy(Date), format="%Y-%m-%d"))) else .} %>% 
-      mutate(Date = ymd(Date))
+      mutate(Date = ymd(Date)) %>% 
+      dplyr::select(Date, Heure, Piézométrie, Thermie)
       
   }
   if(typecapteur == "VuSitu"){
@@ -491,7 +494,7 @@ SuiviTerrain <-
                  `_modif_date` = logical(0)), class = c("tbl_df", "tbl", "data.frame"
                  ), row.names = c(NA, 0L))
 
-dataaimporter <- read_excel(Localisation, sheet = 1)
+dataaimporter <- read_excel(Localisation, sheet = feuille)
 
 ## Renommage des champs ##
 dataaimporter <- 
@@ -561,7 +564,7 @@ dataaimporter <-
 if(Type == "Stations"){
 
 ## Chargement des données ##
-dataaimporter <- read_excel(Localisation, sheet = 1)
+dataaimporter <- read_excel(Localisation, sheet = feuille)
 
 ## Transformation ##
 dataaimporter <- 
@@ -782,7 +785,7 @@ if(Type == "Commentaires"){
                 "tbl", "data.frame")
     )
   
-  dataaimporter <- read_excel(Localisation, sheet = 1)
+  dataaimporter <- read_excel(Localisation, sheet = feuille)
   if(all(names(dataaimporter) %in% names(Commentaires)) == FALSE) stop("Le fichier source de commentaires contient des noms de colonne à corriger")
 }
 
@@ -798,7 +801,7 @@ if(Type == "Capteurs"){
                    chcap_remarques = character(0)), row.names = integer(0), class = c("tbl_df", 
                                                                                       "tbl", "data.frame"))
   
-  dataaimporter <- read_excel(Localisation, sheet = 1)
+  dataaimporter <- read_excel(Localisation, sheet = feuille)
   if(all(names(dataaimporter) %in% names(Capteurs)) == FALSE) stop("Le fichier source des capteurs contient des noms de colonne à corriger")
 }
 
