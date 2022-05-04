@@ -26,16 +26,17 @@ chronique.figure.parametres <- function(
   typefigure <- match.arg(typefigure)
   
   #### Contexte des données ####
-  contextereference <- structure(list(nstation = integer(0), ntypemesure = integer(0), 
+  contextereference <- structure(list(nstation = integer(0), nmo = integer(0), ntypemesure = integer(0), 
                                       nunite = integer(0), nannee = integer(0), nmilieu = integer(0), 
                                       station = structure(character(0), class = c("glue", "character"
+                                      )), mo = structure(character(0), class = c("glue", "character"
                                       )), typemesure = structure(character(0), class = c("glue", 
                                                                                          "character")), unite = structure(character(0), class = c("glue", 
                                                                                                                                                   "character")), annee = structure(character(0), class = c("glue", 
                                                                                                                                                                                                            "character")), milieu = structure(character(0), class = c("glue", 
                                                                                                                                                                                                                                                                      "character"))), row.names = integer(0), class = c("tbl_df", 
                                                                                                                                                                                                                                                                                                                        "tbl", "data.frame"))
-  
+
   #### Tests ####
   if(any(names(data) == names(contextereference)) == FALSE) stop("Les données d'entrée ne sont pas au format de sortie de chronique.contexte")
   if(data$ntypemesure != 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")

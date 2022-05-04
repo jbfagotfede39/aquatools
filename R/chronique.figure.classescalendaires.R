@@ -52,14 +52,10 @@ chronique.figure.classescalendaires <- function(
   
   # Test du nombre de stations ##
   if(contexte$nstation == 0) stop("Aucune donnée dans la chronique à analyser")
-  if(contexte$nstation > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer")
 
   # Test des typemesure
   if(contexte$ntypemesure > 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
   
-  # Test du nombre de stations
-  if(contexte$nstation > 1) stop("Plusieurs chmes_coderhj au sein du jeu de données")
-
   #### Paramètres ####
   ## Titre
   if(nchar(Titre) == 0) Titre <- contexte$station
@@ -91,7 +87,8 @@ chronique.figure.classescalendaires <- function(
     {if(!is.null(nrow(stations))) mutate(., chmes_coderhj = fct_reorder(factor(chmes_coderhj), chsta_distancesource)) else .} # Pour tri par gradient amont-aval
   
   #### Création de la vue ####
-  ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, chmes_anneebiol, fill = voyant_valeur))
+  if(contexte$nstation == 1) ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, chmes_anneebiol, fill = voyant_valeur))
+  if(contexte$nstation != 1) ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, chmes_coderhj, fill = voyant_valeur))
   ggplot <- ggplot + geom_tile(height = .25)
   ggplot <- ggplot + theme_bw()
   ggplot <- ggplot + scale_fill_manual(values = palette)
@@ -108,9 +105,9 @@ chronique.figure.classescalendaires <- function(
   
   ### Enregistrement des vues ###
   if(save==T){
-    if(contexte$nstation == 1 & contexte$nannee == 1) ggsave(filename = glue("Vue_chronologique_{str_to_lower(contexte$typemesure)}_{contexte$station}_{contexte$annee}_{classe_variable}.png")) # S'il y a un unique couple station-année
-    if(contexte$nstation == 1 & contexte$nannee != 1) ggsave(filename = glue("Vue_chronologique_{str_to_lower(contexte$typemesure)}_{contexte$station}_{classe_variable}.png")) # S'il y a une unique station
-    if(contexte$nstation != 1 & contexte$nannee == 1) ggsave(filename = glue("Vue_chronologique_{str_to_lower(contexte$typemesure)}_{contexte$annee}_{classe_variable}.png")) # S'il y a une unique année
+    if(contexte$nstation == 1 & contexte$nannee == 1) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_classes_{str_to_lower(contexte$typemesure)}_{contexte$station}_{contexte$annee}_{classe_variable}.png")) # S'il y a un unique couple station-année
+    if(contexte$nstation == 1 & contexte$nannee != 1) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_classes_{str_to_lower(contexte$typemesure)}_{contexte$station}_pluriannuel_{classe_variable}.png")) # S'il y a une unique station
+    if(contexte$nstation != 1 & contexte$nannee == 1) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_classes_{str_to_lower(contexte$typemesure)}_{contexte$annee}_pluristationnel_{classe_variable}.png")) # S'il y a une unique année
   }
   
   return(ggplot)

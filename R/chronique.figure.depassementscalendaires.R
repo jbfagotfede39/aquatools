@@ -64,9 +64,6 @@ chronique.figure.depassementscalendaires <- function(
 
   # Test des typemesure
   if(contexte$ntypemesure > 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
-  
-  # Test du nombre de stations
-  if(contexte$nstation > 1) stop("Plusieurs chmes_coderhj au sein du jeu de données")
 
   #### Paramètres ####
   ## Titre

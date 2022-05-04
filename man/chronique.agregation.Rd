@@ -48,6 +48,15 @@ DataTravail \%>\% purrr::pluck(2)
 chronique.agregation() \%>\% magrittr::extract2(2)
 chronique.agregation(instantanne = F, mensuel = F, annuel = F, integral = F)
 chronique.agregation(data, export = T) # Export sous forme de fichier excel avec 5 onglets
+Mesures \%>\% group_split(chmes_coderhj) \%>\% purrr::map_dfr(~ chronique.agregation(., instantanne = F, mensuel = F, annuel = F, integral = F)) \%>\% 
 Mesures \%>\% group_split(chmes_coderhj) \%>\% purrr::map_dfr(~ chronique.agregation(.) \%>\% purrr::pluck(2))
+for(i in 1:length(mesures_agregees_completes)) { # Afin de regrouper les données journalières après un traitement intégral exporté et stocké
+if(i == 1) mesures_agregees_journalieres <- mesures_agregees_completes[[c(1, 2)]]
+ if(i != 1){
+  mesures_agregees_journalieres <- 
+    mesures_agregees_journalieres \%>\% 
+    union(mesures_agregees_completes[[c(i, 2)]])
+}
+}
 }
 \keyword{chronique}
