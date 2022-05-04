@@ -44,6 +44,8 @@ chronique.figure.parametres <- function(
   legendeY <- NA_character_
   legendeTitre <- NA_character_
   typemesureTitreSortie <- NA_character_
+  classes <- NA_character_
+  palette <- NA_character_
   
   #### Ajustement des paramètres en fonction du typemesure ####
   typemesure <- data$typemesure
@@ -52,19 +54,31 @@ chronique.figure.parametres <- function(
   if(typemesure == "Thermie" | typemesure == "Thermie barométrique" | typemesure == "Thermie piézométrique"){
     typemesureTitreSortie <- "_thermie_"
     unite <- "°C"
+    legendeTitre <- "Températures :"
+    classes <- c(-15, seq(18, 23, by = 1), 45)
+    palette <- c("< 18"="blue",
+                 "[18,19)"="green",
+                 "[19,20)"="yellow",
+                 "[20,21)"="orange",
+                 "[21,22)"="red",
+                 "[22,23)"="purple",
+                 "> 23"="black"
+    )
+    
     if(typefigure == "valeurs"){
       legendeY <- glue("Température ({unite})")
-      legendeTitre <- "Températures :"
+
+    }
+    if(typefigure == "vmm30j"){
+      legendeY <- glue("Tmm30j ({unite})")
     }
     if(typefigure == "cumul"){
       legendeY <- "Somme des degrés-jours"
       if(data$nannee == 1 & data$nstation == 1) legendeTitre <- "Année biologique"
       if(data$nannee != 1 & data$nstation == 1) legendeTitre <- "Années biologiques"
       if(data$nannee != 1 & data$nstation != 1) legendeTitre <- "Couples station-année"
-    }
-    if(typefigure == "vmm30j"){
-      legendeY <- glue("Tmm30j ({unite})")
-      legendeTitre <- "Températures :"
+      classes <- NA_character_
+      palette <- NA_character_
     }
   }
   
@@ -102,6 +116,19 @@ chronique.figure.parametres <- function(
       legendeY = bquote("Oxygène" ~ "dissous" ~ "(" ~ .(unite) ~ ")")
       legendeTitre <- "Oxygénation :"
       typemesureTitreSortie <- "_oxygénation_"
+      classes <- seq(0, 180, by = 20)
+      palette <- c("< 20"="black",
+                   # "[0,20)"="black",
+                   "[20,40)"="red",
+                   "[40,60)"="orange",
+                   "[60,80)"="yellow",
+                   "[80,100)"="green",
+                   "[100,120)"="blue",
+                   "[120,140)"="yellow",
+                   "[140,160)"="orange",
+                   "[160,180)"="red",
+                   "> 180"="black"
+      )
     }
   }
   
@@ -143,6 +170,8 @@ chronique.figure.parametres <- function(
   parametres$legendeY <- legendeY
   parametres$legendeTitre <- legendeTitre
   parametres$typemesureTitreSortie <- typemesureTitreSortie
+  parametres$classes <- classes
+  parametres$palette <- palette
   
   #### Affichage des résultats ####
   return(parametres)

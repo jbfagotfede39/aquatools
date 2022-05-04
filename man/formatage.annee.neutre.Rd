@@ -4,12 +4,12 @@
 \alias{formatage.annee.neutre}
 \title{Reformatage de dates en année neutres}
 \usage{
-formatage.annee.neutre(data = data, datedebutanneebiol = "10-01")
+formatage.annee.neutre(data = data, datedebutanneeneutre = "10-01")
 }
 \arguments{
 \item{data}{Jeu de données contenant une colonne chmes_date ou chsvi_date au format Date}
 
-\item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)}
+\item{datedebutanneeneutre}{Date de démarrage de l'année neutre : 10-01 (par défaut - 1er octobre)}
 }
 \description{
 Reformate les dates selon une année neutre/arbitraire

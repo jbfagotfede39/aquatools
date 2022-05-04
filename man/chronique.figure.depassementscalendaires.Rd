@@ -19,6 +19,7 @@ chronique.figure.depassementscalendaires(
   couleur_superieure = "#2B83BA",
   etiquette_inferieure = "Inférieur",
   couleur_inferieure = "#FDAE61",
+  affichagevide = FALSE,
   datedebutanneebiol = "10-01",
   save = F,
   projet = NA_character_,
@@ -46,6 +47,8 @@ chronique.figure.depassementscalendaires(
 
 \item{couleur_inferieure}{Couleur à afficher en cas de dépassement par défaut (\code{#FDAE61} - orange par défaut)}
 
+\item{affichagevide}{Si \code{TRUE}, fait apparaître les années ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années contenants des résultats}
+
 \item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
@@ -54,12 +57,6 @@ figures. Si \code{TRUE}, les enregistre.}
 \item{projet}{Nom du projet}
 
 \item{format}{Défini le format d'enregistrement (par défaut .png)}
-
-\item{Ymin}{Valeur minimale de l'axe des Y (-1 par défaut)}
-
-\item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
-
-\item{affichagevide}{Si \code{TRUE} (par défault), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats}
 
 \item{style}{En forme de boxplot (par défaut) ou de violon ou de courbes}
 }

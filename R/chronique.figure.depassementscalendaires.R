@@ -12,9 +12,7 @@
 #' @param couleur_superieure Couleur à afficher en cas de dépassement par excès (\code{#2B83BA} - bleu par défaut)
 #' @param etiquette_inferieure Intitulé à afficher en cas de dépassement par défaut (\code{Inférieur} par défaut)
 #' @param couleur_inferieure Couleur à afficher en cas de dépassement par défaut (\code{#FDAE61} - orange par défaut)
-#' @param Ymin Valeur minimale de l'axe des Y (-1 par défaut)
-#' @param Ymax Valeur maximale de l'axe des Y (aucune par défaut)
-#' @param affichagevide Si \code{TRUE} (par défault), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats
+#' @param affichagevide Si \code{TRUE}, fait apparaître les années ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années contenants des résultats
 #' @param style En forme de boxplot (par défaut) ou de violon ou de courbes
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les
@@ -41,6 +39,7 @@ chronique.figure.depassementscalendaires <- function(
   couleur_superieure = "#2B83BA",
   etiquette_inferieure = "Inférieur",
   couleur_inferieure = "#FDAE61",
+  affichagevide = FALSE,
   datedebutanneebiol = "10-01",
   save = F,
   projet = NA_character_,
@@ -52,6 +51,7 @@ chronique.figure.depassementscalendaires <- function(
   typemesure <- match.arg(typemesure)
   seuil_variable <- match.arg(seuil_variable)
   
+  if(affichagevide == TRUE) stop("Affichage des années vides non développé")
   if(is.numeric(seuil_valeur) == FALSE) stop("seuil_valeur doit être une valeur numérique")
   if(is.numeric(seuil_limite_exces) == FALSE) stop("seuil_limite_exces doit être une valeur numérique")
   

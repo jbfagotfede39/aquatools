@@ -140,7 +140,7 @@ chronique.figure.interannuelle <- function(
   ### Calcul des valeurs remarquables ###
   dataanalysees <-
     data %>% 
-    chronique.traitement(export = F, exportfigures = F, exportDCE = F, filtrage = F)
+    chronique.traitement(export = F, filtrage = F, log = "Aucun")
   
   ### Affichage des années vides ###
   data <-
