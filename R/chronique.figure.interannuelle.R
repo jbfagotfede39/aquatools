@@ -49,6 +49,10 @@ chronique.figure.interannuelle <- function(
 ##### ##### ##### ##### ##### ##### ##### ##### 
 
   ##### Contexte de la chronique #####
+  ## Nouvelle version en cours d'implémentantion ## (avec minuscule : contexte)
+  contexte <- chronique.contexte(data)
+  
+  ## Ancienne version ## (avec majuscule : Contexte)
   # Calcul du nombre de stations ##
   if("chmes_coderhj" %in% colnames(data)) Contexte <- tibble(nstation = n_distinct(data$chmes_coderhj))
   if("chmes_coderhj" %in% colnames(data) == FALSE){
@@ -86,7 +90,6 @@ chronique.figure.interannuelle <- function(
     bind_cols(Contexte)
   if(nchar(Titre) == 0) Titre <- Contexte$chmes_coderhj
   
-  
   #### Ajustement des paramètres en fonction du typemesure ####
   if(typemesure == "Thermie" | typemesure == "Thermie barométrique" | typemesure == "Thermie piézométrique"){
     legendeY = "Température (°C)"
@@ -113,9 +116,12 @@ chronique.figure.interannuelle <- function(
     if(Ymax == 30) Ymax <- NA
   }
   if(typemesure == "Oxygénation"){
-    legendeY = expression(Oxygene~dissous~(mg~O[2]/L))
+    if(contexte$unite == "mg/L") legendeY = expression(Oxygene~dissous~(mg~O[2]/L))
+    if(contexte$unite == "%") legendeY = expression(Oxygene~dissous~("%"))
     legendeTitre = "Oxygénation :"
     typemesureTitreSortie = "_oxygénation_"
+    if(Ymin == -1) Ymin <- NA
+    if(Ymax == 30) Ymax <- NA
   }
   if(typemesure == "Hydrologie"){
     legendeY = expression(Débit~(m^3/s))
@@ -134,6 +140,9 @@ chronique.figure.interannuelle <- function(
   if(grepl("Piézométrie", typemesure)) ecartvisuel <- 0.1*(max(data$chmes_valeur)-min(data$chmes_valeur))
   if(is.na(Ymin) & grepl("Piézométrie", typemesure)) positionNbJ <- max(data$chmes_valeur) + ecartvisuel
   if(!is.na(Ymin) & grepl("Piézométrie", typemesure)) positionNbJ <- Ymin + ecartvisuel
+  if(grepl("Oxygénation", typemesure)) ecartvisuel <- 0.1*(max(data$chmes_valeur)-min(data$chmes_valeur))
+  if(is.na(Ymin) & grepl("Oxygénation", typemesure)) positionNbJ <- max(data$chmes_valeur) + ecartvisuel
+  if(!is.na(Ymin) & grepl("Oxygénation", typemesure)) positionNbJ <- Ymin + ecartvisuel
   
   #### Cas avec boxplot ou violon ####
   if(style %in% c("boxplot", "violon")){
@@ -236,6 +245,7 @@ ggplot <- ggplot + geom_line(aes(y = VMoyJ, colour = as.character(chmes_anneebio
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE){
   if(grepl("Thermie", typemesure)) ggplot <- ggplot + ylim(0,as.numeric(Ymax))
   if(grepl("Piézométrie", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
+  if(grepl("Oxygénation", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
   }
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
 ggplot <- ggplot + scale_x_date(date_labels = "%b")

@@ -34,7 +34,7 @@ chronique.figure.classescalendaires(
 
 \item{stations}{Dataframe contenant les stations, avec au minimum \code{chsta_coderhj} et \code{chsta_distancesource}}
 
-\item{affichagevide}{Si \code{TRUE}, fait apparaître les années ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années contenants des résultats}
+\item{affichagevide}{Si \code{TRUE}, fait apparaître les années/stations ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années/stations contenants des résultats}
 
 \item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes}
 

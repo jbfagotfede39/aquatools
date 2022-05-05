@@ -7,7 +7,7 @@
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
 #' @param classe_variable Type de variable journalière agrégée à utiliser : \code{VMedJ} (par défaut), \code{VMinJ}, \code{VMoyJ}, \code{VMaxJ}, \code{VAmpliJ}, \code{VAmpliSigneJ}, \code{VarJ}, \code{NMesuresJ} ou \code{SommeMoyJ}
 #' @param stations Dataframe contenant les stations, avec au minimum \code{chsta_coderhj} et \code{chsta_distancesource}
-#' @param affichagevide Si \code{TRUE}, fait apparaître les années ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années contenants des résultats
+#' @param affichagevide Si \code{TRUE}, fait apparaître les années/stations ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années/stations contenants des résultats
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes
 #' @param datedebutanneeneutre Date de démarrage de l'année neutre : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme d'années neutres
 #' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
@@ -82,7 +82,9 @@ chronique.figure.classescalendaires <- function(
     rename(valeur = !!names(.[5])) %>% 
     mutate(voyant_valeur = cut(valeur, breaks = classes, include.lowest = TRUE, right = FALSE)) %>%
     {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[-15,18)` = "< 18", `[23,45]` = "> 23")) else .} %>% # Pour les extremums
-    {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 23", after = Inf)) else .} %>% # Pour les extremums
+    {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 23", after = Inf)) else .} %>% # Pour les extremums    {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[-15,18)` = "< 18", `[23,45]` = "> 23")) else .} %>% # Pour les extremums
+    {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[0,20)` = "< 20", `[180,200]` = "> 180")) else .} %>% # Pour les extremums
+    {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 180", after = Inf)) else .} %>% # Pour les extremums
     {if(!is.null(nrow(stations))) left_join(., stations %>% select(chsta_coderhj, chsta_distancesource) %>% st_drop_geometry(), by = c('chmes_coderhj' = 'chsta_coderhj')) else .} %>% # Pour tri par gradient amont-aval
     {if(!is.null(nrow(stations))) mutate(., chmes_coderhj = fct_reorder(factor(chmes_coderhj), chsta_distancesource)) else .} # Pour tri par gradient amont-aval
   

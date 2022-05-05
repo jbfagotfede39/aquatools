@@ -13,6 +13,7 @@
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)
 #' @param export Si \code{TRUE}, exporte les résultats (\code{FALSE} par défaut)
 #' @keywords chronique
+#' @import glue
 #' @import openxlsx
 #' @import tidyverse
 #' @export
@@ -314,14 +315,12 @@ if(exists("ValComplet") == TRUE){
   liste <- c(liste, ValComplet = list(ValComplet))
 }
 
-## Dataframe vers R
-# if(export == FALSE){
-  return(liste)
-# }
-
 ## Export vers xlsx ##
 if(export == TRUE){
-  openxlsx::write.xlsx(liste, file = paste0("./",projet, "/Sorties/Données/Agrégations_diverses/", Contexte$chmes_coderhj, "_données.xlsx"))
+  openxlsx::write.xlsx(liste, file = glue("./{projet}/Sorties/Données/Agrégations_diverses/{Contexte$chmes_coderhj}_données.xlsx"))
 }
+
+## Dataframe vers R sous forme de listes imbriquées
+  return(liste)
 
 } # Fin de la fonction

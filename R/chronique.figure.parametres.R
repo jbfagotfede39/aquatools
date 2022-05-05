@@ -117,7 +117,7 @@ chronique.figure.parametres <- function(
       legendeY = bquote("Oxygène" ~ "dissous" ~ "(" ~ .(unite) ~ ")")
       legendeTitre <- "Oxygénation :"
       typemesureTitreSortie <- "_oxygénation_"
-      classes <- seq(0, 180, by = 20)
+      classes <- seq(0, 200, by = 20)
       palette <- c("< 20"="black",
                    # "[0,20)"="black",
                    "[20,40)"="red",

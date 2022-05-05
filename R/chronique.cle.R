@@ -4,7 +4,7 @@
 #' @name chronique.cle
 #' @param data Data.frame issu de la fonction chronique.mesures ou chronique.resultats
 #' @param anneebiologique Si \code{TRUE} (par défault), s'appuie sur l'année biologique lorsque le paramètre année est inclus à la clé
-#' @param formatcle Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), Date-Heure (H) par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA), coderhj_typemesure (ST) ou milieu_annee (MA) ou time_coderhj_typemesure (HST) ou time_typemesure (HT) ou time_coderhj (HS)
+#' @param formatcle Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), Date-Heure (H), Unité (U) par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA), coderhj_typemesure (ST), milieu_annee (MA), time_coderhj_typemesure (HST), time_typemesure (HT), time_coderhj (HS), coderhj_typemesure_unite (STU) ou milieu_coderhj_typemesure_unite (MSTU)
 #' @keywords chronique
 #' @import tidyverse
 #' @export
@@ -15,7 +15,7 @@
 chronique.cle <- function(
   data = data,
   anneebiologique = TRUE,
-  formatcle = c("SAT", "SATD", "SA", "ST", "MA", "HST", "HT", "HS")
+  formatcle = c("SAT", "SATD", "SA", "ST", "MA", "HST", "HT", "HS", "STU", "MSTU")
 )
 {
   
@@ -53,7 +53,9 @@ chronique.cle <- function(
     {if("NbJ" %in% colnames(.)) mutate(., nbj = NbJ) else .} %>% 
     # Heure
     {if("chmes_date" %in% colnames(.)) mutate(., date = chmes_date) else .} %>% 
-    {if("chmes_heure" %in% colnames(.)) mutate(., heure = chmes_heure) else .}
+    {if("chmes_heure" %in% colnames(.)) mutate(., heure = chmes_heure) else .} %>% 
+    # Unité 
+    {if("chmes_unite" %in% colnames(.)) mutate(., unite = chmes_unite) else .}
 
   #### Création des données manquantes ####
   if(grepl("A", formatcle, fixed=TRUE) & ("annee" %in% colnames(datarenomees) == FALSE)) warning("Attention il n'y a pas de champs annee dans les données d'entrée")
@@ -63,6 +65,7 @@ chronique.cle <- function(
   if(grepl("D", formatcle, fixed=TRUE) & ("nbj" %in% colnames(datarenomees) == FALSE)) warning("Attention il n'y a pas de champs nbj dans les données d'entrée")
   if(grepl("H", formatcle, fixed=TRUE) & ("date" %in% colnames(datarenomees) == FALSE)) warning("Attention il n'y a pas de champs date dans les données d'entrée")
   if(grepl("H", formatcle, fixed=TRUE) & ("heure" %in% colnames(datarenomees) == FALSE)) warning("Attention il n'y a pas de champs heure dans les données d'entrée")
+  if(grepl("U", formatcle, fixed=TRUE) & ("unite" %in% colnames(datarenomees) == FALSE)) warning("Attention il n'y a pas de champs unite dans les données d'entrée")
   
   datacompletees <-
     datarenomees %>% 
@@ -72,7 +75,8 @@ chronique.cle <- function(
     {if("milieu" %in% colnames(.) == FALSE) mutate(., milieu = NA_character_) else .} %>% 
     {if("nbj" %in% colnames(.) == FALSE) mutate(., nbj = NA_integer_) else .} %>% 
     {if("date" %in% colnames(.) == FALSE) mutate(., date = NA_character_) else .} %>% 
-    {if("heure" %in% colnames(.) == FALSE) mutate(., heure = NA_character_) else .}
+    {if("heure" %in% colnames(.) == FALSE) mutate(., heure = NA_character_) else .} %>% 
+    {if("unite" %in% colnames(.) == FALSE) mutate(., unite = NA_character_) else .}
   
   #### Création d'une clé ####
   Vue <-
@@ -85,6 +89,8 @@ chronique.cle <- function(
     {if(formatcle == "HST") mutate(., Cle = as.character(glue("{date}_{heure}_{coderhj}_{typemesure}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "HS") mutate(., Cle = as.character(glue("{date}_{heure}_{coderhj}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "HT") mutate(., Cle = as.character(glue("{date}_{heure}_{typemesure}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
+    {if(formatcle == "STU") mutate(., Cle = as.character(glue("{coderhj}_{typemesure}_{unite}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
+    {if(formatcle == "MSTU") mutate(., Cle = as.character(glue("{milieu}_{coderhj}_{typemesure}_{unite}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if("coderhj" %in% colnames(.)) dplyr::select(., -coderhj) else .}  %>% 
     {if("typemesure" %in% colnames(.)) dplyr::select(., -typemesure) else .}  %>% 
     {if("annee" %in% colnames(.)) dplyr::select(., -annee) else .}  %>% 
@@ -92,6 +98,7 @@ chronique.cle <- function(
     {if("nbj" %in% colnames(.)) dplyr::select(., -nbj) else .} %>% 
     {if("date" %in% colnames(.)) dplyr::select(., -date) else .} %>% 
     {if("heure" %in% colnames(.)) dplyr::select(., -heure) else .} %>% 
+    {if("unite" %in% colnames(.)) dplyr::select(., -unite) else .} %>% 
     dplyr::select(Cle, everything())
 
   #### Affichage des résultats ####
