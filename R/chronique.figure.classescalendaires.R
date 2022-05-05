@@ -45,7 +45,6 @@ chronique.figure.classescalendaires <- function(
   ## Évaluation des choix
   typemesure <- match.arg(typemesure)
   classe_variable <- match.arg(classe_variable)
-  if(affichagevide == TRUE) stop("Affichage des années vides non développé")
   
   ##### Contexte de la chronique #####
   contexte <- chronique.contexte(data)
@@ -71,6 +70,13 @@ chronique.figure.classescalendaires <- function(
   palette <- parametres$palette
   
   #### Préparation des données ####
+  ### Affichage des années vides ###
+  # Les sites vides sont traités plus bas via les stations
+  if(affichagevide == TRUE){
+    if(contexte$nannee != 1) warning("Ajout des années vides non développé, seulement les sites")
+  # attention : un complete seul ne suffit pas forcément (à moins de bien le construire), car ensuite la fonction formatage.annee.neutre supprime les lignes vides
+  }
+  
   ### Établissement des classes ###
   data_calculees <-
     data %>% 
@@ -84,8 +90,14 @@ chronique.figure.classescalendaires <- function(
     {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[-15,18)` = "< 18", `[23,45]` = "> 23")) else .} %>% # Pour les extremums
     {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 23", after = Inf)) else .} %>% # Pour les extremums    {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[-15,18)` = "< 18", `[23,45]` = "> 23")) else .} %>% # Pour les extremums
     {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[0,20)` = "< 20", `[180,200]` = "> 180")) else .} %>% # Pour les extremums
-    {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 180", after = Inf)) else .} %>% # Pour les extremums
-    {if(!is.null(nrow(stations))) left_join(., stations %>% select(chsta_coderhj, chsta_distancesource) %>% st_drop_geometry(), by = c('chmes_coderhj' = 'chsta_coderhj')) else .} %>% # Pour tri par gradient amont-aval
+    {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 180", after = Inf)) else .} # Pour les extremums
+  
+  ### Adjonction des stations ###
+  # dont affichage des stations vides présentes dans la table des stations
+  data_calculees <-
+    data_calculees %>% 
+    {if(!is.null(nrow(stations)) & affichagevide == FALSE) left_join(., stations %>% select(chsta_coderhj, chsta_distancesource) %>% st_drop_geometry(), by = c('chmes_coderhj' = 'chsta_coderhj')) else .} %>% # Pour tri par gradient amont-aval - left-join afin de ne conserver que les stations en présence, donc uniquement celles avec données
+    {if(!is.null(nrow(stations)) & affichagevide == TRUE) full_join(., stations %>% select(chsta_coderhj, chsta_distancesource) %>% st_drop_geometry(), by = c('chmes_coderhj' = 'chsta_coderhj')) else .} %>% # Pour tri par gradient amont-aval - full-join afin de conserver toutes les stations, même celles sans données
     {if(!is.null(nrow(stations))) mutate(., chmes_coderhj = fct_reorder(factor(chmes_coderhj), chsta_distancesource)) else .} # Pour tri par gradient amont-aval
   
   #### Création de la vue ####

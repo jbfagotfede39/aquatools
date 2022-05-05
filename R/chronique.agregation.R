@@ -321,6 +321,16 @@ if(export == TRUE){
 }
 
 ## Dataframe vers R sous forme de listes imbriquées
-  return(liste)
+# Si un seul paramètre appelé (ValJours par exemple)
+if(length(liste) == 1){
+  liste <-
+    liste %>% 
+    pluck(1) %>% 
+    as_tibble()}
+
+# Si plusieurs paramètres appelés
+if(length(liste) != 1){
+  return(liste) # Il faudrait reprendre la chose sous forme de nested data peut-être
+}
 
 } # Fin de la fonction
