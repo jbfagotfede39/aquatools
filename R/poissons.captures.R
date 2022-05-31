@@ -113,6 +113,15 @@ Captures %>%
   mutate(taillemoy = case_when(.$nombre == 1 ~ .$taillemaximum,
                                .$nombre != 1 ~ .$taillemoy)) # Afin de compléter les tailles pour les poissons individuels
 
+##### Calcul d'une colonne poids (avec le poids moyen pour les lots) #####
+Captures <- 
+  Captures %>% 
+  rowwise() %>% # groupement par ligne
+  mutate(poids_moy = round(poids / nombre, 1)) %>% # Afin de calculer la taille moyenne pour les lots
+  ungroup() %>% # Afin d'enlever le groupement par ligne lié à rowwise
+  mutate(poids_moy = case_when(.$nombre == 1 ~ .$poids,
+                               .$nombre != 1 ~ .$poids_moy)) # Afin de compléter les tailles pour les poissons individuels
+
 ##### Nettoyage des 0 #####
 if(dim(Captures)[1] != 0) Captures[Captures == 0] <- NA
 if(dim(Captures)[1] == 0) warning("Aucune capture correspondante")

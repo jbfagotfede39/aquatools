@@ -17,7 +17,7 @@ chronique.ouverture(
   typefichier = c(".csv", "excel"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel",
-    "miniDOTregroupe", "EDF"),
+    "miniDOTregroupe", "EDF", "RuggedTROLL"),
   formatmacmasalmo = F
 )
 }

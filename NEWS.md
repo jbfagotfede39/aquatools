@@ -1,6 +1,37 @@
 # NEWS - aquatools
 
-## 0.0.143
+## 0.0.144 - 2022-05-31
+### Ajouts
+- `chronique.figure.classescalendaires` : ajout partiel du traitement du paramètre `affichagevide`
+- `chronique.cle` : ajout du paramètre `Unité` et de la configuration `STU`
+- `chronique.figure.interannuelle` : ajout du réglage des Ymin et Ymax dans le cas de l'oxygénation
+- `chronique.ouverture` : ajout de la modalité d'importation des données piézométriques `RuggedTROLL`
+- `chronique.regroupement` : création
+- `poissons.captures` : ajout du calcul de `poids_moy` pour les lots
+- `poissons.poids` : 
+  * déplacé depuis `afd39`
+  * ajout de tests en entrée, avec limitation à une seule espèce et effectif minimal de 30 individus
+  * ajout d'un réglage du pas de taille pour les données estimées
+  * modification des données traitées en entrée pour affiner le calcul : taille et poids moyens pour les lots
+  * ajout de l'extraction et du test de la p-value du modèle
+  * ajout d'un traitement différencié : sortie d'un tableau de référence, ou bien complément d'un jeu de données incomplet, en fonction de la fourniture ou non en entrée de ce dernier
+  * affichage dans les sorties de l'espèce et des milieux des données de référence
+
+### Corrections
+- `chronique.figure.cumul` : 
+  * correction du paramètre `datedebutanneeneutre` dans l'appel de la fonction `formatage.annee.neutre`.
+  * correction de la sortie de `chronique.agregation` suite à l'évolution du format de sortie de celle-ci
+- `chronique.figure.interannuelle` : modification de l'appel de chronique.traitement
+
+### Modifications
+- `chronique.agregation` : 
+  * modification de la syntaxe de la localisation des fichiers de sortie avec `glue`
+  * léger refactoring afin de corriger problème créé par la dernière modification
+  * modification format de sortie (liste -> tibble) vers R dans le cas de l'appel d'un seul paramètre (`ValJours` par exemple)
+- `chronique.figure.classescalendaires` : ajout du ré-encodage des extremums dans le cas de l'oxygénation
+- `chronique.figure.parametres` : augmentation de l'échelle des classes de valeurs dans le cas de l'oxygénation
+
+## 0.0.143 - 2022-05-04
 ### Ajouts
 - `NEWS.md` : création
 - `chronique.agregation` : ajout d'un export vers R possible même si export = T, afin de pouvoir récupérer certaines valeurs agrégées sans avoir à tout recalculer
@@ -25,7 +56,7 @@
 - `chronique.figure` : refactoring très léger
 - `chronique.figure.interannuelle` : modification de l'appel de `chronique.traitement` pour simplification
 
-## 0.0.142
+## 0.0.142 - 2022-03-22
 ### Ajouts
 - `chronique.contexte` : ajout du traitement des unités
 - `chronique.figure.depassementscalendaires` : création

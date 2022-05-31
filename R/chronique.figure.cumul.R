@@ -80,8 +80,7 @@ chronique.figure.cumul <- function(
   syntjour <- 
     data %>% 
     ungroup() %>% 
-    chronique.agregation(instantanne = F, mensuel = F, annuel = F, integral = F) %>% 
-    pluck(1)
+    chronique.agregation(instantanne = F, mensuel = F, annuel = F, integral = F)
   }
   
   ## Calcul de l'année biologique ##
@@ -92,7 +91,7 @@ chronique.figure.cumul <- function(
   # Recalage sur une année arbitraire commune afin de pouvoir comparer/projeter les dates ensembles
   syntjour <- 
     syntjour %>% 
-    formatage.annee.neutre(datedebutanneebiol = datedebutanneebiol) %>% 
+    formatage.annee.neutre(datedebutanneeneutre = datedebutanneebiol) %>% 
     mutate(chmes_date = chmes_date_anneeneutre) %>% 
     select(-chmes_date_anneeneutre)
 

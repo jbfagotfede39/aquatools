@@ -31,7 +31,7 @@ chronique.ouverture <- function(
   nbcolonnes = 2,
   typefichier = c(".csv", "excel"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL"),
   formatmacmasalmo = F
 )
 {
@@ -150,11 +150,12 @@ dataaimporter <-
   
 if(typemesure == "Piézométrie"){
   if(typecapteur == "Non précisé"){
-  typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) : ")
-  if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3)) {stop("Valeur non disponible")}
+  typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) ou 4 (RuggedTROLL) : ")
+  if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3 | typecapteur == 4)) {stop("Valeur non disponible")}
   if (typecapteur == 1) {typecapteur <- "Hobo"}
   if (typecapteur == 2) {typecapteur <- "Diver"}
   if (typecapteur == 3) {typecapteur <- "VuSitu"}
+  if (typecapteur == 4) {typecapteur <- "RuggedTROLL"}
   }
   typedonnee = readline(prompt = "Type de mesure piézométrique 1 (Baro) ou 2 (Piézo) : ")
   typedonnee <- ifelse(typedonnee == 1, "Baro", "Piézo")
@@ -188,6 +189,14 @@ if(typemesure == "Piézométrie"){
       mutate(Date = ymd(format(Date, format="%Y-%m-%d"))) %>% 
       dplyr::select(Date, Heure, Piézométrie, Thermie)
   }
+  if(typecapteur == "RuggedTROLL"){
+    dataaimporter <- 
+      read_csv2(Localisation, skip = 70, col_names = c("Date", "Heure", "Seconde", "Thermie", "Profondeur", "Piézométrie"), col_types = "cccccc") %>%
+      mutate(Thermie = as.numeric(sub(",", ".", Thermie))) %>% 
+      mutate(Piézométrie = as.numeric(sub(",", ".", Piézométrie))) %>% 
+      mutate(Date = ymd(Date)) %>%
+      dplyr::select(Date, Heure, Piézométrie, Thermie)
+  }
   
   dataaimporter <- 
     dataaimporter %>% 
@@ -195,7 +204,7 @@ if(typemesure == "Piézométrie"){
     mutate(Heure = as.character(Heure)) %>% 
     tidyr::gather(typemesure, Valeur, Piézométrie:Thermie) %>% 
     mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
-    mutate(unite = ifelse(typemesure == "Piézométrie" & typecapteur == "Hobo", "kPa", unite)) %>% 
+    mutate(unite = ifelse(typemesure == "Piézométrie" & (typecapteur == "Hobo" | typecapteur == "RuggedTROLL"), "kPa", unite)) %>% 
     mutate(unite = ifelse(typemesure == "Piézométrie" & (typecapteur == "Diver" | typecapteur == "VuSitu"), "cm H2O", unite)) %>% 
     mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Baro", "Thermie barométrique", typemesure)) %>% 
     mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Piézo", "Thermie piézométrique", typemesure)) %>% 
