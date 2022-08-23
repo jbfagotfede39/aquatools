@@ -8,7 +8,7 @@
 #' @param feuille Feuille où lire les données dans le cas de l'ouverture d'un fichier excel : \code{1} (par défaut)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param nbcolonnes Nombre de colonnes concernées
-#' @param typefichier Type de fichier : \code{.csv} (par défaut) ou \code{excel}
+#' @param typefichier Type de fichier : \code{.csv} (par défaut) ou \code{excel} ou \code{Interne}
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)
 #' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
@@ -29,7 +29,7 @@ chronique.ouverture <- function(
   feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
-  typefichier = c(".csv", "excel"),
+  typefichier = c(".csv", "excel", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL"),
   formatmacmasalmo = F
@@ -44,7 +44,7 @@ typedate <- match.arg(typedate)
 typecapteur <- match.arg(typecapteur)
 
 #### Localisation du fichier ####
-Localisation <- adresse.switch(Localisation)
+if(any(class(url) == "character")) Localisation <- adresse.switch(Localisation)
 
 #### Mesures ####
 if(Type == "Mesures"){
@@ -459,9 +459,34 @@ if(typemesure == "Piézométrie"){
   if(typemesure == "Pluviométrie"){
   }
   
-  if(typemesure == "Hydrologie"){ # Format exporté depuis hydroportail en .csv
-    typefichier <- ".csv"
-    if(typefichier == ".csv"){dataaimporter <- read_csv2(Localisation, show_col_types = FALSE) %>% filter(row_number() > 1)}
+  if(typemesure == "Hydrologie"){ 
+
+    # Format récupéré depuis l'API Hub'Eau en .csv :
+    if(typefichier == "Interne"){
+      dataaimporter <- Localisation
+      
+      dataaimporter <-
+        dataaimporter %>% 
+        # rename_all(~sub("<", "", .x)) %>%
+        # rename_all(~sub(">", "", .x)) %>%
+        mutate(DateHeure = ymd_hms(date_obs)) %>% 
+        mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
+        mutate(Heure = format(DateHeure, format="%H:%M:%S")) %>% 
+        mutate(coderhj = code_site) %>%
+        mutate(capteur = "Sonde DREAL") %>%
+        mutate(Valeur = resultat_obs/10000) %>% # Les données en sortie de l'API sont en L/s, donc on convertit en m3/s. Il faut toutefois diviser par 10000 au lieu de 1000 car les données en sortie sont au format 903.0 et le .0 est mangé par read_csv2 et devient 9030.
+        # mutate(unite = "L/s") %>%
+        mutate(unite = "m3/s") %>%
+        mutate(typemesure = glue("Hydrologie - {grandeur_hydro}")) %>% 
+        mutate(validation = libelle_qualification_obs) %>% 
+        mutate(mode_acquisition = libelle_methode_obs) %>% 
+        filter(is.na(Valeur) != T) %>% 
+        select(coderhj, capteur, Date, Heure, Valeur, unite, typemesure, validation, mode_acquisition)
+    } # Fin d'importation d'un format récupéré depuis l'API Hub'Eau en .csv :
+    
+    # Format exporté/téléchargé de manière classique via un navigateur depuis hydroportail en .csv :
+    if(typefichier == ".csv"){
+    dataaimporter <- read_csv2(Localisation, show_col_types = FALSE) %>% filter(row_number() > 1)
     
     dataaimporter <-
       dataaimporter %>% 
@@ -479,7 +504,8 @@ if(typemesure == "Piézométrie"){
       mutate(mode_acquisition = MethObsElaborHydro) %>% 
       filter(is.na(Valeur) != T) %>% 
       select(coderhj, capteur, Date, Heure, Valeur, unite, typemesure, validation, mode_acquisition)
-  }
+    } # Fin d'importation d'un format exporté/téléchargé de manière classique via un navigateur depuis hydroportail en .csv
+  } # Fin d'importation de données d'hydrologie
   
 ## Transformation des champs ##
 dataaimporter <- 

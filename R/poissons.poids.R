@@ -59,15 +59,15 @@ limites <- range(data$tl)
 limites[1] <- floor(limites[1] / pas_taille) * pas_taille
 limites[2] <- ceiling(limites[2] / pas_taille) * pas_taille
 
+## Estimations à partir des données de référence ##
+lens <- seq(from = limites[1], by = pas_taille, length = (limites[2]-limites[1])/pas_taille+1)
+
+nd <- data.frame(logL = log10(lens))  # df of log(lengths)
+plogW <- predict(fit1, nd, interval="prediction") # Permet d'obtenir l'enveloppe afin de deviner de futures valeurs
+cf <- FSA::logbtcf(fit1, 10) # correction factor
 
 ## Création d'un tableau générique de prédiction si absence de données à compléter ##
 if(is.null(nrow(data_a_completer))){
-  lens <- seq(from = limites[1], by = pas_taille, length = (limites[2]-limites[1])/pas_taille+1)
-  
-  nd <- data.frame(logL = log10(lens))  # df of log(lengths)
-  plogW <- predict(fit1, nd, interval="prediction") # Permet d'obtenir l'enveloppe afin de deviner de futures valeurs
-  cf <- FSA::logbtcf(fit1, 10) # correction factor
-  
   estimations <- data.frame(lens, cf * 10^plogW) # Dataframe contenant les poids pour une longueur donnée, avec l'intervalle de confiance à 95 %
   estimations <-
     estimations %>% 

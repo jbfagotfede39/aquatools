@@ -12,7 +12,7 @@ chronique.resultats.periode(
 \arguments{
 \item{data}{Data.frame issu de la fonction chronique.resultats ou de la base de données Chroniques}
 
-\item{typeperiode}{Type de période que l'on souhaite calculer : période totale (\code{Enveloppe} : 2014-2018), ou période fractionnée (\code{Detail} : 2014-2015;2017;2019-2020, par défaut)}
+\item{typeperiode}{Type de période que l'on souhaite calculer : période totale (\code{Enveloppe} : 2014-2018), ou période fractionnée (\code{Detail} : 2014-2015,2017,2019-2020, par défaut)}
 }
 \description{
 Cette fonction permet de calculer les périodes couvertes par les résultats de chroniques (champs PeriodeTotale)

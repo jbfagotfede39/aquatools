@@ -1,5 +1,28 @@
 # NEWS - aquatools
 
+## 0.0.145
+### Ajouts
+- `chronique.ouverture` : ajout de l'importation des mesures hydrologiques issues de Hub'Eau
+- `chronique.periode` : 
+  * correction de l'intitulé de deux paramètres dans l'en-tête
+  * correction d'erreurs de syntaxe dans les exemples
+- `chronique.resultats.periode` :
+  * Utilisation de `chronique.variables.renommage` (#31)
+
+### Corrections
+- `BDD.ouverture` : ajout d'une modalité pour l'identification du poste de JB en local
+- `chronique.resultats.periode` :
+  * Résolution d'un bug d'exécution
+  * Nettoyage
+- `poissons.poids` : déplacement du calcul des estimations (et surtout du `cf`) hors d'une condition
+
+### Modifications
+- `chronique.resultats.periode` :
+  * Modification du séparateur : `;` devient `,`, afin d'harmoniser les différents séparateurs
+  * Nettoyage
+
+### Suppressions
+
 ## 0.0.144 - 2022-05-31
 ### Ajouts
 - `chronique.figure.classescalendaires` : ajout partiel du traitement du paramètre `affichagevide`

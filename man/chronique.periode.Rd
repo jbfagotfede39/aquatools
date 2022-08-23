@@ -7,16 +7,16 @@
 chronique.periode(x = Data, deb = "", fin = "")
 }
 \arguments{
-\item{Début}{Date de début (2015-02-01 14:00:00)}
+\item{deb}{Date de début (2015-02-01 14:00:00)}
 
-\item{Fin}{Date de fin (2015-02-04 14:00:00)}
+\item{fin}{Date de fin (2015-02-04 14:00:00)}
 }
 \description{
 Cette fonction permet de filtrer la période d'intérêt. La valeur de début est l'heure sélectionnée +1, la valeur de fin est strictement inférieure à celle indiquée
 }
 \examples{
-chronique.periode(Data, "2015-02-04 11:00:00", )
-chronique.periode(Data, ,"2015-02-04 14:00:00")
+chronique.periode(Data, "2015-02-04 11:00:00")
+chronique.periode(Data, "2015-02-04 14:00:00")
 chronique.periode(Data, "2015-02-04 11:00:00", "2015-02-04 14:00:00")
 }
 \keyword{chronique}
