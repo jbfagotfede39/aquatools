@@ -55,7 +55,7 @@ p_value <-
 
 ###### Estimation #####
 ## Amplitude des données de référence ##
-limites <- range(data$tl)
+limites <- range(data$tl, na.rm = T)
 limites[1] <- floor(limites[1] / pas_taille) * pas_taille
 limites[2] <- ceiling(limites[2] / pas_taille) * pas_taille
 
