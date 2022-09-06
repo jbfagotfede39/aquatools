@@ -99,7 +99,7 @@ if(!is.null(nrow(data_a_completer))){
     
   estimations <-
     resultats_partiels %>% 
-    bind_cols(resultats_partiels_avec_intervalles) %>% 
+    bind_cols(as_tibble(resultats_partiels_avec_intervalles)) %>% # Conversion en tibble nécessaire car on part d'une matrice, et celui peut dans certains cas poser pb de renommage de champs
     mutate(lm_fit = cf * 10^fit) %>% # Rétro-calcul du poids estimé à partir de son log et d'un facteur de correction
     mutate(lm_lwr = round(cf * 10^lwr, 1)) %>% # Rétro-calcul du poids estimé à partir de son log et d'un facteur de correction
     mutate(lm_upr = round(cf * 10^upr, 1)) %>% # Rétro-calcul du poids estimé à partir de son log et d'un facteur de correction
