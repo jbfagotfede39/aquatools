@@ -1,5 +1,26 @@
 # NEWS - aquatools
 
+## 0.0.146
+### Ajouts
+- `df.comparaison.champs` : Création
+
+### Corrections
+- `poissons.poids` : 
+  * Ajout d'un échappement de `NA` dans le cas de la présence d'une taille moyenne vide
+  * Conversion d'une matrice en tibble pour jointure moins problématique selon configuration machine
+
+### Modifications
+- `formatage.ecosysteme` : 
+  * Suppression des exceptions manuelles (source de plantage), à revoir avec les tables récentes fd.referentiels.dictionnaire_correction
+- `poissons.lac.irsteaversteleos` : 
+  * Renommage en `poissons.plansdeau.ofbversteleos`
+  * Correction d'une coquille dans la documentation
+  * Modification des noms de variables en snake case
+  * Transformation des fonctions paste0 en glue
+  * Choix du format de coordonnées
+  * Nettoyage de NA qui s'affichaient si les champs étaient vides
+  * Recalcul des lots I en lots G, avec avertissement de l'utilisateur
+
 ## 0.0.145
 ### Ajouts
 - `chronique.ouverture` : ajout de l'importation des mesures hydrologiques issues de Hub'Eau

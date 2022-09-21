@@ -45,7 +45,6 @@ if(Operation == "Expansion"){
     rename(coderhj := coderhj2) %>% 
     left_join(formatage.abreviation(thematique = "Écosystème", formatage = "Propre"), by = c("coderhj" = "Abréviation")) %>% 
     rename(Sortie = Définition)
-
   
   #### Test de complétude ####
   test <- data %>% dplyr::filter(is.na(Sortie))
@@ -84,22 +83,22 @@ if(Operation == "Simplification"){
     dplyr::select(-definitionsale)
   
   #### Exceptions manuelles ####
-  data <-
-    data %>%
-    dplyr::filter(is.na(Abréviation)) %>% 
-    dplyr::select(-(Abréviation:Définition)) %>% 
-    mutate(definitionoriginale = case_when(
-      grepl("Abbaye", definitionoriginale) ~ "Lac de l'Abbaye",
-      grepl("Antre", definitionoriginale) ~ "Lac d'Antre",
-      grepl("ascencière|assencière", definitionoriginale) ~ "Lac de l'Assencière",
-      grepl("Ilay|Motte", definitionoriginale) ~ "Lac d'Ilay",
-      grepl("Val", definitionoriginale) & grepl("lac", definitionoriginale) ~ "Lac du Val"
-    )
-    ) %>% 
-    mutate(definitionsale = str_to_lower(definitionoriginale)) %>% 
-    left_join(DataRef, by = c("definitionsale" = "definition")) %>% 
-    dplyr::select(-definitionsale) %>% 
-    dplyr::union(data %>% dplyr::filter(!is.na(Abréviation))) # Ne fonctionne pour l'instant pas avec les entrées géographiques -> union impossible
+  # data <-
+  #   data %>%
+  #   dplyr::filter(is.na(Abréviation)) %>% 
+  #   dplyr::select(-(Abréviation:Définition)) %>% 
+  #   mutate(definitionoriginale = case_when(
+  #     grepl("Abbaye", definitionoriginale) ~ "Lac de l'Abbaye",
+  #     grepl("Antre", definitionoriginale) ~ "Lac d'Antre",
+  #     grepl("ascencière|assencière", definitionoriginale) ~ "Lac de l'Assencière",
+  #     grepl("Ilay|Motte", definitionoriginale) ~ "Lac d'Ilay",
+  #     grepl("Val", definitionoriginale) & grepl("lac", definitionoriginale) ~ "Lac du Val"
+  #   )
+  #   ) %>% 
+  #   mutate(definitionsale = str_to_lower(definitionoriginale)) %>% 
+  #   left_join(DataRef, by = c("definitionsale" = "definition")) %>% 
+  #   dplyr::select(-definitionsale) %>% 
+  #   dplyr::union(data %>% dplyr::filter(!is.na(Abréviation))) # Ne fonctionne pour l'instant pas avec les entrées géographiques -> union impossible
 
   #### Exceptions manuelles ####
 # data[str_detect(data, "bellefontaine")] <- "BEL"
