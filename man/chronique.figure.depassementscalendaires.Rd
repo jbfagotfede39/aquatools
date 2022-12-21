@@ -16,9 +16,9 @@ chronique.figure.depassementscalendaires(
   seuil_valeur = 19,
   seuil_limite_exces = 12,
   etiquette_superieure = "Supérieur",
-  couleur_superieure = "#2B83BA",
+  couleur_superieure = "#FDAE61",
   etiquette_inferieure = "Inférieur",
-  couleur_inferieure = "#FDAE61",
+  couleur_inferieure = "#2B83BA",
   affichagevide = FALSE,
   datedebutanneebiol = "10-01",
   save = F,
@@ -41,11 +41,11 @@ chronique.figure.depassementscalendaires(
 
 \item{etiquette_superieure}{Intitulé à afficher en cas de dépassement par excès (\code{Supérieur} par défaut)}
 
-\item{couleur_superieure}{Couleur à afficher en cas de dépassement par excès (\code{#2B83BA} - bleu par défaut)}
+\item{couleur_superieure}{Couleur à afficher en cas de dépassement par excès (\code{#FDAE61} - orange par défaut)}
 
 \item{etiquette_inferieure}{Intitulé à afficher en cas de dépassement par défaut (\code{Inférieur} par défaut)}
 
-\item{couleur_inferieure}{Couleur à afficher en cas de dépassement par défaut (\code{#FDAE61} - orange par défaut)}
+\item{couleur_inferieure}{Couleur à afficher en cas de dépassement par défaut (\code{#2B83BA} - bleu par défaut)}
 
 \item{affichagevide}{Si \code{TRUE}, fait apparaître les années ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années contenants des résultats}
 

@@ -9,9 +9,9 @@
 #' @param seuil_valeur Valeur de seuil à tester (valeur de \code{19} par défaut). Le calcul réalise un ≥.
 #' @param seuil_limite_exces Seuil en-deça duquel les dépassements sont testés par défaut, sinon ils sont testés par excès (valeur de \code{12} par défaut).
 #' @param etiquette_superieure Intitulé à afficher en cas de dépassement par excès (\code{Supérieur} par défaut)
-#' @param couleur_superieure Couleur à afficher en cas de dépassement par excès (\code{#2B83BA} - bleu par défaut)
+#' @param couleur_superieure Couleur à afficher en cas de dépassement par excès (\code{#FDAE61} - orange par défaut)
 #' @param etiquette_inferieure Intitulé à afficher en cas de dépassement par défaut (\code{Inférieur} par défaut)
-#' @param couleur_inferieure Couleur à afficher en cas de dépassement par défaut (\code{#FDAE61} - orange par défaut)
+#' @param couleur_inferieure Couleur à afficher en cas de dépassement par défaut (\code{#2B83BA} - bleu par défaut)
 #' @param affichagevide Si \code{TRUE}, fait apparaître les années ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années contenants des résultats
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les
@@ -35,9 +35,9 @@ chronique.figure.depassementscalendaires <- function(
   seuil_valeur = 19,
   seuil_limite_exces = 12,
   etiquette_superieure = "Supérieur",
-  couleur_superieure = "#2B83BA",
+  couleur_superieure = "#FDAE61",
   etiquette_inferieure = "Inférieur",
-  couleur_inferieure = "#FDAE61",
+  couleur_inferieure = "#2B83BA",
   affichagevide = FALSE,
   datedebutanneebiol = "10-01",
   save = F,
