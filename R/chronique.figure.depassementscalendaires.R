@@ -6,14 +6,13 @@
 #' @param Titre Titre du graphique (vide par défaut)
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
 #' @param seuil_variable Type de variable journalière agrégée à utiliser : \code{VMedJ} (par défaut), \code{VMinJ}, \code{VMoyJ}, \code{VMaxJ}, \code{VAmpliJ}, \code{VAmpliSigneJ}, \code{VarJ}, \code{NMesuresJ} ou \code{SommeMoyJ}
-#' @param seuil_valeur Valeur de seuil à tester (valeur de \code{19} par défaut)
+#' @param seuil_valeur Valeur de seuil à tester (valeur de \code{19} par défaut). Le calcul réalise un ≥.
 #' @param seuil_limite_exces Seuil en-deça duquel les dépassements sont testés par défaut, sinon ils sont testés par excès (valeur de \code{12} par défaut).
 #' @param etiquette_superieure Intitulé à afficher en cas de dépassement par excès (\code{Supérieur} par défaut)
 #' @param couleur_superieure Couleur à afficher en cas de dépassement par excès (\code{#2B83BA} - bleu par défaut)
 #' @param etiquette_inferieure Intitulé à afficher en cas de dépassement par défaut (\code{Inférieur} par défaut)
 #' @param couleur_inferieure Couleur à afficher en cas de dépassement par défaut (\code{#FDAE61} - orange par défaut)
 #' @param affichagevide Si \code{TRUE}, fait apparaître les années ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années contenants des résultats
-#' @param style En forme de boxplot (par défaut) ou de violon ou de courbes
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les
 #'    figures. Si \code{TRUE}, les enregistre.
@@ -51,7 +50,6 @@ chronique.figure.depassementscalendaires <- function(
   typemesure <- match.arg(typemesure)
   seuil_variable <- match.arg(seuil_variable)
   
-  if(affichagevide == TRUE) stop("Affichage des années vides non développé")
   if(is.numeric(seuil_valeur) == FALSE) stop("seuil_valeur doit être une valeur numérique")
   if(is.numeric(seuil_limite_exces) == FALSE) stop("seuil_limite_exces doit être une valeur numérique")
   
@@ -70,8 +68,8 @@ chronique.figure.depassementscalendaires <- function(
   if(nchar(Titre) == 0) Titre <- contexte$station
   
   ## Ajustement des paramètres en fonction du typemesure ##
-  parametres <- contexte %>% mutate(typemesure = "Piézométrie NGF") %>% chronique.figure.parametres()
-  
+  parametres <- contexte %>% chronique.figure.parametres()
+
   unite <- parametres$unite
   legendeY <- parametres$legendeY
   legendeTitre <- parametres$legendeTitre
@@ -111,6 +109,7 @@ chronique.figure.depassementscalendaires <- function(
     fill = legendeTitre)
   ggplot <- ggplot + scale_x_date(date_labels = "%b", date_breaks = "3 months", minor_breaks = "1 month")
   cols <- structure(c(couleur_superieure, couleur_inferieure), .Names = c(etiquette_superieure, etiquette_inferieure))
+  if(affichagevide == T) ggplot <- ggplot + scale_y_discrete(drop=FALSE) # Afin de conserver toutes les années et que les figures soient avec les mêmes axes Y
   ggplot <- ggplot + scale_fill_manual(values = cols)
   ggplot
     # if(contexte$nannee == 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " année")), size = 2.5)

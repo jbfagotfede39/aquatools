@@ -16,5 +16,6 @@ Reformate les dates selon une année neutre/arbitraire
 }
 \examples{
 formatage.annee.neutre(data)
+mesures_annuelles \%>\% formatage.annee.neutre() \%>\% filter(month(chmes_date_anneeneutre) \%in\% c("6", "7", "8", "9")) 
 }
 \keyword{donnees}

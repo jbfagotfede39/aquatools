@@ -35,7 +35,7 @@ chronique.figure.depassementscalendaires(
 
 \item{seuil_variable}{Type de variable journalière agrégée à utiliser : \code{VMedJ} (par défaut), \code{VMinJ}, \code{VMoyJ}, \code{VMaxJ}, \code{VAmpliJ}, \code{VAmpliSigneJ}, \code{VarJ}, \code{NMesuresJ} ou \code{SommeMoyJ}}
 
-\item{seuil_valeur}{Valeur de seuil à tester (valeur de \code{19} par défaut)}
+\item{seuil_valeur}{Valeur de seuil à tester (valeur de \code{19} par défaut). Le calcul réalise un ≥.}
 
 \item{seuil_limite_exces}{Seuil en-deça duquel les dépassements sont testés par défaut, sinon ils sont testés par excès (valeur de \code{12} par défaut).}
 
@@ -57,8 +57,6 @@ figures. Si \code{TRUE}, les enregistre.}
 \item{projet}{Nom du projet}
 
 \item{format}{Défini le format d'enregistrement (par défaut .png)}
-
-\item{style}{En forme de boxplot (par défaut) ou de violon ou de courbes}
 }
 \description{
 Cette fonction permet de représenter d'éventuels dépassements de valeurs de référence pour des chroniques de mesures (température, niveaux, etc.) sous forme de comparaison interannuelle
