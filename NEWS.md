@@ -1,5 +1,32 @@
 # NEWS - aquatools
 
+
+## 0.0.147
+### Ajouts
+- `chronique.figure.classescalendaires` : 
+  * complément et optimisation du code pour l'option `affichagevide`
+  * ajout de commentaires afin d'organiser le code
+- `chronique.figure.depassementscalendaires` : 
+  * création du code pour l'option `affichagevide`
+  * nettoyage de l'aide
+- `formatage.annee.neutre` : ajout d'un exemple avec filtrage de la période estivale uniquement
+- `SIG.export` : ajout d'un exemple avec renommage du projet avec des undescores
+- `SIG.conversion.dms2dec` : création
+
+### Corrections
+- `chronique.analyse` : 
+  * suppression de la conversion en secondes qui faussait les résultats, car l'unité temporelle est maintenant automatiquement affichée dans la cellule
+  * correction par complément du calcul des dates de début et de fin des épisodes de dépassement les plus longs, donc de la durée qui en est déduite : lorsqu'il y en a plusieurs de même durée, seul l'épisode le plus tardif est conservé (précédemment c'était le début du premier épisode et la fin du dernier épisode qui étaient considérées)
+- `chronique.figure.interannuelle` : correction de l'ajustement des paramètres en fonction du typemesure, qui était forcé
+- `poissons.plansdeau.ofbversteleos` : 
+  * Ajout de volets dans le fichier excel exporté
+  * Conversion en type numérique de la maille, de la taille individuelle/min/max, du poids et de l'effectif du lot pour les captures et coordonnées X et Y pour les settings
+  * Modification de l'appel à `poissons.especes()` afin d'optimiser le temps de traitement
+  * Correction d'une erreur dans la construction du champ des observations de `settings`
+
+### Modifications
+- `chronique.figure.depassementscalendaires` : inversion des couleurs par défaut, afin de coller à la thermie : on personnalisera uniquement pour la piézométrie
+
 ## 0.0.146
 ### Ajouts
 - `df.comparaison.champs` : Création

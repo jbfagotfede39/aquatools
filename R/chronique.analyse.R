@@ -299,9 +299,9 @@ Episodes <-
   AnalyseSeuils %>% 
   rename(EpisodeVmax := !!(quo(episode))) %>% 
   summarise(
-    dureemaxepisodesvmax = sum(!is.na(EpisodeVmax), na.rm = T),
+    dureeepisodevmax = sum(!is.na(EpisodeVmax), na.rm = T),
     nbjepisodesvmax = length(unique(chmes_date[!is.na(EpisodeVmax)]))) %>% 
-  rename(!!paste0('DureeMax',quo_name(episode)) := dureemaxepisodesvmax) %>% 
+  rename(!!paste0('Duree',quo_name(episode)) := dureeepisodevmax) %>% 
   rename(!!paste0('NbJ',quo_name(episode)) := nbjepisodesvmax)
   }
   
@@ -310,9 +310,9 @@ Episodes <-
       AnalyseSeuils %>% 
       rename(EpisodeVmax := !!(quo(episode))) %>% 
       summarise(
-        dureemaxepisodesvmax = sum(!is.na(EpisodeVmax), na.rm = T),
+        dureeepisodevmax = sum(!is.na(EpisodeVmax), na.rm = T),
         nbjepisodesvmax = length(unique(chmes_date[!is.na(EpisodeVmax)]))) %>% 
-      rename(!!paste0('DureeMax',quo_name(episode)) := dureemaxepisodesvmax) %>% 
+      rename(!!paste0('Duree',quo_name(episode)) := dureeepisodevmax) %>% 
       rename(!!paste0('NbJ',quo_name(episode)) := nbjepisodesvmax) %>% 
       bind_cols(Episodes)
   }
@@ -338,14 +338,14 @@ for(i in 1:length(seuils)){
   if(Episodes$nbepisodesvmax != 0){
     Episodes <- 
       Episodes %>% 
-      bind_cols(AnalyseSeuilsTemp %>% filter(!is.na(EpisodeVmax)) %>% group_by(EpisodeVmax) %>% summarise(N = n()) %>% right_join(AnalyseSeuilsTemp, by = "EpisodeVmax") %>% filter(N == max(N, na.rm = T)) %>% summarise(datedebutepisodevmax = first(chmes_datefine), datefinepisodevmax = last(chmes_datefine)) %>% mutate(dureeepisodevmax = (datefinepisodevmax - datedebutepisodevmax)/(3600*24)))
+      bind_cols(AnalyseSeuilsTemp %>% filter(!is.na(EpisodeVmax)) %>% group_by(EpisodeVmax) %>% summarise(N = n()) %>% right_join(AnalyseSeuilsTemp, by = "EpisodeVmax") %>% filter(N == max(N, na.rm = T)) %>% filter(EpisodeVmax == max(EpisodeVmax, na.rm = T)) %>% summarise(datedebutepisodevmax = first(chmes_datefine), datefinepisodevmax = last(chmes_datefine)) %>% mutate(dureemaxepisodesvmax = (datefinepisodevmax - datedebutepisodevmax)))
     }
   if(Episodes$nbepisodesvmax == 0){
     Episodes <- 
       Episodes %>% 
       mutate(datedebutepisodevmax = NA) %>% 
       mutate(datefinepisodevmax = NA) %>% 
-      mutate(dureeepisodevmax = NA)
+      mutate(dureemaxepisodesvmax = NA)
     }
   
   # Renommage final
@@ -354,7 +354,7 @@ for(i in 1:length(seuils)){
     rename(!!paste0('Nb',quo_name(episode)) := nbepisodesvmax) %>% 
     rename(!!paste0('DateD',quo_name(episode)) := datedebutepisodevmax) %>% 
     rename(!!paste0('DateF',quo_name(episode)) := datefinepisodevmax) %>% 
-    rename(!!paste0('Duree',quo_name(episode)) := dureeepisodevmax)
+    rename(!!paste0('DureeMax',quo_name(episode)) := dureemaxepisodesvmax)
 }
 
 # Remise en ordre des champs des épisodes en fonction de l'ordre de saisie des seuils #

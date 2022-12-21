@@ -16,6 +16,7 @@
 #' SIG.export(Stations, glue("{today()}_Export_stations"))
 #' Stations %>% SIG.export("Stations", shp = F, kml = F, excel = F)
 #' Resultats %>% SIG.export(glue("{today()}_Suivi_MI_BV_Bienne"), shp = F, kml = F, excel = F)
+#' Stations %>% SIG.export(glue("{today()}_{str_replace_all(titre, ' ', '_')}"))
 #' DataToAdd %>% st_as_sf(coords = c("XLong", "YLat"), crs = 4269) %>% st_transform(2154) %>% SIG.export("GCL_Bathy_points_bruts")
 
 ##### TODO LIST #####

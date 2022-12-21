@@ -59,6 +59,9 @@ poissons.plansdeau.ofbversteleos <- function(
                                Color_morph = NA, Generation = NA), row.names = c(NA, -1L
                                ), class = c("tbl_df", "tbl", "data.frame"))
   
+  #### Données de référence ####
+  especes <- poissons.especes("Complet")
+  
   #### Importation des données d'entrée ####
   ## Ouverture des fichiers ##
   irstea_campagne <- 
@@ -102,7 +105,7 @@ poissons.plansdeau.ofbversteleos <- function(
     by = c("Type_Engin"))
   
   #### Transformation pour settings ####
-  irstea_settings_v2 <- 
+  # irstea_settings_v2 <- 
     irstea_settings %>% 
     rename(Fishec_Action = Num_Pose) %>% 
     formatage.ecosysteme(Operation = "Simplification", ColonneEntree = "NOM_CARTHAGE", ColonneSortie = "temporaire") %>% 
@@ -120,8 +123,8 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate('Depth_Min(m)' = round(as.numeric(sub(",", ".", Prof_Mini)), 2)) %>% 
     mutate('Depth_Max(m)' = round(as.numeric(sub(",", ".", Prof_Maxi)), 2)) %>% 
     mutate(Depth_pelagic = NA_character_) %>% 
-    rename(Coordinates_start_E = Abscisse) %>% 
-    rename(Coordinates_start_N = Ordonnee) %>% 
+    mutate(Coordinates_start_E = as.numeric(sub(",", ".", Abscisse))) %>% 
+    mutate(Coordinates_start_N = as.numeric(sub(",", ".", Ordonnee))) %>% 
     mutate(WP = NA_character_) %>% 
     mutate(GPS = NA_character_) %>% 
     mutate(Coord_format = projection) %>%
@@ -131,7 +134,7 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(Fishing_Quality = glue("{Maille_Kaput} maille(s) abîmée(s)")) %>%
     mutate(Habitat_1 = NA_character_) %>% 
     mutate(Habitat_2 = NA_character_) %>% 
-    mutate(Observation = ifelse(is.na(Observation), "", glue("{ - Observation}"))) %>%
+    mutate(Observation = ifelse(is.na(Observation), "", glue(" - {Observation}"))) %>%
     mutate(Observation = glue("Météo : {Meteo}{Observation}")) %>% 
     mutate('Extra_VNet(m)' = NA_real_) %>% 
     mutate('Length_Elec(m)' = NA_real_) %>% 
@@ -255,22 +258,22 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(Fishec_Num = NA_character_) %>% 
     mutate(Database_Num = NA_character_) %>% 
     mutate(Operator = NA_character_) %>% 
-    rename(Meshmm = Maille) %>% 
+    mutate(Meshmm = as.numeric(sub(",", ".", Maille))) %>% 
     mutate(Taxa_Code = Code_Taxon) %>% 
-    left_join(poissons.especes("Propre") %>% select(Code, `Nom latin`), by = c("Taxa_Code" = "Code")) %>% 
+    left_join(especes %>% select(Code, `Nom latin`), by = c("Taxa_Code" = "Code")) %>% 
     rename(Taxa_Latin = `Nom latin`) %>% 
     mutate(Taxa_Latin = ifelse(is.na(Taxa_Code), NA_character_, Taxa_Latin)) %>% 
-    mutate(Lengthmm = Taille_Indiv) %>% 
-    mutate(Weightg = Pds_Lot) %>% 
+    mutate(Lengthmm = as.numeric(Taille_Indiv)) %>% 
+    mutate(Weightg = as.numeric(sub(",", ".", Pds_Lot))) %>% 
     mutate(Weight_origin = case_when(Estim_Pds == 0 ~ "Inconnue",
                                      Estim_Pds == 1 ~ "Réelle",
                                      Estim_Pds == 2 ~ "Estimé",
                                      Estim_Pds == 3 ~ "Estimé autre point")
     ) %>%
-    mutate(Eff_Lot = Eff_Lot) %>% 
+    mutate(Eff_Lot = as.numeric(Eff_Lot)) %>% 
     mutate(Type_Lot = Type_Lot) %>% 
-    mutate(Length_Min = Taille_Min) %>% 
-    mutate(Length_Max = Taille_Max) %>% 
+    mutate(Length_Min = as.numeric(Taille_Min)) %>% 
+    mutate(Length_Max = as.numeric(Taille_Max)) %>% 
     mutate(Type_Long = ifelse(is.na(Type_Long), "", Type_Long)) %>%
     mutate(Observation = glue("Type longueur : {Type_Long}")) %>% 
     mutate(Field_Num = NA_character_) %>% 
@@ -288,8 +291,8 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(Last_mod_user = NA_character_) %>% 
     mutate(Last_mod_dt = NA_character_) %>% 
     mutate(Local_name = NA_character_) %>% 
-    left_join(poissons.especes("Complet") %>% select(codeespece, latingenre), by = c("Taxa_Code" = "codeespece")) %>% 
-    left_join(poissons.especes("Complet") %>% select(codeespece, latinespece), by = c("Taxa_Code" = "codeespece")) %>% 
+    left_join(especes %>% select(codeespece, latingenre), by = c("Taxa_Code" = "codeespece")) %>% 
+    left_join(especes %>% select(codeespece, latinespece), by = c("Taxa_Code" = "codeespece")) %>% 
     rename(Genus = latingenre) %>% 
     rename(Species = latinespece) %>% 
     mutate(Genus = ifelse(is.na(Taxa_Code), NA_character_, Genus)) %>% 
@@ -320,7 +323,16 @@ poissons.plansdeau.ofbversteleos <- function(
   
   #### Exportation ####
   nomfichier <- sub('\\..*$', '', basename(data))
-  l <- list(setting = irstea_settings_v2, fish = irstea_poisson_v2)
-  openxlsx::write.xlsx(l, file = glue("{nomfichier}_format_import_Multifish.xlsx"))
+  
+  resultats_poissons <- createWorkbook()
+  addWorksheet(resultats_poissons, sheetName = "setting")
+  addWorksheet(resultats_poissons, sheetName = "fish")
+  writeData(resultats_poissons, "setting", irstea_settings_v2, startCol = 1, startRow = 1, colNames = T) # writing content on the left-most column to be merged
+  writeData(resultats_poissons, "fish", irstea_poisson_v2, startCol = 1, startRow = 1, colNames = T) # writing content on the left-most column to be merged
+  freezePane(resultats_poissons, "setting", firstRow = TRUE) ## shortcut to firstActiveRow = 2
+  freezePane(resultats_poissons, "fish", firstRow = TRUE) ## shortcut to firstActiveRow = 2
+  
+  saveWorkbook(resultats_poissons, glue("{nomfichier}_format_import_Multifish.xlsx"), overwrite = T) # save workbook
+  
   
 } # Fin de la fonction
