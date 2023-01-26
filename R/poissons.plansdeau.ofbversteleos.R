@@ -6,6 +6,7 @@
 #' @keywords poissons
 #' @export
 #' @import glue
+#' @import openxlsx
 #' @import tidyverse
 #' @importFrom dplyr select
 #' @importFrom dplyr setdiff
@@ -105,12 +106,11 @@ poissons.plansdeau.ofbversteleos <- function(
     by = c("Type_Engin"))
   
   #### Transformation pour settings ####
-  # irstea_settings_v2 <- 
+  irstea_settings_v2 <-
     irstea_settings %>% 
     rename(Fishec_Action = Num_Pose) %>% 
     formatage.ecosysteme(Operation = "Simplification", ColonneEntree = "NOM_CARTHAGE", ColonneSortie = "temporaire") %>% 
     mutate(temporaire = str_to_sentence(temporaire)) %>% 
-    # mutate(Fishec_Action = ifelse(Fishec_Action == "1", glue("{temporaire}_00{Fishec_Action}"), Fishec_Action)) %>% 
     mutate(Fishec_Action = glue("{temporaire}_00{Fishec_Action}")) %>% 
     select(-temporaire) %>% 
     rename(Operator = CdIntervenantResponsable) %>% 
@@ -128,8 +128,13 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(WP = NA_character_) %>% 
     mutate(GPS = NA_character_) %>% 
     mutate(Coord_format = projection) %>%
-    mutate(Date_Setting = ymd("1899-12-30") + as.numeric(Date_Pose)) %>% 
-    mutate(Date_Fishing = ymd("1899-12-30") + as.numeric(Date_Releve)) %>% 
+    {if(testit::has_warning(mutate(., Date_Setting = ymd(Date_Pose))) == FALSE) mutate(., Date_Setting = ymd(Date_Pose), .before = c(1)) else .} %>%
+    {if(!("Date_Setting" %in% names(.))) mutate(., Date_Setting = ymd("1899-12-30") + as.numeric(Date_Pose), .before = c(1)) else .} %>%
+    {if(testit::has_warning(mutate(., Date_Fishing = ymd(Date_Pose))) == FALSE) mutate(., Date_Fishing = ymd(Date_Releve), .before = c(1)) else .} %>%
+    {if(!("Date_Fishing" %in% names(.))) mutate(., Date_Fishing = ymd("1899-12-30") + as.numeric(Date_Releve), .before = c(1)) else .} %>%
+    # {if (testit::has_warning(ymd(irstea_settings$Date_Setting))) mutate(., Date_Setting = ymd(.$Date_Setting)) else .} %>%
+    # mutate(Date_Setting = ymd("1899-12-30") + as.numeric(Date_Pose)) %>% 
+    # mutate(Date_Fishing = ymd("1899-12-30") + as.numeric(Date_Releve)) %>% 
     mutate(Maille_Kaput = ifelse(is.na(Maille_Kaput), 0, Maille_Kaput)) %>%
     mutate(Fishing_Quality = glue("{Maille_Kaput} maille(s) abîmée(s)")) %>%
     mutate(Habitat_1 = NA_character_) %>% 
@@ -146,8 +151,12 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(Created_dt = NA_character_) %>% 
     mutate(Last_mod_dt = NA_character_) %>% 
     mutate(Last_mod_user = NA_character_) %>% 
-    mutate(Time_Picking = format(ymd_hms(glue("{Date_Fishing} 00:00:00")) + seconds(as.numeric(Heure_Releve) * 24 * 3600), format="%H:%M:%S")) %>% 
-    mutate(Time_Setting = format(ymd_hms(glue("{Date_Setting} 00:00:00")) + seconds(as.numeric(Heure_Pose) * 24 * 3600), format="%H:%M:%S")) %>% 
+    {if("character" %in% class(irstea_settings$Heure_Releve)) mutate(., Time_Picking = format(ymd_hms(glue("{Date_Fishing} 00:00:00")) + seconds(as.numeric(Heure_Releve) * 24 * 3600), format="%H:%M:%S"), .before = c(1)) else .} %>%
+    {if("character" %in% class(irstea_settings$Heure_Releve)) mutate(., Time_Setting = format(ymd_hms(glue("{Date_Setting} 00:00:00")) + seconds(as.numeric(Heure_Pose) * 24 * 3600), format="%H:%M:%S"), .before = c(1)) else .} %>%
+    {if(!("Time_Picking" %in% names(.))) mutate(., Time_Picking_format_date = ymd_hms(as.character(Heure_Releve)), .before = c(1)) else .} %>%
+    {if(!("Time_Picking" %in% names(.))) mutate(., Time_Picking = as.character(format(Time_Picking_format_date, format="%H:%M:%S")), .before = c(1)) else .} %>% 
+    {if(!("Time_Setting" %in% names(.))) mutate(., Time_Setting_format_date = ymd_hms(as.character(Heure_Pose)), .before = c(1)) else .} %>%
+    {if(!("Time_Setting" %in% names(.))) mutate(., Time_Setting = as.character(format(Time_Setting_format_date, format="%H:%M:%S")), .before = c(1)) else .} %>% 
     rename(Project = Code_Lac) %>% 
     mutate(Location2 = NA_character_) %>% 
     mutate(Location3 = NA_character_) %>% 
@@ -209,42 +218,53 @@ poissons.plansdeau.ofbversteleos <- function(
     pull()
   
   #### Transformation pour fish ####
+  ### Filtrage des captures vides ###
+  irstea_poisson <-
+    irstea_poisson %>% 
+    filter(!is.na(Num_Pose))
+  
   ### Transformation des lots I en lots G
   lots_a_calculer_tailles_min_max <-
     irstea_poisson %>% 
     filter(Type_Lot == "I") #%>% 
     # filter(is.na(Pds_Lot))
   
-  if(lots_a_calculer_tailles_min_max %>% nrow() > 0) warning("Attention : les lots I ont été regroupés en lots G afin de n'avoir qu'une taille min et une taille max par lot")
+  if(lots_a_calculer_tailles_min_max %>% nrow() > 0){
+    warning("Attention : les lots I ont été regroupés en lots G afin de n'avoir qu'une taille min et une taille max par lot")
+    
+    lots_calcules_tailles_min_max <-
+      lots_a_calculer_tailles_min_max %>% 
+      group_by(Ident_Lot, Code_Taxon) %>% 
+      summarise(Taille_Min_bis = min(Taille_Indiv),
+                Taille_Max_bis = max(Taille_Indiv)) %>% 
+      ungroup() %>%
+      mutate(cle = glue("{Ident_Lot}_{Code_Taxon}")) %>% 
+      select(-Ident_Lot, -Code_Taxon) %>% 
+      left_join(irstea_poisson %>% 
+                  filter(Type_Lot == "I") %>% 
+                  filter(!is.na(Pds_Lot)) %>% 
+                  mutate(cle = glue("{Ident_Lot}_{Code_Taxon}")),
+                by = c("cle")) %>% 
+      mutate(Taille_Min = Taille_Min_bis) %>% 
+      mutate(Taille_Max = Taille_Max_bis) %>% 
+      mutate(Taille_Indiv = NA) %>% 
+      mutate(Type_Lot = "G") %>% 
+      select(match(names(lots_a_calculer_tailles_min_max), names(.)))
+    
+    irstea_poisson_recalcule <- 
+      irstea_poisson %>% 
+      setdiff(lots_a_calculer_tailles_min_max) %>% 
+      union(lots_calcules_tailles_min_max)
+    
+    ### Vérifications ###
+    n_original <- irstea_poisson %>% summarise(total = sum(as.numeric(Eff_Lot), na.rm = T)) %>% pull() # Les individus des lots I sont déjà dénombrés dans les lots, donc on peut supprimer les NA des lignes individuelles
+    n_recalcule <- irstea_poisson_recalcule %>% summarise(total = sum(as.numeric(Eff_Lot))) %>% pull()
+    if(n_original != n_recalcule) stop("Il y a une différence d'effectif total des captures après le recalcul des lots I en lots G")
+  }
   
-  lots_calcules_tailles_min_max <-
-    lots_a_calculer_tailles_min_max %>% 
-    group_by(Ident_Lot, Code_Taxon) %>% 
-    summarise(Taille_Min_bis = min(Taille_Indiv),
-              Taille_Max_bis = max(Taille_Indiv)) %>% 
-    ungroup() %>%
-    mutate(cle = glue("{Ident_Lot}_{Code_Taxon}")) %>% 
-    select(-Ident_Lot, -Code_Taxon) %>% 
-    left_join(irstea_poisson %>% 
-                filter(Type_Lot == "I") %>% 
-                filter(!is.na(Pds_Lot)) %>% 
-                mutate(cle = glue("{Ident_Lot}_{Code_Taxon}")),
-              by = c("cle")) %>% 
-    mutate(Taille_Min = Taille_Min_bis) %>% 
-    mutate(Taille_Max = Taille_Max_bis) %>% 
-    mutate(Taille_Indiv = NA) %>% 
-    mutate(Type_Lot = "G") %>% 
-    select(match(names(lots_a_calculer_tailles_min_max), names(.)))
-  
-  irstea_poisson_recalcule <- 
-    irstea_poisson %>% 
-    setdiff(lots_a_calculer_tailles_min_max) %>% 
-    union(lots_calcules_tailles_min_max)
-  
-  ### Vérifications ###
-  n_original <- irstea_poisson %>% summarise(total = sum(as.numeric(Eff_Lot), na.rm = T)) %>% pull() # Les individus des lots I sont déjà dénombrés dans les lots, donc on peut supprimer les NA des lignes individuelles
-  n_recalcule <- irstea_poisson_recalcule %>% summarise(total = sum(as.numeric(Eff_Lot))) %>% pull()
-  if(n_original != n_recalcule) stop("Il y a une différence d'effectif total des captures après le recalcul des lots I en lots G")
+  if(lots_a_calculer_tailles_min_max %>% nrow() == 0){
+    irstea_poisson_recalcule <- irstea_poisson
+  }
   
   ### Regroupement ###
   irstea_poisson_v2 <- 
@@ -260,8 +280,8 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(Operator = NA_character_) %>% 
     mutate(Meshmm = as.numeric(sub(",", ".", Maille))) %>% 
     mutate(Taxa_Code = Code_Taxon) %>% 
-    left_join(especes %>% select(Code, `Nom latin`), by = c("Taxa_Code" = "Code")) %>% 
-    rename(Taxa_Latin = `Nom latin`) %>% 
+    left_join(especes %>% select(codeespece, nomlatin), by = c("Taxa_Code" = "codeespece")) %>% 
+    rename(Taxa_Latin = nomlatin) %>% 
     mutate(Taxa_Latin = ifelse(is.na(Taxa_Code), NA_character_, Taxa_Latin)) %>% 
     mutate(Lengthmm = as.numeric(Taille_Indiv)) %>% 
     mutate(Weightg = as.numeric(sub(",", ".", Pds_Lot))) %>% 
@@ -309,16 +329,16 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(Fish_origin = NA_character_) %>% 
     mutate(Color_morph = NA_character_) %>% 
     mutate(Generation = NA_character_) %>% 
-    select(match(colnames(teleos_fish), names(.))) %>% 
     mutate(Observation = ifelse(is.na(Taxa_Code), "action_without_fish", Observation)) %>%  # filets sans captures
     mutate(Weight_origin = ifelse(is.na(Taxa_Code), NA_character_, Weight_origin)) %>%  # filets sans captures
     mutate(Sex = ifelse(is.na(Taxa_Code), NA_character_, Sex)) %>%  # filets sans captures
-    mutate(Maturity = ifelse(is.na(Taxa_Code), NA_character_, Maturity)) # filets sans captures
+    mutate(Maturity = ifelse(is.na(Taxa_Code), NA_character_, Maturity)) %>% # filets sans captures
+    select(match(colnames(teleos_fish), names(.)))
   
   #### Tests de cohérence ####
   if(irstea_settings_v2 %>% filter(Type_Fishing == "Autres") %>% nrow() > 0) stop("Présence de types d'engin non définis")
   if(irstea_settings_v2 %>% filter(is.na(Num_Net)) %>% nrow() > 0) stop("Présence de filets non nommés")
-  if(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_poisson_v2$Fishec_Action)) %>% nrow() > 0) stop("Présence d'actions de pêche sans capture (ou capture vide) en face")
+  if(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_poisson_v2$Fishec_Action)) %>% nrow() > 0) warning("Présence d'actions de pêche sans capture (ou capture vide) en face")
   if(irstea_poisson_v2 %>% filter(!(Fishec_Action %in% irstea_settings_v2$Fishec_Action)) %>% nrow() > 0) stop("Présence de capture (ou capture vide) sans action de pêche en face")
   
   #### Exportation ####

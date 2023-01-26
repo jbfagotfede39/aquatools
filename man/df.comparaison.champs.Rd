@@ -12,7 +12,7 @@ df.comparaison.champs(data_1, data_2)
 \item{data_2}{Jeu de données 2 à comparer}
 }
 \description{
-Cette fonction permet de comparer les champs présents dans deux dataframes
+Cette fonction permet de comparer les champs présents dans deux dataframes (noms et datatypes)
 }
 \examples{
 df.comparaison.champs(data_1, data_2)

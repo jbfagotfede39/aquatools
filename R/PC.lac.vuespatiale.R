@@ -76,7 +76,7 @@ PC.lac.vuespatiale <- function(
 
   #### Représentations ####
   gg <- ggplot()
-  gg <- gg + geom_sf(data = ContourPlandeau)
+  gg <- gg + geom_sf(data = contourplandeau)
   gg <- gg + geom_sf(data = datafiltrees, aes(color = pcmes_valeur))
   
   ### Légende ###

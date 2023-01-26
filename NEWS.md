@@ -1,6 +1,20 @@
 # NEWS - aquatools
 
 
+## 0.0.148
+### Ajouts
+- `df.comparaison.champs` : ajout d'une comparaison des datatypes des dataframes
+
+### Corrections
+- `PC.lac.vuespatiale` : 
+  * Correction du nom de variable `ContourPlandeau` en `contourplandeau` conformément à la déclaration en début de fonction
+- `poissons.plansdeau.ofbversteleos` : 
+  * Filtrage des lignes de captures potentiellement importées mais vides
+  * Correction automatique des formats de date et d'heure de pose et de relève
+  * Ajout d'un test d'aiguillage vers le regroupement des lots I en lots G
+  * Ajout de la dépendance à `openxlsx`
+  * Remplacement d'un `stop` par un `warning` concernant `Présence d'actions de pêche sans capture (ou capture vide) en face`
+
 ## 0.0.147
 ### Ajouts
 - `chronique.figure.classescalendaires` : 
