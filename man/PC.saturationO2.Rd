@@ -15,6 +15,6 @@ Cette fonction permet de calculer des saturations en oxygène à partir des chro
 \examples{
 PC.saturationO2(data)
 dataaimporter \%>\% PC.saturationO2()
-# Calcul à partir de https://projects.ncsu.edu/cals/course/zo419/oxygen.html
+# Calcul à partir de https://mdm.sandre.eaufrance.fr/node/414781
 }
 \keyword{Physico-chimie}

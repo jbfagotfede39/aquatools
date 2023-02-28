@@ -1,6 +1,16 @@
 # NEWS - aquatools
 
 
+## 0.0.149
+### Ajouts
+- `chronique.figure.classescalendaires` : ajout d'un test de vérification qu'on a bien des données journalières en entrée
+- `PC.concentrationO2` : création
+
+### Corrections
+- `PC.saturationO2` : modification du mode de calcul car source initiale indisponible en ligne, remplacement par SANDRE (close #76)
+- `poissons.plansdeau.ofbversteleos` : 
+  * Ajout d'un ré-encodage des types de filets CEN et du test de bon traitement associé
+
 ## 0.0.148
 ### Ajouts
 - `df.comparaison.champs` : ajout d'une comparaison des datatypes des dataframes

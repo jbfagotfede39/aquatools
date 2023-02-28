@@ -9,14 +9,14 @@
 #' @examples
 #' PC.saturationO2(data)
 #' dataaimporter %>% PC.saturationO2()
-#' # Calcul à partir de https://projects.ncsu.edu/cals/course/zo419/oxygen.html
+#' # Calcul à partir de https://mdm.sandre.eaufrance.fr/node/414781
 
 PC.saturationO2 <- function(data)
 {
   # Calcul
   data <- 
     data %>% 
-    mutate(O2sat = 14.59 - 0.3955*Thermie + 0.0072*Thermie^2 - 0.0000619*Thermie^3) %>% 
+    mutate(O2sat = 14.64 - 0.4227*Thermie + 0.009937*Thermie^2 - 0.0001575*Thermie^3 + 0.000001125*Thermie^4) %>% 
     mutate(Saturation = Concentration/O2sat*100) %>% 
     dplyr::select(-O2sat)
   

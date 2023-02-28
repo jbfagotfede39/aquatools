@@ -97,9 +97,14 @@ poissons.plansdeau.ofbversteleos <- function(
   #### Regroupement des tables IRSTEA ####
   irstea_settings <-
     irstea_point_pose %>% 
+    mutate(Type_Engin = case_when(Type_Engin == "B" ~ "FB",
+                                  Type_Engin == "P" ~ "FP", 
+                                  TRUE ~ Type_Engin
+    )) %>% 
     mutate(CodeOperation = 1) %>% 
     left_join(irstea_campagne %>% mutate(CodeOperation = 1), by = c("CodeOperation")) %>% 
-    left_join(irstea_caract_engin %>% mutate(Type_Engin = case_when(Nom_Engin == "Filet benthique mult-imailles CEN" ~ "FB",
+    left_join(irstea_caract_engin %>% mutate(Type_Engin = case_when(Nom_Engin == "Filet benthique multi-mailles CEN" ~ "FB",
+                                                                    Nom_Engin == "Filet benthique mult-imailles CEN" ~ "FB",
                                                                   Nom_Engin == "Filet pélagique multi-mailles CEN" ~ "FP",
                                                                   TRUE ~ "Autres")
     ),
@@ -179,9 +184,10 @@ poissons.plansdeau.ofbversteleos <- function(
     mutate(Net_depth_OUT = NA_character_) %>% 
     formatage.ecosysteme(Operation = "Simplification", ColonneEntree = "Location1", ColonneSortie = "Location1") %>% 
     formatage.ecosysteme(Operation = "Expansion", ColonneEntree = "Location1", ColonneSortie = "Location1") %>% 
-    mutate(Type_Fishing = case_when(Type_Fishing == "Filet benthique mult-imailles CEN" ~ "CEN_benthic_net",
-                                    Type_Fishing == "Filet benthique multi-mailles CEN" ~ "CEN_benthic_net",
-                                    Type_Fishing == "Filet pélagique multi-mailles CEN" ~ "CEN_pelagic_net"
+    mutate(Type_Fishing = case_when(Type_Fishing == "Filet benthique multi-mailles CEN" ~ "CEN_benthic_net",
+                                    Type_Fishing == "Filet benthique mult-imailles CEN" ~ "CEN_benthic_net",
+                                    Type_Fishing == "Filet pélagique multi-mailles CEN" ~ "CEN_pelagic_net",
+                                    TRUE ~ "Autres"
     )) %>% 
     mutate('Depth_Range(m)' = case_when('Depth_Range(m)' == "0" ~ "Inconnu",
                                         'Depth_Range(m)' == "1" ~ "0-3",
@@ -336,6 +342,7 @@ poissons.plansdeau.ofbversteleos <- function(
     select(match(colnames(teleos_fish), names(.)))
   
   #### Tests de cohérence ####
+  if(irstea_settings %>% filter(!grepl("FB|FP", Type_Engin)) %>% nrow() > 0) stop("Présence de types d'engin CEN autres que FP ou FB")
   if(irstea_settings_v2 %>% filter(Type_Fishing == "Autres") %>% nrow() > 0) stop("Présence de types d'engin non définis")
   if(irstea_settings_v2 %>% filter(is.na(Num_Net)) %>% nrow() > 0) stop("Présence de filets non nommés")
   if(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_poisson_v2$Fishec_Action)) %>% nrow() > 0) warning("Présence d'actions de pêche sans capture (ou capture vide) en face")

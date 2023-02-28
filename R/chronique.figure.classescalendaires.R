@@ -55,6 +55,9 @@ chronique.figure.classescalendaires <- function(
   # Test des typemesure
   if(contexte$ntypemesure > 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
 
+  # Test du format en entrée
+  if("chmes_heure" %in% names(data)) stop("Données agrégées au format journalier nécessaires en entrée")
+
   #### Paramètres ####
   ## Titre
   if(nchar(Titre) == 0) Titre <- contexte$station
