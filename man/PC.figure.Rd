@@ -15,5 +15,6 @@ Cette fonction permet de représenter des pcmes_valeurs physico-chimiques
 \examples{
 PC.figure(PC)
 PC \%>\% PC.figure()
-spNitrates <- ChimieOrg \%>\% filter(ParametreNom == Parametre[3]) \%>\% PC.figure()
+spNitrates <- ChimieOrg \%>\% filter(pcmes_parametrenom == "Nitrates") \%>\% PC.figure()
+spNitrates <- ChimieOrg \%>\% filter(pcmes_parametresandre == 1340) \%>\% PC.figure()
 }
