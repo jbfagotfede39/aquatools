@@ -105,9 +105,12 @@ Parametres <-
   gather("Champ", "Contenu","Date":"pH") %>%
   distinct()
 
-  if(nrow(Parametres) != 0){Parametres <- 
+  if(nrow(Parametres) != 0){
+  Parametres <- 
     Parametres %>% 
-    dplyr::na_if(0)}
+     mutate(across(where(is.character), ~na_if(., "0"))) %>% 
+      mutate(across(where(is.numeric), ~na_if(., 0)))
+  }
   
 tabParametres <- xtable(Parametres)
 addtorow <- list()
@@ -162,9 +165,12 @@ temporaire <-
     select(nom, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, nombretotalcaptures, densitenumeriquebrute, biomassetotalecapturee, densiteponderalebrute) %>% 
     arrange(desc(nom))
   
-  if(nrow(Bruts) != 0){Bruts <- 
-    Bruts %>% 
-    dplyr::na_if(0)}
+  if(nrow(Bruts) != 0){
+    Bruts <- 
+      Bruts %>% 
+      mutate(across(where(is.character), ~na_if(., "0"))) %>% 
+      mutate(across(where(is.numeric), ~na_if(., 0)))
+  }
 
 colnames(Bruts)<-c("","Espèce","P1","P2","P3","Nb total","Ind/10a", "Biomasse (g)", "g/ha")
 tabBruts <- xtable(Bruts,caption = "Résultats bruts")
@@ -233,9 +239,12 @@ Resultats %>%
       intervalleconfiancedensitenum < 25 ~ paste0("\\color[HTML]{FFCC10}", densiteponderaleestimee),
       intervalleconfiancedensitenum > 25 ~ paste0("\\color[HTML]{FF5510}", densiteponderaleestimee)))%>% 
   select(nom, codeespece, n_sommecapturepassage1, n_sommecapturepassage2, n_sommecapturepassage3, estimationeffectifnumerique, densitenumeriqueestimee , estimationeffectifponderal, densiteponderaleestimee,  coteabondancenumerique, coteabondanceponderale)  
-    if(nrow(Elabores) != 0){Elabores <- 
-    Elabores %>% 
-    dplyr::na_if(0)}
+  if(nrow(Elabores) != 0){
+    Elabores <- 
+      Elabores %>% 
+      mutate(across(where(is.character), ~na_if(., "0"))) %>% 
+      mutate(across(where(is.numeric), ~na_if(., 0)))
+    }
   
   
 colnames(Elabores)<-c("","Espèce","P1","P2","P3","Eff. est.","Ind/10a","Biom. est. (g)","g/ha", "CAN", "CAP")
