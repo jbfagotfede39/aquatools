@@ -15,7 +15,7 @@ chronique.ouverture(
   skipvalue = 9,
   nbcolonnes = 2,
   typefichier = c(".csv", "excel", "Interne"),
-  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
+  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel",
     "miniDOTregroupe", "EDF", "RuggedTROLL"),
   formatmacmasalmo = F
@@ -36,7 +36,7 @@ chronique.ouverture(
 
 \item{typefichier}{Type de fichier : \code{.csv} (par défaut) ou \code{excel} ou \code{Interne}}
 
-\item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)}
+\item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm, mdy_hms, mdy_hm ou ymd_hms)}
 
 \item{typecapteur}{Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)}
 

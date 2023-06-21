@@ -28,14 +28,22 @@ BDD.ouverture <- function(
   Type <- match.arg(Type)
 
   #### Version serveur ou version client classique ####
-  ### RStudio server ###
+  ### r-ftp - VM172 - #2011 ###
+  if(system('uname -n',intern=T) == "r-ftp"){
+    if(grepl(system('lsb_release -d',intern=T) %>% 
+            str_replace("Description:\tUbuntu ", "") %>% 
+            str_replace(" LTS", ""), "22.04.2", fixed = TRUE)){
+      client <- "serveur"}
+  }
+
+  ### RStudio server - VM103 - #61 ###
   if(system('uname -n',intern=T) == "rstudio-server"){
     if(grepl(system('lsb_release -d',intern=T) %>% 
             str_replace("Description:\tUbuntu ", "") %>% 
             str_replace(" LTS", ""), "20.04.1", fixed = TRUE)){
       client <- "serveur"}
   }
-  ### Shiny server ###
+  ### Shiny server - VM100 - #170 ###
   if(system('uname -n',intern=T) == "postgis"){
     if(grepl(system('lsb_release -d',intern=T) %>% 
              str_replace("Description:\tUbuntu ", "") %>% 
@@ -81,7 +89,8 @@ BDD.ouverture <- function(
     if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){utilisateur <- "quentin"}
     if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){utilisateur <- "quentin"}
     if(system('uname -n',intern=T) == "postgis" & client == "serveur"){utilisateur <- "automate"}
-    if(system('uname -n',intern=T) == "postgis" & client == "shinyserver" & system('whoami',intern=T) == "ubuntu") utilisateur <- "appshiny"
+    if(system('uname -n',intern=T) == "postgis" & client == "shinyserver" & system('whoami', intern=T) == "ubuntu") utilisateur <- "appshiny"
+    if(system('uname -n',intern=T) == "r-ftp" & client == "serveur"){utilisateur <- "automate"}
   }
   
 if(is.na("utilisateur") == TRUE){
@@ -90,9 +99,6 @@ if(is.na("utilisateur") == TRUE){
   if(client == "serveur" & system('whoami',intern=T) == "ubuntu") utilisateur <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
   }
 
-  #### Vérification présence mot de passe ####
-  if(client == "serveur" & is.na(motdepasse)) stop("Pas de mot de passe portefeuille keyring fourni alors que nécessaire")
-  
 #### Création de la connexion ####
 ## Si utilisateur connu ##
 if(!is.na(utilisateur)){
@@ -103,7 +109,7 @@ if(!is.na(utilisateur)){
   if(Type == "Data"){
     if(is.na(motdepasse)){
       if(client == "machineordinaire") motdepasse <- keyring::key_get("eaux-jura-sig-data", username = utilisateur)
-      if(client == "serveur") motdepasse <- motdepasse
+      if(client == "serveur") motdepasse <- NULL # Le mot de passe sera recherché dans le .pgpass
       if(client == "shinyserver"){
         fileName <- '/srv/shiny-server/conf.txt'
         motdepasse <- readChar(fileName, file.info(fileName)$size-1)

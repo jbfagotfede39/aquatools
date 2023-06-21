@@ -32,12 +32,14 @@ chronique.cle <- function(
     {if("chmes_coderhj" %in% colnames(.)) mutate(., coderhj = chmes_coderhj) else .} %>% 
     {if("chmesgr_coderhj_id" %in% colnames(.)) mutate(., coderhj = chmesgr_coderhj_id) else .} %>% 
     {if("chsta_coderhj" %in% colnames(.)) mutate(., coderhj = chsta_coderhj) else .} %>% 
+    {if("chsvi_coderhj" %in% colnames(.)) mutate(., coderhj = chsvi_coderhj) else .} %>% 
     {if("chres_coderhj" %in% colnames(.)) mutate(., coderhj = chres_coderhj) else .} %>% 
     {if("Coderhj" %in% colnames(.)) mutate(., coderhj = Coderhj) else .} %>% 
     # Type de mesures
     {if("chmes_typemesure" %in% colnames(.)) mutate(., typemesure = chmes_typemesure) else .} %>% 
     {if("chmesgr_typemesure" %in% colnames(.)) mutate(., typemesure = chmesgr_typemesure) else .} %>% 
     {if("chres_typemesure" %in% colnames(.)) mutate(., typemesure = chres_typemesure) else .} %>% 
+    {if("chsvi_typemesure" %in% colnames(.)) mutate(., typemesure = chsvi_typemesure) else .} %>% 
     {if("Typemesure" %in% colnames(.)) mutate(., typemesure = Typemesure) else .} %>% 
     # Année
     # {if("chres_anneevmm" %in% colnames(.)) mutate(., annee = chres_anneevmm) else .} %>% # Basée sur l'année de VMM (mais parfois deux même année VMM lors de la présence d'un morceau d'année qui s'arrête en février)
@@ -54,8 +56,11 @@ chronique.cle <- function(
     # Heure
     {if("chmes_date" %in% colnames(.)) mutate(., date = chmes_date) else .} %>% 
     {if("chmes_heure" %in% colnames(.)) mutate(., heure = chmes_heure) else .} %>% 
+    {if("chsvi_date" %in% colnames(.)) mutate(., date = chsvi_date) else .} %>% 
+    {if("chsvi_heure" %in% colnames(.)) mutate(., heure = chsvi_heure) else .} %>% 
     # Unité 
-    {if("chmes_unite" %in% colnames(.)) mutate(., unite = chmes_unite) else .}
+    {if("chmes_unite" %in% colnames(.)) mutate(., unite = chmes_unite) else .} %>% 
+    {if("chsvi_unite" %in% colnames(.)) mutate(., unite = chsvi_unite) else .}
 
   #### Création des données manquantes ####
   if(grepl("A", formatcle, fixed=TRUE) & ("annee" %in% colnames(datarenomees) == FALSE)) warning("Attention il n'y a pas de champs annee dans les données d'entrée")

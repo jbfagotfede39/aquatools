@@ -9,7 +9,7 @@
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param nbcolonnes Nombre de colonnes concernées
 #' @param typefichier Type de fichier : \code{.csv} (par défaut) ou \code{excel} ou \code{Interne}
-#' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm ou ymd_hms)
+#' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm, mdy_hms, mdy_hm ou ymd_hms)
 #' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
@@ -30,7 +30,7 @@ chronique.ouverture <- function(
   skipvalue = 9,
   nbcolonnes = 2,
   typefichier = c(".csv", "excel", "Interne"),
-  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "ymd_hms"),
+  typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL"),
   formatmacmasalmo = F
 )
@@ -116,6 +116,20 @@ if(testit::has_warning(dmy_hms(dataaimporter$DateHeure)) == FALSE & typedate == 
   dataaimporter <-
     dataaimporter %>% 
     mutate(DateHeure = dmy_hms(DateHeure)) %>% 
+    mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
+    mutate(Heure = format(DateHeure, format="%H:%M:%S"))
+}
+if(testit::has_warning(mdy_hms(dataaimporter$DateHeure)) == FALSE & typedate == "mdy_hms"){
+  dataaimporter <-
+    dataaimporter %>% 
+    mutate(DateHeure = mdy_hms(DateHeure)) %>% 
+    mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
+    mutate(Heure = format(DateHeure, format="%H:%M:%S"))
+}
+if(testit::has_warning(mdy_hm(dataaimporter$DateHeure)) == FALSE & typedate == "mdy_hm"){
+  dataaimporter <-
+    dataaimporter %>% 
+    mutate(DateHeure = mdy_hm(DateHeure)) %>% 
     mutate(Date = format(DateHeure, format="%Y-%m-%d")) %>% 
     mutate(Heure = format(DateHeure, format="%H:%M:%S"))
 }
@@ -506,7 +520,12 @@ if(typemesure == "Piézométrie"){
       select(coderhj, capteur, Date, Heure, Valeur, unite, typemesure, validation, mode_acquisition)
     } # Fin d'importation d'un format exporté/téléchargé de manière classique via un navigateur depuis hydroportail en .csv
   } # Fin d'importation de données d'hydrologie
-  
+
+## Tri ##
+dataaimporter <- 
+  dataaimporter %>% 
+  arrange(Date, Heure)
+    
 ## Transformation des champs ##
 dataaimporter <- 
   dataaimporter %>% 
@@ -536,6 +555,7 @@ dataaimporter <-
   dataaimporter %>% 
   rename_at(vars(matches("Valeur")), list(~str_replace(., "Valeur", "chsvi_valeur"))) %>%
   rename_at(vars(matches("Valeur manuelle")), list(~str_replace(., "Valeur manuelle", "chsvi_valeur"))) %>%
+  rename_at(vars(matches("Profondeur")), list(~str_replace(., "Profondeur", "chsvi_profondeur"))) %>%
   rename_at(vars(matches("Température manuelle")), list(~str_replace(., "Température manuelle", "chsvi_valeur"))) %>%
   rename_at(vars(matches("Tmanuelle")), list(~str_replace(., "Tmanuelle", "chsvi_valeur"))) %>%
   rename_at(vars(matches("MO")), list(~str_replace(., "MO", "chsvi_mo"))) %>%
@@ -575,6 +595,7 @@ dataaimporter <-
   mutate(chsvi_unite = ifelse("chsvi_unite" %in% names(.) & typemesure == "Thermie", chsvi_unite, "°C")) %>% 
   mutate(chsvi_qualite = ifelse("chsvi_qualite" %in% names(.), chsvi_qualite, as.character(NA))) %>% 
   mutate(chsvi_profondeur = ifelse("chsvi_profondeur" %in% names(.), chsvi_profondeur, as.character(NA))) %>% 
+  mutate(chsvi_actionafaire = ifelse("chsvi_actionafaire" %in% names(.), chsvi_actionafaire, as.character(NA))) %>% 
   ungroup() %>% 
   mutate(id = NA_integer_)
 

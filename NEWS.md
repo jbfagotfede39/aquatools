@@ -1,10 +1,36 @@
 # NEWS - aquatools
 
+## 0.0.150
+### Ajouts
+- `DESCRIPTION` :
+  * Ajout du champ `Maintainer`
+  * Mise à jour des dépendances et du champ `License`
+- `chronique.cle` : 
+  * ajout du traitement des données de suivi
+- `chronique.ouverture` : 
+  * ajout de la création si nécessaire du champs `chsvi_actionafaire` lors de l'importation de données de suivi
+  * ajout du renommage du champs `Profondeur` lors de l'importation de données de suivi
+  * ajout d'un tri chronologique lors de l'importation de mesures
+  * ajout des modalités d'ouverture de chroniques `mdy_hms` et `mdy_hm`
+- `PC.renommage` : création
+
+### Corrections
+- `PC.figure` : 
+  * Correction d'intitulés de champs pour qu'ils correspondent à ceux utilisés dans la base de données
+  * Amélioration des exemples
+- `ModeleRenduPeche.Rnw` et `ModeleRenduPecheCommente.Rnw` : correction d'une syntaxe devenue problématique, et qui était imprécise
+
+### Modifications
+- `BDD.ouverture` : 
+  * Commentaire plus précis pour les différents versions serveur
+  * Ajout de la connexion automate depuis la VM201 - #172
+  * Modification du code afin d'aller chercher le mot de passe dans `.pgpass` dans les VM
 
 ## 0.0.149
 ### Ajouts
 - `chronique.figure.classescalendaires` : ajout d'un test de vérification qu'on a bien des données journalières en entrée
 - `PC.concentrationO2` : création
+- `topographie.hypsometrie` : création
 
 ### Corrections
 - `PC.saturationO2` : modification du mode de calcul car source initiale indisponible en ligne, remplacement par SANDRE (close #76)
