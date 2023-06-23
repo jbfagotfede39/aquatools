@@ -28,12 +28,14 @@ BDD.ouverture <- function(
   Type <- match.arg(Type)
 
   #### Version serveur ou version client classique ####
-  ### r-ftp - VM172 - #2011 ###
+  ### r-ftp - VM172 - #201 ###
   if(system('uname -n',intern=T) == "r-ftp"){
     if(grepl(system('lsb_release -d',intern=T) %>% 
-            str_replace("Description:\tUbuntu ", "") %>% 
-            str_replace(" LTS", ""), "22.04.2", fixed = TRUE)){
-      client <- "serveur"}
+             str_replace("Description:\tUbuntu ", "") %>% 
+             str_replace(" LTS", ""), "22.04.2", fixed = TRUE)){
+      if(is.na(utilisateur)) client <- "serveur"
+      if(utilisateur == "appshiny") client <- "shinyserver"
+    }
   }
 
   ### RStudio server - VM103 - #61 ###
