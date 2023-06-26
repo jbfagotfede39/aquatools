@@ -33,7 +33,7 @@ BDD.ouverture <- function(
     if(grepl(system('lsb_release -d',intern=T) %>% 
              str_replace("Description:\tUbuntu ", "") %>% 
              str_replace(" LTS", ""), "22.04.2", fixed = TRUE)){
-      if(is.na(utilisateur)) client <- "serveur"
+      if(is.na(utilisateur) | utilisateur == "automate") client <- "serveur"
       if(utilisateur == "appshiny") client <- "shinyserver"
     }
   }
@@ -95,7 +95,7 @@ BDD.ouverture <- function(
     if(system('uname -n',intern=T) == "r-ftp" & client == "serveur"){utilisateur <- "automate"}
   }
   
-if(is.na("utilisateur") == TRUE){
+if(is.na(utilisateur) == TRUE){
   if(client == "serveur" & system('whoami',intern=T) == "jb") utilisateur <- "jb"
   if(client == "serveur" & system('whoami',intern=T) == "adrien") utilisateur <- "adrien"
   if(client == "serveur" & system('whoami',intern=T) == "ubuntu") utilisateur <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
