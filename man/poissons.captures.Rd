@@ -2,20 +2,23 @@
 % Please edit documentation in R/poissons.captures.R
 \name{poissons.captures}
 \alias{poissons.captures}
-\title{Extraction des données de captures de poissons pour un inventaire}
+\title{Extraction des données de captures de poissons pour une opération}
 \usage{
 poissons.captures(
   station = "",
   date = "",
+  operation = "",
   codeCapture = FALSE,
   codePlacette = FALSE,
   codeOperation = FALSE
 )
 }
 \arguments{
-\item{station}{CodeRDT de la station}
+\item{station}{CodeRHJ de la station}
 
 \item{date}{Date de l'opération}
+
+\item{operation}{Code de l'opération}
 
 \item{codeCapture}{Affichage du codecapture - \code{FALSE} (par défault)}
 
@@ -24,11 +27,12 @@ poissons.captures(
 \item{codeOperation}{Affichage du codeoperation - \code{FALSE} (par défault)}
 }
 \description{
-Récupère les données de captures de poissons d'un inventaire
+Récupère les données de captures de poissons d'une opération
 }
 \examples{
 poissons.captures()
 poissons.captures("SOR10-2", "2015-05-19")
 poissons.captures("SOR10-2", "2015-05-19", codePlacette=T)
+poissons.captures(operation = 319)
 }
 \keyword{donnees}

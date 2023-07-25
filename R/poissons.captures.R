@@ -1,10 +1,11 @@
-#' Extraction des données de captures de poissons pour un inventaire
+#' Extraction des données de captures de poissons pour une opération
 #'
-#' Récupère les données de captures de poissons d'un inventaire
+#' Récupère les données de captures de poissons d'une opération
 #' @name poissons.captures
 #' @keywords donnees
-#' @param station CodeRDT de la station
+#' @param station CodeRHJ de la station
 #' @param date Date de l'opération
+#' @param operation Code de l'opération
 #' @param codeCapture Affichage du codecapture - \code{FALSE} (par défault) 
 #' @param codePlacette Affichage du codeplacette - \code{FALSE} (par défault) 
 #' @param codeOperation Affichage du codeoperation - \code{FALSE} (par défault) 
@@ -15,10 +16,12 @@
 #' poissons.captures()
 #' poissons.captures("SOR10-2", "2015-05-19")
 #' poissons.captures("SOR10-2", "2015-05-19", codePlacette=T)
+#' poissons.captures(operation = 319)
 
 poissons.captures <- function(  
-  station="",
-  date="",
+  station = "",
+  date = "",
+  operation = "",
   codeCapture = FALSE,
   codePlacette = FALSE,
   codeOperation = FALSE)
@@ -43,23 +46,29 @@ Captures <- merge(Captures, Stations, by = c("codestation"))
 Captures$datedebut <- ymd(Captures$datedebut)
 
 ##### Filtrage #####
+if(nchar(operation) != 0){
+  Captures <-
+    Captures %>% 
+    filter(codeoperation == operation)
+  }
+
 if(nchar(station) != 0 & nchar(date) != 0){
 Captures <-
   Captures %>% 
-  filter(nom == station, datedebut == date) %>%
-  arrange(numerodepassage, codeespece)}
+  filter(nom == station, datedebut == date)
+  }
 
 if(nchar(station) != 0 & nchar(date) == 0){
   Captures <-
     Captures %>% 
-    filter(nom == station) %>%
-    arrange(numerodepassage, codeespece)}
+    filter(nom == station)
+  }
 
 if(nchar(station) == 0 & nchar(date) != 0){
   Captures <-
     Captures %>% 
-    filter(datedebut == date) %>%
-    arrange(numerodepassage, codeespece)}
+    filter(datedebut == date)
+  }
 
 # On garde captures identiques si les deux paramètres sont vides pour avoir toute la base de données
 
@@ -103,6 +112,11 @@ if(codeCapture == TRUE & codePlacette == TRUE & codeOperation == TRUE){
   Captures <- 
     Captures %>%
     dplyr::select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+
+#### Tri ####
+Captures <- 
+  Captures %>%
+  arrange(numerodepassage, codeespece)
 
 ##### Calcul d'une colonne taille (avec la taille moyenne pour les lots) #####
 Captures <- 
