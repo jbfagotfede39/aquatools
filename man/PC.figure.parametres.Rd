@@ -18,8 +18,8 @@ Cette fonction permet de sélectionner automatiquement les paramètres de légen
 data \%>\% PC.contexte() \%>\% PC.figure.parametres()
 
 parametres <- data \%>\% PC.contexte() \%>\% PC.figure.parametres()
-legendeY <- parametres$legendeY
-legendeTitre <- parametres$legendeTitre
-typemesureTitreSortie <- parametres$typemesureTitreSortie
+legende_y <- parametres$legende_y
+legende_titre <- parametres$legende_titre
+typemesure_titre_sortie <- parametres$typemesure_titre_sortie
 }
 \keyword{physico-chimie}

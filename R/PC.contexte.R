@@ -12,11 +12,10 @@
 
 ##### TODO LIST #####
 # Il ne faudrait faire qu'une unique fonction avec PC.contexte et chronique.contexte, avec une fonction préalable de renommage des champs
-# Ajouter la fonctionnalité permettant de calculer le nombre d'années biologiques
 #####################
 
 PC.contexte <- function(
-  data = data
+  data
 )
 {
   
@@ -24,23 +23,33 @@ PC.contexte <- function(
   #Recherche <- match.arg(Recherche)
   
   #### Vérification des données en entrée ####
-  if("pcmes_date" %in% colnames(data) == TRUE & "pcmes_anneebiol" %in% colnames(data) == FALSE) data <- formatage.annee.biologique(data)
+  if(nrow(data) == 0) stop("Aucune donnée en entrée")
+  
+  #### Création des données manquantes ####
+  datacompletees <-
+    data %>% 
+    {if("pcmes_date" %in% colnames(data) == TRUE & "pcmes_anneebiol" %in% colnames(data) == FALSE) formatage.annee.biologique(.) else .} %>% 
+    {if("pcmes_milieu" %in% colnames(.) == FALSE) mutate(., pcmes_milieu = NA_character_) else .} %>% 
+    {if("pcmes_unitenom" %in% colnames(.) == FALSE) mutate(., pcmes_unitenom = NA_character_) else .}
   
   #### Calcul des indicateurs numériques ####
-  Contexte <- 
-    tibble(nstation = n_distinct(data$pcmes_coderhj)) %>% 
-    add_column(ntypemesure = n_distinct(data$pcmes_parametrenom)) %>% 
-    # add_column(nannee = n_distinct(data$annee)) %>% 
-    add_column(nmilieu = n_distinct(data$pcmes_milieu))
-  
+  contexte_1 <- 
+    tibble(n_station = n_distinct(datacompletees$pcmes_coderhj)) %>% 
+    add_column(n_typemesure = n_distinct(datacompletees$pcmes_parametrenom)) %>% 
+    add_column(n_annee = n_distinct(datacompletees$pcmes_anneebiol)) %>%
+    add_column(n_unitenom = n_distinct(datacompletees$pcmes_unitenom)) %>% 
+    {if(all(is.na(datacompletees$pcmes_milieu))) add_column(., n_milieu = 0) else .} %>%
+    {if("n_milieu" %in% colnames(.) == FALSE) add_column(., n_milieu = n_distinct(datacompletees$pcmes_milieu)) else .}
+
   #### Extraction sous forme de liste ####
-  Contexte <- 
-    Contexte %>% 
-    mutate(station = unique(data$pcmes_coderhj) %>% glue_collapse(sep = ";")) %>% 
-    add_column(typemesure = unique(data$pcmes_parametrenom) %>% glue_collapse(., sep = ";")) %>% 
-    # add_column(annee = unique(data$annee) %>% glue_collapse(., sep = ";")) %>% 
-    add_column(milieu = unique(data$pcmes_milieu) %>% glue_collapse(., sep = ";"))
+  contexte_2 <- 
+    contexte_1 %>% 
+    mutate(station = unique(datacompletees$pcmes_coderhj) %>% glue_collapse(sep = ";")) %>% 
+    add_column(typemesure = unique(datacompletees$pcmes_parametrenom) %>% glue_collapse(., sep = ";")) %>% 
+    add_column(annee = unique(datacompletees$pcmes_anneebiol) %>% glue_collapse(., sep = ";")) %>%
+    add_column(unitenom = unique(datacompletees$pcmes_unitenom) %>% glue_collapse(., sep = ";")) %>% 
+    add_column(milieu = unique(datacompletees$pcmes_milieu) %>% glue_collapse(., sep = ";"))
   
   #### Sortie ####
-  return(Contexte)
+  return(contexte_2)
 } 

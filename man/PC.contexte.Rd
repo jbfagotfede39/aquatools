@@ -4,7 +4,7 @@
 \alias{PC.contexte}
 \title{Contexte de données de physico-chimie}
 \usage{
-PC.contexte(data = data)
+PC.contexte(data)
 }
 \arguments{
 \item{data}{Data.frame issu des fonctions fd_production.physicochimie_mesures}

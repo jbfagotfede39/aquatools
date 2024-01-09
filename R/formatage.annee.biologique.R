@@ -2,7 +2,7 @@
 #'
 #' Reformate les dates selon l'année biologique (en rapport au 1 octobre de chaque année) dans une colonne chmes_anneebiol ou chsvi_anneebiol
 #' @name formatage.annee.biologique
-#' @param data Jeu de données contenant une colonne chmes_date ou chsvi_date au format Date
+#' @param data Jeu de données contenant une colonne `chmes_date`, `chmesgr_date`, `chsvi_date`, `chres_date`, `pcmes_date` ou `pcsvi_date` au format Date
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)
 #' @keywords donnees
 #' @import tibble
@@ -12,71 +12,68 @@
 #' formatage.annee.biologique(data)
 
 formatage.annee.biologique <- function(
-  data = data,
+  data,
   datedebutanneebiol = "10-01")
   {
 
 ##### TODO LIST #####
 # Il faudrait ajouter un test pour connaître le coltype du champ qui contient la chaîne date # if(inherits(data %>% select(contains("date"), -`_modif_date`), "date") == FALSE)stop("Le champ de date en entrée doit être au format date") # À amélorier car ne fonctionne pas en l'état
-# Utiliser la fonction chronique.renommage.variables() pour pouvoir utiliser la fonction avec chmesgr_date
-# Permettre le traitement de données de PC, en lien avec PC.contexte
 #####################
+  
   #### Vérifications ####
   if(nchar(datedebutanneebiol) != 5) stop("Mauvais format de date de départ")
   
-  #### Calculs ####
+  #### Formatage ####
   data <- 
     data %>% 
-    {if("chmes_anneebiol" %in% names(data) == T) dplyr::select(., -chmes_anneebiol) else .} # On l'enlève si elle existe déjà pour être certain de calculer avec la bonne date de seuil
+    dplyr::select(-contains("anneebiol")) # On l'enlève si elle existe déjà pour être certain de calculer avec la bonne date de seuil
   
-### Ancien fonctionnement qu'on maintient par sécurité ###
-if (datedebutanneebiol == "10-01") {
-  ## Mesures ##
-  if ("chmes_date" %in% colnames(data)) {
-    data$chmes_anneebiol <- ifelse(month(data$chmes_date) < 10, year(data$chmes_date), year(data$chmes_date) + 1)
-  }
-
-  ## Suivi ##
-  if ("chsvi_date" %in% colnames(data)) {
-    data$chsvi_anneebiol <- ifelse(month(data$chsvi_date) < 10, year(data$chsvi_date), year(data$chsvi_date) + 1)
-  }
-}
+  data_renommees <- 
+    data %>% 
+    # chronique.variables.renommage(formatentree = "Tous", formatsortie = "param") %>% 
+    {if("chmes_date" %in% colnames(.)) rename(., param_date = chmes_date) else .} %>% 
+    {if("chmesgr_date" %in% colnames(.)) rename(., param_date = chmesgr_date) else .} %>% 
+    {if("chsvi_date" %in% colnames(.)) rename(., param_date = chsvi_date) else .} %>% 
+    {if("chres_date" %in% colnames(.)) rename(., param_date = chres_date) else .} %>% 
+    {if("pcmes_date" %in% colnames(.)) rename(., param_date = pcmes_date) else .} %>% 
+    {if("pcsvi_date" %in% colnames(.)) rename(., param_date = pcsvi_date) else .}
   
-  # Nouveau fonctionnement avec calcul de la date
-  if (datedebutanneebiol != "10-01") {
-    ## Préparation des données ##
-    data <- 
-      data %>% 
+  #### Calculs ####
+  ## Préparation des données ##
+    data_corrigees <- 
+      data_renommees %>% 
       add_column(datedebutanneebiol = datedebutanneebiol)
     
     ## Mesures ##
-    if ("chmes_date" %in% colnames(data)) {
-      data <- 
-        data %>% 
-        mutate(datesansannee = str_sub(chmes_date, 6, 10)) %>% 
-        mutate(chmes_anneebiol = ifelse(datedebutanneebiol < "07-01" & datesansannee >= datedebutanneebiol, year(chmes_date), NA_integer_)) %>% 
-        mutate(chmes_anneebiol = ifelse(datedebutanneebiol < "07-01" & datesansannee < datedebutanneebiol & !is.na(datesansannee), year(chmes_date)-1, chmes_anneebiol)) %>% 
-        mutate(chmes_anneebiol = ifelse(datedebutanneebiol >= "07-01" & datesansannee >= datedebutanneebiol, year(chmes_date) + 1, chmes_anneebiol)) %>% 
-        mutate(chmes_anneebiol = ifelse(datedebutanneebiol >= "07-01" & datesansannee < datedebutanneebiol & !is.na(datesansannee), year(chmes_date), chmes_anneebiol)) 
-    }
-    
-    ## Suivi ##
-    if ("chsvi_date" %in% colnames(data)) {
-      data <- 
-        data %>% 
-        mutate(datesansannee = str_sub(chsvi_date, 6, 10)) %>% 
-        mutate(chsvi_anneebiol = ifelse(datedebutanneebiol < "07-01" & datesansannee >= datedebutanneebiol, year(chsvi_date), NA_character_)) %>% 
-        mutate(chsvi_anneebiol = ifelse(datedebutanneebiol < "07-01" & datesansannee < datedebutanneebiol & !is.na(datesansannee), year(chsvi_date)-1, chsvi_anneebiol)) %>% 
-        mutate(chsvi_anneebiol = ifelse(datedebutanneebiol >= "07-01" & datesansannee >= datedebutanneebiol, year(chsvi_date) + 1, chsvi_anneebiol)) %>% 
-        mutate(chsvi_anneebiol = ifelse(datedebutanneebiol >= "07-01" & datesansannee < datedebutanneebiol & !is.na(datesansannee), year(chsvi_date), chsvi_anneebiol)) 
-    }
-    
+    data_corrigees <- 
+      data_corrigees %>% 
+      mutate(datesansannee = str_sub(param_date, 6, 10)) %>% 
+      mutate(chmes_anneebiol = ifelse(datedebutanneebiol < "07-01" & datesansannee >= datedebutanneebiol, year(param_date), NA_integer_)) %>% 
+      mutate(chmes_anneebiol = ifelse(datedebutanneebiol < "07-01" & datesansannee < datedebutanneebiol & !is.na(datesansannee), year(param_date)-1, chmes_anneebiol)) %>% 
+      mutate(chmes_anneebiol = ifelse(datedebutanneebiol >= "07-01" & datesansannee >= datedebutanneebiol, year(param_date) + 1, chmes_anneebiol)) %>% 
+      mutate(chmes_anneebiol = ifelse(datedebutanneebiol >= "07-01" & datesansannee < datedebutanneebiol & !is.na(datesansannee), year(param_date), chmes_anneebiol))
+
     ## Nettoyage des données ##
-    data <- 
-      data %>% 
+    data_nettoyees <- 
+      data_corrigees %>% 
       dplyr::select(-datesansannee, -datedebutanneebiol)
-  }
+    
+    ## Renommage correct ##
+    data_ok <-
+      data_nettoyees %>% 
+      {if(data %>% select(contains("chmes_date")) %>% ncol() != 0) rename(., chmes_date = param_date) else .} %>% 
+      {if(data %>% select(contains("chmesgr_date")) %>% ncol() != 0) rename(., chmesgr_date = param_date) else .} %>% 
+      {if(data %>% select(contains("chsvi_date")) %>% ncol() != 0) rename(., chsvi_date = param_date) else .} %>% 
+      {if(data %>% select(contains("chres_date")) %>% ncol() != 0) rename(., chres_date = param_date) else .} %>% 
+      {if(data %>% select(contains("pcmes_date")) %>% ncol() != 0) rename(., pcmes_date = param_date) else .} %>% 
+      {if(data %>% select(contains("pcsvi_date")) %>% ncol() != 0) rename(., pcsvi_date = param_date) else .} %>% 
+      # {if(data %>% select(contains("chmes_date")) %>% ncol() != 0) rename(., chmes_anneebiol = chmes_anneebiol) else .} %>% 
+      {if(data %>% select(contains("chmesgr_date")) %>% ncol() != 0) rename(., chmesgr_anneebiol = chmes_anneebiol) else .} %>% 
+      {if(data %>% select(contains("chsvi_date")) %>% ncol() != 0) rename(., chsvi_anneebiol = chmes_anneebiol) else .} %>% 
+      {if(data %>% select(contains("chres_date")) %>% ncol() != 0) rename(., chres_anneebiol = chmes_anneebiol) else .} %>% 
+      {if(data %>% select(contains("pcmes_date")) %>% ncol() != 0) rename(., pcmes_anneebiol = chmes_anneebiol) else .} %>% 
+      {if(data %>% select(contains("pcsvi_date")) %>% ncol() != 0) rename(., pcsvi_anneebiol = chmes_anneebiol) else .}
   
-return(data)
+return(data_ok)
 
 } # Fin de la fonction

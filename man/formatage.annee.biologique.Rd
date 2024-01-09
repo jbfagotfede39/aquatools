@@ -4,10 +4,10 @@
 \alias{formatage.annee.biologique}
 \title{Reformatage de dates en année biologique}
 \usage{
-formatage.annee.biologique(data = data, datedebutanneebiol = "10-01")
+formatage.annee.biologique(data, datedebutanneebiol = "10-01")
 }
 \arguments{
-\item{data}{Jeu de données contenant une colonne chmes_date ou chsvi_date au format Date}
+\item{data}{Jeu de données contenant une colonne `chmes_date`, `chmesgr_date`, `chsvi_date`, `chres_date`, `pcmes_date` ou `pcsvi_date` au format Date}
 
 \item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)}
 }

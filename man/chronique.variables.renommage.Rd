@@ -22,6 +22,6 @@ Cette fonction permet de renommer des variables de traitement de données de chr
 }
 \examples{
 Resultats \%>\% chronique.variables.renommage()
-Resultats \%>\% chronique.variables.renommage(Sortie = "chmesgr")
+Resultats \%>\% chronique.variables.renommage(formatsortie = "chmesgr")
 }
 \keyword{chronique}

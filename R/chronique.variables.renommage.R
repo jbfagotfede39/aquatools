@@ -12,7 +12,7 @@
 #' @export
 #' @examples
 #' Resultats %>% chronique.variables.renommage()
-#' Resultats %>% chronique.variables.renommage(Sortie = "chmesgr")
+#' Resultats %>% chronique.variables.renommage(formatsortie = "chmesgr")
 
 chronique.variables.renommage <- function(
   data = data,
@@ -27,7 +27,7 @@ chronique.variables.renommage <- function(
   
   #### Modification des entrées ####
   formatentree <- glue("{formatentree}_")
-  formatsortie <- glue("{formatsortie}_")
+  formatsortie <- glue("{formatsortie}")
   listecompleteformatentree <- c("chmes", "chmesgr", "chsta", "chsvi", "chres")
   
   #### Renommage des champs ####

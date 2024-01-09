@@ -1,5 +1,43 @@
 # NEWS - aquatools
 
+## 0.0.152
+### Ajouts
+- `formatage.annee.biologique` :
+  * Ajout des formats `chmesgr_date` et `chmres_date`
+  * Intégration d'une transformation des données de physico-chimie pour `PC.contexte`
+  * En-tête du nom du champ en sortie correspondant à celui en entrée (`pcmes_date` -> `pcmes_anneebiol`)
+- `PC.contexte` :
+  * Ajout de la gestion des unités
+  * Ajout de la gestion des années biologiques et nombre et liste des années biologiques
+  * Création des champs manquants si nécessaire
+- `PC.figure` :
+  * Ajout d'un choix du thème graphique
+- `PC.figure.parametres` : 
+  * Création d'un affichage automatique par défaut des légendes, puis traitement des cas spécifiques comme des exceptions (permet de traiter tous les cas non intégrés au système)
+  * Ajout de dépendances
+
+### Corrections
+- `chronique.variables.renommage` : 
+  * Correction des exemples avec les bons noms de paramètres
+  * Correction d'un `_` qui était ajouté en trop
+
+### Modifications
+- `PC.contexte` :
+  * Refactoring important
+  * Modification des noms de champs de sortie
+  * Meilleure gestion des noms de milieux absents
+- `PC.figure` :
+  * Modification des exemples avec noms des jeux de données en snake_case
+  * Modification de noms de variable en snake_case
+  * Renommage du jeu de données `PC` en `data`
+  * Versionnage des variables `data` et `contexte`
+  * Amélioration de l'établissement du contexte
+  * Modification des titres de légende et de l'axe X, avec affichage conditionnel
+  * Utilisation de `PC.contexte`
+- `PC.figure.parametres` : 
+  * Mise en cohérence des noms de champs en entrée suite à évolution de `PC.contexte`
+- `PC.parametres` : reformatage des noms de variables
+
 ## 0.0.151
 ### Ajouts
 - `chronique.agregation` : ajout d'une option d'agrégation uniquement avec la station

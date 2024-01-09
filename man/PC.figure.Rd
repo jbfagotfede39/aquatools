@@ -4,17 +4,19 @@
 \alias{PC.figure}
 \title{Représentation de résultats de PC}
 \usage{
-PC.figure(PC)
+PC.figure(data, theme = c("theme_minimal", "theme_bw"))
 }
 \arguments{
-\item{PC}{Jeu de données issu de la BDD PC}
+\item{data}{Jeu de données de physico-chimie issu de \code{PC.mesures} ou \code{PC.hubeau}}
+
+\item{theme}{Thème ggplot2 à appliquer à la figure \code{theme_minimal} (par défaut) ou \code{theme_bw}}
 }
 \description{
-Cette fonction permet de représenter des pcmes_valeurs physico-chimiques
+Cette fonction permet de représenter des valeurs physico-chimiques
 }
 \examples{
-PC.figure(PC)
-PC \%>\% PC.figure()
-spNitrates <- ChimieOrg \%>\% filter(pcmes_parametrenom == "Nitrates") \%>\% PC.figure()
-spNitrates <- ChimieOrg \%>\% filter(pcmes_parametresandre == 1340) \%>\% PC.figure()
+PC.figure(bdd_pc)
+bdd_pc \%>\% PC.figure()
+vue_nitrates <- bdd_pc \%>\% filter(pcmes_parametrenom == "Nitrates") \%>\% PC.figure()
+vue_nitrates <- bdd_pc \%>\% filter(pcmes_parametresandre == 1340) \%>\% PC.figure()
 }
