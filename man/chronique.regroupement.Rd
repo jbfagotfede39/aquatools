@@ -7,7 +7,9 @@
 chronique.regroupement(
   data = data,
   stations = NA_character_,
-  formatcle = c("STU", "MSTU"),
+  formatcle = c("STU", "S", "TU", "MSTU"),
+  regroupement = FALSE,
+  regroupement_fonction = c("mean", "sum", "length"),
   projet = NA_character_,
   export = FALSE
 )
@@ -17,7 +19,11 @@ chronique.regroupement(
 
 \item{stations}{Dataframe de stations, avec au moins une colonne chsta_coderhj et une colonne chsta_distancesource. Permet le classement des stations par ordre de distance à la source}
 
-\item{formatcle}{Format de la clé d'identification (\code{STU} par défaut)}
+\item{formatcle}{Format de la clé d'identification (\code{STU} par défaut, \code{S}, \code{TU}, \code{MSTU})}
+
+\item{regroupement}{Si \code{TRUE}, regroupe les résultats (\code{FALSE} par défaut)}
+
+\item{regroupement_fonction}{Fonction de regroupement, si souhaité (\code{mean} par défaut, \code{sum}, \code{length})}
 
 \item{projet}{Nom du projet}
 

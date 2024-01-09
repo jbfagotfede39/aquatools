@@ -1,5 +1,23 @@
 # NEWS - aquatools
 
+## 0.0.151
+### Ajouts
+- `chronique.agregation` : ajout d'une option d'agrégation uniquement avec la station
+- `chronique.cle` : ajout du format `TU`
+- `chronique.ouverture` : ajout d'un forçage pour ne pas créer de noms de colonnes, car générés ensuite. C'était nécessaire pour importer des fichiers sans noms de colonnes, car `skipvalue = 0` faisait perdre la première ligne qui était considérée comme des titres
+- `chronique.regroupement` : ajout d'une option `regroupement` permettant de regrouper (moyenne, somme et nombre) les données s'il en existe plusieurs pour une même modalité temporelle
+- `formatage.annee.biologique` : ajout d'une dépendance
+- `formatage.annee.neutre` : ajout d'une dépendance
+- `PC.hubeau` : création
+- `poissons.captures` : 
+  * Ajout d'une option d'extraction à partir du codeOperation avec le paramètre `operation`
+  * Petites corrections de code et de documentation (organisation)
+
+### Modifications
+- `BDD.ouverture` : 
+  * Ajout de la connexion `appshiny` depuis la VM201 - #172
+  * Correction complémentaire pour `automate` suite aux modifications précédentes
+
 ## 0.0.150
 ### Ajouts
 - `DESCRIPTION` :

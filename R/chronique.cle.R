@@ -4,7 +4,7 @@
 #' @name chronique.cle
 #' @param data Data.frame issu de la fonction chronique.mesures ou chronique.resultats
 #' @param anneebiologique Si \code{TRUE} (par défault), s'appuie sur l'année biologique lorsque le paramètre année est inclus à la clé
-#' @param formatcle Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), Date-Heure (H), Unité (U) par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA), coderhj_typemesure (ST), milieu_annee (MA), time_coderhj_typemesure (HST), time_typemesure (HT), time_coderhj (HS), coderhj_typemesure_unite (STU) ou milieu_coderhj_typemesure_unite (MSTU)
+#' @param formatcle Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), Date-Heure (H), Unité (U) par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA), coderhj_typemesure (ST), milieu_annee (MA), time_coderhj_typemesure (HST), time_typemesure (HT), time_coderhj (HS), coderhj_typemesure_unite (STU), typemesure_unite (TU) ou milieu_coderhj_typemesure_unite (MSTU)
 #' @keywords chronique
 #' @import tidyverse
 #' @export
@@ -15,7 +15,7 @@
 chronique.cle <- function(
   data = data,
   anneebiologique = TRUE,
-  formatcle = c("SAT", "SATD", "SA", "ST", "MA", "HST", "HT", "HS", "STU", "MSTU")
+  formatcle = c("SAT", "SATD", "SA", "ST", "MA", "HST", "HT", "HS", "STU", "TU", "MSTU")
 )
 {
   
@@ -95,6 +95,7 @@ chronique.cle <- function(
     {if(formatcle == "HS") mutate(., Cle = as.character(glue("{date}_{heure}_{coderhj}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "HT") mutate(., Cle = as.character(glue("{date}_{heure}_{typemesure}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "STU") mutate(., Cle = as.character(glue("{coderhj}_{typemesure}_{unite}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
+    {if(formatcle == "TU") mutate(., Cle = as.character(glue("{typemesure}_{unite}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if(formatcle == "MSTU") mutate(., Cle = as.character(glue("{milieu}_{coderhj}_{typemesure}_{unite}"))) else .} %>% # normalement on doit pouvoir enlever les as.character quand tout sera en R4.0 et dplyr 1.0.0 je pense
     {if("coderhj" %in% colnames(.)) dplyr::select(., -coderhj) else .}  %>% 
     {if("typemesure" %in% colnames(.)) dplyr::select(., -typemesure) else .}  %>% 

@@ -7,7 +7,7 @@
 chronique.cle(
   data = data,
   anneebiologique = TRUE,
-  formatcle = c("SAT", "SATD", "SA", "ST", "MA", "HST", "HT", "HS", "STU", "MSTU")
+  formatcle = c("SAT", "SATD", "SA", "ST", "MA", "HST", "HT", "HS", "STU", "TU", "MSTU")
 )
 }
 \arguments{
@@ -15,7 +15,7 @@ chronique.cle(
 
 \item{anneebiologique}{Si \code{TRUE} (par défault), s'appuie sur l'année biologique lorsque le paramètre année est inclus à la clé}
 
-\item{formatcle}{Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), Date-Heure (H), Unité (U) par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA), coderhj_typemesure (ST), milieu_annee (MA), time_coderhj_typemesure (HST), time_typemesure (HT), time_coderhj (HS), coderhj_typemesure_unite (STU) ou milieu_coderhj_typemesure_unite (MSTU)}
+\item{formatcle}{Format de la clé d'identification, avec coderhj (S), annee (A), typemesure (T), nbj (D), Milieu (M), Date-Heure (H), Unité (U) par exemple de la forme coderhj_annee_typemesure (SAT) (par défault), coderhj_annee_typemesure_nbj (SATD), coderhj_annee (SA), coderhj_typemesure (ST), milieu_annee (MA), time_coderhj_typemesure (HST), time_typemesure (HT), time_coderhj (HS), coderhj_typemesure_unite (STU), typemesure_unite (TU) ou milieu_coderhj_typemesure_unite (MSTU)}
 }
 \description{
 Cette fonction permet de créer une clé (champ Cle) pour les chroniques (mesures, résultats, etc.)
