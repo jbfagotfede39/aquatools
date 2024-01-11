@@ -5,18 +5,24 @@
 \title{Vue d'un profil le long d'un transect}
 \usage{
 topographie.figure.profil(
-  data = NA_character_,
-  etiquette = T,
-  pointsprojetes = T,
-  save = F
+  data_profil_complet = NA_character_,
+  data_points_remarquables = NA_character_,
+  altitude_ligne_deau = 0,
+  points_remarquables = FALSE,
+  points_remarquables_etiquette = FALSE,
+  save = FALSE
 )
 }
 \arguments{
-\item{data}{Jeu de données en sortie de topographie.profil.raster()}
+\item{data_profil_complet}{Jeu de données en sortie de \code{topographie.profil} ou de \code{topographie.profil.raster}}
 
-\item{etiquette}{Affichage des étiquettes des points d'intérêt : \code{TRUE} (par défaut) ou \code{FALSE}}
+\item{data_points_remarquables}{Jeu de données en sortie de \code{topographie.profil} ou de \code{topographie.profil.raster}}
 
-\item{pointsprojetes}{Affichage des points d'intérêt projetés le long du transect : \code{TRUE} (par défaut) ou \code{FALSE}}
+\item{altitude_ligne_deau}{Altitude de la ligne d'eau à afficher. Si \code{0} (par défaut), pas d'affichage}
+
+\item{points_remarquables}{Affichage des points remarquables projetés le long du transect : \code{TRUE} (par défaut) ou \code{FALSE}}
+
+\item{points_remarquables_etiquette}{Affichage des étiquettes des points remarquables : \code{TRUE} (par défaut) ou \code{FALSE}}
 
 \item{save}{Si \code{FALSE} (par défaut), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 }
@@ -25,7 +31,7 @@ Cette fonction permet de représenter un profil (topographique par exemple) d'un
 }
 \examples{
 data \%>\% topographie.figure.profil()
-topographie.figure.profil(data, etiquette = F, pointsprojetes = F)
+topographie.figure.profil(data, points_remarquables_etiquette = F, points_remarquables = F)
 data \%>\% topographie.figure.profil(save = T)
 topographie.figure.profil(raster = mon_raster_regroupe, transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") \%>\% topographie.figure.profil()
 }

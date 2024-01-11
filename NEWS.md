@@ -1,6 +1,20 @@
 # NEWS - aquatools
 
-## 0.0.152
+## 0.0.153 - 2024-01-11
+### Ajouts
+- `topographie.profil` : création
+
+### Modifications
+- `topographie.figure.profil` : 
+  * Changement du syle `theme_bw` vers `theme_minimal`
+  * Modification des intitulés de variables
+  * Mise en compatibilité avec `topographie.profil`
+  * Suppression de l'extraction des données de profil en entrée, qu'il faudra envoyer de manière séparée afin de rendre les choses plus universelles
+- `topographie.transect` : 
+  * Explicitation de l'aide
+  * Ajout de la gestion d'un éventuel identifiant de transect
+
+## 0.0.152 - 2024-01-09
 ### Ajouts
 - `formatage.annee.biologique` :
   * Ajout des formats `chmesgr_date` et `chmres_date`
@@ -38,7 +52,7 @@
   * Mise en cohérence des noms de champs en entrée suite à évolution de `PC.contexte`
 - `PC.parametres` : reformatage des noms de variables
 
-## 0.0.151
+## 0.0.151 - 2024-01-09
 ### Ajouts
 - `chronique.agregation` : ajout d'une option d'agrégation uniquement avec la station
 - `chronique.cle` : ajout du format `TU`
@@ -56,7 +70,7 @@
   * Ajout de la connexion `appshiny` depuis la VM201 - #172
   * Correction complémentaire pour `automate` suite aux modifications précédentes
 
-## 0.0.150
+## 0.0.150 - 2023-06-21
 ### Ajouts
 - `DESCRIPTION` :
   * Ajout du champ `Maintainer`
@@ -82,7 +96,7 @@
   * Ajout de la connexion automate depuis la VM201 - #172
   * Modification du code afin d'aller chercher le mot de passe dans `.pgpass` dans les VM
 
-## 0.0.149
+## 0.0.149 - 2023-02-28
 ### Ajouts
 - `chronique.figure.classescalendaires` : ajout d'un test de vérification qu'on a bien des données journalières en entrée
 - `PC.concentrationO2` : création
@@ -93,7 +107,7 @@
 - `poissons.plansdeau.ofbversteleos` : 
   * Ajout d'un ré-encodage des types de filets CEN et du test de bon traitement associé
 
-## 0.0.148
+## 0.0.148 - 2023-01-26
 ### Ajouts
 - `df.comparaison.champs` : ajout d'une comparaison des datatypes des dataframes
 
@@ -107,7 +121,7 @@
   * Ajout de la dépendance à `openxlsx`
   * Remplacement d'un `stop` par un `warning` concernant `Présence d'actions de pêche sans capture (ou capture vide) en face`
 
-## 0.0.147
+## 0.0.147 - 2022-12-21
 ### Ajouts
 - `chronique.figure.classescalendaires` : 
   * complément et optimisation du code pour l'option `affichagevide`
@@ -133,7 +147,7 @@
 ### Modifications
 - `chronique.figure.depassementscalendaires` : inversion des couleurs par défaut, afin de coller à la thermie : on personnalisera uniquement pour la piézométrie
 
-## 0.0.146
+## 0.0.146 - 2022-09-21
 ### Ajouts
 - `df.comparaison.champs` : Création
 
@@ -154,7 +168,7 @@
   * Nettoyage de NA qui s'affichaient si les champs étaient vides
   * Recalcul des lots I en lots G, avec avertissement de l'utilisateur
 
-## 0.0.145
+## 0.0.145 - 2022-08-23
 ### Ajouts
 - `chronique.ouverture` : ajout de l'importation des mesures hydrologiques issues de Hub'Eau
 - `chronique.periode` : 
