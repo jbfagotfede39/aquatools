@@ -9,7 +9,7 @@ topographie.transect(data = NA_character_)
 \arguments{
 \item{data}{Dataframe contenant deux points - L'ordre de tri des points constituera le sens du transect}
 
-\item{epsg}{EPSG à attribuer au}
+\item{epsg}{EPSG à attribuer au transect}
 }
 \description{
 Cette fonction permet de créer un transect à partir de deux points

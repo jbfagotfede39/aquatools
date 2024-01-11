@@ -3,7 +3,7 @@
 #' Cette fonction permet de créer un transect à partir de deux points
 #' @name topographie.transect
 #' @param data Dataframe contenant deux points - L'ordre de tri des points constituera le sens du transect
-#' @param epsg EPSG à attribuer au 
+#' @param epsg EPSG à attribuer au transect
 #' @keywords topographie
 #' @import glue
 #' @import magrittr
@@ -36,16 +36,16 @@ topographie.transect <- function(
     data <-
       data %>% 
       st_drop_geometry() %>%
-      dplyr::select(contains("_coord_x"), contains("_coord_y"))
+      dplyr::select(contains("id"), contains("_coord_x"), contains("_coord_y"))
     if(ncol(data) != 4) stop("Impossible de créer un transect à partir des deux points contenus dans une seule ligne en entrée")
     
     data <-
       data %>% 
-        matrix(ncol = 2) %>% 
+        matrix(ncol = 2) %>%
         apply(2, as.numeric) %>% 
         data.frame() %>%
         as_tibble() %>%
-        sf::st_as_sf(coords = c("X1","X2"), remove = FALSE) %>% 
+        sf::st_as_sf(coords = c("X1","X2"), remove = FALSE) %>%
         st_set_crs(epsg)
     
     # Ces points sont ensuite envoyés dans le bloc suivant pour création d'un transect
@@ -60,6 +60,7 @@ topographie.transect <- function(
       st_linestring() %>% 
       st_sfc(crs = epsg) %>%
       st_sf()
+    if("id" %in% names(data)) transect <- transect %>% bind_cols(data %>% distinct(id))
     existence_transect <- TRUE
   }
   
