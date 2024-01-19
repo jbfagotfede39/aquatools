@@ -15,7 +15,6 @@
 ###### À faire #####
 # Ré-écriture de noms de micapt_taxons qui n'existent plus, avec ancien nom indiqué en remarque
 ####################
-
 MI.nettoyage <- function(
   data,
   larve = F)
@@ -140,15 +139,21 @@ if(all(colnames(data) %in% colnames(Captures))) {
     mutate(micapt_taxon = ifelse(micapt_taxon == "Haprophlebia", "Habrophlebia", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Hydracarien", "Hydracarina", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Hydracariens", "Hydracarina", micapt_taxon)) %>% 
+    mutate(micapt_taxon = ifelse(micapt_taxon == "HYDRACARIENS", "Hydracarina", micapt_taxon)) %>% 
+    mutate(micapt_taxon = ifelse(micapt_taxon == "Sf Hydroporinae", "Hydroporinae", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Lepidostoma Hirtum", "Lepidostoma hirtum", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Limonidae", "Limoniidae", micapt_taxon)) %>% 
+    mutate(micapt_taxon = ifelse(micapt_taxon == "Microcnemia", "Micronecta", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Nématocère", "Diptères", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Notidobia Cialiris", "Notidobia", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Oligochetes", "Oligochaeta", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Oligochètes", "Oligochaeta", micapt_taxon)) %>% 
+    mutate(micapt_taxon = ifelse(micapt_taxon == "OLIGOCHETES", "Oligochaeta", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Oligochaetae", "Oligochaeta", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Onichogomphus", "Onychogomphus", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Orconectes Limosus", "Orconectes limosus", micapt_taxon)) %>% 
+    mutate(micapt_taxon = ifelse(micapt_taxon == "Seratella", "Serratella", micapt_taxon)) %>% 
+    mutate(micapt_taxon = ifelse(micapt_taxon == "serratella", "Serratella", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Piscicola Geometra", "Piscicola geometra", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Planorbiidae", "Planorbidae", micapt_taxon)) %>% 
     mutate(micapt_taxon = ifelse(micapt_taxon == "Plécoptère", "Plécoptères", micapt_taxon)) %>% 
