@@ -1,5 +1,16 @@
 # NEWS - aquatools
 
+## 0.0.154 - 2024-01-23
+### Ajouts
+- Utilisation de `usethis::use_lifecycle()` au sein du package
+- `chronique.recalage.valeur` : création 
+
+### Modifications
+- `chronique.decalage` passée en `deprecated` suite à création de `chronique.recalage.temps`
+
+### Corrections
+- Fichiers d'aides automatiquement corrigés en markdown suite à utilisation de `usethis::use_lifecycle()`
+
 ## 0.0.153 - 2024-01-11
 ### Ajouts
 - `topographie.profil` : création

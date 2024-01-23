@@ -1,31 +1,25 @@
 #' Décalage de données brutes de chronique
 #'
-#' @description
-#' `r lifecycle::badge("deprecated")`
 #' Permet de corriger des données brutes de chronique présentant des valeurs de date et heure aberrantes. ATTENTION : ne gère pas les ID
-#' @name chronique.decalage
+#' @name chronique.recalage.temps
 #' @param data Chronique à modifier, avec un champ chmes_date, un champ chmes_heure et un champ chmes_valeur
 #' @param decalage Valeur de décalage (en jours, positif pour avancer ou négatif pour reculer) à calculer par soustration des deux dates au format lubridate
 #' @param recalcul Les dates/heures présentes doivent-elles être entièrement re-calculées, et si oui, depuis le début ou la fin avec l'écart considéré (\code{non} (par défaut), \code{debut} ou \code{fin})
 #' @keywords chronique
-#' @import lifecycle
 #' @import tidyverse
 #' @export
 #' @examples
 #' ymd_hms("2017-07-05 11:40:00")-ymd_hms("2010-05-24 21:44:00")
-#' chronique.decalage(data, decalage = 2598.581)
-#' chronique.decalage(decalage = -57)
-#' chronique.decalage(decalage = -57, recalcul == "debut") # On met un décalage pour que la date et l'heure de la première ligne soit correct
-#' chronique.decalage(decalage = -57, recalcul == "fin") # On met un décalage pour que la date et l'heure de la dernière ligne soit correct
+#' chronique.recalage.temps(data, decalage = 2598.581)
+#' chronique.recalage.temps(decalage = -57)
+#' chronique.recalage.temps(decalage = -57, recalcul == "debut") # On met un décalage pour que la date et l'heure de la première ligne soit correct
+#' chronique.recalage.temps(decalage = -57, recalcul == "fin") # On met un décalage pour que la date et l'heure de la dernière ligne soit correct
 
-chronique.decalage <- function(data, 
+chronique.recalage.temps <- function(data, 
                                decalage = 2598.581, 
                                recalcul = c('non', 'debut', 'fin'))
 {
 
-  #### Fonction dépréciée ####
-  lifecycle::deprecate_warn("0.0.154", "aquatools::chronique.decalage()", "chronique.recalage.temps()")
-  
   #### Évaluation des choix ####
   recalcul <- match.arg(recalcul)
   

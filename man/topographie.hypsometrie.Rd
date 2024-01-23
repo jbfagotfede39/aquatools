@@ -7,7 +7,7 @@
 topographie.hypsometrie(data = NA_character_)
 }
 \arguments{
-\item{data}{Dataframe contenant une colonne `chsta_coord_z` ou une géométrie de type POINTZ. Affichage de différentes courbes si présence d'une colonne `plan_deau`}
+\item{data}{Dataframe contenant une colonne \code{chsta_coord_z} ou une géométrie de type POINTZ. Affichage de différentes courbes si présence d'une colonne \code{plan_deau}}
 
 \item{epsg}{EPSG à attribuer au}
 }

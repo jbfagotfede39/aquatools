@@ -7,7 +7,7 @@
 topographie.profil(leves = NA_character_, transects = NA, buffer = 10)
 }
 \arguments{
-\item{leves}{Nuage de points issu de `topographie.mesures`}
+\item{leves}{Nuage de points issu de \code{topographie.mesures}}
 
 \item{transects}{Dataframe au format sf contenant 2 points ordonnées (départ -> arrivée) ou bien une LINESTRING (cours d'eau par exemple)}
 
