@@ -1,5 +1,14 @@
 # NEWS - aquatools
 
+## 0.0.155 - 2024-02-02
+### Ajouts
+- `formatage.heure.excel` : création
+- `hydrovu.authentification` : création
+- `hydrovu.donnees` : création
+- `hydrovu.extraction` : création
+- `hydrovu.refactoring` : création
+- `hydrovu.sites` : création
+
 ## 0.0.154 - 2024-01-23
 ### Ajouts
 - Utilisation de `usethis::use_lifecycle()` au sein du package
