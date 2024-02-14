@@ -23,9 +23,10 @@ hydrovu.refactoring <- function(
     enframe()
   
   if(nrow(data_2) == 4) data_3 <- NULL # Cas avec absence de données
-  # if(nrow(data_2) == 4) data_3 <- invisible(NULL) # Cas avec absence de données
-  
-  if(nrow(data_2) != 4){ # Cas avec présence de données
+  if(nrow(data_2) == 8 & (data_2 %>% filter(value == "NOT_FOUND") %>% nrow() == 1)) data_3 <- NULL # Cas avec absence de données
+  if(nrow(data_2) == 10 & (data_2 %>% filter(name == "parameters.readings.value") %>% nrow() == 0)) data_3 <- NULL # Cas avec absence de données
+
+  if(exists("data_3") == FALSE){ # Cas avec présence de données
   #### Contexte ####
   station <- data_2 %>% filter(grepl("locationId", name)) %>% pull(value)
   parametres_unites <-

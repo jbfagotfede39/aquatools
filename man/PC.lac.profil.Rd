@@ -7,11 +7,14 @@
 PC.lac.profil(
   PC,
   param = c("O2mg", "O2pourc", "cond", "ph", "temp", "redox", "chlorophylles",
-    "phycocyanines", "secchi")
+    "phycocyanines", "secchi"),
+  couleurs = c("stratifie", "regulier", "aleatoire")
 )
 }
 \arguments{
 \item{param}{Paramètre physico-chimique à représenter (O2mg, O2pourc, cond, ph, temp, redox, chlorophylles, phycocyanines, secchi)}
+
+\item{couleurs}{Choix des couleurs annuelles : \code{stratifie} par défault, \code{regulier} ou \code{aleatoire}}
 }
 \description{
 Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques

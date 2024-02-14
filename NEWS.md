@@ -1,5 +1,16 @@
 # NEWS - aquatools
 
+## 0.0.156 - 2024-02-14
+### Ajouts
+- `PaletteAnnees.RData` : ajout d'années dans le jeu de données
+- `palette_annees_aleatoires.RData` : création - permet d'avoir toujours la même couleur pour une année, mais sans que les années successives soient trop semblables
+- `palette_annees_stratifie.RData` : création - permet d'avoir toujours la même couleur pour une année, mais avec des années successives plutôt coordonnées
+- `PC.lac.profil` : ajout du paramètre `couleurs`
+
+### Modifications
+- `hydrovu.refactoring` : ajouts de cas complémentaires non identifiés précédemment
+- `PC.lac.profil` : modification du traitement des dates afin qu'une même année soit toujours de la même couleur
+
 ## 0.0.155 - 2024-02-02
 ### Ajouts
 - `formatage.heure.excel` : création
