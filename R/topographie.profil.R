@@ -30,7 +30,7 @@ topographie.profil <- function(
   
   #### Filtrage ####
   leves_2 <-
-    leves_1 %>% 
+    leves %>% 
     st_filter(st_buffer(transects_1, buffer))
   
   #### Calcul ####

@@ -10,7 +10,8 @@ topographie.figure.profil(
   altitude_ligne_deau = 0,
   points_remarquables = FALSE,
   points_remarquables_etiquette = FALSE,
-  save = FALSE
+  save = FALSE,
+  save_name = NA_character_
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ topographie.figure.profil(
 \item{points_remarquables_etiquette}{Affichage des étiquettes des points remarquables : \code{TRUE} (par défaut) ou \code{FALSE}}
 
 \item{save}{Si \code{FALSE} (par défaut), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
+
+\item{save_name}{Nom de fichier à utiliser pour l'enregistrement. \code{"{today()}_Vue_profil.png"} si vide.}
 }
 \description{
 Cette fonction permet de représenter un profil (topographique par exemple) d'un transect
@@ -33,6 +36,7 @@ Cette fonction permet de représenter un profil (topographique par exemple) d'un
 data \%>\% topographie.figure.profil()
 topographie.figure.profil(data, points_remarquables_etiquette = F, points_remarquables = F)
 data \%>\% topographie.figure.profil(save = T)
+data \%>\% topographie.figure.profil(save = T, save_name = "transect_2")
 topographie.figure.profil(raster = mon_raster_regroupe, transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") \%>\% topographie.figure.profil()
 }
 \keyword{topographie}

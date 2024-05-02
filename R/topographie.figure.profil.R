@@ -8,6 +8,7 @@
 #' @param points_remarquables Affichage des points remarquables projetés le long du transect : \code{TRUE} (par défaut) ou \code{FALSE}
 #' @param points_remarquables_etiquette Affichage des étiquettes des points remarquables : \code{TRUE} (par défaut) ou \code{FALSE}
 #' @param save Si \code{FALSE} (par défaut), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
+#' @param save_name Nom de fichier à utiliser pour l'enregistrement. \code{"{today()}_Vue_profil.png"} si vide.
 #' @keywords topographie
 #' @import glue
 #' @import sf
@@ -17,6 +18,7 @@
 #' data %>% topographie.figure.profil()
 #' topographie.figure.profil(data, points_remarquables_etiquette = F, points_remarquables = F)
 #' data %>% topographie.figure.profil(save = T)
+#' data %>% topographie.figure.profil(save = T, save_name = "transect_2")
 #' topographie.figure.profil(raster = mon_raster_regroupe, transect = StationsTransect, points_projetes = Stations, points_projetes_position = "intermediaire") %>% topographie.figure.profil()
 
 topographie.figure.profil <- function(
@@ -25,7 +27,8 @@ topographie.figure.profil <- function(
   altitude_ligne_deau = 0,
   points_remarquables = FALSE,
   points_remarquables_etiquette = FALSE,
-  save = FALSE
+  save = FALSE,
+  save_name = NA_character_
 )
 {
   
@@ -57,7 +60,12 @@ topographie.figure.profil <- function(
   #### Sortie des résultats ####
   # Enregistrement
   if(save==T){
+    if(is.na(save_name)){
     ggsave(file = glue("{today()}_Vue_profil.png"))
+    }
+    if(!is.na(save_name)){
+      ggsave(file = glue("{today()}_{save_name}.png"))
+    }
   }
   
   # Affichage

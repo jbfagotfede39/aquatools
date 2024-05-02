@@ -114,6 +114,7 @@ poissons.plansdeau.ofbversteleos <- function(
   irstea_settings_v2 <-
     irstea_settings %>% 
     rename(Fishec_Action = Num_Pose) %>% 
+    formatage.noms_propres(Operation = "Nettoyage", ColonneEntree = "NOM_CARTHAGE", ColonneSortie = "NOM_CARTHAGE") %>% 
     formatage.ecosysteme(Operation = "Simplification", ColonneEntree = "NOM_CARTHAGE", ColonneSortie = "temporaire") %>% 
     mutate(temporaire = str_to_sentence(temporaire)) %>% 
     mutate(Fishec_Action = glue("{temporaire}_00{Fishec_Action}")) %>% 
@@ -225,13 +226,24 @@ poissons.plansdeau.ofbversteleos <- function(
   
   #### Transformation pour fish ####
   ### Filtrage des captures vides ###
-  irstea_poisson <-
+  irstea_fish <-
     irstea_poisson %>% 
     filter(!is.na(Num_Pose))
   
+  ### Gestion des lots N
+  # Mesure individuelle. La taille et le poids de chaque individu sont mesurés individuellement. L'effectif est obligatoirement égal à 1.
+  irstea_fish <-
+    irstea_fish %>% 
+    mutate(Eff_Lot = ifelse(Type_Lot == "N", 0, Eff_Lot))
+  
+  ### Gestion des lots S et L
+  irstea_fish_v2 <-
+    irstea_fish %>% 
+    mutate(Eff_Lot = ifelse(Type_Lot == "S", 0, Eff_Lot)) # Tous les individus d'un lot S sont contenus dans un lot L : on ne cherche à déterminer que leur distribution de taille
+  
   ### Transformation des lots I en lots G
   lots_a_calculer_tailles_min_max <-
-    irstea_poisson %>% 
+    irstea_fish_v2 %>% 
     filter(Type_Lot == "I") #%>% 
     # filter(is.na(Pds_Lot))
   
@@ -257,24 +269,24 @@ poissons.plansdeau.ofbversteleos <- function(
       mutate(Type_Lot = "G") %>% 
       select(match(names(lots_a_calculer_tailles_min_max), names(.)))
     
-    irstea_poisson_recalcule <- 
-      irstea_poisson %>% 
+    irstea_fish_v2_recalcule <- 
+      irstea_fish_v2 %>% 
       setdiff(lots_a_calculer_tailles_min_max) %>% 
       union(lots_calcules_tailles_min_max)
     
     ### Vérifications ###
-    n_original <- irstea_poisson %>% summarise(total = sum(as.numeric(Eff_Lot), na.rm = T)) %>% pull() # Les individus des lots I sont déjà dénombrés dans les lots, donc on peut supprimer les NA des lignes individuelles
-    n_recalcule <- irstea_poisson_recalcule %>% summarise(total = sum(as.numeric(Eff_Lot))) %>% pull()
+    n_original <- irstea_fish_v2 %>% summarise(total = sum(as.numeric(Eff_Lot), na.rm = T)) %>% pull() # Les individus des lots I sont déjà dénombrés dans les lots, donc on peut supprimer les NA des lignes individuelles
+    n_recalcule <- irstea_fish_v2_recalcule %>% summarise(total = sum(as.numeric(Eff_Lot))) %>% pull()
     if(n_original != n_recalcule) stop("Il y a une différence d'effectif total des captures après le recalcul des lots I en lots G")
   }
   
   if(lots_a_calculer_tailles_min_max %>% nrow() == 0){
-    irstea_poisson_recalcule <- irstea_poisson
+    irstea_fish_v2_recalcule <- irstea_fish_v2
   }
   
   ### Regroupement ###
-  irstea_poisson_v2 <- 
-    irstea_poisson_recalcule %>% 
+  irstea_fish_v3 <- 
+    irstea_fish_v2_recalcule %>% 
     rename(Fishec_Action = Num_Pose) %>% 
     mutate(temporaire = lac) %>% 
     mutate(temporaire = str_to_sentence(temporaire)) %>% 
@@ -345,8 +357,8 @@ poissons.plansdeau.ofbversteleos <- function(
   if(irstea_settings %>% filter(!grepl("FB|FP", Type_Engin)) %>% nrow() > 0) stop("Présence de types d'engin CEN autres que FP ou FB")
   if(irstea_settings_v2 %>% filter(Type_Fishing == "Autres") %>% nrow() > 0) stop("Présence de types d'engin non définis")
   if(irstea_settings_v2 %>% filter(is.na(Num_Net)) %>% nrow() > 0) stop("Présence de filets non nommés")
-  if(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_poisson_v2$Fishec_Action)) %>% nrow() > 0) warning("Présence d'actions de pêche sans capture (ou capture vide) en face")
-  if(irstea_poisson_v2 %>% filter(!(Fishec_Action %in% irstea_settings_v2$Fishec_Action)) %>% nrow() > 0) stop("Présence de capture (ou capture vide) sans action de pêche en face")
+  if(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_fish_v3$Fishec_Action)) %>% nrow() > 0) warning("Présence d'actions de pêche sans capture (ou capture vide) en face")
+  if(irstea_fish_v3 %>% filter(!(Fishec_Action %in% irstea_settings_v2$Fishec_Action)) %>% nrow() > 0) stop("Présence de capture (ou capture vide) sans action de pêche en face")
   
   #### Exportation ####
   nomfichier <- sub('\\..*$', '', basename(data))
@@ -355,7 +367,7 @@ poissons.plansdeau.ofbversteleos <- function(
   addWorksheet(resultats_poissons, sheetName = "setting")
   addWorksheet(resultats_poissons, sheetName = "fish")
   writeData(resultats_poissons, "setting", irstea_settings_v2, startCol = 1, startRow = 1, colNames = T) # writing content on the left-most column to be merged
-  writeData(resultats_poissons, "fish", irstea_poisson_v2, startCol = 1, startRow = 1, colNames = T) # writing content on the left-most column to be merged
+  writeData(resultats_poissons, "fish", irstea_fish_v3, startCol = 1, startRow = 1, colNames = T) # writing content on the left-most column to be merged
   freezePane(resultats_poissons, "setting", firstRow = TRUE) ## shortcut to firstActiveRow = 2
   freezePane(resultats_poissons, "fish", firstRow = TRUE) ## shortcut to firstActiveRow = 2
   

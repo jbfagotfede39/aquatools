@@ -8,12 +8,13 @@
 #' @param feuille Feuille où lire les données dans le cas de l'ouverture d'un fichier excel : \code{1} (par défaut)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param nbcolonnes Nombre de colonnes concernées
-#' @param typefichier Type de fichier : \code{.csv} (par défaut) ou \code{excel} ou \code{Interne}
+#' @param typefichier Type de fichier : \code{.csv} (par défaut), \code{excel}, \code{.ods} ou \code{Interne}
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm, mdy_hms, mdy_hm ou ymd_hms)
 #' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
 #' @import glue
+#' @import readODS
 #' @import testit
 #' @import tidyverse
 #' @export
@@ -29,7 +30,7 @@ chronique.ouverture <- function(
   feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
-  typefichier = c(".csv", "excel", "Interne"),
+  typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL"),
   formatmacmasalmo = F
@@ -52,6 +53,7 @@ if(Type == "Mesures"){
     if(nbcolonnes == 2){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "cc", col_names = F)}
+      if(typefichier == ".ods"){dataaimporter <- read_ods(Localisation, sheet = feuille, skip = skipvalue, col_types = "cc", col_names = F)}
       names(dataaimporter)[1] <- c('DateHeure')
       names(dataaimporter)[2] <- c('Valeur')
     }
@@ -59,16 +61,28 @@ if(Type == "Mesures"){
     if(nbcolonnes == 3){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc", col_names = F)}
+      if(typefichier == ".ods"){dataaimporter <- read_ods(Localisation, sheet = feuille, skip = skipvalue, col_types = "ctc", col_names = F)}
     }
     
     if(nbcolonnes == 4){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
+      if(typefichier == "excel"){data_a_tester <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = T)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc", col_names = F)}
+      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc", col_names = T)}
+      if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
+      if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
     }
     
     if(nbcolonnes == 5){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
+      if(typefichier == "excel"){data_a_tester <- read_excel(Localisation, sheet = feuille, skip = skipvalue-1, col_names = T)}
       if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctccc", col_names = F)}
+      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue-1, delim=";", col_types = "ctccc", col_names = T)}
+      if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
+      if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
+      if(names(data_a_tester)[5] %in% c("chmes_validation")) names(dataaimporter)[5] <- c('chmes_validation')
+      if(names(data_a_tester)[5] %in% c("chmes_mode_acquisition")) names(dataaimporter)[5] <- c('chmes_mode_acquisition')
+      if(names(data_a_tester)[5] %in% c("chmes_mode_acquisition ")) names(dataaimporter)[5] <- c('chmes_mode_acquisition')
     }
     
     if(nbcolonnes == 6){
@@ -84,7 +98,7 @@ if(formatmacmasalmo == F){
   # if(nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
   # if(nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
   if(!(names(dataaimporter)[4] %in% c("chmes_validation", "chmes_mode_acquisition")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[4] <- c('asup1')}
-  if(!(names(dataaimporter)[4] %in% c("chmes_validation", "chmes_mode_acquisition")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[5] <- c('asup2')}
+  if(!(names(dataaimporter)[5] %in% c("chmes_validation", "chmes_mode_acquisition")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[5] <- c('asup2')}
   if(nbcolonnes == 6){names(dataaimporter)[6] <- c('asup3')}
   }
 

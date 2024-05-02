@@ -1,5 +1,22 @@
 # NEWS - aquatools
 
+## 0.0.157 - 2024-05-02
+### Ajouts
+- `chronique.ouverture` : ajout de l'importation depuis des fichiers LibreOffice `.ods`
+- `poissons.contexte` : création
+- `poissons.cpue` : création
+- `poissons.plansdeau.ofbversteleos` : 
+  * ajout de la gestion des lots N et S/L concernant les effectifs totaux
+  * ajout de l'utilisation de `formatage.noms_propres` afin de reformater automatiquement les noms de milieux incorrects
+- `topographie.figure.profil` : ajout d'un paramètre de choix du nom du fichier enregistré
+- `topographie.figure.profil.automatique` : création
+
+### Modifications
+- `chronique.ouverture` : modification du traitement pour prise en compte des colonnes `chmes_validation` et `chmes_mode_acquisition` si elles sont déjà présentes dans le jeu de données
+
+### Corrections
+- `topographie.profil` : correction d'un nom de variable fonctionnel avec le script historique, mais qui était faux (effet confondant)
+
 ## 0.0.156 - 2024-02-14
 ### Ajouts
 - `PaletteAnnees.RData` : ajout d'années dans le jeu de données

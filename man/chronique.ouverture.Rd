@@ -14,7 +14,7 @@ chronique.ouverture(
   feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
-  typefichier = c(".csv", "excel", "Interne"),
+  typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel",
     "miniDOTregroupe", "EDF", "RuggedTROLL"),
@@ -34,7 +34,7 @@ chronique.ouverture(
 
 \item{nbcolonnes}{Nombre de colonnes concernées}
 
-\item{typefichier}{Type de fichier : \code{.csv} (par défaut) ou \code{excel} ou \code{Interne}}
+\item{typefichier}{Type de fichier : \code{.csv} (par défaut), \code{excel}, \code{.ods} ou \code{Interne}}
 
 \item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm, mdy_hms, mdy_hm ou ymd_hms)}
 
