@@ -59,6 +59,7 @@ topographie.figure.profil.automatique <- function(
     st_drop_geometry() %>% 
     summarise(moy = mean(tplv_coord_z)) %>% 
     pull()
+  if(is.na(ligne_eau_moyenne)) ligne_eau_moyenne <- 0 # Afin qu'il n'y ait pas d'affichage de la ligne d'eau via topographie.figure.profil
   
   terrain_naturel <- 
     points_projetes_sur_transect_commentes %>% 
