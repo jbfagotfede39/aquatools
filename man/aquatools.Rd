@@ -2,5 +2,21 @@
 % Please edit documentation in R/aquatools-package.r
 \docType{package}
 \name{aquatools}
+\alias{aquatools-package}
 \alias{aquatools}
 \title{aquatools.}
+\description{
+aquatools contains multiple tools to treat French freshwater data.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/jbfagotfede39/aquatools}
+  \item Report bugs at \url{https://github.com/jbfagotfede39/aquatools/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Jean-Baptiste Fagot \email{jean-baptiste.fagot@peche-jura.com}
+
+}

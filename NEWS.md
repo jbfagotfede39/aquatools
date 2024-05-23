@@ -1,5 +1,16 @@
 # NEWS - aquatools
 
+## 0.0.158 - 2024-05-23
+### Ajouts
+- `chronique.vue.dynamique` : création
+- `formatage.time` : création
+- `formatage.variables.renommage` : création
+- `PC.variables.renommage` : création
+
+### Corrections
+- `chronique.resultats.periode` : harmonisation des noms de variables temporaires
+- `topographie.figure.profil.automatique` : ajout d'un correctif permettant d'échapper l'affichage de la ligne d'eau s'il n'y a pas de mesure associée au niveau du transect
+
 ## 0.0.157 - 2024-05-02
 ### Ajouts
 - `chronique.ouverture` : ajout de l'importation depuis des fichiers LibreOffice `.ods`
