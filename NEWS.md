@@ -1,5 +1,16 @@
 # NEWS - aquatools
 
+## 0.0.159 - 2024-06-03
+### Ajouts
+- `BDD.ouverture` : 
+  * Ajout de la machine de Malidé
+  * Retrait de la machine de Quentin
+
+### Corrections
+- `poissons.captures` : 
+  * Refactoring du code de filtrage afin qu'il soit réalisé côté base de données
+  * Ajout d'un test afin de savoir si le nom de station contient une apostrophe, ce qui posera problème en SQL
+
 ## 0.0.158 - 2024-05-23
 ### Ajouts
 - `chronique.vue.dynamique` : création

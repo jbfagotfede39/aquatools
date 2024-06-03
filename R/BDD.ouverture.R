@@ -86,10 +86,7 @@ BDD.ouverture <- function(
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.local"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.cloud.peche-jura.com"){utilisateur <- "adrien"}
-    if(system('uname -n',intern=T) == "iMac-de-Quentin"){utilisateur <- "quentin"}
-    if(system('uname -n',intern=T) == "iMac-de-Quentin.local"){utilisateur <- "quentin"}
-    if(system('uname -n',intern=T) == "Client_iMac-de-Quentin"){utilisateur <- "quentin"}
-    if(system('uname -n',intern=T) == "Client_iMac-de-Quentin.local"){utilisateur <- "quentin"}
+    if(system('uname -n',intern=T) == "Air-de-Malide"){utilisateur <- "malide"}
     if(system('uname -n',intern=T) == "postgis" & client == "serveur"){utilisateur <- "automate"}
     if(system('uname -n',intern=T) == "postgis" & client == "shinyserver" & system('whoami', intern=T) == "ubuntu") utilisateur <- "appshiny"
     if(system('uname -n',intern=T) == "r-ftp" & client == "serveur"){utilisateur <- "automate"}
@@ -98,6 +95,7 @@ BDD.ouverture <- function(
 if(is.na(utilisateur) == TRUE){
   if(client == "serveur" & system('whoami',intern=T) == "jb") utilisateur <- "jb"
   if(client == "serveur" & system('whoami',intern=T) == "adrien") utilisateur <- "adrien"
+  if(client == "serveur" & system('whoami',intern=T) == "malide") utilisateur <- "malide"
   if(client == "serveur" & system('whoami',intern=T) == "ubuntu") utilisateur <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
   }
 
