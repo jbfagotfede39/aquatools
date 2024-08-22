@@ -32,7 +32,7 @@ chronique.ouverture <- function(
   nbcolonnes = 2,
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread"),
   formatmacmasalmo = F
 )
 {
@@ -447,7 +447,37 @@ if(typemesure == "Piézométrie"){
                                    typemesure == "Conductivité" ~ "µS/cm",
                                    typemesure == "Oxygénation" ~ "mg/L")
           )
-      }
+    }
+    
+    if(typecapteur == "Aquaread"){
+      ## Définition du point de suivi
+      modem <- basename(Localisation) %>% stringr::str_extract(pattern = "[:alnum:]+")
+      capteur <- ifelse(modem == "215640287", "21584010", NA_character_)
+      station <- ifelse(modem == "215640287", "ILA", NA_character_)
+      modem;capteur;station
+      
+      ## Importation des données
+      dataaimporter <-
+        read_csv(Localisation) %>% 
+        rename(Heure = Time) %>%
+        rename(`Piézométrie compensée` = `Level(m)`) %>%
+        rename(`Thermie piézométrique` = `Water Temperature(C)`) %>%
+        rename(`Piézométrie brute` = `Water Pressure(mB)`) %>%
+        rename(`Thermie barométrique` = `Air Temperature(C)`) %>%
+        rename(`Barométrie` = `Air Pressure(mB)`) %>%
+        select(Date, Heure, `Piézométrie compensée`, `Thermie piézométrique`, `Piézométrie brute`, `Thermie barométrique`, `Barométrie`) %>% 
+        pivot_longer(-c(Date, Heure), names_to = "typemesure", values_to = "Valeur") %>% 
+        mutate(Date = dmy(Date)) %>% 
+        mutate(Capteur = capteur) %>%
+        mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
+        mutate(Valeur = ifelse(typemesure == "Piézométrie compensée", Valeur*100, Valeur)) %>% 
+        mutate(unite = case_when(typemesure == "Piézométrie compensée" ~ "cm H2O",
+                                 typemesure == "Piézométrie brute" ~ "mBar",
+                                 typemesure == "Thermie piézométrique" ~ "°C",
+                                 typemesure == "Thermie barométrique" ~ "°C",
+                                 typemesure == "Barométrie" ~ "mBar")
+        )
+    }
       
   }
   
