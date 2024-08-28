@@ -477,6 +477,7 @@ if(typemesure == "Piézométrie"){
         pivot_longer(-c(Date, Heure), names_to = "typemesure", values_to = "Valeur") %>% 
         mutate(Date = dmy(Date)) %>% 
         mutate(Capteur = capteur) %>%
+        mutate(Coderhj = station) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 
         mutate(Valeur = ifelse(typemesure == "Piézométrie compensée", Valeur*100, Valeur)) %>% 
         mutate(unite = case_when(typemesure == "Piézométrie compensée" ~ "cm H2O",
