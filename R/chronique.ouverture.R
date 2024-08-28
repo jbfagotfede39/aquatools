@@ -454,17 +454,25 @@ if(typemesure == "Piézométrie"){
       modem <- basename(Localisation) %>% stringr::str_extract(pattern = "[:alnum:]+")
       capteur <- ifelse(modem == "215640287", "21584010", NA_character_)
       station <- ifelse(modem == "215640287", "ILA", NA_character_)
-      modem;capteur;station
+      # modem;capteur;station
       
       ## Importation des données
       dataaimporter <-
-        read_csv(Localisation) %>% 
-        rename(Heure = Time) %>%
-        rename(`Piézométrie compensée` = `Level(m)`) %>%
-        rename(`Thermie piézométrique` = `Water Temperature(C)`) %>%
-        rename(`Piézométrie brute` = `Water Pressure(mB)`) %>%
-        rename(`Thermie barométrique` = `Air Temperature(C)`) %>%
-        rename(`Barométrie` = `Air Pressure(mB)`) %>%
+        # read_csv(Localisation) %>% 
+        # rename(Heure = Time) %>%
+        # rename(`Piézométrie compensée` = `Level(m)`) %>%
+        # rename(`Thermie piézométrique` = `Water Temperature(C)`) %>%
+        # rename(`Piézométrie brute` = `Water Pressure(mB)`) %>%
+        # rename(`Thermie barométrique` = `Air Temperature(C)`) %>%
+        # rename(`Barométrie` = `Air Pressure(mB)`) %>%
+        read_csv(Localisation, col_names = F) %>% 
+        rename(Date = X2) %>%
+        rename(Heure = X3) %>%
+        rename(`Piézométrie compensée` = X4) %>%
+        rename(`Thermie piézométrique` = X5) %>%
+        rename(`Piézométrie brute` = X12) %>%
+        rename(`Thermie barométrique` = X13) %>%
+        rename(`Barométrie` = X14) %>%
         select(Date, Heure, `Piézométrie compensée`, `Thermie piézométrique`, `Piézométrie brute`, `Thermie barométrique`, `Barométrie`) %>% 
         pivot_longer(-c(Date, Heure), names_to = "typemesure", values_to = "Valeur") %>% 
         mutate(Date = dmy(Date)) %>% 

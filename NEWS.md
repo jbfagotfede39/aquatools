@@ -1,9 +1,14 @@
 # NEWS - aquatools
 
-## 0.0.160 - 2024-08-22
+## 0.0.161 - 2024-08-28
 ### Ajouts
 - `BDD.ouverture` : 
   * Ajout de la machine de Malidé dans une deuxième version
+### Corrections
+- `chronique.ouverture` : correctif pour utilisation plus générale de l'ouverture des données "Aquaread LeveLine 10m ABS" transmises par un modem "Aquaread AquaTel LeveLine"
+
+## 0.0.160 - 2024-08-22
+### Ajouts
 - `chronique.ouverture` : ouverture des données "Aquaread LeveLine 10m ABS" transmises par un modem "Aquaread AquaTel LeveLine"
 
 ## 0.0.159 - 2024-06-03
