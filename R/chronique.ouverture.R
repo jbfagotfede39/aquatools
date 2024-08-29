@@ -476,6 +476,7 @@ if(typemesure == "Piézométrie"){
         select(Date, Heure, `Piézométrie compensée`, `Thermie piézométrique`, `Piézométrie brute`, `Thermie barométrique`, `Barométrie`) %>% 
         pivot_longer(-c(Date, Heure), names_to = "typemesure", values_to = "Valeur") %>% 
         mutate(Date = dmy(Date)) %>% 
+        mutate(Heure = as.character(Heure)) %>% 
         mutate(Capteur = capteur) %>%
         mutate(Coderhj = station) %>%
         mutate(Valeur = as.numeric( sub(",", ".", Valeur))) %>% 

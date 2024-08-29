@@ -1,5 +1,9 @@
 # NEWS - aquatools
 
+## 0.0.163 - 2024-08-29
+### Corrections
+- `chronique.ouverture` : correctif 3 pour format de collecte heure lors de l'ouverture des données "Aquaread LeveLine 10m ABS" transmises par un modem "Aquaread AquaTel LeveLine"
+
 ## 0.0.162 - 2024-08-28
 ### Corrections
 - `chronique.ouverture` : correctif 2 pour collecte nom de la station lors de l'ouverture des données "Aquaread LeveLine 10m ABS" transmises par un modem "Aquaread AquaTel LeveLine"
