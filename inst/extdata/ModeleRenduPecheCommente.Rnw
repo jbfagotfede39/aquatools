@@ -2,7 +2,7 @@
   %%% Encodage
    \usepackage[utf8]{inputenc}
    \usepackage[T1]{fontenc}
-	 \usepackage[french]{babel}
+	 %\usepackage[french]{babel}
 	 \usepackage{lmodern}
 	 \usepackage[pdftex]{hyperref}
 	 \usepackage{csquotes}

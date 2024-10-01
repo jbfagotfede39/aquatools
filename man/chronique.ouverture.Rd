@@ -14,10 +14,11 @@ chronique.ouverture(
   feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
+  separateur = c(";", ","),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel",
-    "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread"),
+    "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens"),
   formatmacmasalmo = F
 )
 }
@@ -33,6 +34,8 @@ chronique.ouverture(
 \item{skipvalue}{Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)}
 
 \item{nbcolonnes}{Nombre de colonnes concernées}
+
+\item{separateur}{Séparateur de colonnes : \code{;} (par défaut), \code{,}}
 
 \item{typefichier}{Type de fichier : \code{.csv} (par défaut), \code{excel}, \code{.ods} ou \code{Interne}}
 

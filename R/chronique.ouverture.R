@@ -8,6 +8,7 @@
 #' @param feuille Feuille où lire les données dans le cas de l'ouverture d'un fichier excel : \code{1} (par défaut)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param nbcolonnes Nombre de colonnes concernées
+#' @param separateur Séparateur de colonnes : \code{;} (par défaut), \code{,}
 #' @param typefichier Type de fichier : \code{.csv} (par défaut), \code{excel}, \code{.ods} ou \code{Interne}
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm, mdy_hms, mdy_hm ou ymd_hms)
 #' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)
@@ -30,9 +31,10 @@ chronique.ouverture <- function(
   feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
+  separateur = c(";", ","),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens"),
   formatmacmasalmo = F
 )
 {
@@ -52,7 +54,7 @@ if(Type == "Mesures"){
   if(typemesure == "Thermie"){
     if(nbcolonnes == 2){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "cc", col_names = F)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "cc", col_names = F) %>% filter(!is.na(X2))}
       if(typefichier == ".ods"){dataaimporter <- read_ods(Localisation, sheet = feuille, skip = skipvalue, col_types = "cc", col_names = F)}
       names(dataaimporter)[1] <- c('DateHeure')
       names(dataaimporter)[2] <- c('Valeur')
@@ -60,15 +62,15 @@ if(Type == "Mesures"){
     
     if(nbcolonnes == 3){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctc", col_names = F)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctc", col_names = F)}
       if(typefichier == ".ods"){dataaimporter <- read_ods(Localisation, sheet = feuille, skip = skipvalue, col_types = "ctc", col_names = F)}
     }
     
     if(nbcolonnes == 4){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
       if(typefichier == "excel"){data_a_tester <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = T)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc", col_names = F)}
-      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcc", col_names = T)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctcc", col_names = F)}
+      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctcc", col_names = T)}
       if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
       if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
     }
@@ -76,8 +78,8 @@ if(Type == "Mesures"){
     if(nbcolonnes == 5){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
       if(typefichier == "excel"){data_a_tester <- read_excel(Localisation, sheet = feuille, skip = skipvalue-1, col_names = T)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctccc", col_names = F)}
-      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue-1, delim=";", col_types = "ctccc", col_names = T)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctccc", col_names = F)}
+      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue-1, delim=separateur, col_types = "ctccc", col_names = T)}
       if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
       if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
       if(names(data_a_tester)[5] %in% c("chmes_validation")) names(dataaimporter)[5] <- c('chmes_validation')
@@ -86,7 +88,7 @@ if(Type == "Mesures"){
     }
     
     if(nbcolonnes == 6){
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=";", col_types = "ctcccc", col_names = F)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctcccc", col_names = F)}
     }
     
 if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développer")
@@ -493,11 +495,12 @@ if(typemesure == "Piézométrie"){
   
   if(typemesure == "Oxygénation"){
     if(typecapteur == "Non précisé"){
-    typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOTindividuel) ou 3 (miniDOTregroupe) : ")
+    typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOTindividuel) ou 3 (miniDOTregroupe) ou 4 (WiSens) : ")
     if (!(typecapteur == 1 | typecapteur == 2)) {stop("Valeur non disponible")}
     if (typecapteur == 1) {typecapteur <- "Hobo"}
     if (typecapteur == 2) {typecapteur <- "miniDOTindividuel"}
     if (typecapteur == 3) {typecapteur <- "miniDOTregroupe"}
+    if (typecapteur == 4) {typecapteur <- "WiSens"}
     }
     
     if(typecapteur == "miniDOTindividuel" | typecapteur == "miniDOTregroupe"){
@@ -513,6 +516,16 @@ if(typemesure == "Piézométrie"){
       if(typecapteur == "miniDOTindividuel") dataaimporter <- dataaimporter %>% dplyr::select(-Saturation) %>% PC.saturationO2()
     }
     
+    if(typecapteur == "WiSens"){
+      dataaimporter <- 
+        read_csv2(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd") %>% 
+        filter(!is.na(Thermie)) %>% 
+        mutate(Time = as_datetime(Time)) %>% 
+        mutate(Date = ymd(format(Time, format="%Y-%m-%d"))) %>% 
+        mutate(Heure = format(Time, format="%H:%M:%S")) %>% 
+        dplyr::select(Date, Heure, Concentration, Pression, Thermie, Saturation)
+      }
+    
     dataaimporter <- 
       dataaimporter %>% 
       filter(!is.na(Thermie)) %>% 
@@ -521,6 +534,7 @@ if(typemesure == "Piézométrie"){
       mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
       mutate(unite = ifelse(typemesure == "Concentration", "mg/L", unite)) %>% 
       mutate(unite = ifelse(typemesure == "Saturation", "%", unite)) %>% 
+      mutate(unite = ifelse(typemesure == "Pression", "Bar", unite)) %>% 
       mutate(typemesure = ifelse(grepl("Concentration|Saturation", typemesure), "Oxygénation", typemesure))
   }
   
