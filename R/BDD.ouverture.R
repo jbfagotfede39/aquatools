@@ -87,7 +87,9 @@ BDD.ouverture <- function(
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.local"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.cloud.peche-jura.com"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "Air-de-Malide"){utilisateur <- "malide"}
+    if(system('uname -n',intern=T) == "MacBookesident6"){utilisateur <- "malide"}
     if(system('uname -n',intern=T) == "Air-de-Malide.lan"){utilisateur <- "malide"}
+    if(system('uname -n',intern=T) == "MacBookesident6.lan"){utilisateur <- "malide"}
     if(system('uname -n',intern=T) == "postgis" & client == "serveur"){utilisateur <- "automate"}
     if(system('uname -n',intern=T) == "postgis" & client == "shinyserver" & system('whoami', intern=T) == "ubuntu") utilisateur <- "appshiny"
     if(system('uname -n',intern=T) == "r-ftp" & client == "serveur"){utilisateur <- "automate"}
