@@ -9,7 +9,6 @@
 #' @param projet Nom du projet
 #' @keywords chronique
 #' @import RColorBrewer
-#' @import tcltk
 #' @import tidyverse
 #' @export
 #' @examples
@@ -52,7 +51,8 @@ chronique.figure.longitudinale <- function(
   
   #### Calcul des distances à la source homogènes ####
   if(Contexte$nmilieu != 1){
-    ecosystemeppal <- tcltk::tk_select.list(sort(unlist(strsplit(Contexte$milieu, ";"))), multiple = F, title = "Écosystème principal")
+    # ecosystemeppal <- tcltk::tk_select.list(sort(unlist(strsplit(Contexte$milieu, ";"))), multiple = F, title = "Écosystème principal")
+    stop("Commande à remplacer pour supprimer la dépendance à tcltk::tk_select.list")
   }
   
   data <-
