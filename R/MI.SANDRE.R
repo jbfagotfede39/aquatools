@@ -46,6 +46,13 @@ MI.SANDRE <- function(data)
                                  ifelse(is.na(data$sysord_rangsandre), NA, data$sysord_rangsandre), # on regarde si sysord_rangsandre vide, si vide alors NA, sinon sysord_rangsandre ajouté
                                  data$taxon_sandre) # Si taxon_sandre pas vide, alors on remet taxon_sandre
   
-  return(data)
+  #### Nettoyage & reformatage ####
+  data_v2 <- 
+    data %>% 
+    relocate(taxon_libelle, .after = "id") %>% 
+    relocate(taxon_sandre, .after = "id")
+  
+  #### Sortie ####
+  return(data_v2)
   
 } # Fin de la fonction
