@@ -1,5 +1,43 @@
 # NEWS - aquatools
 
+## 0.0.165 - 2024-12-24
+### Ajouts
+- Ajout d'une `licence` et d'un `readme`
+- Ajout de dépendances manquantes : `dygraphs`, `janitor`, `readODS`, `xts` (close #85)
+- `SIG.conversion.dec2l93` : création
+- `chronique.bruit.temps` : création
+- `chronique.contexte` : ajout du calcul de `nmesure`
+- `chronique.ouverture` : 
+  * Ajout d'une bascule automatique si nécessaire de `chsta_codemo` vers `chsta_coderhj`
+  * Ajout d'un test sur la longueur des commentaires importés, et remplacement si vide, afin d'obtenir les bons datatypes
+- `formatage.time` : ajout de cas de traitement pour renommage en sortie
+- `formatage.date.heure` : création - Permet de faire l'inverse de `formatage.time`
+
+### Modifications
+- `BDD.ouverture` : 
+  * Complément avec machine professionnelle Malidé
+  * Ajout d'une entrée pour le poste de JB suite à MAJ MacOS
+- `chronique.cle` : modification de l'ordre des paramètres afin d'en faciliter l'utilisation
+- `chronique.recalage.valeur` : reformatage
+- `MI.SANDRE` : modification de la localisation des colonnes en début de jeu de données
+
+### Corrections
+- `chronique.figure.longitudinale` : suppression de la dépendance à `tcltk::tk_select.list`
+
+## 0.0.164 - 2024-10-01
+### Ajouts
+- `chronique.ouverture` : 
+  * Ajout d'un paramètre `separateur` de colonnes
+  * Ajout du traitement des sondes WiSens DO
+- `sapl.ouverture.adhesions` : création
+
+### Modifications
+- `chronique.ouverture` : Ajout d'un filtre afin de supprimer les lignes partiellement vides qui générent ensuite des warnings lors du parsing des dates/heures et qui empêchent le traitement du fichier
+
+### Corrections
+- Suppression de l'appel du package `babel` dans le fichier `ModeleRenduPeche.Rnw` qui ne fonctionne pas sur le poste d'Adrien
+- Suppression de l'appel du package `babel` dans le fichier `ModeleRenduPecheCommente.Rnw` qui ne fonctionne pas sur le poste d'Adrien
+
 ## 0.0.163 - 2024-08-29
 ### Corrections
 - `chronique.ouverture` : correctif 3 pour format de collecte heure lors de l'ouverture des données "Aquaread LeveLine 10m ABS" transmises par un modem "Aquaread AquaTel LeveLine"

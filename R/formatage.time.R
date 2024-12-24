@@ -38,8 +38,18 @@ formatage.time <- function(
       data_corrigees
     
     ## Renommage correct ##
-    data_ok <-
+    data_sortie <-
       data_nettoyees %>% 
+      {if(data %>% select(contains("chmes_coderhj")) %>% ncol() != 0) rename(., chmes_coderhj = param_coderhj) else .} %>% 
+      {if(data %>% select(contains("chmesgr_coderhj")) %>% ncol() != 0) rename(., chmesgr_coderhj = param_coderhj) else .} %>% 
+      {if(data %>% select(contains("chsvi_coderhj")) %>% ncol() != 0) rename(., chsvi_coderhj = param_coderhj) else .} %>% 
+      {if(data %>% select(contains("chres_coderhj")) %>% ncol() != 0) rename(., chres_coderhj = param_coderhj) else .} %>% 
+      {if(data %>% select(contains("pcmes_coderhj")) %>% ncol() != 0) rename(., pcmes_coderhj = param_coderhj) else .} %>% 
+      {if(data %>% select(contains("pcsvi_coderhj")) %>% ncol() != 0) rename(., pcsvi_coderhj = param_coderhj) else .} %>% 
+      {if(data %>% select(contains("chmes_capteur")) %>% ncol() != 0) rename(., chmes_capteur = param_capteur) else .} %>% 
+      # {if(data %>% select(contains("chmesgr_coderhj")) %>% ncol() != 0) rename(., chmesgr_coderhj = param_coderhj) else .} %>% 
+      {if(data %>% select(contains("chsvi_capteur")) %>% ncol() != 0) rename(., chsvi_capteur = param_capteur) else .} %>% 
+      # {if(data %>% select(contains("chres_coderhj")) %>% ncol() != 0) rename(., chres_coderhj = param_coderhj) else .} %>% 
       {if(data %>% select(contains("chmes_date")) %>% ncol() != 0) rename(., chmes_date = param_date) else .} %>% 
       {if(data %>% select(contains("chmesgr_date")) %>% ncol() != 0) rename(., chmesgr_date = param_date) else .} %>% 
       {if(data %>% select(contains("chsvi_date")) %>% ncol() != 0) rename(., chsvi_date = param_date) else .} %>% 
@@ -69,8 +79,11 @@ formatage.time <- function(
       {if(data %>% select(contains("chsvi_unite")) %>% ncol() != 0) rename(., chsvi_unite = param_unite) else .} %>% 
       {if(data %>% select(contains("chres_unite")) %>% ncol() != 0) rename(., chres_unite = param_unite) else .} %>% 
       {if(data %>% select(contains("pcmes_unite")) %>% ncol() != 0) rename(., pcmes_unite = param_unite) else .} %>% 
-      {if(data %>% select(contains("pcsvi_unite")) %>% ncol() != 0) rename(., pcsvi_unite = param_unite) else .}
+      {if(data %>% select(contains("pcsvi_unite")) %>% ncol() != 0) rename(., pcsvi_unite = param_unite) else .} %>% 
+      {if(data %>% select(contains("chmes_validation")) %>% ncol() != 0) rename(., chmes_validation = param_validation) else .} %>%
+      {if(data %>% select(contains("chmes_mode_acquisition")) %>% ncol() != 0) rename(., chmes_mode_acquisition = param_mode_acquisition) else .} %>% 
+      {if(data %>% select(contains("chmes_mode_integration")) %>% ncol() != 0) rename(., chmes_mode_integration = param_mode_integration) else .}
   
-return(data_ok)
+return(data_sortie)
 
 } # Fin de la fonction

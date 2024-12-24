@@ -12,8 +12,8 @@
 #' chronique.recalage.valeur(data, decalage = 258.58)
 #' chronique.recalage.valeur(decalage = -57)
 
-chronique.recalage.valeur <- function(data, 
-                               decalage = NA_real_)
+chronique.recalage.valeur <- function(data,
+                                      decalage = NA_real_)
 {
 
   ##### Nettoyage & reformatage #####

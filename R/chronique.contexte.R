@@ -70,7 +70,8 @@ chronique.contexte <- function(
     add_column(ntypemesure = n_distinct(datacompletees$typemesure)) %>% 
     add_column(nunite = n_distinct(datacompletees$unite, na.rm = T)) %>% 
     add_column(nannee = n_distinct(datacompletees$annee)) %>% 
-    add_column(nmilieu = n_distinct(datacompletees$milieu, na.rm = T))
+    add_column(nmilieu = n_distinct(datacompletees$milieu, na.rm = T)) %>% 
+    add_column(nmesure = nrow(datacompletees))
   
   #### Extraction sous forme de liste ####
   Contexte <- 

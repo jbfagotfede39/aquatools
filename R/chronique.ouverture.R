@@ -724,6 +724,8 @@ dataaimporter <-
   rename_all(list(~str_replace(., "[[:punct:]]", "_"))) %>% 
   rename_all(list(~str_replace(., "chsta_", ""))) %>% # car parfois déjà présent devant certains noms de colonnes dans excel
   rename_all(list(~str_c("chsta_",.))) %>% 
+  mutate(chsta_codesie = ifelse(!is.na(chsta_codesie) & nchar(chsta_codesie) == 7, glue("0{chsta_codesie}"), chsta_codesie)) %>% 
+  mutate(chsta_coderhj = ifelse(!is.na(chsta_codemo) & is.na(chsta_coderhj), chsta_codemo, chsta_coderhj)) %>% 
   mutate(chsta_coord_x = ifelse(is.na(chsta_coord_x) & "chsta_coord_xl93" %in% names(.), chsta_coord_xl93, chsta_coord_x)) %>% 
   mutate(chsta_coord_y = ifelse(is.na(chsta_coord_y) & "chsta_coord_yl93" %in% names(.), chsta_coord_yl93, chsta_coord_y)) %>% 
   mutate(chsta_coord_x = ifelse(is.na(chsta_coord_x) & "chsta_coord_xliie" %in% names(.), chsta_coord_xliie, chsta_coord_x)) %>% 
@@ -735,7 +737,6 @@ dataaimporter <-
   dplyr::select(-(matches("chsta_coord_yl93"))) %>% 
   dplyr::select(-(matches("chsta_coord_xamont"))) %>% 
   dplyr::select(-(matches("chsta_coord_yaval"))) %>% 
-  mutate(chsta_codesie = ifelse(!is.na(chsta_codesie) & nchar(chsta_codesie) == 7, glue("0{chsta_codesie}"), chsta_codesie)) %>% 
   rowwise() %>% 
   mutate(chsta_distancesource_confluencedrainprincipal = ifelse("chsta_distancesource_confluencedrainprincipal" %in% names(.), chsta_distancesource_confluencedrainprincipal, NA)) %>% 
   mutate(chsta_milieucodehydro = ifelse("chsta_milieucodehydro" %in% names(.), chsta_milieucodehydro, NA)) %>% 
@@ -911,6 +912,7 @@ if(Type == "Commentaires"){
   
   dataaimporter <- read_excel(Localisation, sheet = feuille)
   if(all(names(dataaimporter) %in% names(Commentaires)) == FALSE) stop("Le fichier source de commentaires contient des noms de colonne à corriger")
+  if(dataaimporter %>% nrow() == 0) dataaimporter <- commentaires_structure %>% select(contains("chres"))
 }
 
 
