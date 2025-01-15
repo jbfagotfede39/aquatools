@@ -7,14 +7,15 @@
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
 #' @param Ymin Valeur minimale de l'axe des Y (-1 par défaut)
 #' @param Ymax Valeur maximale de l'axe des Y (aucune par défaut)
-#' @param affichagevide Si \code{TRUE} (par défault), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats
+#' @param affichagevide Si \code{TRUE} (par défaut), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats
 #' @param style En forme de boxplot (par défaut) ou de violon ou de courbes
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes
-#' @param save Si \code{FALSE} (par défault), n'enregistre pas les
-#'    figures. Si \code{TRUE}, les enregistre.
+#' @param palette Nom de la palette à utiliser : \code{Dark2} (par défaut), \code{Spectral}, \code{Set3} ou autre à préciser
+#' @param save Si \code{FALSE} (par défaut), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
+#' @import scales
 #' @import tidyverse
 #' @export
 #' @examples
@@ -32,6 +33,7 @@ chronique.figure.interannuelle <- function(
   affichagevide = TRUE,
   style = c("boxplot", "violon", "courbes"),
   datedebutanneebiol = "10-01",
+  palette = "Dark2",
   save = F,
   projet = NA_character_,
   format = ".png")
@@ -40,55 +42,25 @@ chronique.figure.interannuelle <- function(
   ## Évaluation des choix
   typemesure <- match.arg(typemesure)
   style <- match.arg(style)
-  
-##### -------------- A FAIRE -------------- #####
-# Implantation de chronique.contexte()
-# Implantation de chronique.figure.parametres()
-# Création d'une fonction chronique.palette(), à mutualiser avec chronique.figure.cumul() et chronique.figure.interannuelle()
-# Vérifier qu'il y a bien un filtre sur les dix dernières années ?
-##### ##### ##### ##### ##### ##### ##### ##### 
 
-  ##### Contexte de la chronique #####
-  ## Nouvelle version en cours d'implémentantion ## (avec minuscule : contexte)
+  #### Complément ####
+  if("chmes_coderhj" %in% colnames(data) == FALSE){data <- data %>% mutate(chmes_coderhj = NA)}
+  if("chmes_typemesure" %in% colnames(data) == FALSE){data <- data %>% mutate(chmes_typemesure = typemesure)}
+
+  ##### Contexte #####
   contexte <- chronique.contexte(data)
-  
-  ## Ancienne version ## (avec majuscule : Contexte)
-  # Calcul du nombre de stations ##
-  if("chmes_coderhj" %in% colnames(data)) Contexte <- tibble(nstation = n_distinct(data$chmes_coderhj))
-  if("chmes_coderhj" %in% colnames(data) == FALSE){
-    Contexte <- tibble(nstation = 1)
-    data <- data %>% mutate(chmes_coderhj = NA)
-  }
-  if("chmes_typemesure" %in% colnames(data) == FALSE){
-    data <- data %>% mutate(chmes_typemesure = typemesure)
-  }
+  if(contexte$nstation == 0) stop("Aucune donnée dans la chronique à analyser")
+  if(contexte$nstation > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer")
+  if(contexte$ntypemesure > 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
+  if(contexte$nstation > 1) stop("Plusieurs chmes_coderhj au sein du jeu de données")
 
-  if(Contexte$nstation == 0) stop("Aucune donnée dans la chronique à analyser")
-  if(Contexte$nstation > 1) stop("Différentes stations dans la chronique à analyser - Cas à développer")
-
-  # Calcul du nombre d'années biologiques ##
+  #### Nettoyage & reformatage ####
+  if(nchar(Titre) == 0) Titre <- contexte$station
+  if(contexte$typemesure != typemesure) {
+    typemesure <- contexte$typemesure
+    warning("Attention le typemesure fourni est différent de celui des données : c'est ce dernier qui a été retenu")
+  }
   if(!("chmes_anneebiol" %in% names(data))) data <- data %>% formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol)
-  Contexte$nannee <- n_distinct(data$chmes_anneebiol)
-  
-  # chmes_typemesure
-  if(testit::has_error(data %>%
-                       distinct(chmes_typemesure) %>%
-                       bind_cols(Contexte)) == TRUE) stop("Plusieurs chmes_typemesure au sein du jeu de données")
-  Contexte <-
-    data %>%
-    distinct(chmes_typemesure) %>%
-    bind_cols(Contexte)
-  typemesure <- Contexte$chmes_typemesure
-  
-  # Stations
-  if(testit::has_error(data %>%
-                       distinct(chmes_coderhj) %>%
-                       bind_cols(Contexte)) == TRUE) stop("Plusieurs chmes_coderhj au sein du jeu de données")
-  Contexte <-
-    data %>%
-    distinct(chmes_coderhj) %>%
-    bind_cols(Contexte)
-  if(nchar(Titre) == 0) Titre <- Contexte$chmes_coderhj
   
   #### Ajustement des paramètres en fonction du typemesure ####
   if(typemesure == "Thermie" | typemesure == "Thermie barométrique" | typemesure == "Thermie piézométrique"){
@@ -209,10 +181,10 @@ ggplot <- ggplot + geom_text(data = ValeursRemarquablesMaxI, aes(as.character(An
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM), colour = "#5f90ff")
 ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM-2*ecartvisuel, label=AnneeVMinVMM), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM), colour = "red")
-if(Contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM+2*ecartvisuel, label=AnneeVMaxVMM), size = 2.5)
+if(contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM+2*ecartvisuel, label=AnneeVMaxVMM), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMoyVMM), colour = "orange")
-if(Contexte$nannee == 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " année")), size = 2.5)
-if(Contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " années")), size = 2.5)
+if(contexte$nannee == 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " année")), size = 2.5)
+if(contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " années")), size = 2.5)
 }
   
   #### Cas avec courbes annuelles #####
@@ -225,31 +197,30 @@ if(Contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquables
       formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol)
     
     # Recalage sur une année arbritraire commune afin de pouvoir comparer les dates ensembles
-    year(syntjour$chmes_date[str_sub(syntjour$chmes_date, 6, 10) >= datedebutanneebiol]) <- 2001 # Année arbitraire afin de pouvoir les projeter toutes ensemble
-    year(syntjour$chmes_date[str_sub(syntjour$chmes_date, 6, 10) < datedebutanneebiol]) <- 2002 # Année arbitraire afin de pouvoir les projeter toutes ensemble
-    
+    syntjour <- syntjour %>% formatage.annee.neutre()
+
     ## Palette de couleurs ##
-    if(Contexte$nannee != 1 | Contexte$nstation != 1){
+    if(contexte$nannee != 1 | contexte$nstation != 1){
       # data(PaletteAnnees) # Couleurs trop proches pour années successives
-      if(Contexte$nannee * Contexte$nstation <= 11){PaletteCouples <- RColorBrewer::brewer.pal(Contexte$nannee * Contexte$nstation, "Spectral")} #Set3
-      if(Contexte$nannee * Contexte$nstation > 11){
+      if(contexte$nannee * contexte$nstation <= 7){PaletteCouples <- RColorBrewer::brewer.pal(contexte$nannee * contexte$nstation, palette)}
+      if(contexte$nannee * contexte$nstation > 7){
         syntjour <- syntjour %>% chronique.cle()
         colourCount <- length(unique(syntjour$Cle))
-        getPalette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral")) #Set3
+        getPalette <- colorRampPalette(RColorBrewer::brewer.pal(contexte$nannee * contexte$nstation, palette))
         PaletteCouples <- getPalette(colourCount)
       }
     }
   
-ggplot <- ggplot(syntjour, aes(chmes_date))
+ggplot <- ggplot(syntjour, aes(chmes_date_anneeneutre))
 ggplot <- ggplot + geom_line(aes(y = VMoyJ, colour = as.character(chmes_anneebiol)))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE){
-  if(grepl("Thermie", typemesure)) ggplot <- ggplot + ylim(0,as.numeric(Ymax))
+  if(grepl("Thermie", typemesure)) ggplot <- ggplot + ylim(0, as.numeric(Ymax))
   if(grepl("Piézométrie", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
   if(grepl("Oxygénation", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
   }
-if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
-ggplot <- ggplot + scale_x_date(date_labels = "%b")
-if(Contexte$nannee != 1 | Contexte$nstation != 1) ggplot <- ggplot + scale_colour_manual(values = PaletteCouples)
+if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin), as.numeric(Ymax))
+ggplot <- ggplot + scale_x_date(labels = date_format("%b", locale = "fr"))
+if(contexte$nannee != 1 | contexte$nstation != 1) ggplot <- ggplot + scale_colour_manual(values = PaletteCouples)
 ggplot <- ggplot + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
 ggplot <- ggplot + theme_bw()
 }

@@ -107,7 +107,7 @@ chronique.figure.depassementscalendaires <- function(
     x = "Date",
     y = "Année biologique",
     fill = legendeTitre)
-  ggplot <- ggplot + scale_x_date(date_labels = "%b", date_breaks = "3 months", minor_breaks = "1 month")
+  ggplot <- ggplot + scale_x_date(labels = date_format("%b", locale = "fr"), date_breaks = "3 months", minor_breaks = "1 month")
   cols <- structure(c(couleur_superieure, couleur_inferieure), .Names = c(etiquette_superieure, etiquette_inferieure))
   if(affichagevide == T) ggplot <- ggplot + scale_y_discrete(drop=FALSE) # Afin de conserver toutes les années et que les figures soient avec les mêmes axes Y
   ggplot <- ggplot + scale_fill_manual(values = cols)

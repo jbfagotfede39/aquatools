@@ -26,6 +26,7 @@ formatage.annee.biologique <- function(
   #### Formatage ####
   data <- 
     data %>% 
+    ungroup() %>% 
     dplyr::select(-contains("anneebiol")) # On l'enlève si elle existe déjà pour être certain de calculer avec la bonne date de seuil
   
   data_renommees <- 

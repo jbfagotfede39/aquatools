@@ -118,7 +118,7 @@ chronique.figure.classescalendaires <- function(
   ggplot <- ggplot + theme(axis.title.x = element_blank(),
                            axis.title.y = element_blank()
   )
-  ggplot <- ggplot + scale_x_date(date_labels = "%b")
+  ggplot <- ggplot + scale_x_date(labels = date_format("%b", locale = "fr"))
   # Légendes #
   ggplot <- ggplot + labs(fill = glue("{classe_variable} :"))
   if(!is.na(origine_donnees)) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))

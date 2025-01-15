@@ -1,5 +1,22 @@
 # NEWS - aquatools
 
+## 0.0.166 - 2025-01-15
+### Ajouts
+- `chronique.figure.interannuelle` : ajout d'un paramètre de choix de la palette, car il y a toujours un cas qui ne convient pas
+- `formatage.annee.neutre` : ajout d'un dégroupage, car les groupes pouvaient générer des bugs et n'avaient pas lieu d'être
+- `formatage.annee.biologique` : ajout d'un dégroupage, car les groupes pouvaient générer des bugs et n'avaient pas lieu d'être
+
+### Modifications
+- `chronique.figure` : francisation de la légende des mois (dont ajout de la dépendance)
+- `chronique.figure.classescalendaires` : francisation de la légende des mois (dont ajout de la dépendance)
+- `chronique.figure.cumul` : francisation de la légende des mois (dont ajout de la dépendance)
+- `chronique.figure.depassementscalendaires` : francisation de la légende des mois (dont ajout de la dépendance)
+- `chronique.figure.interannuelle` : refactoring :
+  * Aération/nettoyage du code
+  * Implémentation complète de `chronique.contexte` (close # 32)
+  * Implémentation complète de `formatage.annee.neutre`
+  * Francisation de la légende des mois (dont ajout de la dépendance)
+  
 ## 0.0.165 - 2024-12-24
 ### Ajouts
 - Ajout d'une `licence` et d'un `readme`

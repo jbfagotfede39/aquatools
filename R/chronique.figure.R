@@ -45,7 +45,7 @@ chronique.figure <- function(
   # il faudra rajouter l'ajout optionnel de lignes horizontales, avec tempmin, tempmax et tempmaxextreme
   # Il faudra mettre des interrupteurs pour fixer ou non les limites des axes X (dates)
   # Changer ordre max/min/moy dans légende par Max/Moy/Min
-  # Il faudrait de chmes_validation persiste après l'agrégation s'il est présent, car on pourrait ensuite faire une représentation avec des couleurs différentes selons l'état de validation de la chronique
+  # Il faudrait de chmes_validation persiste après l'agrégation s'il est présent, car on pourrait ensuite faire une représentation avec des couleurs différentes selon l'état de validation de la chronique
   # -------------- A FAIRE -------------- #
   
   ## Évaluation des choix
@@ -187,8 +187,8 @@ if(Vmm30j == T & Contexte$nStations == 1){
   plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
   plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)
   }
-if(length(unique(format(syntjour$chmes_date,"%m"))) < 9) plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b %Y")
-if(length(unique(format(syntjour$chmes_date,"%m"))) >= 9) plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b %Y", date_minor_breaks = "1 month")
+if(length(unique(format(syntjour$chmes_date,"%m"))) < 9) plotrelatif <- plotrelatif + scale_x_date(labels = date_format("%b %Y", locale = "fr"))
+if(length(unique(format(syntjour$chmes_date,"%m"))) >= 9) plotrelatif <- plotrelatif + scale_x_date(labels = date_format("%b %Y", locale = "fr"), date_minor_breaks = "1 month")
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotrelatif <- plotrelatif + ylim(0,as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotrelatif <- plotrelatif + ylim(as.numeric(Ymin),as.numeric(Ymax))
 plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
@@ -220,8 +220,8 @@ if(duree == "Relatif"){
     }
   if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotabsolu <- plotabsolu + ylim(-1,as.numeric(Ymax))
   if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotabsolu <- plotabsolu + ylim(as.numeric(Ymin),as.numeric(Ymax))
-  if(length(unique(format(syntjour$chmes_date,"%Y"))) < 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
-  if(length(unique(format(syntjour$chmes_date,"%Y"))) >= 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
+  if(length(unique(format(syntjour$chmes_date,"%Y"))) < 2) plotabsolu <- plotabsolu + scale_x_date(labels = date_format(locale = "fr"), date_minor_breaks = "1 month", limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
+  if(length(unique(format(syntjour$chmes_date,"%Y"))) >= 2) plotabsolu <- plotabsolu + scale_x_date(labels = date_format(locale = "fr"), date_minor_breaks = "1 month", limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
   plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
   plotabsolu <- plotabsolu + theme_bw()
 # }
