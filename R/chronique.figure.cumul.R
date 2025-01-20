@@ -13,7 +13,6 @@
 #' @param etiquette Affichage des étiquettes de chroniques (\code{FALSE} (par défault))
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
-#' @import scales
 #' @import tidyverse
 #' @export
 #' @examples
@@ -73,7 +72,7 @@ chronique.figure.cumul <- function(
       # mutate(VMoyJ = chmesgr_valeur) %>% # on part de données journalières déjà agrégées
       formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
       group_by(chmes_coderhj, chmes_anneebiol) %>% 
-      mutate(SommeMoyJ = cumsum(round(VMoyJ, 0))) %>% 
+      mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
       ungroup()
   }
   
@@ -172,7 +171,7 @@ if (etiquette == T) {
     if(Contexte$nannee == 1 & Contexte$nstation != 1) plotrelatif <- plotrelatif + geom_line(aes(y = SommeMoyJ, colour = chmes_coderhj))
     if(Contexte$nannee != 1 & Contexte$nstation != 1 & etiquette == F) plotrelatif <- plotrelatif + geom_line(aes(y = SommeMoyJ, colour = Cle))
     if(Contexte$nannee != 1 & Contexte$nstation != 1 & etiquette == T) plotrelatif <- plotrelatif + geom_line(aes(y = SommeMoyJ, colour = Cle))
-    plotrelatif <- plotrelatif + scale_x_date(labels = date_format("%b", locale = "fr"))
+    plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b")
     if(Contexte$nannee != 1 | Contexte$nstation != 1) plotrelatif <- plotrelatif + scale_colour_manual(values = PaletteCouples)
     plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=str_replace(Titre, "_", " - "), color = legendeTitre) # Pour changer le titre
     plotrelatif <- plotrelatif + theme_bw()

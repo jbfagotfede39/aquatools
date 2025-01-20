@@ -54,10 +54,7 @@ chronique.figure.classescalendaires <- function(
 
   # Test des typemesure
   if(contexte$ntypemesure > 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
-
-  # Test du format en entrée
-  if("chmes_heure" %in% names(data)) stop("Données agrégées au format journalier nécessaires en entrée")
-
+  
   #### Paramètres ####
   ## Titre
   if(nchar(Titre) == 0) Titre <- contexte$station
@@ -75,8 +72,10 @@ chronique.figure.classescalendaires <- function(
   #### Préparation des données ####
   ### Affichage des années vides ###
   # Les sites vides sont traités plus bas via les stations
-  # Les années vides peuvent être créées en amont avant l'envoi du jeu de données dans cette fonction via 
-  #   mutate(chmes_anneebiol = factor(chmes_anneebiol, levels = c("2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010"))) %>% 
+  if(affichagevide == TRUE){
+    if(contexte$nannee != 1) warning("Ajout des années vides non développé, seulement les sites")
+  # attention : un complete seul ne suffit pas forcément (à moins de bien le construire), car ensuite la fonction formatage.annee.neutre supprime les lignes vides
+  }
   
   ### Établissement des classes ###
   data_calculees <-
@@ -84,14 +83,10 @@ chronique.figure.classescalendaires <- function(
     ungroup() %>% 
     {if("chmes_anneebiol" %in% colnames(.) == FALSE) formatage.annee.biologique(., datedebutanneebiol = datedebutanneebiol) else .} %>% 
     {if("chmes_date_anneeneutre" %in% colnames(.) == FALSE) formatage.annee.neutre(., datedebutanneeneutre = datedebutanneeneutre) else .} %>% 
-    # Passage en facteur de l'année si ce n'est pas encore le cas #
-    {if(class(.$chmes_anneebiol) != "factor") mutate(., chmes_anneebiol = factor(chmes_anneebiol)) else .} %>% 
-    # Sélection de la variable testée @
+    mutate(chmes_anneebiol = factor(chmes_anneebiol)) %>% 
     select(chmes_coderhj, chmes_anneebiol, chmes_date_anneeneutre, chmes_date, all_of(classe_variable)) %>% 
     rename(valeur = !!names(.[5])) %>% 
-    # Découpage en classes #
     mutate(voyant_valeur = cut(valeur, breaks = classes, include.lowest = TRUE, right = FALSE)) %>%
-    # Nettoyage des classes #
     {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[-15,18)` = "< 18", `[23,45]` = "> 23")) else .} %>% # Pour les extremums
     {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 23", after = Inf)) else .} %>% # Pour les extremums    {if(contexte$typemesure == "Thermie") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[-15,18)` = "< 18", `[23,45]` = "> 23")) else .} %>% # Pour les extremums
     {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[0,20)` = "< 20", `[180,200]` = "> 180")) else .} %>% # Pour les extremums
@@ -108,24 +103,18 @@ chronique.figure.classescalendaires <- function(
   #### Création de la vue ####
   if(contexte$nstation == 1) ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, chmes_anneebiol, fill = voyant_valeur))
   if(contexte$nstation != 1) ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, chmes_coderhj, fill = voyant_valeur))
-  if(affichagevide == T) ggplot <- ggplot + scale_y_discrete(drop=FALSE) # Afin de conserver toutes les années et que les figures soient avec les mêmes axes Y
-  ## Mise en forme ##
-  # Global #
   ggplot <- ggplot + geom_tile(height = .25)
   ggplot <- ggplot + theme_bw()
   ggplot <- ggplot + scale_fill_manual(values = palette)
-  # Axes #
   ggplot <- ggplot + theme(axis.title.x = element_blank(),
                            axis.title.y = element_blank()
   )
-  ggplot <- ggplot + scale_x_date(labels = date_format("%b", locale = "fr"))
-  # Légendes #
+  ggplot <- ggplot + scale_x_date(date_labels = "%b")
   ggplot <- ggplot + labs(fill = glue("{classe_variable} :"))
   if(!is.na(origine_donnees)) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
   if(contexte$nstation == 1 & contexte$nannee == 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station} - {contexte$annee}")) # S'il y a un unique couple station-année
   if(contexte$nstation == 1 & contexte$nannee != 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station}")) # S'il y a une unique station
   if(contexte$nstation != 1 & contexte$nannee == 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$annee}")) # S'il y a une unique année
-  # Représentation #
   ggplot
   
   ### Enregistrement des vues ###

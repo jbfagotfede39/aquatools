@@ -16,7 +16,6 @@ chronique.figure.interannuelle(
   affichagevide = TRUE,
   style = c("boxplot", "violon", "courbes"),
   datedebutanneebiol = "10-01",
-  palette = "Dark2",
   save = F,
   projet = NA_character_,
   format = ".png"
@@ -33,15 +32,14 @@ chronique.figure.interannuelle(
 
 \item{Ymax}{Valeur maximale de l'axe des Y (aucune par défaut)}
 
-\item{affichagevide}{Si \code{TRUE} (par défaut), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats}
+\item{affichagevide}{Si \code{TRUE} (par défault), fait apparaître les années ne contenant pas de résultats. Si \code{FALSE}, ne fait apparaître que les années contenants des résultats}
 
 \item{style}{En forme de boxplot (par défaut) ou de violon ou de courbes}
 
 \item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes}
 
-\item{palette}{Nom de la palette à utiliser : \code{Dark2} (par défaut), \code{Spectral}, \code{Set3} ou autre à préciser}
-
-\item{save}{Si \code{FALSE} (par défaut), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
+\item{save}{Si \code{FALSE} (par défault), n'enregistre pas les
+figures. Si \code{TRUE}, les enregistre.}
 
 \item{projet}{Nom du projet}
 
