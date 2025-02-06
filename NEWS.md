@@ -1,5 +1,29 @@
 # NEWS - aquatools
 
+## 0.0.167 - 2025-02-06
+### Ajouts
+- `chronique.figure` : ajout du paramètre `Chlorophylle a`
+- `chronique.figure.parametres` : ajout du paramètre `Chlorophylle a`
+- `chronique.ouverture` : ajout de cas non traités à ce jour : 
+  * WiSens chlorophylle a, 
+  * absence de la colonne de concentration en O2 dissous avec les sondes WiSens, 
+  * séparateurs différents pour les sondes WiSens
+- `hydrobio.hubeau` : création
+- `poissons.captures` : ajout d'une option d'extraction des observations
+
+### Modifications
+- `chronique.ouverture` : 
+  * refactoring pour sondes WiSens
+  * ajout d'une conversion de datatype pour l'importation de capteurs
+- `poissons.captures` : refactoring des colonnes retenues
+
+### Corrections
+- `chronique.figure` : annulation de la francisation de la légende des mois (dont ajout de la dépendance) car fait planter RStudio (échappement de mémoire ?)
+- `chronique.figure.classescalendaires` : annulation de la francisation de la légende des mois (dont ajout de la dépendance) car fait planter RStudio (échappement de mémoire ?)
+- `chronique.figure.cumul` : annulation de la francisation de la légende des mois (dont ajout de la dépendance) car fait planter RStudio (échappement de mémoire ?)
+- `chronique.figure.depassementscalendaires` :annulation de la francisation de la légende des mois (dont ajout de la dépendance) car fait planter RStudio (échappement de mémoire ?)
+- `chronique.figure.interannuelle` : annulation de la francisation de la légende des mois (dont ajout de la dépendance) car fait planter RStudio (échappement de mémoire ?)
+
 ## 0.0.166 - 2025-01-15
 ### Ajouts
 - `chronique.figure.interannuelle` : ajout d'un paramètre de choix de la palette, car il y a toujours un cas qui ne convient pas

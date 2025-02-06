@@ -15,6 +15,7 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
+#' @import scales
 #' @import tidyverse
 #' @export
 #' @examples

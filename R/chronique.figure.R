@@ -4,7 +4,7 @@
 #' @name chronique.figure
 #' @param data Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur
 #' @param Titre Titre du graphique (vide par défaut)
-#' @param typemesure Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, \code{Piézométrie compensée}, \code{Piézométrie NGF}, \code{Oxygénation}, \code{Hydrologie}, \code{Pluviométrie}.
+#' @param typemesure Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, \code{Piézométrie compensée}, \code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.
 #' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
 #' @param complement Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut)
 #' @param Vmm30j Si \code{FALSE} (par défault), n'affiche pas les
@@ -18,6 +18,7 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
+#' @import scales
 #' @import tidyverse
 #' @export
 #' @examples
@@ -28,7 +29,7 @@
 chronique.figure <- function(
     data = data,
     Titre="",
-    typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
+    typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Chlorophylle a", "Hydrologie", "Pluviométrie"),
     duree = c("Complet", "Relatif"),
     complement = FALSE,
     Vmm30j=F,
@@ -162,6 +163,13 @@ if(typemesure == "Oxygénation"){
   legendeY = expression(Oxygene~dissous~(mg~O[2]/L))
   legendeTitre = "Oxygénation :"
   typemesureTitreSortie = "_oxygénation_"
+  }
+if(typemesure == "Chlorophylle a" | typemesure == "Chlorophylle_a"){
+  legendeY = "Chlorophylle a (ug/L)"
+  # legendeY = "Chlorophylle a (μg/L)"
+  # legendeY = expression(Chlorophylle~a~(μg/L))
+  legendeTitre = "Chlorophylle a :"
+  typemesureTitreSortie = "_chla_"
   }
 if(typemesure == "Hydrologie"){
   legendeY = expression(Débit~(m^3/s))

@@ -9,6 +9,7 @@
 #' @param codeCapture Affichage du codecapture - \code{FALSE} (par défault) 
 #' @param codePlacette Affichage du codeplacette - \code{FALSE} (par défault) 
 #' @param codeOperation Affichage du codeoperation - \code{FALSE} (par défault) 
+#' @param observations Affichage de la colonne observations - \code{FALSE} (par défault) 
 #' @import DBI 
 #' @import glue
 #' @import tidyverse
@@ -25,7 +26,8 @@ poissons.captures <- function(
   operation = "",
   codeCapture = FALSE,
   codePlacette = FALSE,
-  codeOperation = FALSE)
+  codeOperation = FALSE,
+  observations = FALSE)
 {
 
 ## Ouverture de la BDD ##
@@ -80,45 +82,16 @@ if(nrow(captures) == 0){captures <- dbGetQuery(dbP, glue("{requete} LIMIT 1"));c
 DBI::dbDisconnect(dbP)
 
 ##### Simplification #####
-if(codeCapture == FALSE & codePlacette == FALSE & codeOperation == FALSE){
+colnames(captures)[9] <- "observations_cap" # car présence de plusieurs colonnes observations
 captures_v2 <- 
-  captures %>%
-   dplyr::select(nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
-
-if(codeCapture == FALSE & codePlacette == FALSE & codeOperation == TRUE){
-  captures_v2 <- 
-    captures %>%
-    dplyr::select(codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
-
-if(codeCapture == FALSE & codePlacette == TRUE & codeOperation == FALSE){
-  captures_v2 <- 
-    captures %>%
-    dplyr::select(codeplacette, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
-
-if(codeCapture == FALSE & codePlacette == TRUE & codeOperation == TRUE){
-  captures_v2 <- 
-    captures %>%
-    dplyr::select(codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
-
-if(codeCapture == TRUE & codePlacette == FALSE & codeOperation == FALSE){
-  captures_v2 <- 
-    captures %>%
-    dplyr::select(codecapture, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
-
-if(codeCapture == TRUE & codePlacette == FALSE & codeOperation == TRUE){
-  captures_v2 <- 
-    captures %>%
-    dplyr::select(codecapture, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
-
-if(codeCapture == TRUE & codePlacette == TRUE & codeOperation == FALSE){
-  captures_v2 <- 
-    captures %>%
-    dplyr::select(codecapture, codeplacette, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
-
-if(codeCapture == TRUE & codePlacette == TRUE & codeOperation == TRUE){
-  captures_v2 <- 
-    captures %>%
-    dplyr::select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids)}
+  captures %>% 
+  dplyr::select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids, observations_cap) %>% 
+  rename(observations = observations_cap) %>% # car présence de plusieurs colonnes observations
+  {if(codeCapture == F) select(., -codecapture) else .} %>% 
+  {if(codePlacette == F) select(., -codeplacette) else .} %>% 
+  {if(codeOperation == F) select(., -codeoperation) else .} %>% 
+  {if(observations == F) select(., -observations) else .} %>% 
+  arrange(codeespece, desc(taillemaximum))
 
 #### Tri ####
 captures_v3 <- 
@@ -143,9 +116,17 @@ captures_v5 <-
   mutate(poids_moy = case_when(.$nombre == 1 ~ .$poids,
                                .$nombre != 1 ~ .$poids_moy)) # Afin de compléter les tailles pour les poissons individuels
 
-##### Nettoyage des 0 #####
+##### Nettoyage #####
+###### Nettoyage des 0 ######
 if(dim(captures_v5)[1] != 0) captures_v5[captures_v5 == 0] <- NA
-if(dim(captures_v5)[1] == 0) warning(glue("Aucune capture correspondante dans l'opération {operation}"))
 
-return(captures_v5)
+###### Nettoyage des cellules vides pas NA ######
+captures_v6 <-
+  captures_v5 %>% 
+  {if(observations == T) mutate(., observations = ifelse(observations == "", NA, observations)) else .}
+
+#### Vérification ####
+if(dim(captures_v6)[1] == 0) warning(glue("Aucune capture correspondante dans l'opération {operation}"))
+
+return(captures_v6)
 } # Fin de la fonction

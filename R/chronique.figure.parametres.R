@@ -133,6 +133,16 @@ chronique.figure.parametres <- function(
     }
   }
   
+  if(typemesure == "Chlorophylle a"){
+    if(typefigure == "valeurs"){
+      unite <- "μg/L"
+      legendeY <- glue("Chlorophylle a ({unite})")
+      # legendeY <- bquote("Chlorophylle" ~ "a" ~ "(" ~ .(unite) ~ ")")
+      legendeTitre <- "Chlorophylle a :"
+      typemesureTitreSortie <- "_chla_"
+    }
+  }
+  
   if(typemesure == "Hydrologie"){
     typemesureTitreSortie <- "_hydrologie_"
     unite <- quote(m^3/s)

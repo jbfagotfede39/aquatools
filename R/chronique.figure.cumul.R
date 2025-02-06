@@ -13,6 +13,7 @@
 #' @param etiquette Affichage des étiquettes de chroniques (\code{FALSE} (par défault))
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
+#' @import scales
 #' @import tidyverse
 #' @export
 #' @examples

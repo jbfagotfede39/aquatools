@@ -16,6 +16,7 @@
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
 #' @import glue
+#' @import scales
 #' @import sf
 #' @import stringr
 #' @import tidyverse

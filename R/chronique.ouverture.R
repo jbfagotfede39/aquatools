@@ -517,24 +517,42 @@ if(typemesure == "Piézométrie"){
     }
     
     if(typecapteur == "WiSens"){
+      renommage <- c('Time' = 'Timestamp(Standard)',
+                     'Pression' = 'CH0:Pressure(bar)',
+                     'Thermie' = 'CH1:Temperature(degC)',
+                     'Oxy_degre' = 'CH2:Oxygen(deg)',
+                     'Concentration' = 'CH3:Oxygen_Concentration(mg/L)',
+                     'Saturation' = 'CH4:Oxygen_Saturation(%)',
+                     'Saturation' = 'CH3:Oxygen_Saturation(%)',
+                     'Chlorophylle_a' = 'CH2:Chlorophyll_a(ug/L)'
+      )      
+
+      separateur <- readChar(Localisation, 20) %>% str_sub(20, 21)
+        # if(separateur == ";") dataaimporter <- read_csv2(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd")
+        # if(separateur == ",") dataaimporter <- read_csv(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd")
+        if(separateur == ";") dataaimporter <- read_csv2(Localisation, col_types = "cddddd")
+        if(separateur == ",") dataaimporter <- read_csv(Localisation, col_types = "cddddd")
       dataaimporter <- 
-        read_csv2(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd") %>% 
+        dataaimporter %>% 
+        rename(any_of(renommage)) %>% 
         filter(!is.na(Thermie)) %>% 
         mutate(Time = as_datetime(Time)) %>% 
         mutate(Date = ymd(format(Time, format="%Y-%m-%d"))) %>% 
         mutate(Heure = format(Time, format="%H:%M:%S")) %>% 
-        dplyr::select(Date, Heure, Concentration, Pression, Thermie, Saturation)
+        {if(!("Concentration" %in% names(.)) & "Saturation" %in% names(.)) PC.concentrationO2(.) else .} %>% 
+        dplyr::select(any_of(c("Date", "Heure", "Concentration", "Pression", "Thermie", "Saturation", "Chlorophylle_a")))
       }
     
     dataaimporter <- 
       dataaimporter %>% 
       filter(!is.na(Thermie)) %>% 
       mutate(Heure = as.character(Heure)) %>% 
-      tidyr::gather(typemesure, Valeur, Concentration:Saturation) %>% 
+      pivot_longer(cols = any_of(c("Concentration", "Pression", "Thermie", "Saturation", "Chlorophylle_a")), names_to = "typemesure", values_to = "Valeur") %>% 
       mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
       mutate(unite = ifelse(typemesure == "Concentration", "mg/L", unite)) %>% 
       mutate(unite = ifelse(typemesure == "Saturation", "%", unite)) %>% 
       mutate(unite = ifelse(typemesure == "Pression", "Bar", unite)) %>% 
+      mutate(unite = ifelse(typemesure == "Chlorophylle_a", "μg/L", unite)) %>% 
       mutate(typemesure = ifelse(grepl("Concentration|Saturation", typemesure), "Oxygénation", typemesure))
   }
   
@@ -927,7 +945,7 @@ if(Type == "Capteurs"){
                    chcap_remarques = character(0)), row.names = integer(0), class = c("tbl_df", 
                                                                                       "tbl", "data.frame"))
   
-  dataaimporter <- read_excel(Localisation, sheet = feuille)
+  dataaimporter <- read_excel(Localisation, sheet = feuille) %>% mutate(chcap_numerocapteur = as.character(chcap_numerocapteur))
   if(all(names(dataaimporter) %in% names(Capteurs)) == FALSE) stop("Le fichier source des capteurs contient des noms de colonne à corriger")
 }
 
