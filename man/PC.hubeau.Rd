@@ -6,6 +6,8 @@
 \usage{
 PC.hubeau(
   codesie = NA_character_,
+  communeinsee = NA_character_,
+  bbox = NA,
   parametresandre = NA_character_,
   supportsandre = c("3", "6"),
   coderemarque = c("1"),
@@ -14,6 +16,10 @@ PC.hubeau(
 }
 \arguments{
 \item{codesie}{Code SANDRE de la station concernée}
+
+\item{communeinsee}{Code INSEE de la commune (\code{vide} par défaut)}
+
+\item{bbox}{Zone géographique concernée, au format bbox généré  par sf, en WGS84/EPSG 4326}
 
 \item{parametresandre}{Code SANDRE du paramètre concerné}
 
@@ -30,4 +36,5 @@ Cette fonction permet de collecter de données de physico-chimie depuis Hub'eau
 PC.hubeau(codesie, parametresandre)
 PC.hubeau("06400085", "1340")
 PC.hubeau("06400085", "1386", supportsandre = "6")
+PC.hubeau(communeinsee = "39470", parametresandre = "1312", supportsandre = "3")
 }

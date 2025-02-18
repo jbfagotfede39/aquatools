@@ -14,11 +14,13 @@ chronique.ouverture(
   feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
-  separateur = c(";", ","),
+  separateur_colonnes = c(";", ","),
+  separateur_decimales = c(";", ","),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel",
     "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens"),
+  nomfichier = F,
   formatmacmasalmo = F
 )
 }
@@ -35,13 +37,17 @@ chronique.ouverture(
 
 \item{nbcolonnes}{Nombre de colonnes concernées}
 
-\item{separateur}{Séparateur de colonnes : \code{;} (par défaut), \code{,}}
+\item{separateur_colonnes}{Séparateur de colonnes : \code{;} (par défaut), \code{,}}
+
+\item{separateur_decimales}{Séparateur de colonnes : \code{,} (par défaut), \code{.}}
 
 \item{typefichier}{Type de fichier : \code{.csv} (par défaut), \code{excel}, \code{.ods} ou \code{Interne}}
 
 \item{typedate}{Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm, mdy_hms, mdy_hm ou ymd_hms)}
 
 \item{typecapteur}{Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)}
+
+\item{nomfichier}{Ajoute une colonne \code{nom_fichier} avec le nom du fichier traité : \code{FALSE} (par défault)}
 
 \item{formatmacmasalmo}{Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)}
 }

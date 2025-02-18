@@ -1,5 +1,36 @@
 # NEWS - aquatools
 
+## 0.0.168 - 2025-02-18
+### Ajouts
+- `chronique.figure` : extension de la palette
+- `chronique.ouverture` : 
+  * ajout du paramètre `nomfichier`
+  * ajout du paramètre `separateur_decimales`
+  * ajout d'un choix automatique du type `baro` ou `piézo` si le mot clé est inclus dans le nom du fichier
+  * ajout d'un test de vérification que le paramètre `Localisation` est bien unique (utile pour construction application shiny `othaup`)
+- `hydrobio.hubeau` : ajout d'un paramètre `bbox`
+- `PC.contexte` : calcul des dates différentes
+- `PC.hubeau` : 
+  * ajout d'un paramètre `bbox`
+  * ajout d'un paramètre `communeinsee`
+- `PC.lac.profil` : 
+  * implémentation de `PC.contexte`
+  * ajout du traitement de dates différentes pour une même année
+  * forçage des traits verticaux pour les valeurs de saturation en O2 afin de rendre ça plus esthétique et lisible
+
+### Modifications
+- `chronique.ouverture` :
+  * intégration du paramètre `skipvalue` dans l'import des données piézométriques Hobo
+  * renommage du paramètre `separateur` en `separateur_colonnes` du fait de la création du paramètre `separateur_decimales`
+- `PC.contexte` : calcul de l'année biologique à partir du 01-01, car plus logique de travailler en année civile. Il faudrait peut-être ajouter un paramètre de fonction à l'avenir si le cas inverse se présente
+- `PC.hubeau` : refactoring de la construction de la requête, afin d'être plus souple, sur le modèle de `hydrobio.hubeau`
+
+### Corrections
+- `chronique.ouverture` : correction de l'utilisation de `adresse.switch` qui n'était pas fonctionnelle
+- `PC.lac.profil` : 
+  * Correction d'une erreur dans l'établissement de la palette
+  * Ajout de la vérification de l'argument `couleurs` qui manquait
+
 ## 0.0.167 - 2025-02-06
 ### Ajouts
 - `chronique.figure` : ajout du paramètre `Chlorophylle a`

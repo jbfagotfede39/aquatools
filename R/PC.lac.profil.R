@@ -28,6 +28,7 @@ PC.lac.profil <- function(
   
   #### Évaluation des choix ####
   param <- match.arg(param)
+  couleurs <- match.arg(couleurs)
   
   #### Données de référence ####
   if(couleurs == "stratifie") palette_annees_temporaire <- palette_annees_stratifie
@@ -35,13 +36,23 @@ PC.lac.profil <- function(
   if(couleurs == "aleatoire") palette_annees_temporaire <- palette_annees_aleatoire
   palette_annees_temporaire_2 <- palette_annees_temporaire %>% enframe(name = "annee", value = "couleur")
   
+  contexte <- PC.contexte(PC)
+  
   palette_annees <-
-    pc_brut %>% 
+    PC %>% 
     distinct(pcmes_date) %>% 
     mutate(annee = as.character(year(pcmes_date))) %>% 
     left_join(palette_annees_temporaire_2, by = join_by(annee)) %>% 
     select(-annee) %>% 
     deframe()
+  
+  if(contexte$n_annee == 1 & contexte$n_date != 1){
+    palette_annees <-
+      PC %>% 
+      distinct(pcmes_date) %>% 
+      bind_cols(palette_annees_temporaire_2 %>% filter(annee != "NTT") %>% arrange(desc(annee)) %>% select(-annee) %>% slice_head(n = contexte$n_date)) %>% 
+      deframe()
+  }
   
   #### Traitement ####
   if(param=="temp"){
@@ -72,6 +83,8 @@ PC.lac.profil <- function(
     # values = c("#D55E00", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7", "#999999", "#0072B2"))
   gg <- gg + scale_color_manual(values = palette_annees)
   gg <- gg + labs(x = "Profondeur (m)", y = expression(Oxygène~dissous~("%"~saturation~O[2]/L)), color = "Date") # Pour changer le titre
+  gg <- gg + scale_y_continuous(breaks = c(0, 20, 40, 60, 80, 100, 120), minor_breaks = NULL)
+  
   }
   
   else if(param=="cond"){

@@ -27,7 +27,7 @@ chronique.figure(
 
 \item{Titre}{Titre du graphique (vide par défaut)}
 
-\item{typemesure}{Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, eMMTv5gqsEGjYC0xue2huBhLtNDnqWpj-7\code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.}
+\item{typemesure}{Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, FUhnY5Cl5DBCpzSm2Ih1cg01b0JlIuDK-7\code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.}
 
 \item{duree}{Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.}
 

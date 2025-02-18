@@ -18,6 +18,7 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
+#' @import paletteer
 #' @import scales
 #' @import tidyverse
 #' @export
@@ -183,14 +184,22 @@ if(typemesure == "Pluviométrie"){
 }
   
 #### Palette ####
-data(PaletteSite)
+if(Contexte$nStations <= 10) data(PaletteSite)
+# if(Contexte$nStations > 10 & Contexte$nStations <= 12) PaletteSite <- paletteer::paletteer_d("dichromat::::DarkRedtoBlue.12")
+# if(Contexte$nStations > 12 & Contexte$nStations <= 14) PaletteSite <- paletteer::paletteer_d("dichromat::::BluetoOrangeRed.14")
+# if(Contexte$nStations > 14 & Contexte$nStations <= 16) PaletteSite <- paletteer::paletteer_d("dichromat::::GreentoMagenta.16")
+# if(Contexte$nStations > 16) PaletteSite <- paletteer::paletteer_d("dichromat::::DarkRedtoBlue.18")
+if(Contexte$nStations > 10 & Contexte$nStations <= 12) PaletteSite <- scales::dichromat_pal("DarkRedtoBlue.12")(12)
+if(Contexte$nStations > 12 & Contexte$nStations <= 14) PaletteSite <- scales::dichromat_pal("BluetoOrangeRed.14")(14)
+if(Contexte$nStations > 14 & Contexte$nStations <= 16) PaletteSite <- scales::dichromat_pal("GreentoMagenta.16")(16)
+if(Contexte$nStations > 16) PaletteSite <- scales::dichromat_pal("DarkRedtoBlue.18")(18)
 
 ##### Plot temps relatif sur l'échantillon de données #####
 ## Version grisée avec enveloppe sur fond clair (min/max) ##
 plotrelatif <- ggplot(syntjour, aes(chmes_date))
 if(Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha=0.2)
 if(Contexte$nStations != 1) plotrelatif <- plotrelatif + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
-if(Contexte$nStations != 1) plotrelatif <- plotrelatif + scale_colour_manual(values = PaletteSite)
+# if(Contexte$nStations != 1) plotrelatif <- plotrelatif + scale_colour_manual(values = PaletteSite)
 if(Vmm30j == T & Contexte$nStations == 1){
   plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
   plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)

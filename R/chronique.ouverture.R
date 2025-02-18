@@ -8,14 +8,18 @@
 #' @param feuille Feuille où lire les données dans le cas de l'ouverture d'un fichier excel : \code{1} (par défaut)
 #' @param skipvalue Nombre de lignes à sauter en début de fichier (1 par défaut pour les mesures)
 #' @param nbcolonnes Nombre de colonnes concernées
-#' @param separateur Séparateur de colonnes : \code{;} (par défaut), \code{,}
+#' @param separateur_colonnes Séparateur de colonnes : \code{;} (par défaut), \code{,}
+#' @param separateur_decimales Séparateur de colonnes : \code{,} (par défaut), \code{.}
 #' @param typefichier Type de fichier : \code{.csv} (par défaut), \code{excel}, \code{.ods} ou \code{Interne}
 #' @param typedate Format des dates pour les mesures (ymd par défaut, dmy, mdy, dmy_hms, dmy_hm, mdy_hms, mdy_hm ou ymd_hms)
 #' @param typecapteur Type de capteur, pour les piézomètres ou les capteurs O2 (\code{Non précisé} par défaut)
+#' @param nomfichier Ajoute une colonne \code{nom_fichier} avec le nom du fichier traité : \code{FALSE} (par défault)
 #' @param formatmacmasalmo Format d'entrée nécessaire à MacmaSalmo (Heure puis date puis valeur) : \code{FALSE} (par défault)
 #' @keywords chronique
+#' @import fs
 #' @import glue
 #' @import readODS
+#' @import stringr
 #' @import testit
 #' @import tidyverse
 #' @export
@@ -31,10 +35,12 @@ chronique.ouverture <- function(
   feuille = 1,
   skipvalue = 9,
   nbcolonnes = 2,
-  separateur = c(";", ","),
+  separateur_colonnes = c(";", ","),
+  separateur_decimales = c(";", ","),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens"),
+  nomfichier = F,
   formatmacmasalmo = F
 )
 {
@@ -47,7 +53,9 @@ typedate <- match.arg(typedate)
 typecapteur <- match.arg(typecapteur)
 
 #### Localisation du fichier ####
-if(any(class(url) == "character")) Localisation <- adresse.switch(Localisation)
+if(any(class(Localisation) == "character")) Localisation <- adresse.switch(Localisation)
+if(length(Localisation) > 1) stop(glue("Plusieurs localisations fournies : {glue_collapse(Localisation, sep = ', ', last = ' et ')}"))
+nom_fichier <- str_to_lower(path_ext_remove(path_file(Localisation)))
 
 #### Mesures ####
 if(Type == "Mesures"){
@@ -187,7 +195,11 @@ if(typemesure == "Piézométrie"){
   if (typecapteur == 3) {typecapteur <- "VuSitu"}
   if (typecapteur == 4) {typecapteur <- "RuggedTROLL"}
   }
-  typedonnee = readline(prompt = "Type de mesure piézométrique 1 (Baro) ou 2 (Piézo) : ")
+  
+  typedonnee <- NA
+  if(grepl("baro", nom_fichier)) typedonnee <- 1
+  if(grepl("piezo|piézo", nom_fichier)) typedonnee <- 2
+  if(is.na(typedonnee)) typedonnee = readline(prompt = "Type de mesure piézométrique 1 (Baro) ou 2 (Piézo) : ")
   typedonnee <- ifelse(typedonnee == 1, "Baro", "Piézo")
   
   if(typecapteur == "Diver"){
@@ -201,12 +213,21 @@ if(typemesure == "Piézométrie"){
       mutate(Date = ymd(format(Date, format="%Y-%m-%d")))
   }
   if(typecapteur == "Hobo"){
-    dataaimporter <- 
-      read_csv2(Localisation, skip = 2, col_names = c("Date","Heure","Piézométrie", "Thermie")) %>% 
+    # read_csv2(Localisation, skip = skipvalue, col_names = c("Date","Heure","Piézométrie", "Thermie")) %>% 
+    if(nbcolonnes == 3) dataaimporter <- read_delim(Localisation, delim = separateur_colonnes, locale = locale(decimal_mark = separateur_decimales), skip = skipvalue, col_names = c("Date", "Piézométrie", "Thermie"))
+    if(nbcolonnes == 4) dataaimporter <- read_delim(Localisation, delim = separateur_colonnes, locale = locale(decimal_mark = separateur_decimales), skip = skipvalue, col_names = c("Date", "Heure", "Piézométrie", "Thermie"))
+    dataaimporter <-
+      dataaimporter %>% 
+      mutate(Thermie = as.numeric(sub(",", ".", Thermie))) %>% 
+      mutate(Piézométrie = as.numeric(sub(",", ".", Piézométrie))) %>% 
       {if(typedate == "dmy") mutate(., Date = as.character(format(dmy(Date), format="%Y-%m-%d"))) else .} %>% 
+      {if(typedate == "dmy_hms") mutate(., Date = dmy_hms(Date)) else .} %>%
+      {if(typedate == "ymd_hms") mutate(., Date = ymd_hms(Date)) else .} %>%
+      {if(grepl("ymd_hms|dmy_hms", typedate)) mutate(., Heure = format(Date, format="%H:%M:%S")) else .} %>%
+      {if(grepl("ymd_hms|dmy_hms", typedate)) mutate(., Date = format(Date, format="%Y-%m-%d")) else .} %>%
       mutate(Date = ymd(Date)) %>% 
       dplyr::select(Date, Heure, Piézométrie, Thermie)
-      
+    
   }
   if(typecapteur == "VuSitu"){
     dataaimporter <- 
@@ -949,6 +970,13 @@ if(Type == "Capteurs"){
   if(all(names(dataaimporter) %in% names(Capteurs)) == FALSE) stop("Le fichier source des capteurs contient des noms de colonne à corriger")
 }
 
+
+#### Commun ####
+if(nomfichier == T){
+  dataaimporter <-
+    dataaimporter %>% 
+    mutate(nom_fichier = nom_fichier)
+}
 
 #### Sortie des résultats ####
 return(dataaimporter)

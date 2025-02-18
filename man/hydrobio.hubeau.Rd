@@ -7,7 +7,8 @@
 hydrobio.hubeau(
   departementinsee = NA_integer_,
   indicesandre = NA_integer_,
-  codesie = NA_integer_
+  codesie = NA_integer_,
+  bbox = NA
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ hydrobio.hubeau(
 \item{indicesandre}{Code SANDRE de l'indice concerné : \code{1000} pour IBGN, \code{2928} pour IBMR, \code{5856} pour IBD, \code{7036} pour IPR, \code{7939} pour IPLAC}
 
 \item{codesie}{Code SANDRE de la station concernée}
+
+\item{bbox}{Zone géographique concernée, au format bbox généré  par sf, en WGS84/EPSG 4326}
 }
 \description{
 Cette fonction permet de collecter de données d'hydrobiologie depuis Hub'eau
