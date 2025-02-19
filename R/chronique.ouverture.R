@@ -39,7 +39,7 @@ chronique.ouverture <- function(
   separateur_decimales = c(";", ","),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens", "VuLink"),
   nomfichier = F,
   formatmacmasalmo = F
 )
@@ -511,7 +511,88 @@ if(typemesure == "Piézométrie"){
                                  typemesure == "Barométrie" ~ "mBar")
         )
     }
+    
+    
+    if(typecapteur == "VuLink"){
+      ## Définition du point de suivi
+      modem <- basename(Localisation) %>% stringr::str_extract(pattern = "[:alnum:]+")
       
+      capteur <- case_when(
+        modem == "215640287" ~ "21584010", # ILA
+        modem == "801008" ~ "700646", # AIN108-2
+        modem == "800682" ~ "700651", # AIN94-3
+        modem == "20025349" ~ "790047", # BIE62-9
+        modem == "800726" ~ "790046", # LCO
+        modem == "801005" ~ "790018", # LMO
+        modem == "800700" ~ "790050" # LVA - CD39
+      )
+      
+      station <- case_when(
+        modem == "215640287" ~ "ILA",
+        modem == "801008" ~ "AIN108-2",
+        modem == "800682" ~ "AIN94-3",
+        modem == "20025349" ~ "BIE62-9",
+        modem == "800726" ~ "LCO",
+        modem == "801005" ~ "LMO",
+        modem == "800700" ~ "LVA"
+      )
+      # modem;capteur;station
+      
+      ## Importation des données
+      dataaimporter <- read_csv(Localisation, skip = skipvalue, col_names = FALSE)
+      nb_colonnes <- ncol(dataaimporter) # Déterminer le nombre de colonnes
+      
+      # Renommer dynamiquement en fonction du nombre de colonnes
+      if (nb_colonnes == 7) { # Cas où c'est la température qui est uniquement mesurée, il y aura 7 colonnes
+        dataaimporter <- dataaimporter %>% 
+          rename(
+            DateHeure = X2,
+            `Thermie barométrique` = X3,
+            `Niveau de batterie` = X4,
+            `Barométrie` = X5,
+            `Pression piézométrique` = X6,
+            `Thermie piézométrique` = X7
+          ) %>% 
+          select(DateHeure, `Thermie barométrique`, `Niveau de batterie`, `Barométrie`, `Pression piézométrique`, `Thermie piézométrique`)
+      } else if (nb_colonnes == 8) {
+        dataaimporter <- dataaimporter %>%
+          rename(
+            DateHeure = X2,
+            `Thermie barométrique` = X3,
+            `Niveau de batterie` = X4,
+            `Barométrie` = X5,
+            `Pression piézométrique` = X6,
+            `Thermie piézométrique` = X7,
+            `Piézométrie NGF` = X8
+          ) %>% 
+          select(DateHeure, `Thermie barométrique`, `Niveau de batterie`, `Barométrie`, `Pression piézométrique`, `Thermie piézométrique`, `Piézométrie NGF`) 
+      }
+      
+      dataaimporter <- dataaimporter %>%
+        mutate( # reglages date et heure
+          DateHeure = ymd_hm(DateHeure),
+          Date = format(DateHeure, format="%Y-%m-%d"),
+          Heure = format(DateHeure, format="%H:%M:%S")
+        ) %>%
+        select(-DateHeure) %>% 
+        pivot_longer(-c(Date, Heure), names_to = "typemesure", values_to = "Valeur") %>% 
+        mutate(
+          Date = as_date(Date), 
+          Heure = as.character(Heure),
+          Capteur = capteur,
+          Coderhj = station,
+          Valeur = as.numeric( sub(",", ".", Valeur))
+        ) %>% 
+        mutate( # pour les unités
+          unite = case_when(
+            str_detect(typemesure, "Thermie") ~ "°C", # si typemesure contient le mot thermie
+            typemesure == "Niveau de batterie" ~ "%",
+            typemesure == "Barométrie" ~ "kPa",
+            typemesure == "Pression piézométrique" ~ "kPa",
+            typemesure == "Piézométrie NGF" ~ "NGF")
+        )
+    }
+
   }
   
   if(typemesure == "Oxygénation"){

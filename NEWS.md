@@ -1,5 +1,9 @@
 # NEWS - aquatools
 
+## 0.0.169 - 2025-02-19
+### Ajouts
+- `chronique.ouverture` : ajout du traitement des modems VuLink
+
 ## 0.0.168 - 2025-02-18
 ### Ajouts
 - `chronique.figure` : extension de la palette

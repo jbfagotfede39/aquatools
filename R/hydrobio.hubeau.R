@@ -3,6 +3,7 @@
 #' Cette fonction permet de collecter de données d'hydrobiologie depuis Hub'eau
 #' @name hydrobio.hubeau
 #' @param departementinsee Code INSEE du département (\code{39} par défaut)
+#' @param bbox Zone géographique concernée, au format bbox généré  par sf, en WGS84/EPSG 4326
 #' @param indicesandre Code SANDRE de l'indice concerné : \code{1000} pour IBGN, \code{2928} pour IBMR, \code{5856} pour IBD, \code{7036} pour IPR, \code{7939} pour IPLAC
 #' @param codesie Code SANDRE de la station concernée
 #' @import glue
@@ -17,7 +18,8 @@
 hydrobio.hubeau <- function(
     departementinsee = NA_integer_,
     indicesandre = NA_integer_,
-    codesie = NA_integer_
+    codesie = NA_integer_,
+    bbox = NA
     
 )
 {
@@ -33,6 +35,7 @@ hydrobio.hubeau <- function(
   if(!is.na(departementinsee)) url <- glue("{url}&code_departement={departementinsee}")
   if(!is.na(indicesandre)) url <- glue("{url}&code_indice={indicesandre}")
   if(!is.na(codesie)) url <- glue("{url}&code_station_hydrobio={codesie}")
+  if(!is.na(bbox)) url <- glue("{url}&bbox={bbox$xmin}%2C{bbox$ymin}%2C{bbox$xmax}%2C{bbox$ymax}")
   
   ### Collecte à proprement parler ###
   data_to_import <- GET(url)
