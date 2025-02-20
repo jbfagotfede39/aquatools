@@ -6,12 +6,15 @@
 \usage{
 chronique.compensation.barometrie(
   data,
+  modalite_rattachement = c("Interpolation", "Proximité"),
   duree_max_rattachement = 1,
   sortie = c("compensé", "compensé_avec_vide", "tout", "large")
 )
 }
 \arguments{
 \item{data}{Chronique à modifier, avec un champ chmes_date, un champ chmes_heure et un champ chmes_valeur}
+
+\item{modalite_rattachement}{Mode de rattachement barométrique : \code{Interpolation} (par défaut) ou \code{Proximité} temporelle}
 
 \item{duree_max_rattachement}{Durée maximale de rattachement, en heures - \code{1} (par défaut)}
 
@@ -22,7 +25,6 @@ Permet de compenser barométriquement des séries piézométriques, avec la vale
 }
 \examples{
 chronique.compensation.barometrie(data)
-chronique.compensation.barometrie(data, decalage = 258.58)
-chronique.compensation.barometrie(decalage = -57)
+chronique.compensation.barometrie(data, "Proximité", 2)
 }
 \keyword{chronique}

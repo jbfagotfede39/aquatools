@@ -3,22 +3,25 @@
 #' Permet de compenser barométriquement des séries piézométriques, avec la valeur barométrique la plus proche
 #' @name chronique.compensation.barometrie
 #' @param data Chronique à modifier, avec un champ chmes_date, un champ chmes_heure et un champ chmes_valeur
+#' @param modalite_rattachement Mode de rattachement barométrique : \code{Interpolation} (par défaut) ou \code{Proximité} temporelle
 #' @param duree_max_rattachement Durée maximale de rattachement, en heures - \code{1} (par défaut)
 #' @param sortie Format de sortie - \code{compensé} (par défaut) : uniquement le jeu de données nouvellement compensé, \code{compensé_avec_vide} : uniquement le jeu de données nouvellement compensé, \code{tout} : jeu de données initial + jeu de données compensées, \code{large} : format large pour étude intermédiaire.
 #' @keywords chronique
 #' @import tidyverse
+#' @import zoo
 #' @export
 #' @examples
 #' chronique.compensation.barometrie(data)
-#' chronique.compensation.barometrie(data, decalage = 258.58)
-#' chronique.compensation.barometrie(decalage = -57)
+#' chronique.compensation.barometrie(data, "Proximité", 2)
 
 chronique.compensation.barometrie <- function(data, 
+                                              modalite_rattachement = c("Interpolation", "Proximité"),
                                               duree_max_rattachement = 1,
                                               sortie = c("compensé", "compensé_avec_vide", "tout", "large"))
 {
 
   #### Évaluation des choix ####
+  modalite_rattachement <- match.arg(modalite_rattachement)
   sortie <- match.arg(sortie)
   
   #### Nettoyage et reformatage ####
@@ -67,74 +70,60 @@ chronique.compensation.barometrie <- function(data,
   ##### Paramètres #####
   duree_max_rattachement_minutes <- duree_max_rattachement * 60
   
-  ##### Calculs à proprement parler #####
+  ##### Rattachement d'une valeur barométrique si absente #####
   data_v3 <-
     data_v2 %>% 
     select(chmes_coderhj, chmes_typemesure_simpl, time, chmes_valeur) %>% 
     pivot_wider(id_cols = time, names_from = c("chmes_coderhj", "chmes_typemesure_simpl"), values_from = "chmes_valeur")
+
+  if(modalite_rattachement == "Proximité") {
+    data_v4 <- data_v3 %>% chronique.rattachement.barometrie(duree_max_rattachement = duree_max_rattachement)
+  }
   
-  data_v4 <-
-    data_v3 %>% 
-    rename(baro = contains("baro")) %>% 
-    ### Bloc montant ###
-    # Duplication de la colonne _baro dans une nouvelle, avec complément vers le haut des trous
-    mutate(baro_montant = baro) %>% 
-    fill(baro_montant, .direction = "up") %>% 
-    fill(baro_montant, .direction = "down") %>% # s'il manque des valeurs au départ
-    # mutate(time_baro_montant = ifelse(is.na(baro), NA, as.character(time))) %>% 
-    mutate(time_baro_montant = ifelse(is.na(baro), NA, format(time, format="%Y-%m-%d %H:%M:%S"))) %>% 
-    fill(time_baro_montant, .direction = "up") %>% 
-    fill(time_baro_montant, .direction = "down") %>% # s'il manque des valeurs au départ
-    mutate(ecart_time_baro_montant = abs(ymd_hms(time_baro_montant) - time)) %>% 
+  if(modalite_rattachement == "Interpolation") {
     
-    ### Bloc descendant ###
-    # Duplication de la colonne _baro dans une nouvelle, avec complément vers le bas des trous
-    mutate(baro_descendant = baro) %>% 
-    fill(baro_descendant, .direction = "down") %>% 
-    fill(baro_descendant, .direction = "up") %>% # s'il manque des valeurs au départ
-    # mutate(time_baro_descendant = ifelse(is.na(baro), NA, as.character(time))) %>% 
-    mutate(time_baro_descendant = ifelse(is.na(baro), NA, format(time, format="%Y-%m-%d_%H:%M:%S"))) %>% 
-    fill(time_baro_descendant, .direction = "down") %>% 
-    fill(time_baro_descendant, .direction = "up") %>% # s'il manque des valeurs au départ
-    mutate(ecart_time_baro_descendant = abs(ymd_hms(time_baro_descendant) - time))
-  
-  # Calcul des écarts temporels entre les deux versions afin de ne conserver que les lignes avec les plus faibles #
+    ## Identification de la colonne de barométrie ##
+    baro_name <- data_v3 %>% select(contains("baro")) %>% names()
+    
+    ## Éventuel complément des premières et dernières données de barométrie qui ne doivent pas être des NA
+    # Identifier l'index des premières et dernières valeurs non-NA
+    first_non_na_index <- which.max(!is.na(data_v3 %>% select(!!sym(baro_name)) %>% pull()))
+    last_non_na_index <- max(which(!is.na(data_v3 %>% select(!!sym(baro_name)) %>% pull())))
+    
+    data_v4 <-
+      data_v3 %>% 
+      # Complément des premières et dernières données de barométrie qui ne doivent pas être des NA
+      rename(valeur = !!sym(baro_name)) %>% 
+      mutate(baro_temp = ifelse(row_number() <= first_non_na_index & is.na(valeur),
+                                valeur[first_non_na_index], valeur)) %>% 
+      mutate(baro = ifelse(row_number() >= last_non_na_index & is.na(baro_temp),
+                           baro_temp[last_non_na_index], baro_temp)) %>% 
+      select(-baro_temp, -valeur) %>% 
+      relocate(baro, .after = time) %>% 
+      mutate(time_baro_retenu = ifelse(is.na(baro), NA, format(time, format="%Y-%m-%d %H:%M:%S"))) %>% 
+      fill(time_baro_retenu, .direction = "down") %>%
+      mutate(ecart_time_baro_retenu = abs(ymd_hms(time_baro_retenu) - time)) %>% 
+      # Interpolation linéaire à proprement parler
+      mutate(baro = zoo::na.approx(baro, time)) %>% 
+      mutate(baro = ifelse(ecart_time_baro_retenu <= minutes(duree_max_rattachement_minutes), baro, NA)) # Cas où la durée de rattachement de la piézométrie est supérieure à la valeur seuil duree_max_rattachement_minutes
+    
+  }
+
+  ## Remise en format long ##
   data_v5 <-
     data_v4 %>% 
-    rowwise() %>% 
-    mutate(ecart_time_baro_min_retenu = min(ecart_time_baro_descendant, ecart_time_baro_montant), .after = "baro") %>% 
-    ungroup() %>% 
-    mutate(time_baro_retenu = ifelse(ecart_time_baro_min_retenu == ecart_time_baro_descendant, time_baro_descendant, time_baro_montant), .after = "baro") %>% 
-    mutate(valeur_baro_retenu = ifelse(ecart_time_baro_min_retenu == ecart_time_baro_descendant, baro_descendant, baro_montant), .after = "baro")
-  
-  ## Nettoyage ##
-  data_v6 <-
-    data_v5 %>% 
-    # Nettoyage des colonnes #
-    select(-contains("montant"), -contains("descendant")) %>% 
-    # Nettoyage des lignes #
-    filter(if_any(contains("piezo"), ~ !is.na(.)))
-  
-  ## Calcul de compensation et remise en format long ##
-  data_v7 <-
-    data_v6 %>% 
-    mutate(baro = valeur_baro_retenu) %>% # Reversement de la barométrie dans la colonne ad-hoc
-    mutate(baro = ifelse(ecart_time_baro_min_retenu <= minutes(duree_max_rattachement_minutes), baro, NA)) # Cas où la durée de rattachement de la piézométrie est supérieure à la valeur seuil duree_max_rattachement_minutes
-  
-  data_v8 <-
-    data_v7 %>% 
     mutate(across(contains("piezo"), ~ .x - baro)) %>% # Calcul à proprement parler
     select(-contains("baro")) %>% # Nettoyage
     pivot_longer(cols = contains("piezo"), names_to = "chmes_coderhj", values_to = "chmes_valeur_comp") %>% # Remise en format long
     mutate(chmes_coderhj = str_replace(chmes_coderhj, "_piezo", ""))
   
-  data_v7_nettoyees <-
-    data_v7 %>% 
+  data_v4_nettoyees <-
+    data_v4 %>% 
     select(-contains("retenu")) # Nettoyage pour affichage en sortie == "large"
   
   ## Re-jointure avec le jeu de données initial ##
   mesures_compensees <-
-    data_v8 %>% 
+    data_v5 %>% 
     formatage.date.heure() %>% 
     chronique.cle("HS") %>% 
     select(-chmes_date, -chmes_heure, -chmes_coderhj) %>% 
@@ -142,6 +131,7 @@ chronique.compensation.barometrie <- function(data,
                 chronique.cle("HS"), 
               by = join_by(Cle)) %>% 
     mutate(chmes_valeur = chmes_valeur_comp) %>% 
+    filter(!is.na(id)) %>% # Filtrage de données vides créées
     mutate(id = NA_integer_) %>% 
     mutate(chmes_typemesure = "Piézométrie compensée") %>% 
     mutate(chmes_validation = "À valider") %>% 
@@ -164,7 +154,7 @@ chronique.compensation.barometrie <- function(data,
   if(sortie == "compensé") data_sortie <- mesures_compensees_sans_na
   if(sortie == "compensé_avec_vide") data_sortie <- mesures_compensees
   if(sortie == "tout") data_sortie <- data %>% bind_rows(mesures_compensees_sans_na)
-  if(sortie == "large") data_sortie <- data_v7_nettoyees
+  if(sortie == "large") data_sortie <- data_v4_nettoyees
   
   ## Sortie ##
   return(data_sortie)

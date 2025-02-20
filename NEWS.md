@@ -1,8 +1,19 @@
 # NEWS - aquatools
 
+## 0.0.170 - 2025-02-20
+### Ajouts
+- `chronique.rattachement.barometrie` : création à travers une réduction de `chronique.compensation.barometrie`
+  
+### Modifications
+- `chronique.compensation.barometrie` :
+  * extraction d'un bloc vers `chronique.rattachement.barometrie`
+  * ajout d'une possibilité de compensation soit par un rattachement temporel via `chronique.rattachement.barometrie`, soit par interpolation linéaire via `zoo::na.approx`
+  * MAJ des exemples
+  * ajout d'un filtre manquant pour la modalité `compensé_avec_vide` qui générait de nombreuses lignes vides qui n'avaient pas lieu d'être
+
 ## 0.0.169 - 2025-02-19
 ### Ajouts
-- `chronique.ouverture` : ajout du traitement des modems VuLink
+- `chronique.ouverture` : ajout du traitement des modems VuLink (travail de Malidé)
 
 ## 0.0.168 - 2025-02-18
 ### Ajouts

@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.169
+Version: 0.0.170
 Authors@R: 
     person("Jean-Baptiste", "Fagot", , "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Maintainer: Jean-Baptiste Fagot <jean-baptiste.fagot@peche-jura.com>
@@ -19,6 +19,7 @@ Imports:
     DBI,
     dplyr,
     dygraphs,
+    fs,
     FSA,
     ggplot2,
     ggspatial,
@@ -32,6 +33,7 @@ Imports:
     magrittr,
     modelr,
     openxlsx,
+    paletteer,
     purrr,
     raster,
     RColorBrewer,
@@ -42,6 +44,7 @@ Imports:
     RPostgreSQL,
     rstudioapi,
     rvest,
+    scales,
     sf,
     stringi,
     stringr,
@@ -52,7 +55,8 @@ Imports:
     tidyverse,
     units,
     xml2,
-    xts
+    xts,
+    zoo
 Remotes: 
     colinfay/rgeoapi
 Encoding: UTF-8
