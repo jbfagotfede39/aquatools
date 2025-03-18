@@ -39,7 +39,7 @@ chronique.ouverture <- function(
   separateur_decimales = c(";", ","),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens", "VuLink"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens", "VuLink", "Cube"),
   nomfichier = F,
   formatmacmasalmo = F
 )
@@ -62,7 +62,7 @@ if(Type == "Mesures"){
   if(typemesure == "Thermie"){
     if(nbcolonnes == 2){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "cc", col_names = F) %>% filter(!is.na(X2))}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim = separateur_colonnes, col_types = "cc", col_names = F) %>% filter(!is.na(X2))}
       if(typefichier == ".ods"){dataaimporter <- read_ods(Localisation, sheet = feuille, skip = skipvalue, col_types = "cc", col_names = F)}
       names(dataaimporter)[1] <- c('DateHeure')
       names(dataaimporter)[2] <- c('Valeur')
@@ -70,15 +70,15 @@ if(Type == "Mesures"){
     
     if(nbcolonnes == 3){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctc", col_names = F)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim = separateur_colonnes, col_types = "ctc", col_names = F)}
       if(typefichier == ".ods"){dataaimporter <- read_ods(Localisation, sheet = feuille, skip = skipvalue, col_types = "ctc", col_names = F)}
     }
     
     if(nbcolonnes == 4){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
       if(typefichier == "excel"){data_a_tester <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = T)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctcc", col_names = F)}
-      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctcc", col_names = T)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim = separateur_colonnes, col_types = "ctcc", col_names = F)}
+      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue, delim = separateur_colonnes, col_types = "ctcc", col_names = T)}
       if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
       if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
     }
@@ -86,8 +86,8 @@ if(Type == "Mesures"){
     if(nbcolonnes == 5){
       if(typefichier == "excel"){dataaimporter <- read_excel(Localisation, sheet = feuille, skip = skipvalue, col_names = F)}
       if(typefichier == "excel"){data_a_tester <- read_excel(Localisation, sheet = feuille, skip = skipvalue-1, col_names = T)}
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctccc", col_names = F)}
-      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue-1, delim=separateur, col_types = "ctccc", col_names = T)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim = separateur_colonnes, col_types = "ctccc", col_names = F)}
+      if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue-1, delim = separateur_colonnes, col_types = "ctccc", col_names = T)}
       if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
       if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
       if(names(data_a_tester)[5] %in% c("chmes_validation")) names(dataaimporter)[5] <- c('chmes_validation')
@@ -96,7 +96,7 @@ if(Type == "Mesures"){
     }
     
     if(nbcolonnes == 6){
-      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim=separateur, col_types = "ctcccc", col_names = F)}
+      if(typefichier == ".csv"){dataaimporter <- read_delim(Localisation, skip = skipvalue, delim = separateur_colonnes, col_types = "ctcccc", col_names = F)}
     }
     
 if(exists("dataaimporter") == FALSE) stop("Scénario d'importation à développer")
@@ -579,7 +579,7 @@ if(typemesure == "Piézométrie"){
         mutate(
           Date = as_date(Date), 
           Heure = as.character(Heure),
-          Capteur = capteur,
+          Capteur = ifelse(grepl("Niveau de batterie|arométri", typemesure), modem, capteur),
           Coderhj = station,
           Valeur = as.numeric( sub(",", ".", Valeur))
         ) %>% 
@@ -590,9 +590,87 @@ if(typemesure == "Piézométrie"){
             typemesure == "Barométrie" ~ "kPa",
             typemesure == "Pression piézométrique" ~ "kPa",
             typemesure == "Piézométrie NGF" ~ "NGF")
-        )
+        ) %>% 
+        dplyr::select(Coderhj, Capteur, Date, Heure, Valeur, unite, typemesure)
     }
 
+    if(typecapteur == "Cube"){
+      ## Définition du point de suivi
+      modem <- basename(Localisation) %>% stringr::str_extract(pattern = "[:alnum:]+")
+      
+      capteur <- case_when(
+        modem == "19115343" ~ "701067",
+        modem == "20025349" ~ "790047"
+      )
+      
+      station <- case_when(
+        modem == "19115343" ~ "AIN101-7",
+        modem == "20025349" ~ "BIE62-9"
+      )
+      # modem;capteur;station
+      
+      ## Importation des données
+      dataaimporter <- read_lines(Localisation)
+      
+      # Début ligne d'interêt
+      debut <- which(str_detect(dataaimporter, "^Record n"))
+      
+      # Fin ligne d'interêt
+      fin <- which(str_detect(dataaimporter, "^----------- STATUS -----------"))
+      
+      # Extraire uniquement les lignes d'interêt
+      if (length(fin) > 0) {
+        dataaimporter <- dataaimporter[(debut+1):(fin-1)] %>%   # Exclure la ligne "STATUS"
+          iconv(from = "latin1", to = "UTF-8", sub = "")
+      } else {
+        stop("Extraction échouée : fin des données non trouvée.")  # Si "STATUS" n'existe pas
+      }
+      
+      # Recuperation de la capacité de la batterie  
+      batt_value <- read_lines(Localisation)[which(str_detect(read_lines(Localisation), "^Sensor n\\. 01"))] %>% 
+        str_extract("Batt:\\d+%") %>% str_extract("\\d+") %>% as.numeric()      
+      
+      # transformation en tibble
+      dataaimporter <- read_csv(I(dataaimporter), FALSE) %>% 
+        rename( # renommer les noms de colonnes
+          Date = X2,
+          Heure = X3,
+          `Barométrie` = X5,
+          `Pression piézométrique` = X7,
+          `Thermie piézométrique` = X8, 
+          `Piézométrie NGF` = X9
+        ) %>% 
+        mutate(
+          `Niveau de batterie` = batt_value, # ajout colonne niveau de batterie
+          Date = dmy(Date),
+          Heure = format(Heure, format="%H:%M:%S")
+        ) %>% 
+        select(Date, Heure, `Niveau de batterie`, Barométrie, `Pression piézométrique`, `Thermie piézométrique`, `Piézométrie NGF`)
+      
+      # Transformation au format long
+      dataaimporter <- 
+        dataaimporter %>% 
+        pivot_longer(-c(Date, Heure), names_to = "typemesure", values_to = "Valeur") %>% 
+        mutate(
+          Date = as_date(Date), 
+          Heure = as.character(Heure),
+          Capteur = ifelse(grepl("Niveau de batterie|arométri", typemesure), modem, capteur),
+          Coderhj = station,
+          Valeur = as.numeric( sub(",", ".", Valeur))
+        ) %>% 
+        mutate( # pour les unités
+          unite = case_when(
+            str_detect(typemesure, "Thermie") ~ "°C", # si typemesure contient le mot thermie
+            typemesure == "Niveau de batterie" ~ "%",
+            typemesure == "Barométrie" ~ "mBar",
+            typemesure == "Pression piézométrique" ~ "kPa",
+            typemesure == "Piézométrie NGF" ~ "NGF")
+        ) %>% 
+        dplyr::select(Coderhj, Capteur, Date, Heure, Valeur, unite, typemesure)
+      
+      
+    }
+    
   }
   
   if(typemesure == "Oxygénation"){
@@ -629,11 +707,11 @@ if(typemesure == "Piézométrie"){
                      'Chlorophylle_a' = 'CH2:Chlorophyll_a(ug/L)'
       )      
 
-      separateur <- readChar(Localisation, 20) %>% str_sub(20, 21)
-        # if(separateur == ";") dataaimporter <- read_csv2(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd")
-        # if(separateur == ",") dataaimporter <- read_csv(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd")
-        if(separateur == ";") dataaimporter <- read_csv2(Localisation, col_types = "cddddd")
-        if(separateur == ",") dataaimporter <- read_csv(Localisation, col_types = "cddddd")
+      separateur_colonnes <- readChar(Localisation, 20) %>% str_sub(20, 21)
+        # if(separateur_colonnes == ";") dataaimporter <- read_csv2(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd")
+        # if(separateur_colonnes == ",") dataaimporter <- read_csv(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd")
+        if(separateur_colonnes == ";") dataaimporter <- read_csv2(Localisation, col_types = "cddddd")
+        if(separateur_colonnes == ",") dataaimporter <- read_csv(Localisation, col_types = "cddddd")
       dataaimporter <- 
         dataaimporter %>% 
         rename(any_of(renommage)) %>% 

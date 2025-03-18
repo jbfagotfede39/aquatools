@@ -1,5 +1,9 @@
 # NEWS - aquatools
 
+## 0.0.171 - 2025-03-15
+### Corrections
+- `chronique.ouverture` : correction du paramètre `separateur` en `separateur_colonnes` ce qui n'avait pas été réalisé partout à la version `0.0.168`
+  
 ## 0.0.170 - 2025-02-20
 ### Ajouts
 - `chronique.rattachement.barometrie` : création à travers une réduction de `chronique.compensation.barometrie`
