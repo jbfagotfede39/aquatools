@@ -1,8 +1,26 @@
 # NEWS - aquatools
 
+## 0.0.172 - 2025-04-22
+### Ajouts
+- `chronique.recalage.valeur` : ajout d'un ré-encodage du paramètre `decalage` en `NA` si la valeur envoyée vaut `0`, car sinon la fonction ne s'appliquait pas
+- `formatage.heure.simple` : création
+- `hydrologie.hubeau` : création
+- `SIG.conversion.l93dec2` : création
+
+### Modifications
+- `chronique.ouverture` : 
+  * correction des affectations de stations dans les modems VuLink, qui en réalité était un Cube
+  * écriture en dur du nombre de lignes à sauter dans le traitement du VuLink
+- `SIG.conversion.dec2l93` : nettoyage du code et de l'aide
+
 ## 0.0.171 - 2025-03-15
+### Ajouts
+- `chronique.ouverture` : ajout du traitement pour les données issues d'un modem In Situ Cube
+
 ### Corrections
-- `chronique.ouverture` : correction du paramètre `separateur` en `separateur_colonnes` ce qui n'avait pas été réalisé partout à la version `0.0.168`
+- `chronique.ouverture` : 
+  * correction du paramètre `separateur` en `separateur_colonnes` ce qui n'avait pas été réalisé partout à la version `0.0.168`
+  * correction du traitement des données issues d'un `VuLink` car oubli de l'ordre des colonnes + distinction du capteur entre le modem et le capteur à proprement parler
   
 ## 0.0.170 - 2025-02-20
 ### Ajouts

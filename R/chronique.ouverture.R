@@ -521,7 +521,6 @@ if(typemesure == "Piézométrie"){
         modem == "215640287" ~ "21584010", # ILA
         modem == "801008" ~ "700646", # AIN108-2
         modem == "800682" ~ "700651", # AIN94-3
-        modem == "20025349" ~ "790047", # BIE62-9
         modem == "800726" ~ "790046", # LCO
         modem == "801005" ~ "790018", # LMO
         modem == "800700" ~ "790050" # LVA - CD39
@@ -531,7 +530,6 @@ if(typemesure == "Piézométrie"){
         modem == "215640287" ~ "ILA",
         modem == "801008" ~ "AIN108-2",
         modem == "800682" ~ "AIN94-3",
-        modem == "20025349" ~ "BIE62-9",
         modem == "800726" ~ "LCO",
         modem == "801005" ~ "LMO",
         modem == "800700" ~ "LVA"
@@ -539,7 +537,7 @@ if(typemesure == "Piézométrie"){
       # modem;capteur;station
       
       ## Importation des données
-      dataaimporter <- read_csv(Localisation, skip = skipvalue, col_names = FALSE)
+      dataaimporter <- read_csv(Localisation, skip = 10, col_names = FALSE)
       nb_colonnes <- ncol(dataaimporter) # Déterminer le nombre de colonnes
       
       # Renommer dynamiquement en fonction du nombre de colonnes

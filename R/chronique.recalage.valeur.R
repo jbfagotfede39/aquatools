@@ -16,12 +16,16 @@ chronique.recalage.valeur <- function(data,
                                       decalage = NA_real_)
 {
 
-  ##### Nettoyage & reformatage #####
+  #### Nettoyage & reformatage ####
+  ##### Valeur de décalage #####
+  if(decalage == 0) decalage <- NA_real_
+  
+  ##### Tri #####
   data_v2 <-
     data %>% 
     arrange(chmes_date, chmes_heure)
   
-  ##### Calcul #####
+  #### Calcul ####
   if(is.na(decalage)) decalage <- data_v2 %>% filter(row_number() == 1) %>% pull(chmes_valeur)
   
   data_v3 <-

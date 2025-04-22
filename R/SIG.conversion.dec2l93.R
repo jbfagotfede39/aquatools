@@ -2,8 +2,8 @@
 #'
 #' Cette fonction permet de convertir des coordonnées en egrés décimaux vers du Lambert 93
 #' @name SIG.conversion.dec2l93
-#' @param coord_x Coordonnées à convertir
-#' @param coord_y Séparateurs de valeurs utilisés
+#' @param coord_x Coordonnée x à convertir
+#' @param coord_y Coordonnée y à convertir
 #' @keywords SIG
 #' @import sf
 #' @import tidyverse
@@ -21,4 +21,4 @@
         st_transform(2154)
       
       return(l93)
-    }  # end dms2dec function
+    }

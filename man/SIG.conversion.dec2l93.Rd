@@ -7,9 +7,9 @@
 SIG.conversion.dec2l93(coord_x, coord_y)
 }
 \arguments{
-\item{coord_x}{Coordonnées à convertir}
+\item{coord_x}{Coordonnée x à convertir}
 
-\item{coord_y}{Séparateurs de valeurs utilisés}
+\item{coord_y}{Coordonnée y à convertir}
 }
 \description{
 Cette fonction permet de convertir des coordonnées en egrés décimaux vers du Lambert 93
