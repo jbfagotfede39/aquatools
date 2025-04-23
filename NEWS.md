@@ -1,5 +1,13 @@
 # NEWS - aquatools
 
+## 0.0.173 - 2025-04-23
+### Ajouts
+- `facteur_conversion_conductivite.RData` : création
+- `PC.conductivite.25degres` : création
+- `chronique.meteofrance.commande` : création
+- `chronique.meteofrance.mesures` : création
+- `chronique.meteofrance.nettoyage` : création
+
 ## 0.0.172 - 2025-04-22
 ### Ajouts
 - `chronique.recalage.valeur` : ajout d'un ré-encodage du paramètre `decalage` en `NA` si la valeur envoyée vaut `0`, car sinon la fonction ne s'appliquait pas
