@@ -120,6 +120,7 @@ if(quotidien == TRUE){
           VMedJ = median(chmes_valeur),
           VMoyJ = mean(chmes_valeur),
           VMaxJ = max(chmes_valeur),
+          VSommeJ = sum(chmes_valeur),
           VAmpliJ = VMaxJ-VMinJ,
           VarJ = var(chmes_valeur),
           NMesuresJ = n(),
@@ -128,10 +129,11 @@ if(quotidien == TRUE){
     ungroup() %>% 
     formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) %>% 
     group_by(chmes_anneebiol) %>% 
-    mutate(SommeMoyJ = cumsum(round(VMoyJ,0))) %>% 
+    mutate(SommeMoyJ = cumsum(round(VMoyJ,0)),
+           SommeSommeJ = cumsum(round(VSommeJ,0))) %>% 
     ungroup() %>% 
     group_by(chmes_coderhj, chmes_typemesure, chmes_date) %>%
-    dplyr::select(chmes_coderhj, chmes_typemesure, chmes_date, VMinJ:VAmpliJ, VAmpliSigneJ, VarJ, NMesuresJ, SommeMoyJ)
+    dplyr::select(chmes_coderhj, chmes_typemesure, chmes_date, VMinJ:VAmpliJ, VAmpliSigneJ, VarJ, NMesuresJ, SommeMoyJ, SommeSommeJ)
   
   if(complement == TRUE){
     ValJours <-

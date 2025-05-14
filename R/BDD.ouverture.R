@@ -5,6 +5,7 @@
 #' @param Type Type de base de données. Chroniques par défaut
 #' @param utilisateur Nom d'utilisateur, si on souhaite en spécifier un
 #' @param motdepasse Mot de passe du portefeuille keyring, si accès côté RStudio server
+#' @import DBI
 #' @import keyring
 #' @import RPostgreSQL
 #' @import rstudioapi

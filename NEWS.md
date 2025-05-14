@@ -1,5 +1,30 @@
 # NEWS - aquatools
 
+## 0.0.174 - 2025-05-14
+### Ajouts
+- `BDD.ouverture` : ajout de la dépendance à `DBI` afin que le package soit chargé automatiquement
+- `chronique.agregation` : ajout du calcul de `VSommeJ` et de `SommeSommeJ` pour les données de pluviométrie
+- `chronique.ouverture` : 
+  * Ajout de l'évaluation de champs qui manquait
+  * Ajout de la gestion des champs :
+    - `chmes_referentiel_temporel`
+    - `chsta_codehydro`
+    - `chsta_codemeteofrance`
+    - `chsta_infl_ant_type`
+    - `chsta_infl_nappe`
+
+### Modifications
+- `chronique.ouverture` : 
+  * Remplacement de la structure de référence des capteurs et du suivi de terrain en dur dans le code par `capteurs_structure` et `suivis_structure`
+- `PC.conductivite.25degres` : ajout d'un arrondi dans les valeurs de conductivité calculées
+- Actualisation des jeux de données `chronique_exemple`, `chronique_structure` et `chronique_structure_hors_bdd` avec ajouts de champs :
+  * `chmes_referentiel_temporel`
+  * `chsta_codehydro`
+  * `chsta_codemeteofrance`
+  * `chsta_infl_ant_type`
+  * `chsta_infl_nappe`
+- Renommage dans jeux de données `chronique_exemple`, `chronique_structure` et `chronique_structure_hors_bdd` de `suivi_structure` par `suivis_structure` pour harmonisation
+
 ## 0.0.173 - 2025-04-23
 ### Ajouts
 - `facteur_conversion_conductivite.RData` : création

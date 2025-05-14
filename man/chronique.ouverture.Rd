@@ -15,7 +15,7 @@ chronique.ouverture(
   skipvalue = 9,
   nbcolonnes = 2,
   separateur_colonnes = c(";", ","),
-  separateur_decimales = c(";", ","),
+  separateur_decimales = c(",", "."),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel",

@@ -36,7 +36,7 @@ chronique.ouverture <- function(
   skipvalue = 9,
   nbcolonnes = 2,
   separateur_colonnes = c(";", ","),
-  separateur_decimales = c(";", ","),
+  separateur_decimales = c(",", "."),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
   typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens", "VuLink", "Cube"),
@@ -51,11 +51,19 @@ typemesure <- match.arg(typemesure)
 typefichier <- match.arg(typefichier)
 typedate <- match.arg(typedate)
 typecapteur <- match.arg(typecapteur)
+separateur_colonnes <- match.arg(separateur_colonnes)
+separateur_decimales <- match.arg(separateur_decimales)
+typefichier <- match.arg(typefichier)
+typedate <- match.arg(typedate)
+typecapteur <- match.arg(typecapteur)
 
 #### Localisation du fichier ####
 if(any(class(Localisation) == "character")) Localisation <- adresse.switch(Localisation)
 if(length(Localisation) > 1) stop(glue("Plusieurs localisations fournies : {glue_collapse(Localisation, sep = ', ', last = ' et ')}"))
 nom_fichier <- str_to_lower(path_ext_remove(path_file(Localisation)))
+
+#### Données de référence ####
+data(chronique_structure)
 
 #### Mesures ####
 if(Type == "Mesures"){
@@ -81,6 +89,7 @@ if(Type == "Mesures"){
       if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue, delim = separateur_colonnes, col_types = "ctcc", col_names = T)}
       if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
       if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
+      if(names(data_a_tester)[4] %in% c("chmes_referentiel_temporel")) names(dataaimporter)[4] <- c('chmes_referentiel_temporel')
     }
     
     if(nbcolonnes == 5){
@@ -90,9 +99,11 @@ if(Type == "Mesures"){
       if(typefichier == ".csv"){data_a_tester <- read_delim(Localisation, skip = skipvalue-1, delim = separateur_colonnes, col_types = "ctccc", col_names = T)}
       if(names(data_a_tester)[4] %in% c("chmes_validation")) names(dataaimporter)[4] <- c('chmes_validation')
       if(names(data_a_tester)[4] %in% c("chmes_mode_acquisition")) names(dataaimporter)[4] <- c('chmes_mode_acquisition')
+      if(names(data_a_tester)[4] %in% c("chmes_referentiel_temporel")) names(dataaimporter)[4] <- c('chmes_referentiel_temporel')
       if(names(data_a_tester)[5] %in% c("chmes_validation")) names(dataaimporter)[5] <- c('chmes_validation')
       if(names(data_a_tester)[5] %in% c("chmes_mode_acquisition")) names(dataaimporter)[5] <- c('chmes_mode_acquisition')
       if(names(data_a_tester)[5] %in% c("chmes_mode_acquisition ")) names(dataaimporter)[5] <- c('chmes_mode_acquisition')
+      if(names(data_a_tester)[5] %in% c("chmes_referentiel_temporel")) names(dataaimporter)[5] <- c('chmes_referentiel_temporel')
     }
     
     if(nbcolonnes == 6){
@@ -107,8 +118,8 @@ if(formatmacmasalmo == F){
   if(nbcolonnes == 3 | nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[3] <- c('Valeur')}
   # if(nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[4] <- c('asup1')}
   # if(nbcolonnes == 5 | nbcolonnes == 6){names(dataaimporter)[5] <- c('asup2')}
-  if(!(names(dataaimporter)[4] %in% c("chmes_validation", "chmes_mode_acquisition")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[4] <- c('asup1')}
-  if(!(names(dataaimporter)[5] %in% c("chmes_validation", "chmes_mode_acquisition")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[5] <- c('asup2')}
+  if(!(names(dataaimporter)[4] %in% c("chmes_validation", "chmes_mode_acquisition", "chmes_referentiel_temporel")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[4] <- c('asup1')}
+  if(!(names(dataaimporter)[5] %in% c("chmes_validation", "chmes_mode_acquisition", "chmes_referentiel_temporel")) & (nbcolonnes == 4 | nbcolonnes == 5 | nbcolonnes == 6)){names(dataaimporter)[5] <- c('asup2')}
   if(nbcolonnes == 6){names(dataaimporter)[6] <- c('asup3')}
   }
 
@@ -169,11 +180,8 @@ dataaimporter <-
   dataaimporter %>% 
   {if ("chmes_validation" %in% names(.)) rename(., "validation" = "chmes_validation") else .} %>%
   {if ("chmes_mode_acquisition" %in% names(.)) rename(., "mode_acquisition" = "chmes_mode_acquisition") else .} %>%
-  {if ("validation" %in% names(.) & "mode_acquisition" %in% names(.)) dplyr::select(., Date, Heure, Valeur, validation, mode_acquisition) else .} %>%
-  {if ("validation" %in% names(.) & !("mode_acquisition" %in% names(.))) dplyr::select(., Date, Heure, Valeur, validation) else .} %>%
-  {if ("mode_acquisition" %in% names(.) & !("validation" %in% names(.))) dplyr::select(., Date, Heure, Valeur, mode_acquisition) else .} %>%
-  {if (!("validation" %in% names(.) & "mode_acquisition" %in% names(.))) dplyr::select(., Date, Heure, Valeur) else .} %>%
-  # dplyr::select(Date, Heure, Valeur) %>% 
+  {if ("chmes_referentiel_temporel" %in% names(.)) rename(., "ref_temporel" = "chmes_referentiel_temporel") else .} %>%
+  dplyr::select(Date, Heure, Valeur, contains("validation"), contains("mode_acquisition"), contains("ref_temporel")) %>%
   mutate(Date = format(Date, format="%Y-%m-%d")) %>% 
   mutate(Date = ymd(Date)) %>% 
   mutate(Heure = as.character(Heure)) %>% 
@@ -521,6 +529,7 @@ if(typemesure == "Piézométrie"){
         modem == "215640287" ~ "21584010", # ILA
         modem == "801008" ~ "700646", # AIN108-2
         modem == "800682" ~ "700651", # AIN94-3
+        modem == "20025349" ~ "790047", # BIE62-9
         modem == "800726" ~ "790046", # LCO
         modem == "801005" ~ "790018", # LMO
         modem == "800700" ~ "790050" # LVA - CD39
@@ -530,6 +539,7 @@ if(typemesure == "Piézométrie"){
         modem == "215640287" ~ "ILA",
         modem == "801008" ~ "AIN108-2",
         modem == "800682" ~ "AIN94-3",
+        modem == "20025349" ~ "BIE62-9",
         modem == "800726" ~ "LCO",
         modem == "801005" ~ "LMO",
         modem == "800700" ~ "LVA"
@@ -537,7 +547,7 @@ if(typemesure == "Piézométrie"){
       # modem;capteur;station
       
       ## Importation des données
-      dataaimporter <- read_csv(Localisation, skip = 10, col_names = FALSE)
+      dataaimporter <- read_csv(Localisation, skip = skipvalue, col_names = FALSE)
       nb_colonnes <- ncol(dataaimporter) # Déterminer le nombre de colonnes
       
       # Renommer dynamiquement en fonction du nombre de colonnes
@@ -738,6 +748,7 @@ if(typemesure == "Piézométrie"){
   }
   
   if(typemesure == "Hydrologie"){ 
+    warning("Attention à ajouter le traitement de chmes_referentiel_temporel")
 
     # Format récupéré depuis l'API Hub'Eau en .csv :
     if(typefichier == "Interne"){
@@ -801,16 +812,7 @@ dataaimporter <-
 
 #### Suivis ####
 if(Type == "Suivis"){
-SuiviTerrain <- 
-  structure(list(id = numeric(0), chsvi_mo = logical(0), chsvi_coderhj = character(0), 
-                 chsvi_typesuivi = character(0), chsvi_operateurs = logical(0), 
-                 chsvi_date = logical(0), chsvi_heure = logical(0), chsvi_capteur = logical(0), 
-                 chsvi_valeur = logical(0), chsvi_unite = character(0), chsvi_profondeur = logical(0), chsvi_action = logical(0), 
-                 chsvi_fonctionnement = logical(0), chsvi_qualite = character(0), 
-                 chsvi_actionafaire = logical(0), chsvi_remarques = logical(0), 
-                 `_modif_utilisateur` = logical(0), `_modif_type` = logical(0), 
-                 `_modif_date` = logical(0)), class = c("tbl_df", "tbl", "data.frame"
-                 ), row.names = c(NA, 0L))
+SuiviTerrain <- suivis_structure
 
 dataaimporter <- read_excel(Localisation, sheet = feuille)
 
@@ -994,6 +996,10 @@ dataaimporter <-
   mutate(chsta_q100 = ifelse("chsta_q100" %in% names(.), chsta_q100, NA)) %>% 
   mutate(chsta_q300 = ifelse("chsta_q300" %in% names(.), chsta_q300, NA)) %>% 
   mutate(chsta_surfacebassinversant = ifelse("chsta_surfacebassinversant" %in% names(.), chsta_surfacebassinversant, NA)) %>% 
+  mutate(chsta_q300 = ifelse("chsta_codehydro" %in% names(.), chsta_codehydro, NA)) %>% 
+  mutate(chsta_q300 = ifelse("chsta_codemeteofrance" %in% names(.), chsta_codemeteofrance, NA)) %>% 
+  mutate(chsta_q300 = ifelse("chsta_infl_ant_type" %in% names(.), chsta_infl_ant_type, NA)) %>% 
+  mutate(chsta_q300 = ifelse("chsta_infl_nappe" %in% names(.), chsta_infl_nappe, NA)) %>% 
   ungroup() %>% 
   # dplyr::select(-(matches("chsta_afaire"))) %>%
   # dplyr::select(-(matches("chsta_numcarte"))) %>%
@@ -1064,7 +1070,11 @@ dataaimporter <-
          chsta_q30,
          chsta_q50,
          chsta_q100,
-         chsta_q300
+         chsta_q300,
+         chsta_codehydro,
+         chsta_codemeteofrance,
+         chsta_infl_ant_type,
+         chsta_infl_nappe
          ) %>% 
   mutate(id = NA) %>% 
   mutate('_modif_utilisateur' = NA) %>% 
@@ -1115,13 +1125,7 @@ if(Type == "Commentaires"){
 #### Capteurs ####
 if(Type == "Capteurs"){
   ## Chargement des données ##
-  Capteurs <-
-    structure(list(chcap_proprietaire = character(0), chcap_typecapteur = character(0), 
-                   chcap_modelecapteur = character(0), chcap_numerocapteur = character(0), 
-                   chcap_etat = character(0), chcap_projet = character(0), chcap_originecapteur = character(0), 
-                   chcap_datedebut = character(0), chcap_datefin = character(0), 
-                   chcap_remarques = character(0)), row.names = integer(0), class = c("tbl_df", 
-                                                                                      "tbl", "data.frame"))
+  Capteurs <- capteurs_structure
   
   dataaimporter <- read_excel(Localisation, sheet = feuille) %>% mutate(chcap_numerocapteur = as.character(chcap_numerocapteur))
   if(all(names(dataaimporter) %in% names(Capteurs)) == FALSE) stop("Le fichier source des capteurs contient des noms de colonne à corriger")

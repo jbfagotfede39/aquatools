@@ -22,7 +22,7 @@ PC.conductivite.25degres <- function(data)
     left_join(facteur_conversion_conductivite %>% 
                 mutate(Thermie = as.character(Thermie)), 
               join_by(Thermie_arrondie == "Thermie")) %>% 
-    mutate(Conductivité_25_degrés = as.numeric(Conductivité) * coefficient) %>%
+    mutate(Conductivité_25_degrés = round(as.numeric(Conductivité) * coefficient, 0)) %>%
     dplyr::select(-coefficient)
   
   #### Sortie ####
