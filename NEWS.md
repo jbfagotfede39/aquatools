@@ -1,5 +1,12 @@
 # NEWS - aquatools
 
+## 0.0.175 - 2025-05-17
+### Modifications
+- MAJ de l'aide des jeux de données `chronique_exemple`, `chronique_structure` et `chronique_structure_hors_bdd`
+
+### Corrections
+- Correction de la `0.0.174` car champs `chmes_referentiel_temporel` mal ajouté dans les jeux de données de référence
+
 ## 0.0.174 - 2025-05-14
 ### Ajouts
 - `BDD.ouverture` : ajout de la dépendance à `DBI` afin que le package soit chargé automatiquement

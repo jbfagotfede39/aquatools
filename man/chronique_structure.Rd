@@ -12,7 +12,7 @@ Jeu de données de chronique d'exemple - Structure des tibbles uniquement
   Différents tibbles de données relatives à des chroniques d'exemple, pouvant être utilisées avec les fonctions de la même thématique.
   \describe{
     \item{\code{stations_structure}}{un tibble contenant la structure de la table des stations}
-    \item{\code{suivi_structure}}{un tibble contenant la structure des données de suivi de terrain}
+    \item{\code{suivis_structure}}{un tibble contenant la structure des données de suivi de terrain}
     \item{\code{mesures_structure}}{un tibble contenant la structure de la table des mesures de chronique}
     \item{\code{capteurs_structure}}{un tibble contenant la structure de la table des capteurs}
     \item{\code{resultats_structure}}{un tibble contenant la structure de la table des résultats}
@@ -31,7 +31,7 @@ Jeu de données de chronique d'exemple - Structure des tibbles uniquement
 \examples{
 data(chronique_structure)
 stations_structure
-suivi_structure
+suivis_structure
 mesures_structure
 capteurs_structure
 resultats_structure
