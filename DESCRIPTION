@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.175
+Version: 0.0.176
 Authors@R: 
     person("Jean-Baptiste", "Fagot", , "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Maintainer: Jean-Baptiste Fagot <jean-baptiste.fagot@peche-jura.com>
@@ -26,7 +26,9 @@ Imports:
     glue,
     grid,
     httr,
+    httr2,
     janitor,
+    jsonlite,
     keyring,
     lifecycle,
     lubridate,
@@ -57,6 +59,8 @@ Imports:
     xml2,
     xts,
     zoo
+Suggests: 
+    testthat
 Remotes: 
     colinfay/rgeoapi
 Encoding: UTF-8

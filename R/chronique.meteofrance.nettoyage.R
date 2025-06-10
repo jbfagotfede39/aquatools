@@ -46,7 +46,10 @@ chronique.meteofrance.nettoyage <- function(
     data_to_add_3 %>% 
     mutate(POSTE = as.character(POSTE)) %>% 
     rename(chmes_coderhj = POSTE) %>% 
-    rename(chmes_date = DATE) %>% 
+    rename(time = DATE) %>% 
+    mutate(chmes_date = format(time, format="%Y-%m-%d"), .after = "time") %>% 
+    mutate(chmes_heure = format(time, format="%H:%M:%S"), .after = "chmes_date") %>% 
+    select(-time) %>% 
     {if(type_date <= 8) rename_with(., ~str_replace(., "chmes", "chmesgr"), .cols = everything()) else .}
 
   ##### Format long ou format large #####

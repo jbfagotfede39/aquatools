@@ -1,5 +1,24 @@
 # NEWS - aquatools
 
+## 0.0.176 - 2025-06-10
+### Ajouts
+- `chronique.context` : Ajout du calcul de `valeur_min` et `valeur_max`, afin de pouvoir déduire le contexte pour les représentations graphiques
+- `chronique.figure` : Abréviations des mois en français sur les figures
+- `chronique.meteofrance.mesures` : 
+  * ajout d'un test de vérification du format de station saisi
+  * ajouts de tests unitaires
+- `chronique.meteofrance.stations` : création
+- `chronique.ouverture` : ajout de la création/ouverture de la colonne vide `chsta_codetigre1`
+- `dev.fonctions.parametres` : création
+- `hydrologie.hubeau.stations` : création
+  
+### Modifications
+- `chronique.meteofrance.nettoyage` : modification du traitement des dates afin de gérer les dates uniquement ou bien dates et heures, en fonction du type de données
+
+### Corrections
+- `chronique.meteofrance.mesures` : correction d'une coquille dans la description
+- `chronique.ouverture` : correction de création de colonnes vides TIGRE si nécessaire
+
 ## 0.0.175 - 2025-05-17
 ### Modifications
 - MAJ de l'aide des jeux de données `chronique_exemple`, `chronique_structure` et `chronique_structure_hors_bdd`

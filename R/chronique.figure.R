@@ -54,6 +54,8 @@ chronique.figure <- function(
   typemesure <- match.arg(typemesure)
   duree <- match.arg(duree)
 
+  Sys.setlocale(locale="fr_FR.UTF-8") # Afin d'avoir les abréviations des mois en français sur les figures
+  
 ##### Mise au format des données #####
 ## Transformation du format des dates
 if(class(data$chmes_date) != "Date"){#data$chmes_date <- as.Date(data$chmes_date,format="%Y-%m-%d") # ancien format du 08/04/19

@@ -2,13 +2,14 @@
 #'
 #' Cette fonction permet de commander des données Météo-France via l'API
 #' @name chronique.meteofrance.mesures
-#' @param type Type de mesure recherche : données à pas de temps (\code{Quotidien}) par défaut, \code{6_minutes}, \code{Horaire}, \code{Décadaire}, \code{Mensuel})
+#' @param type Type de mesure recherche : données à pas de temps (\code{Quotidien} par défaut, \code{6_minutes}, \code{Horaire}, \code{Décadaire}, \code{Mensuel})
 #' @param station Identifiant Météo-France de la station concernée
 #' @param date_debut_obs Date de début des mesures à collecter (exprimée en TU), au format ISO 8601 avec TZ UTC : \code{AAAA-MM-JJT00:00:00Z}
 #' @param date_fin_obs Date de fin des mesures à collecter (exprimée en TU), au format ISO 8601 avec TZ UTC : \code{AAAA-MM-JJT00:00:00Z}
 #' @param token Token \code{API Key} créé dans son compte personnel du site \url{https://portail-api.meteofrance.fr}
 #' @import glue
 #' @import httr2
+#' @import stringr
 #' @import tidyverse
 #' @export
 #' @examples
@@ -33,6 +34,7 @@ chronique.meteofrance.mesures <- function(
   if(is.na(type)) stop("Aucun type de mesure fourni")
   if(type == "6_minutes") warning("Attention : au pas de temps 6 minutes, les timecodes de début et de fin doivent être des multiples de 6 minutes")
   if(is.na(station)) stop("Aucune station fournie")
+  if(str_count(station, "[0-9]") != 8) stop("Identifiant de station fourni au mauvais format : 8 chiffres nécessaires")
   if(is.na(date_debut_obs)) stop("Aucun timecode de début de série fourni")
   if(is.na(date_fin_obs)) stop("Aucun timecode de fin de série fourni")
   if(is.na(token)) stop("Aucun token fourni")
@@ -72,7 +74,7 @@ chronique.meteofrance.mesures <- function(
     req_perform()
   
   #### Vérification ####
-  if(resultat$status_code != 202) stop(glue("Erreur {resultat$status_code} : problème au moment de la requête de passage de la commande"))
+  if(resultat$status_code != 202) stop(glue("Erreur {resultat$status_code} : problème dans la requête de passage de la commande"))
   
   #### Nettoyage & reformatage ####
   id_commande <- 

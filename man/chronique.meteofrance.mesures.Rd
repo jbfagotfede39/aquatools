@@ -13,7 +13,7 @@ chronique.meteofrance.mesures(
 )
 }
 \arguments{
-\item{type}{Type de mesure recherche : données à pas de temps (\code{Quotidien}) par défaut, \code{6_minutes}, \code{Horaire}, \code{Décadaire}, \code{Mensuel})}
+\item{type}{Type de mesure recherche : données à pas de temps (\code{Quotidien} par défaut, \code{6_minutes}, \code{Horaire}, \code{Décadaire}, \code{Mensuel})}
 
 \item{station}{Identifiant Météo-France de la station concernée}
 

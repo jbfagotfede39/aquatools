@@ -81,7 +81,9 @@ chronique.contexte <- function(
     add_column(typemesure = unique(datacompletees$typemesure) %>% glue_collapse(., sep = ";")) %>%
     add_column(unite = unique(datacompletees$unite) %>% glue_collapse(., sep = ";")) %>% 
     add_column(annee = unique(datacompletees$annee) %>% glue_collapse(., sep = ";")) %>% 
-    add_column(milieu = unique(datacompletees$milieu) %>% glue_collapse(., sep = ";"))
+    add_column(milieu = unique(datacompletees$milieu) %>% glue_collapse(., sep = ";")) %>% 
+    add_column(valeur_min = min(datacompletees$chmes_valeur, na.rm = T)) %>% 
+    add_column(valeur_max = max(datacompletees$chmes_valeur, na.rm = T))
  
    #### Sortie ####
   return(Contexte)

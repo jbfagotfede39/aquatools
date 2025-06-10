@@ -996,10 +996,11 @@ dataaimporter <-
   mutate(chsta_q100 = ifelse("chsta_q100" %in% names(.), chsta_q100, NA)) %>% 
   mutate(chsta_q300 = ifelse("chsta_q300" %in% names(.), chsta_q300, NA)) %>% 
   mutate(chsta_surfacebassinversant = ifelse("chsta_surfacebassinversant" %in% names(.), chsta_surfacebassinversant, NA)) %>% 
-  mutate(chsta_q300 = ifelse("chsta_codehydro" %in% names(.), chsta_codehydro, NA)) %>% 
-  mutate(chsta_q300 = ifelse("chsta_codemeteofrance" %in% names(.), chsta_codemeteofrance, NA)) %>% 
-  mutate(chsta_q300 = ifelse("chsta_infl_ant_type" %in% names(.), chsta_infl_ant_type, NA)) %>% 
-  mutate(chsta_q300 = ifelse("chsta_infl_nappe" %in% names(.), chsta_infl_nappe, NA)) %>% 
+  mutate(chsta_codehydro = ifelse("chsta_codehydro" %in% names(.), chsta_codehydro, NA)) %>% 
+  mutate(chsta_codemeteofrance = ifelse("chsta_codemeteofrance" %in% names(.), chsta_codemeteofrance, NA)) %>% 
+  mutate(chsta_infl_ant_type = ifelse("chsta_infl_ant_type" %in% names(.), chsta_infl_ant_type, NA)) %>% 
+  mutate(chsta_infl_nappe = ifelse("chsta_infl_nappe" %in% names(.), chsta_infl_nappe, NA)) %>% 
+  mutate(chsta_codetigre1 = ifelse("chsta_codetigre1" %in% names(.), chsta_codetigre1, NA)) %>% 
   ungroup() %>% 
   # dplyr::select(-(matches("chsta_afaire"))) %>%
   # dplyr::select(-(matches("chsta_numcarte"))) %>%
@@ -1074,7 +1075,8 @@ dataaimporter <-
          chsta_codehydro,
          chsta_codemeteofrance,
          chsta_infl_ant_type,
-         chsta_infl_nappe
+         chsta_infl_nappe,
+         chsta_codetigre1
          ) %>% 
   mutate(id = NA) %>% 
   mutate('_modif_utilisateur' = NA) %>% 
