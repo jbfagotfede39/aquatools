@@ -70,12 +70,13 @@ hydrologie.hubeau <- function(
   data_to_add <- 
     data_to_import %>% 
     content(type = "text") %>%
-    read_csv2()#%>% 
+    read_csv2() %>% 
     # select(code_station, contains("date"), contains("resultat")) #%>% 
     # rename(chmes_coderhj = code_station) %>% 
     # rename(chmes_date = date_obs_elab) %>% 
     # mutate(chmes_valeur = resultat_obs_elab/10000, .keep = "unused") %>% 
     # arrange(desc(chmes_date))
+    mutate(resultat_obs = as.numeric(resultat_obs)) # Dans le cas de données vide -> format de colonne à character et jointure impossible avec un map
   
   #### Traitement des données ####
   ##### Tri #####

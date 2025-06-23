@@ -68,7 +68,11 @@ hydrologie.hubeau.stations <- function(
   data_to_add <- 
     resultat %>% 
     resp_body_string() %>% 
-    read_csv2()
+    read_csv2() %>%
+    mutate(coordonnee_x_station = coordonnee_x_station/10) %>% 
+    mutate(coordonnee_y_station = coordonnee_y_station/10) %>% 
+    mutate(code_commune_station = as.character(code_commune_station)) %>% 
+    mutate(code_departement = as.character(code_departement))
   
   #### Traitement des données ####
   ##### Spatialisation #####

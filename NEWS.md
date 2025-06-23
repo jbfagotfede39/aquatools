@@ -1,5 +1,21 @@
 # NEWS - aquatools
 
+## 0.0.177 - 
+### Ajouts
+- `poissons.captures` : ajout du paramètre `profondeur_capture`
+- `SIG.flux.wfs` : création
+- `SIG.style.qgis` : création
+  
+### Modifications
+- `hydrologie.hubeau` : correction du format de sortie en cas de retour vide, afin de ne pas bloquer la jointure dans un `map`
+- `hydrologie.hubeau.stations` : correction du format de sortie en cas de retour vide, afin de ne pas bloquer la jointure dans un `map`
+
+### Corrections
+- 
+
+### Suppressions
+- 
+
 ## 0.0.176 - 2025-06-10
 ### Ajouts
 - `chronique.context` : Ajout du calcul de `valeur_min` et `valeur_max`, afin de pouvoir déduire le contexte pour les représentations graphiques

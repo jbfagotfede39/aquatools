@@ -10,6 +10,7 @@
 #' @param codePlacette Affichage du codeplacette - \code{FALSE} (par défault) 
 #' @param codeOperation Affichage du codeoperation - \code{FALSE} (par défault) 
 #' @param observations Affichage de la colonne observations - \code{FALSE} (par défault) 
+#' @param profondeur_capture Affichage de la colonne profondeurcapture - \code{FALSE} (par défault) 
 #' @import DBI 
 #' @import glue
 #' @import tidyverse
@@ -27,7 +28,8 @@ poissons.captures <- function(
   codeCapture = FALSE,
   codePlacette = FALSE,
   codeOperation = FALSE,
-  observations = FALSE)
+  observations = FALSE,
+  profondeur_capture = FALSE)
 {
 
 ## Ouverture de la BDD ##
@@ -85,12 +87,13 @@ DBI::dbDisconnect(dbP)
 colnames(captures)[9] <- "observations_cap" # car présence de plusieurs colonnes observations
 captures_v2 <- 
   captures %>% 
-  dplyr::select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids, observations_cap) %>% 
+  dplyr::select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids, observations_cap, profondeurcapture) %>% 
   rename(observations = observations_cap) %>% # car présence de plusieurs colonnes observations
   {if(codeCapture == F) select(., -codecapture) else .} %>% 
   {if(codePlacette == F) select(., -codeplacette) else .} %>% 
   {if(codeOperation == F) select(., -codeoperation) else .} %>% 
   {if(observations == F) select(., -observations) else .} %>% 
+  {if(profondeur_capture == F) select(., -profondeurcapture) else .} %>% 
   arrange(codeespece, desc(taillemaximum))
 
 #### Tri ####

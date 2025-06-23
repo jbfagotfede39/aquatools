@@ -11,7 +11,8 @@ poissons.captures(
   codeCapture = FALSE,
   codePlacette = FALSE,
   codeOperation = FALSE,
-  observations = FALSE
+  observations = FALSE,
+  profondeur_capture = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ poissons.captures(
 \item{codeOperation}{Affichage du codeoperation - \code{FALSE} (par défault)}
 
 \item{observations}{Affichage de la colonne observations - \code{FALSE} (par défault)}
+
+\item{profondeur_capture}{Affichage de la colonne profondeurcapture - \code{FALSE} (par défault)}
 }
 \description{
 Récupère les données de captures de poissons d'une opération
