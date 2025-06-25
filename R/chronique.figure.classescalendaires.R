@@ -105,12 +105,12 @@ chronique.figure.classescalendaires <- function(
   if(contexte$nstation == 1) ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, chmes_anneebiol, fill = voyant_valeur))
   if(contexte$nstation != 1) ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, chmes_coderhj, fill = voyant_valeur))
   ggplot <- ggplot + geom_tile(height = .25)
-  ggplot <- ggplot + theme_bw()
+  ggplot <- ggplot + theme_minimal()
   ggplot <- ggplot + scale_fill_manual(values = palette)
   ggplot <- ggplot + theme(axis.title.x = element_blank(),
                            axis.title.y = element_blank()
   )
-  ggplot <- ggplot + scale_x_date(date_labels = "%b")
+  ggplot <- ggplot + scale_x_date(date_breaks = "3 month", date_minor_breaks = "1 month", date_labels = "%b")
   ggplot <- ggplot + labs(fill = glue("{classe_variable} :"))
   if(!is.na(origine_donnees)) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
   if(contexte$nstation == 1 & contexte$nannee == 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station} - {contexte$annee}")) # S'il y a un unique couple station-année

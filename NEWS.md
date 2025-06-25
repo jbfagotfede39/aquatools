@@ -1,6 +1,22 @@
 # NEWS - aquatools
 
-## 0.0.177 - 
+## 0.0.178 - 2025-06-25
+### Ajouts
+- `PC.lac.profil` : ajout d'un paramètre manquant dans la documentation
+
+### Modifications
+- `chronique.figure` : modification du style de `bw` vers `minimal`
+- `chronique.figure.classescalendaires` : 
+  * amélioration de l'affichage par période mensuelle
+  * modification du style de `bw` vers `minimal`
+- `chronique.figure.interannuelle` : 
+  * modification du style de `bw` vers `minimal`
+  * abréviations des mois en français sur les figures
+  * affichage de tous les mois par des barres verticales
+- `PC.lac.profil` : modification du style de `bw` vers `minimal`
+- `SIG.flux.wfs` : retrait de la dépendance à `ows4R` qui était longue à charger et inutile
+
+## 0.0.177 - 2025-06-23
 ### Ajouts
 - `poissons.captures` : ajout du paramètre `profondeur_capture`
 - `SIG.flux.wfs` : création
@@ -9,12 +25,6 @@
 ### Modifications
 - `hydrologie.hubeau` : correction du format de sortie en cas de retour vide, afin de ne pas bloquer la jointure dans un `map`
 - `hydrologie.hubeau.stations` : correction du format de sortie en cas de retour vide, afin de ne pas bloquer la jointure dans un `map`
-
-### Corrections
-- 
-
-### Suppressions
-- 
 
 ## 0.0.176 - 2025-06-10
 ### Ajouts

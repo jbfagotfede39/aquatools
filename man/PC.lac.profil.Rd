@@ -12,6 +12,8 @@ PC.lac.profil(
 )
 }
 \arguments{
+\item{PC}{Jeu de données à représenter}
+
 \item{param}{Paramètre physico-chimique à représenter (O2mg, O2pourc, cond, ph, temp, redox, chlorophylles, phycocyanines, secchi)}
 
 \item{couleurs}{Choix des couleurs annuelles : \code{stratifie} par défault, \code{regulier} ou \code{aleatoire}}

@@ -211,7 +211,7 @@ if(length(unique(format(syntjour$chmes_date,"%m"))) >= 9) plotrelatif <- plotrel
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotrelatif <- plotrelatif + ylim(0,as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotrelatif <- plotrelatif + ylim(as.numeric(Ymin),as.numeric(Ymax))
 plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
-plotrelatif <- plotrelatif + theme_bw()
+plotrelatif <- plotrelatif + theme_minimal()
 
 if(duree == "Relatif"){
   plotrelatif
@@ -242,7 +242,7 @@ if(duree == "Relatif"){
   if(length(unique(format(syntjour$chmes_date,"%Y"))) < 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
   if(length(unique(format(syntjour$chmes_date,"%Y"))) >= 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
   plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
-  plotabsolu <- plotabsolu + theme_bw()
+  plotabsolu <- plotabsolu + theme_minimal()
 # }
 
 if(duree == "Complet"){

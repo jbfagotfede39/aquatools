@@ -42,6 +42,8 @@ chronique.figure.interannuelle <- function(
   typemesure <- match.arg(typemesure)
   style <- match.arg(style)
   
+  Sys.setlocale(locale="fr_FR.UTF-8") # Afin d'avoir les abréviations des mois en français sur les figures
+  
 ##### -------------- A FAIRE -------------- #####
 # Implantation de chronique.contexte()
 # Implantation de chronique.figure.parametres()
@@ -195,7 +197,7 @@ if(style == "violon"){ggplot <- ggplot + geom_violin()}
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) ggplot <- ggplot + ylim(0,as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
 ggplot <- ggplot + labs(x = "Année", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
-ggplot <- ggplot + theme_bw()
+ggplot <- ggplot + theme_minimal()
 # Ajout des valeurs journalières annuelles remarquables #
 ggplot <- ggplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMoyJMinPer), colour = "#5f90ff")
 ggplot <- ggplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMoyJMaxPer), colour = "red")
@@ -249,10 +251,10 @@ if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE){
   if(grepl("Oxygénation", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
   }
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
-ggplot <- ggplot + scale_x_date(date_labels = "%b")
+ggplot <- ggplot + scale_x_date(date_labels = "%b", date_minor_breaks = "1 month")
 if(Contexte$nannee != 1 | Contexte$nstation != 1) ggplot <- ggplot + scale_colour_manual(values = PaletteCouples)
 ggplot <- ggplot + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
-ggplot <- ggplot + theme_bw()
+ggplot <- ggplot + theme_minimal()
 }
 
   # Affichage

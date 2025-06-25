@@ -6,7 +6,6 @@
 #' @param Y Coordonnée Y à rechercher (Lambert 93)
 #' @import glue
 #' @import httr
-#' @import ows4R
 #' @import sf
 #' @import tidyverse
 #' @param url URL de base du flux - Exemple : \code{https://data.geopf.fr/wfs/}

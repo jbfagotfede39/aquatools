@@ -2,6 +2,7 @@
 #'
 #' Cette fonction permet de créer des profils graphiques de paramètres physico-chimiques
 #' @name PC.lac.profil
+#' @param PC Jeu de données à représenter
 #' @param param Paramètre physico-chimique à représenter (O2mg, O2pourc, cond, ph, temp, redox, chlorophylles, phycocyanines, secchi)
 #' @param couleurs Choix des couleurs annuelles : \code{stratifie} par défault, \code{regulier} ou \code{aleatoire}
 #' @keywords physico-chimie
@@ -146,7 +147,7 @@ PC.lac.profil <- function(
   }
   
   gg <- gg + coord_flip() # pour inverser l'affichage des X et des Y
-  gg <- gg + theme_bw()
+  gg <- gg + theme_minimal()
   return(gg)
 
 } # Fin de la fonction
