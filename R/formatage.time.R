@@ -82,8 +82,14 @@ formatage.time <- function(
       {if(data %>% select(contains("pcsvi_unite")) %>% ncol() != 0) rename(., pcsvi_unite = param_unite) else .} %>% 
       {if(data %>% select(contains("chmes_validation")) %>% ncol() != 0) rename(., chmes_validation = param_validation) else .} %>%
       {if(data %>% select(contains("chmes_mode_acquisition")) %>% ncol() != 0) rename(., chmes_mode_acquisition = param_mode_acquisition) else .} %>% 
-      {if(data %>% select(contains("chmes_mode_integration")) %>% ncol() != 0) rename(., chmes_mode_integration = param_mode_integration) else .}
+      {if(data %>% select(contains("chmes_mode_integration")) %>% ncol() != 0) rename(., chmes_mode_integration = param_mode_integration) else .} %>% 
+      {if(data %>% select(contains("chmes_referentiel_temporel")) %>% ncol() != 0) rename(., chmes_referentiel_temporel = param_referentiel_temporel) else .}
   
+    #### Vérification ####
+    if(data %>% select(contains("param_")) %>% ncol() != 0) warning("Attention : il y a certaines colonnes qui contiennent encore la chaîne 'param'")
+    
+    #### Sortie ####
+    
 return(data_sortie)
 
 } # Fin de la fonction

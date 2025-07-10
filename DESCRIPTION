@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.178
+Version: 0.0.179
 Authors@R: 
     person("Jean-Baptiste", "Fagot", , "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Maintainer: Jean-Baptiste Fagot <jean-baptiste.fagot@peche-jura.com>
@@ -35,6 +35,7 @@ Imports:
     magrittr,
     modelr,
     openxlsx,
+    ows4R,
     paletteer,
     purrr,
     raster,

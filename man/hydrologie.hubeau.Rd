@@ -27,6 +27,7 @@ hydrologie.hubeau(
 Cette fonction permet de collecter de données d'hydrologie depuis Hub'eau
 }
 \examples{
+hydrologie.hubeau("qmnj", "V244402001", "2025-04-01")
 hydrologie.hubeau("qmnj", "V231000201", "2025-04-01", "2025-04-10")
 hydrologie.hubeau("tr", "V231000201", today() - days(1)) \%>\% view()
 }

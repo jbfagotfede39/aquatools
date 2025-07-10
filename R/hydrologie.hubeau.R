@@ -13,6 +13,7 @@
 #' @import tidyverse
 #' @export
 #' @examples
+#' hydrologie.hubeau("qmnj", "V244402001", "2025-04-01")
 #' hydrologie.hubeau("qmnj", "V231000201", "2025-04-01", "2025-04-10")
 #' hydrologie.hubeau("tr", "V231000201", today() - days(1)) %>% view()
 
@@ -54,8 +55,6 @@ hydrologie.hubeau <- function(
   if(type != "tr") url_base <- glue("{url_base}&grandeur_hydro_elab={type_mesures_retenu}")
   
   url <- url_base
-  # if(!is.na(departementinsee)) url <- glue("{url}&code_departement={departementinsee}")
-  # if(!is.na(indicesandre)) url <- glue("{url}&code_indice={indicesandre}")
   if(!is.na(codesie)) url <- glue("{url}&code_entite={codesie}")
   if(!is.na(date_debut_obs) & type == "tr") url <- glue("{url}&date_debut_obs={date_debut_obs}")
   if(!is.na(date_debut_obs) & type != "tr") url <- glue("{url}&date_debut_obs_elab={date_debut_obs}")
@@ -71,11 +70,8 @@ hydrologie.hubeau <- function(
     data_to_import %>% 
     content(type = "text") %>%
     read_csv2() %>% 
-    # select(code_station, contains("date"), contains("resultat")) #%>% 
-    # rename(chmes_coderhj = code_station) %>% 
-    # rename(chmes_date = date_obs_elab) %>% 
-    # mutate(chmes_valeur = resultat_obs_elab/10000, .keep = "unused") %>% 
-    # arrange(desc(chmes_date))
+    {if("date_obs_elab" %in% names(.)) rename(., date_obs = date_obs_elab) else .} %>% 
+    {if("resultat_obs_elab" %in% names(.)) rename(., resultat_obs = resultat_obs_elab) else .} %>% 
     mutate(resultat_obs = as.numeric(resultat_obs)) # Dans le cas de données vide -> format de colonne à character et jointure impossible avec un map
   
   #### Traitement des données ####
