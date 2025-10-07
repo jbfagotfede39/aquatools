@@ -19,6 +19,7 @@ topographie.transect <- function(
 {
   #### Tests ####
   if(!(any(class(data) %in% c("sf")) == TRUE)) stop("Jeu de données en entrée pas au format sf")
+  if(nrow(data) > 2) stop("Un seul transect doit être fourni à la fois")
 
   #### Calcul du transect ####
   existence_transect <- FALSE

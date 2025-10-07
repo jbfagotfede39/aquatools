@@ -52,12 +52,12 @@ if("sf" %in% class(data) == FALSE) stop(paste0("Impossible de spatialiser ",data
 ##### Exportation #####
 # Export en geojson #
 if(geojson == TRUE){
-  st_write(data, dsn = paste0(nomfichier, ".geojson"), driver='GeoJSON', overwrite = TRUE)
+  st_write(data, dsn = paste0(nomfichier, ".geojson"), driver='GeoJSON', overwrite = TRUE, append = FALSE)
 }
 
 # Export en excel #
 if(excel == TRUE){
-  openxlsx::write.xlsx(st_set_geometry(data, NULL), paste0(nomfichier, ".xlsx"), sheetName = "Feuille1", row.names = F, showNA = F)
+  openxlsx::write.xlsx(st_set_geometry(data, NULL), paste0(nomfichier, ".xlsx"), sheetName = "Feuille1", row.names = FALSE, showNA = FALSE, overwrite = TRUE)
   #st_write(data, dsn = paste0(nomfichier, ".xlsx"), layer = str_replace(nomfichier, "-", "_"), driver = "XLSX", layer_options = "OVERWRITE=true") # Pratique mais génère un message d'avertissement à l'ouverture du fichier dans excel
 }
 
@@ -67,12 +67,12 @@ data %>%
   mutate(name = ifelse("chsta_coderhj" %in% names(.), chsta_coderhj, NA)) %>% 
   mutate(name = ifelse("nom" %in% names(.), nom, NA)) %>% # pour la table de multifish
   st_transform(4326) %>% 
-  st_write(dsn = paste0(nomfichier, ".kml"), driver='kml', overwrite = TRUE)
+  st_write(dsn = paste0(nomfichier, ".kml"), driver='kml', overwrite = TRUE, append = FALSE)
 }
 
 # Export en shp #
 if(shp == TRUE){
-  st_write(data, paste0(nomfichier, ".shp"), overwrite = TRUE)
+  st_write(data, paste0(nomfichier, ".shp"), overwrite = TRUE, append = FALSE)
 }
 
 

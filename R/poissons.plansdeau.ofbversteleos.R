@@ -357,7 +357,7 @@ poissons.plansdeau.ofbversteleos <- function(
   if(irstea_settings %>% filter(!grepl("FB|FP", Type_Engin)) %>% nrow() > 0) stop("Présence de types d'engin CEN autres que FP ou FB")
   if(irstea_settings_v2 %>% filter(Type_Fishing == "Autres") %>% nrow() > 0) stop("Présence de types d'engin non définis")
   if(irstea_settings_v2 %>% filter(is.na(Num_Net)) %>% nrow() > 0) stop("Présence de filets non nommés")
-  if(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_fish_v3$Fishec_Action)) %>% nrow() > 0) warning("Présence d'actions de pêche sans capture (ou capture vide) en face")
+  if(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_fish_v3$Fishec_Action)) %>% nrow() > 0) warning(glue("Présence d'actions de pêche sans capture (ou capture vide) en face : {glue_collapse(irstea_settings_v2 %>% filter(!(Fishec_Action %in% irstea_fish_v3$Fishec_Action)) %>% arrange(Fishec_Action) %>% pull(Fishec_Action), sep = ', ', last = ' et ')}"))
   if(irstea_fish_v3 %>% filter(!(Fishec_Action %in% irstea_settings_v2$Fishec_Action)) %>% nrow() > 0) stop("Présence de capture (ou capture vide) sans action de pêche en face")
   
   #### Exportation ####

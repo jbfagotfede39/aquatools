@@ -72,13 +72,17 @@ formatage.time <- function(
       {if(data %>% select(contains("chmesgr_typemesure")) %>% ncol() != 0) rename(., chmesgr_typemesure = param_typemesure) else .} %>%
       {if(data %>% select(contains("chsvi_typemesure")) %>% ncol() != 0) rename(., chsvi_typemesure = param_typemesure) else .} %>% 
       {if(data %>% select(contains("chres_typemesure")) %>% ncol() != 0) rename(., chres_typemesure = param_typemesure) else .} %>% 
-      {if(data %>% select(contains("pcmes_typemesure")) %>% ncol() != 0) rename(., pcmes_typemesure = param_typemesure) else .} %>% 
+      # {if(data %>% select(contains("pcmes_typemesure")) %>% ncol() != 0) rename(., pcmes_typemesure = param_typemesure) else .} %>% 
+      {if(data %>% select(contains("pcmes_parametrenom")) %>% ncol() != 0) rename(., pcmes_parametrenom = param_parametrenom) else .} %>% 
+      {if(data %>% select(contains("pcmes_parametresandre")) %>% ncol() != 0) rename(., pcmes_parametresandre = param_parametresandre) else .} %>% 
       {if(data %>% select(contains("pcsvi_typemesure")) %>% ncol() != 0) rename(., pcsvi_typemesure = param_typemesure) else .} %>% 
       {if(data %>% select(contains("chmes_unite")) %>% ncol() != 0) rename(., chmes_unite = param_unite) else .} %>%
       {if(data %>% select(contains("chmesgr_unite")) %>% ncol() != 0) rename(., chmesgr_unite = param_unite) else .} %>%
       {if(data %>% select(contains("chsvi_unite")) %>% ncol() != 0) rename(., chsvi_unite = param_unite) else .} %>% 
       {if(data %>% select(contains("chres_unite")) %>% ncol() != 0) rename(., chres_unite = param_unite) else .} %>% 
-      {if(data %>% select(contains("pcmes_unite")) %>% ncol() != 0) rename(., pcmes_unite = param_unite) else .} %>% 
+      {if(data %>% select(contains("pcmes_unitenom")) %>% ncol() != 0) rename(., pcmes_unitenom = param_unitenom) else .} %>% 
+      {if(data %>% select(contains("pcmes_unitesandre")) %>% ncol() != 0) rename(., pcmes_unite = param_unitesandre) else .} %>%
+      {if(data %>% select(contains("pcmes_profondeurlacustre")) %>% ncol() != 0) rename(., pcmes_profondeurlacustre = param_profondeurlacustre) else .} %>%
       {if(data %>% select(contains("pcsvi_unite")) %>% ncol() != 0) rename(., pcsvi_unite = param_unite) else .} %>% 
       {if(data %>% select(contains("chmes_validation")) %>% ncol() != 0) rename(., chmes_validation = param_validation) else .} %>%
       {if(data %>% select(contains("chmes_mode_acquisition")) %>% ncol() != 0) rename(., chmes_mode_acquisition = param_mode_acquisition) else .} %>% 

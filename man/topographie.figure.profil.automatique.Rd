@@ -8,6 +8,7 @@ topographie.figure.profil.automatique(
   transects = NA,
   leves = NA,
   buffer = 10,
+  ligne_eau = NA,
   save = F,
   save_name = NA_character_
 )
@@ -18,6 +19,8 @@ topographie.figure.profil.automatique(
 \item{leves}{Nuage de points issu de \code{topographie.mesures}}
 
 \item{buffer}{Distance maximale entre les points et le transect (\code{10} par défaut)}
+
+\item{ligne_eau}{Altitude de la ligne d'eau. Si non fourni, calculé automatiquement à partir des \code{tplv_code}, mais forçage manuel possible ici}
 
 \item{save}{Si \code{FALSE} (par défaut), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 

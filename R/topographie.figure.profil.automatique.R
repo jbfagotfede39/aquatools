@@ -5,6 +5,7 @@
 #' @param transects Dataframe avec les identifiants et les coordonnées de début et de fin des transects à représenter
 #' @param leves Nuage de points issu de `topographie.mesures`
 #' @param buffer Distance maximale entre les points et le transect (\code{10} par défaut)
+#' @param ligne_eau Altitude de la ligne d'eau. Si non fourni, calculé automatiquement à partir des \code{tplv_code}, mais forçage manuel possible ici
 #' @param save Si \code{FALSE} (par défaut), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
 #' @param save_name Nom de fichier à utiliser pour l'enregistrement. \code{"{today()}_Vue_profil.png"} si vide.
 #' @keywords topographie
@@ -19,6 +20,7 @@ topographie.figure.profil.automatique <- function(
     transects = NA,
     leves = NA,
     buffer = 10,
+    ligne_eau = NA,
     save = F,
     save_name = NA_character_
 )
@@ -32,19 +34,7 @@ topographie.figure.profil.automatique <- function(
   if(nrow(leves) == 0) stop("Attention : aucune donnée de levés fournie")
   
   #### Calcul de la projection des valeurs sur le profil ####
-  # On passe par une boucle car les objets sf ne semblent pas gérés par `map_dfr`
-  for(i in 1:nrow(transects)){
-    temp <-
-      transects %>% 
-      filter(row_number(transects) == i) %>% 
-      topographie.profil(leves, ., buffer)
-    if(i == 1) data_temp <- temp
-    if(i != 1){
-      data_temp <-
-        union(data_temp, temp)
-    }
-  }
-  points_projetes_sur_transect <- data_temp
+  points_projetes_sur_transect <- transects %>% group_split(id) %>% map(~ topographie.profil(leves, ., buffer)) %>% reduce(rbind)
   
   #### Complément/nettoyage des informations ####
   points_projetes_sur_transect_commentes <-
@@ -59,7 +49,8 @@ topographie.figure.profil.automatique <- function(
     st_drop_geometry() %>% 
     summarise(moy = mean(tplv_coord_z)) %>% 
     pull()
-  if(is.na(ligne_eau_moyenne)) ligne_eau_moyenne <- 0 # Afin qu'il n'y ait pas d'affichage de la ligne d'eau via topographie.figure.profil
+  if(is.na(ligne_eau_moyenne) & is.na(ligne_eau)) ligne_eau_moyenne <- 0 # Afin qu'il n'y ait pas d'affichage de la ligne d'eau via topographie.figure.profil
+  if(is.na(ligne_eau_moyenne) & !is.na(ligne_eau)) ligne_eau_moyenne <- ligne_eau # Forçage manuel
   
   terrain_naturel <- 
     points_projetes_sur_transect_commentes %>% 

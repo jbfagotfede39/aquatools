@@ -1,5 +1,43 @@
 # NEWS - aquatools
 
+## 0.0.180 - 2025-10-07
+### Ajouts
+- `formatage.time` : ajout de cas de renommage en lien avec les champs de mesures physico-chimiques
+- `PC.hubeau` : 
+  * ajout d'un test de vérification si présence d'un contenu en retour
+  * ajout d'une possibilité de récupérer tous les supports Sandre directement
+  * ajout des paramètres `date_start` et `date_end`
+- `PC.hubeau.operation.R` : création
+- `now.ymd_hm` : création
+- `now.ymd_hms` : création
+- `poissons.plansdeau.ofbversteleos` : ajout d'un export d'une liste des actions de pêche sans capture (ou capture vide)
+- `soleil.horaires` : création
+- `topographie.profil` : 
+  * ajout d'un exemple
+  * ajout d'un test conditionnel en entrée
+- `topographie.figure.profil.automatique` : ajout du paramètre `ligne_eau`
+- `topographie.transect` : ajout d'un test conditionnel en entrée
+
+### Modifications
+- Retrait d'une dépendance
+- `PC.hubeau` : refactoring pour passage de `httr` à `httr2`
+- `SIG.export` : 
+  * ajout d'un `overwrite = TRUE` manquant pour l'export excel
+  * ajout d'un `append = FALSE` manquant pour l'export vers les fichiers SIG
+- `topographie.figure.profil.automatique` : suppression d'une boucle instable et peu propre (refactoring)
+
+### Suppressions
+- `PC.hubeau` : suppression d'un test de vérification de paramètres sandre en entrée
+
+## 0.0.179 - 2025-07-10
+### Ajouts
+- `formatage.time` : 
+  * ajout du traitement de la colonne `chmes_referentiel_temporel`
+  * ajout d'un test de vérification en sortie de traitement s'il reste des colonnes non re-traitées
+- `hydrologie.hubeau` : 
+  * ajout d'un renommage de champs pour les données élaborées
+  * ajout d'un exemple
+
 ## 0.0.178 - 2025-06-25
 ### Ajouts
 - `PC.lac.profil` : ajout d'un paramètre manquant dans la documentation

@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.179
+Version: 0.0.180
 Authors@R: 
     person("Jean-Baptiste", "Fagot", , "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Maintainer: Jean-Baptiste Fagot <jean-baptiste.fagot@peche-jura.com>
@@ -35,7 +35,6 @@ Imports:
     magrittr,
     modelr,
     openxlsx,
-    ows4R,
     paletteer,
     purrr,
     raster,
@@ -51,6 +50,7 @@ Imports:
     sf,
     stringi,
     stringr,
+    suncalc,
     tcltk,
     testit,
     tibble,
@@ -68,4 +68,4 @@ Remotes:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

@@ -9,8 +9,10 @@ PC.hubeau(
   communeinsee = NA_character_,
   bbox = NA,
   parametresandre = NA_character_,
-  supportsandre = c("3", "6"),
-  coderemarque = c("1"),
+  supportsandre = c(NA_character_, "3", "4", "6"),
+  date_start = NA_character_,
+  date_end = NA_character_,
+  coderemarque = c(NA_character_, "1"),
   qualificationsandre = c("1")
 )
 }
@@ -23,18 +25,24 @@ PC.hubeau(
 
 \item{parametresandre}{Code SANDRE du paramètre concerné}
 
-\item{supportsandre}{Code SANDRE du support concerné : \code{3} - Eau (par défaut), \code{6} - Sédiments}
+\item{supportsandre}{Code SANDRE du support concerné : \code{NA} tous (par défaut), \code{3} - Eau, \code{4} - Poissons, \code{6} - Sédiments}
 
-\item{coderemarque}{Code SANDRE du code remarque concerné : \code{1} - Résultat > seuil de quantification et < au seuil de saturation (par défaut)}
+\item{date_start}{Date de début du prélèvement d'échantillon : \code{NA} aucune (par défaut) - Format \code{AAAA-MM-JJ}}
+
+\item{date_end}{Date de fin du prélèvement d'échantillon : \code{NA} aucune (par défaut) - Format \code{AAAA-MM-JJ}}
+
+\item{coderemarque}{Code SANDRE du code remarque concerné : \code{NA} tous (par défaut), \code{1} - Résultat > seuil de quantification et < au seuil de saturation (par défaut)}
 
 \item{qualificationsandre}{Code SANDRE de la qualification concernée : \code{1} - Correcte (par défaut)}
 }
 \description{
-Cette fonction permet de collecter de données de physico-chimie depuis Hub'eau
+Cette fonction permet de collecter des données d'analyses physico-chimiques depuis Hub'eau
 }
 \examples{
 PC.hubeau(codesie, parametresandre)
 PC.hubeau("06400085", "1340")
 PC.hubeau("06400085", "1386", supportsandre = "6")
 PC.hubeau(communeinsee = "39470", parametresandre = "1312", supportsandre = "3")
+PC.hubeau("V2205003", date_start = "2019-01-01", date_end = "2020-01-01")
+pc_hubeau <- tibble(id = c("3", "4", "6")) \%>\% group_split(id) \%>\% map(~ PC.hubeau(codesie = codesie_sandre, supportsandre = .$id)) \%>\% list_rbind()
 }

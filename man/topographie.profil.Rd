@@ -19,5 +19,6 @@ Cette fonction permet de calculer le profil topographique ou autres le long d'un
 \examples{
 
 topographie.profil(leves_1, transects, 150)
+transects_spatialises_2 \%>\% group_split(id) \%>\% map(~ topographie.profil(leves_nettoyes, ., buffer)) \%>\% reduce(rbind)
 }
 \keyword{topographie}

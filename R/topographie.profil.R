@@ -12,6 +12,7 @@
 #' @examples
 #' 
 #' topographie.profil(leves_1, transects, 150)
+#' transects_spatialises_2 %>% group_split(id) %>% map(~ topographie.profil(leves_nettoyes, ., buffer)) %>% reduce(rbind)
 
 topographie.profil <- function(
   leves = NA_character_,
@@ -19,7 +20,10 @@ topographie.profil <- function(
   buffer = 10
   )
 {
-
+  
+  #### Tests ####
+  if(nrow(transects) > 1) stop("Un seul transect doit être fourni à la fois")
+  
   #### Nettoyage & reformatage ###
   ### Importation/création du transect ###
   transects_1 <- 
@@ -38,7 +42,7 @@ topographie.profil <- function(
   extremites_transect <-
     # Extraction des coordonnées des premier et dernier point du transect
     transects_1 %>% 
-    st_line_sample(sample=c(0,1)) %>%
+    st_line_sample(sample = c(0,1)) %>%
     st_cast("POINT") %>%
     st_as_sf() %>% 
     mutate(tplv_coord_x = st_coordinates(.)[,1]) %>%
