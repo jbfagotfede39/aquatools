@@ -133,6 +133,24 @@ chronique.figure.parametres <- function(
     }
   }
   
+  if(typemesure == "Nitrates"){
+    if(typefigure == "valeurs"){
+      unite <- "mg/L"
+      legendeY <- glue("Nitrates ({unite})")
+      legendeTitre <- "Nitrates :"
+      typemesureTitreSortie <- "_nitrates_"
+    }
+  }
+      
+  if(typemesure == "Conductivité"){
+    if(typefigure == "valeurs"){
+      unite <- "μS/cm"
+      legendeY <- glue("Conductivté corrigée à 25°C ({unite})")
+      legendeTitre <- "Conductivté :"
+      typemesureTitreSortie <- "_conductivite_"
+    }
+  }
+    
   if(typemesure == "Chlorophylle a"){
     if(typefigure == "valeurs"){
       unite <- "μg/L"

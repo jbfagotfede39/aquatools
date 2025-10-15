@@ -131,6 +131,18 @@ chronique.figure.interannuelle <- function(
     legendeTitre = "Hydrologie :"
     typemesureTitreSortie = "_hydrologie_"
   }
+  if(typemesure == "Nitrates"){
+    unite <- "mg/L"
+    legendeY <- glue("Nitrates ({unite})")
+    legendeTitre <- "Nitrates :"
+    typemesureTitreSortie <- "_nitrates_"
+  }
+  if(typemesure == "Conductivté"){
+    unite <- "μS/cm"
+    legendeY <- glue("Conductivté corrigée à 25°C ({unite})")
+    legendeTitre <- "Conductivté :"
+    typemesureTitreSortie <- "_conductivite_"
+  }
   if(typemesure == "Pluviométrie"){
     legendeY = expression(Précipitations~(L/m^2))
     legendeTitre = "Pluviométrie :"
@@ -247,8 +259,10 @@ ggplot <- ggplot(syntjour, aes(chmes_date))
 ggplot <- ggplot + geom_line(aes(y = VMoyJ, colour = as.character(chmes_anneebiol)))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE){
   if(grepl("Thermie", typemesure)) ggplot <- ggplot + ylim(0,as.numeric(Ymax))
+  if(grepl("Nitrates", typemesure)) ggplot <- ggplot + ylim(0,as.numeric(Ymax))
   if(grepl("Piézométrie", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
   if(grepl("Oxygénation", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
+  if(grepl("Conductivité", typemesure)) ggplot <- ggplot + ylim(min(data$chmes_valeur) - 10, as.numeric(Ymax))
   }
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
 ggplot <- ggplot + scale_x_date(date_labels = "%b", date_minor_breaks = "1 month")

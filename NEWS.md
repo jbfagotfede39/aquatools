@@ -1,5 +1,13 @@
 # NEWS - aquatools
 
+## 0.0.181 - 2025-10-15
+### Ajouts
+- `topographie.correction.z` : création
+- `scalimetrie.formatage.retrocalcul` : création
+- `scalimetrie.import` : création
+- `chronique.figure.interannuelle` : ajout des paramètres nitrates et conductivité
+- `chronique.figure.parametres` : ajout des paramètres nitrates et conductivité
+
 ## 0.0.180 - 2025-10-07
 ### Ajouts
 - `formatage.time` : ajout de cas de renommage en lien avec les champs de mesures physico-chimiques
