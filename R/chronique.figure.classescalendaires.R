@@ -57,10 +57,10 @@ chronique.figure.classescalendaires <- function(
   if(contexte$ntypemesure > 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
   
   #### Paramètres ####
-  ## Titre
+  ##### Titre #####
   if(nchar(Titre) == 0) Titre <- contexte$station
   
-  ## Ajustement des paramètres en fonction du typemesure ##
+  ##### Ajustement des paramètres en fonction du typemesure #####
   parametres <- contexte %>% chronique.figure.parametres()
 
   unite <- parametres$unite
@@ -71,14 +71,14 @@ chronique.figure.classescalendaires <- function(
   palette <- parametres$palette
   
   #### Préparation des données ####
-  ### Affichage des années vides ###
+  ##### Affichage des années vides #####
   # Les sites vides sont traités plus bas via les stations
   if(affichagevide == TRUE){
     if(contexte$nannee != 1) warning("Ajout des années vides non développé, seulement les sites")
   # attention : un complete seul ne suffit pas forcément (à moins de bien le construire), car ensuite la fonction formatage.annee.neutre supprime les lignes vides
   }
   
-  ### Établissement des classes ###
+  ##### Établissement des classes #####
   data_calculees <-
     data %>% 
     ungroup() %>% 
@@ -93,7 +93,7 @@ chronique.figure.classescalendaires <- function(
     {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = recode_factor(voyant_valeur, `[0,20)` = "< 20", `[180,200]` = "> 180")) else .} %>% # Pour les extremums
     {if(contexte$typemesure == "Oxygénation") mutate(., voyant_valeur = fct_relevel(voyant_valeur, "> 180", after = Inf)) else .} # Pour les extremums
   
-  ### Adjonction des stations ###
+  ##### Adjonction des stations #####
   # dont affichage des stations vides présentes dans la table des stations
   data_calculees <-
     data_calculees %>% 

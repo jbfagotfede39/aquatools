@@ -39,7 +39,7 @@ chronique.ouverture <- function(
   separateur_decimales = c(",", "."),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens", "VuLink", "Cube"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens", "VuLink", "Cube", "RBRsolo3"),
   nomfichier = F,
   formatmacmasalmo = F
 )
@@ -194,7 +194,7 @@ dataaimporter <-
   mutate(unite = "°C")
   }
   
-if(typemesure == "Piézométrie"){
+  if(typemesure == "Piézométrie"){
   if(typecapteur == "Non précisé"){
   typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) ou 4 (RuggedTROLL) : ")
   if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3 | typecapteur == 4)) {stop("Valeur non disponible")}
@@ -683,12 +683,13 @@ if(typemesure == "Piézométrie"){
   
   if(typemesure == "Oxygénation"){
     if(typecapteur == "Non précisé"){
-    typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOTindividuel) ou 3 (miniDOTregroupe) ou 4 (WiSens) : ")
+    typecapteur = readline(prompt = "Type de capteur oxygène : 1 (Hobo) ou 2 (miniDOTindividuel) ou 3 (miniDOTregroupe) ou 4 (WiSens) ou 5 (RBRsolo3) : ")
     if (!(typecapteur == 1 | typecapteur == 2)) {stop("Valeur non disponible")}
     if (typecapteur == 1) {typecapteur <- "Hobo"}
     if (typecapteur == 2) {typecapteur <- "miniDOTindividuel"}
     if (typecapteur == 3) {typecapteur <- "miniDOTregroupe"}
     if (typecapteur == 4) {typecapteur <- "WiSens"}
+    if (typecapteur == 5) {typecapteur <- "RBRsolo3"}
     }
     
     if(typecapteur == "miniDOTindividuel" | typecapteur == "miniDOTregroupe"){
@@ -713,7 +714,7 @@ if(typemesure == "Piézométrie"){
                      'Saturation' = 'CH4:Oxygen_Saturation(%)',
                      'Saturation' = 'CH3:Oxygen_Saturation(%)',
                      'Chlorophylle_a' = 'CH2:Chlorophyll_a(ug/L)'
-      )      
+      )
 
       separateur_colonnes <- readChar(Localisation, 20) %>% str_sub(20, 21)
         # if(separateur_colonnes == ";") dataaimporter <- read_csv2(Localisation, skip = 1, col_names = c("Time", "Pression", "Thermie", "Oxy_degre", "Concentration", "Saturation"), col_types = "cddddd")
@@ -729,18 +730,38 @@ if(typemesure == "Piézométrie"){
         mutate(Heure = format(Time, format="%H:%M:%S")) %>% 
         {if(!("Concentration" %in% names(.)) & "Saturation" %in% names(.)) PC.concentrationO2(.) else .} %>% 
         dplyr::select(any_of(c("Date", "Heure", "Concentration", "Pression", "Thermie", "Saturation", "Chlorophylle_a")))
-      }
+    }
+    
+    if(typecapteur == "RBRsolo3"){
+      renommage <- c('Time' = 'Time)',
+                     'Concentration' = 'Dissolved O₂ concentration',
+                     'Saturation' = 'Dissolved O₂ saturation'
+      )
+      
+      feuille <- 3
+      dataaimporter <- read_excel(Localisation, skip = 2, sheet = feuille, col_names = c("Time", "Saturation", "Concentration"))
+      dataaimporter <- 
+        dataaimporter %>% 
+        rename(any_of(renommage)) %>% 
+        filter(!is.na(Concentration)) %>%
+        mutate(Time = as_datetime(Time)) %>% 
+        mutate(Date = ymd(format(Time, format="%Y-%m-%d"))) %>% 
+        mutate(Heure = format(Time, format="%H:%M:%S")) %>% 
+        # {if(!("Concentration" %in% names(.)) & "Saturation" %in% names(.)) PC.concentrationO2(.) else .} %>% 
+        dplyr::select(any_of(c("Date", "Heure", "Concentration", "Pression", "Thermie", "Saturation", "Chlorophylle_a")))
+    }
     
     dataaimporter <- 
       dataaimporter %>% 
-      filter(!is.na(Thermie)) %>% 
+      {if("Thermie" %in% names(.)) filter(., !is.na(Thermie)) else .} %>%
       mutate(Heure = as.character(Heure)) %>% 
-      pivot_longer(cols = any_of(c("Concentration", "Pression", "Thermie", "Saturation", "Chlorophylle_a")), names_to = "typemesure", values_to = "Valeur") %>% 
+      pivot_longer(cols = any_of(c("Concentration", "Thermie", "Saturation")), names_to = "typemesure", values_to = "Valeur") %>% 
       mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
       mutate(unite = ifelse(typemesure == "Concentration", "mg/L", unite)) %>% 
+      mutate(unite = ifelse(typemesure == "Concentration" & typecapteur == "RBRsolo3", "mL/L", unite)) %>% 
       mutate(unite = ifelse(typemesure == "Saturation", "%", unite)) %>% 
-      mutate(unite = ifelse(typemesure == "Pression", "Bar", unite)) %>% 
-      mutate(unite = ifelse(typemesure == "Chlorophylle_a", "μg/L", unite)) %>% 
+      mutate(unite = ifelse(typemesure == "Pression", "Bar", unite)) %>%
+      mutate(unite = ifelse(typemesure == "Chlorophylle_a", "μg/L", unite)) %>%
       mutate(typemesure = ifelse(grepl("Concentration|Saturation", typemesure), "Oxygénation", typemesure))
   }
   

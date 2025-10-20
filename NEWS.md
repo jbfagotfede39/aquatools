@@ -1,5 +1,22 @@
 # NEWS - aquatools
 
+## 0.0.182 - 2025-10-20
+### Ajouts
+- `chronique.classescalendaires` : création (en lien avec #72)
+- `chronique.contexte` : ajout du renommage de la colonne de valeurs pour le cas de données agrégées afin de rendre possible le calcul des `valeur_min` et `valeur_max`
+- `chronique.figure.interannuelle` : 
+  * prise en compte possible de plusieurs stations
+  * intégration de `chronique.contexte`
+- `chronique.figure.pluviometrie` : création
+- `chronique.ouverture` : ajout du format `typecapteur` `RBRsolo3`
+
+### Modifications
+- `chronique.figure.interannuelle` : refactoring
+- `chronique.figure.parametres` : modification du `contextereference` afin qu'il intègre les champs `valeur_min` et `valeur_max`
+  
+### Corrections
+- `chronique.figure.interannuelle` : correction d'une coquille dans les paramètres graphiques ajoutés en 0.0.182
+
 ## 0.0.181 - 2025-10-15
 ### Ajouts
 - `topographie.correction.z` : création

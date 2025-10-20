@@ -26,6 +26,7 @@ chronique.contexte <- function(
   
   #### Vérification des données en entrée ####
   if("chmes_date" %in% colnames(data) == TRUE & "chmes_anneebiol" %in% colnames(data) == FALSE) data <- formatage.annee.biologique(data)
+  if("VMedJ" %in% colnames(data)) message("/!\\ Les champs valeur_min et valeur_max sont calculés à partir de la colonne VMedJ")
   
   #### Homogénéisation des noms de champs ####
   datarenomees <-
@@ -38,6 +39,8 @@ chronique.contexte <- function(
     rename_at(vars(contains("Coderhj")), list( ~ str_replace(., "Coderhj", "coderhj"))) %>% 
     # MO
     rename_at(vars(contains("chsta_mo")), list( ~ str_replace(., "chsta_mo", "mo"))) %>% 
+    # Valeurs (dans le cas de données issues de chronique.agregation)
+    rename_at(vars(contains("VMedJ")), list( ~ str_replace(., "VMedJ", "chmes_valeur"))) %>% 
     # Type de mesures
     rename_at(vars(contains("chmes_typemesure")), list( ~ str_replace(., "chmes_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("chmesgr_typemesure")), list( ~ str_replace(., "chmesgr_typemesure", "typemesure"))) %>% 
