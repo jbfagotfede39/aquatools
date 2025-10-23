@@ -1,5 +1,10 @@
 # NEWS - aquatools
 
+## 0.0.183 - 2025-10-23
+### Ajouts
+- `iam.RData` : création
+- `topographie.iam` : création
+
 ## 0.0.182 - 2025-10-20
 ### Ajouts
 - `chronique.classescalendaires` : création (en lien avec #72)
