@@ -1,5 +1,26 @@
 # NEWS - aquatools
 
+## 0.0.184 - 2025-12-10
+### Ajouts
+- `chronique.analyse` : ajout des `typemesure` `Nitrates` et `Conductivité`
+- `chronique.ouverture` : ajout d'un cas de traitement pour les données piézométriques Hobo
+- `formatage.time` : ajout des cas `pcmes_remarques` et `pcsvi_remarques`
+- `formatage.date.heure` : ajout d'un paramètre `entete` qui permet de forcer l'entête s'il n'en existe pas dans le jeu de données initial
+- `topographie.iam` : 
+  * ajout d'exemples
+  * amélioration du message d'erreur si écart trop important dans les surfaces entre tables
+- `SIG.conversion` : Création
+- `SIG.conversion.32n2l93` : Création
+
+### Modifications
+- `chronique.complete` : refactoring complet
+- `PC.hubeau` : changement dy datatype de `resultat` de caractères vers numérique
+- `SIG.conversion.dec2l93` : refactoring complet avec utilisation de `SIG.conversion`
+- `SIG.conversion.l93dec2` : refactoring complet avec utilisation de `SIG.conversion`
+  
+### Corrections
+- `chronique.ouverture` : correctif suite à modification dans la dernière version (`0.0.183`)
+
 ## 0.0.183 - 2025-10-23
 ### Ajouts
 - `iam.RData` : création

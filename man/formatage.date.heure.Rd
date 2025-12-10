@@ -4,15 +4,18 @@
 \alias{formatage.date.heure}
 \title{Reformatage d'une colonne time en deux colonnes de dates et heures}
 \usage{
-formatage.date.heure(data)
+formatage.date.heure(data, entete = NA)
 }
 \arguments{
 \item{data}{Jeu de données contenant une colonne \code{time}}
+
+\item{entete}{Éventuel en-tête à utiliser (détection automatique de ceux déjà en place, mais si on souhaite le forcer) : \code{chmes}, etc.}
 }
 \description{
 Reformate une colonne time en deux colonnes de dates et heures
 }
 \examples{
 formatage.date.heure(data)
+seq(from = debut, to = fin, by = "hour") \%>\% tibble(time = .) \%>\% formatage.date.heure(entete = "chmes")
 }
 \keyword{donnees}

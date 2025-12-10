@@ -13,7 +13,9 @@
 #' @import units
 #' @export
 #' @examples
+#' tpiam_op_id <- "12";iam <- topographie.iam(topographie.habitats(tpiam_op_id), iam.resultats(tpiam_op_id))
 #' iam <- topographie.iam(topographie.habitats("12"), iam.resultats("12"))
+#' iam <- topographie.iam(habitats, operation, export = T)
 
 topographie.iam <- function(
     data = NA_character_,
@@ -48,8 +50,16 @@ topographie.iam <- function(
   
   #### Test de cohérence (suite) ####
   ##### Surfaces identiques #####
-  habitats_type_surfaces <- data_v2 %>% group_by(tphab_type) %>% summarise(surf_tot = round(sum(surface), 0)) %>% st_drop_geometry() %>% pull()
-  if(all(habitats_type_surfaces == habitats_type_surfaces[1]) == FALSE) stop("Les surfaces des 3 groupes d'habitats (substrats, hauteurs et vitesses) ne sont pas égales")
+  habitats_type_surfaces <- 
+    data_v2 %>% 
+    group_by(tphab_type) %>% 
+    summarise(surf_tot_brute = round(sum(surface), 2),
+              surf_tot = round(sum(surface), 0)) %>% 
+    st_drop_geometry() %>% 
+    mutate(affichage = glue("{tphab_type} = {surf_tot_brute}"))
+  habitats_type_surfaces_brute <- habitats_type_surfaces %>% pull(affichage)
+  habitats_type_surfaces <- habitats_type_surfaces %>% pull()
+  if(all(habitats_type_surfaces == habitats_type_surfaces[1]) == FALSE) stop(glue("Les surfaces des 3 groupes d'habitats (substrats, hauteurs et vitesses) ne sont pas égales : {glue_collapse(habitats_type_surfaces_brute, sep = ', ', last = ' et ')}"))
   
   #### Données de référence ####
   # Collecte de l'attractivité par substrats

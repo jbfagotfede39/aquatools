@@ -2,16 +2,19 @@
 #'
 #' Reformate une colonne time en deux colonnes de dates et heures
 #' @name formatage.date.heure
-#' @param data Jeu de données contenant une colonne `time`
+#' @param data Jeu de données contenant une colonne \code{time}
+#' @param entete Éventuel en-tête à utiliser (détection automatique de ceux déjà en place, mais si on souhaite le forcer) : \code{chmes}, etc.
 #' @keywords donnees
 #' @import glue
 #' @import tidyverse
 #' @export
 #' @examples
 #' formatage.date.heure(data)
+#' seq(from = debut, to = fin, by = "hour") %>% tibble(time = .) %>% formatage.date.heure(entete = "chmes")
 
 formatage.date.heure <- function(
-  data)
+  data, 
+  entete = NA)
   {
 
   #### Contexte ####
@@ -22,6 +25,8 @@ formatage.date.heure <- function(
   if(any(grepl("chres", liste_cols) == TRUE)) entete <- "chres"
   if(any(grepl("pcmes", liste_cols) == TRUE)) entete <- "pcmes"
   if(any(grepl("pcsvi", liste_cols) == TRUE)) entete <- "pcsvi"
+  
+  if(is.na(entete)) stop("Aucune valeur d'entete détectée ou fournie")
   
   colname_date <- glue("{entete}_date")
   colname_heure <- glue("{entete}_heure")

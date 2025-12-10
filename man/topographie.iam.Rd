@@ -21,6 +21,8 @@ topographie.iam(
 Cette fonction permet de calculer les résultats d'un IAM à partir des cartographies d'habitats
 }
 \examples{
+tpiam_op_id <- "12";iam <- topographie.iam(topographie.habitats(tpiam_op_id), iam.resultats(tpiam_op_id))
 iam <- topographie.iam(topographie.habitats("12"), iam.resultats("12"))
+iam <- topographie.iam(habitats, operation, export = T)
 }
 \keyword{topographie}

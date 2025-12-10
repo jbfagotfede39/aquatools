@@ -104,9 +104,14 @@ PC.hubeau <- function(
   # data_to_add
   # 
   #### Traitement des données ####
-  ##### Tri #####
+  #### Changement de datatype ####
   data_to_add_2 <-
     data_to_add %>% 
+    mutate(resultat = as.numeric(resultat))
+  
+  ##### Tri #####
+  data_to_add_3 <-
+    data_to_add_2 %>% 
     arrange(desc(date_prelevement), heure_prelevement, code_station, libelle_parametre)
   
   #### Sortie des données ####

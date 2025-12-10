@@ -7,12 +7,13 @@
 chronique.complete(data = data)
 }
 \arguments{
-\item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
+\item{data}{Data.frame d'une série de mesures de chroniques au format \code(mesures_structure)}
 }
 \description{
-Cette fonction permet de compléter les chroniques présentant des valeurs manquantes
+Cette fonction permet de compléter les chroniques présentant des valeurs manquantes (une station avec un unique paramètre)
 }
 \examples{
 chronique.complete(data)
+data \%>\% group_split(chmes_coderhj) \%>\% map(~ chronique.complete(.)) \%>\% list_rbind() 
 }
 \keyword{chronique}

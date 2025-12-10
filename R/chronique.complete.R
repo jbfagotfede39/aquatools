@@ -1,78 +1,62 @@
 #' Complément de chroniques
 #'
-#' Cette fonction permet de compléter les chroniques présentant des valeurs manquantes
+#' Cette fonction permet de compléter les chroniques présentant des valeurs manquantes (une station avec un unique paramètre)
 #' @name chronique.complete
-#' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
+#' @param data Data.frame d'une série de mesures de chroniques au format \code(mesures_structure)
 #' @keywords chronique
+#' @import lubridate
 #' @import tidyverse
 #' @export
 #' @examples
 #' chronique.complete(data)
+#' data %>% group_split(chmes_coderhj) %>% map(~ chronique.complete(.)) %>% list_rbind() 
 
 chronique.complete <- function(
-  data = data)
+    data = data)
 {
+  #### Contexte ####
+  contexte <- data %>% chronique.contexte()
   
-##### -------------- A FAIRE -------------- #####
-
-# -------------- A FAIRE -------------- #
+  #### Test de cohérence ####
+  if(!("chmes_date" %in% names(data))) stop("Pas de colonne 'chmes_date' dans le jeu de données fourni")
+  if(!("chmes_heure" %in% names(data))) stop("Pas de colonne 'chmes_heure' dans le jeu de données fourni")
+  if(!("chmes_valeur" %in% names(data))) stop("Pas de colonne 'chmes_valeur' dans le jeu de données fourni")
+  if(contexte$nstation != 1) stop("Plusieurs stations dans le jeu de données fourni : il faut passer par un map")
+  if(contexte$ntypemesure != 1) stop("Plusieurs typemesure dans le jeu de données fourni : il faut passer par un map")
+  if(contexte$nunite != 1) stop("Plusieurs unite dans le jeu de données fourni : il faut passer par un map")
   
-##### Mise au format des données #####
-
-if(length(unique(data$chmes_coderhj)) == 1) chmes_coderhj <- unique(data$chmes_coderhj) else stop("Différentes stations dans le data")
-if(length(unique(data$chmes_unite)) == 1) chmes_unite <- unique(data$chmes_unite) else stop("Différentes unités dans le data")
-if(length(unique(data$chmes_typemesure)) == 1) chmes_typemesure <- unique(data$chmes_typemesure) else stop("Différents types de mesure dans le data")
-if(length(unique(data$chmes_validation)) == 1) chmes_validation <- unique(data$chmes_validation) else warning("Différents statuts de validation dans le data")
-
-data <-
-  data %>% 
-  mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_")))
-
-min <- min(data$Time)
-max <- max(data$Time)
-
-ValeurBrutNA <- seq(as.Date(format(min, format="%Y-%m-%d")), as.Date(format(max, format="%Y-%m-%d")), "day")
-ValeurBrutNA <- as.data.frame(ValeurBrutNA)
-colnames(ValeurBrutNA) <- "chmes_date"
-ValeurBrutNA$id <- as.numeric(NA)
-ValeurBrutNA$chmes_coderhj <- as.character(NA)
-ValeurBrutNA$chmes_capteur <- as.character(NA)
-ValeurBrutNA$chmes_date <- as.character(ValeurBrutNA$chmes_date)
-ValeurBrutNA$chmes_heure <- as.character(NA)
-ValeurBrutNA$chmes_valeur <- as.numeric(NA)
-ValeurBrutNA$chmes_unite <- as.character(NA)
-ValeurBrutNA$chmes_typemesure <- as.character(NA)
-ValeurBrutNA$chmes_validation <- "Validé"
-ValeurBrutNA$chmes_modeacquisition <- as.character(NA)
-ValeurBrutNA <- 
-  ValeurBrutNA %>% 
-  select(id, chmes_coderhj, chmes_capteur, chmes_date, chmes_heure, chmes_valeur, chmes_unite, chmes_typemesure, chmes_validation, chmes_modeacquisition)
-
-data <-
-  data %>% 
-  select(-Time)
-
-ValeurBrutNA$chmes_date <- ymd(ValeurBrutNA$chmes_date)
-
-data <-
-  bind_rows(ValeurBrutNA, data)
-
-data <-
-  data %>% 
-  complete(chmes_date, chmes_heure) 
-
-data$chmes_coderhj <- chmes_coderhj
-data$chmes_unite <- chmes_unite
-data$chmes_typemesure <- chmes_typemesure
-#data$chmes_validation <- chmes_validation
-data$chmes_validation[is.na(data$chmes_validation)] <- "Validé"
-
-data <-
-  data %>% 
-  mutate(Time = ymd_hms(paste(chmes_date, chmes_heure, sep = "_"))) %>% 
-  filter(Time >= min, Time <= max) %>% 
-  select(id, chmes_coderhj, chmes_capteur, chmes_date, chmes_heure, chmes_valeur, chmes_unite, chmes_typemesure, chmes_validation, chmes_modeacquisition)
-
-return(data)
-
+  #### Calcul ####
+  ##### Calcul d'un couple date-heure ####
+  data_v2 <-
+    data %>% 
+    formatage.time()
+  
+  ##### Calcul des début et fin de la série ####
+  debut <- min(data_v2$time)# %>% floor_date("hour")
+  fin <- max(data_v2$time)# %>% ceiling_date("hour")
+  
+  ##### Création de la série complète ####
+  data_v3 <- 
+    data_v2 %>% 
+    complete(time = seq(debut, fin, by = "hour"), fill = list(value = NA)) %>% 
+    mutate(chmes_coderhj = contexte$station) %>% 
+    mutate(chmes_typemesure = contexte$typemesure) %>% 
+    mutate(chmes_unite = contexte$unite) %>% 
+    mutate(chmes_validation = "Validé") %>% 
+    formatage.date.heure() %>% 
+    mutate(`_modif_date` = NA) # Car supprimé par étape préalable : formatage.date.heure()
+  # view()
+  
+  #### Nettoyage & reformatage ####
+  data_v4 <-
+    data_v3 %>% 
+    arrange(chmes_coderhj, chmes_date, chmes_heure) %>% 
+    select(match(colnames(data), names(.)))
+  
+  #### Sortie ####
+  return(data_v4)
+  
+  
+  return(data)
+  
 }

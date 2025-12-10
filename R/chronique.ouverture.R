@@ -224,6 +224,7 @@ dataaimporter <-
     # read_csv2(Localisation, skip = skipvalue, col_names = c("Date","Heure","Piézométrie", "Thermie")) %>% 
     if(nbcolonnes == 3) dataaimporter <- read_delim(Localisation, delim = separateur_colonnes, locale = locale(decimal_mark = separateur_decimales), skip = skipvalue, col_names = c("Date", "Piézométrie", "Thermie"))
     if(nbcolonnes == 4) dataaimporter <- read_delim(Localisation, delim = separateur_colonnes, locale = locale(decimal_mark = separateur_decimales), skip = skipvalue, col_names = c("Date", "Heure", "Piézométrie", "Thermie"))
+    if(nbcolonnes == 8) dataaimporter <- read_delim(Localisation, delim = separateur_colonnes, locale = locale(decimal_mark = separateur_decimales), skip = skipvalue, col_names = c("Date", "Heure", "Piézométrie", "Thermie", "vide_1", "vide_2", "vide_3", "vide_4"))
     dataaimporter <-
       dataaimporter %>% 
       mutate(Thermie = as.numeric(sub(",", ".", Thermie))) %>% 
@@ -755,7 +756,7 @@ dataaimporter <-
       dataaimporter %>% 
       {if("Thermie" %in% names(.)) filter(., !is.na(Thermie)) else .} %>%
       mutate(Heure = as.character(Heure)) %>% 
-      pivot_longer(cols = any_of(c("Concentration", "Thermie", "Saturation")), names_to = "typemesure", values_to = "Valeur") %>% 
+      pivot_longer(cols = any_of(c("Concentration", "Pression", "Thermie", "Saturation", "Chlorophylle_a")), names_to = "typemesure", values_to = "Valeur") %>% 
       mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
       mutate(unite = ifelse(typemesure == "Concentration", "mg/L", unite)) %>% 
       mutate(unite = ifelse(typemesure == "Concentration" & typecapteur == "RBRsolo3", "mL/L", unite)) %>% 

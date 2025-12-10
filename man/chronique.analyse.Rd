@@ -9,7 +9,7 @@ chronique.analyse(
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
-    "Pluviométrie"),
+    "Pluviométrie", "Nitrates", "Conductivité"),
   pasdetemps = 1,
   seuils = c(25, 22, 19, 15, 4),
   seuilexcesdefaut = 12,
