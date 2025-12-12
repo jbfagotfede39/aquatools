@@ -58,7 +58,7 @@ topographie.iam <- function(
     st_drop_geometry() %>% 
     mutate(affichage = glue("{tphab_type} = {surf_tot_brute}"))
   habitats_type_surfaces_brute <- habitats_type_surfaces %>% pull(affichage)
-  habitats_type_surfaces <- habitats_type_surfaces %>% pull()
+  habitats_type_surfaces <- habitats_type_surfaces %>% pull(surf_tot)
   if(all(habitats_type_surfaces == habitats_type_surfaces[1]) == FALSE) stop(glue("Les surfaces des 3 groupes d'habitats (substrats, hauteurs et vitesses) ne sont pas égales : {glue_collapse(habitats_type_surfaces_brute, sep = ', ', last = ' et ')}"))
   
   #### Données de référence ####
