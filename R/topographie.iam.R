@@ -179,6 +179,8 @@ topographie.iam <- function(
   # Comment exporter dans R de la fonction plusieurs tableaux/figures ?
   operation_modifiee <-
     operation %>% 
+    mutate(tpiam_superficie = units::drop_units(surface_totale)) %>% 
+    mutate(tpiam_longueur_mouillee = round(tpiam_superficie/tpiam_largeur_mouillee, 2)) %>% 
     mutate(tpiam_sub_nb = var_substrats) %>% 
     mutate(tpiam_hau_nb = var_hauteurs) %>% 
     mutate(tpiam_vit_nb = var_vitesses) %>% 
