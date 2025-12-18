@@ -39,14 +39,30 @@ topographie.iam <- function(
   ##### Complétude des données d'habitats #####
   if(habitats_type_n == 0 | habitats_type_n == 1) stop(glue("Présence de {habitats_type_n} type d'habitats, au lieu de 3 attendus"))
   if(habitats_type_n == 2 | habitats_type_n > 3) stop(glue("Présence de {habitats_type_n} types d'habitats, au lieu de 3 attendus"))
-
+  
+  #### Données de référence ####
+  ##### Collecte de l'attractivité par substrats et des regroupements de substrats (BLO/BLS, etc.) #####
+  data(iam_cotation)
+  # iam_cotation
+  
   #### Nettoyage & reformatage ####
   data_v2 <-
     data %>% 
     mutate(surface = round(st_area(geom), 2))
-  substrats <- data_v2 %>% filter(tphab_type == "Substrat") %>% rename_with(~str_c("sub_", .), .cols = "tphab_valeur_principale")
+  substrats <- data_v2 %>% filter(tphab_type == "Substrat") %>% rename_with(~str_c("sub_", .), .cols = "tphab_valeur_principale") %>% left_join(iam_cotation %>% select(habitat, groupe), join_by(sub_tphab_valeur_principale == habitat))
   vitesses <- data_v2 %>% filter(tphab_type == "Vitesse") %>% rename_with(~str_c("vit_", .), .cols = "tphab_valeur_principale")
   hauteurs <- data_v2 %>% filter(tphab_type == "Hauteur") %>% rename_with(~str_c("hau_", .), .cols = "tphab_valeur_principale")
+  
+  ##### Regroupement des GGR/GAL/GRA #####
+  # Seul traitement manuel car les autres cas fonctionnent directement #
+  habitats_type_ggr_n <- substrats %>% filter(groupe == 91) %>% nrow() # GGR
+  habitats_type_gal_n <- substrats %>% filter(groupe == 92) %>% nrow() # GAL / GLS / GLP
+  habitats_type_gra_n <- substrats %>% filter(groupe == 93) %>% nrow() # GRA / GRS
+  if(habitats_type_ggr_n != 0 & habitats_type_gal_n != 0) habitats_type_ggr_id <- 92
+  if(habitats_type_ggr_n != 0 & habitats_type_gra_n != 0) habitats_type_ggr_id <- 93
+  if(habitats_type_ggr_n != 0){
+    substrats <- substrats %>% mutate(groupe = ifelse(groupe == 91, habitats_type_ggr_id, groupe))
+  }
   
   #### Test de cohérence (suite) ####
   ##### Surfaces identiques #####
@@ -60,12 +76,7 @@ topographie.iam <- function(
   habitats_type_surfaces_brute <- habitats_type_surfaces %>% pull(affichage)
   habitats_type_surfaces <- habitats_type_surfaces %>% pull(surf_tot)
   if(all(habitats_type_surfaces == habitats_type_surfaces[1]) == FALSE) stop(glue("Les surfaces des 3 groupes d'habitats (substrats, hauteurs et vitesses) ne sont pas égales : {glue_collapse(habitats_type_surfaces_brute, sep = ', ', last = ' et ')}"))
-  
-  #### Données de référence ####
-  # Collecte de l'attractivité par substrats
-  data(iam)
-  # cotation_iam
-  
+
   #### Calcul ####
   ##### Calcul des pôles d'attraction #####
   st_agr(substrats) = "constant"
@@ -107,7 +118,7 @@ topographie.iam <- function(
   if(operation$tpiam_affluents_presence == FALSE) bonus <- 1
   if(operation$tpiam_affluents_presence == TRUE) bonus <- 1.25
   # Variété classes de substrats
-  var_substrats <- n_distinct(poles_v2$sub_tphab_valeur_principale)
+  var_substrats <- n_distinct(substrats$groupe)
   # Variété classes de vitesses
   var_vitesses <- n_distinct(poles_v2$vit_tphab_valeur_principale)
   # Variété classes de hauteurs
@@ -124,7 +135,7 @@ topographie.iam <- function(
     mutate(proportion = surface/surface_totale) %>% 
     mutate(log_proportion = log10(proportion)) %>% 
     mutate(proportion_log_proportion = proportion*log_proportion) %>% 
-    summarise(proportion_log_proportion = -sum(proportion_log_proportion)) %>% 
+    summarise(proportion_log_proportion = -sum(proportion_log_proportion, na.rm = TRUE)) %>% 
     pull(proportion_log_proportion) %>% 
     units::drop_units()
   # Indice de régularité
@@ -152,7 +163,7 @@ topographie.iam <- function(
   iam_isca_calcul <-
     prop_substrats %>% 
     mutate(prop = surface/surface_totale) %>% 
-    left_join(iam_cotation, join_by(sub_tphab_valeur_principale == substrat)) %>% 
+    left_join(iam_cotation %>% select(-description, -groupe, -particularites), join_by(sub_tphab_valeur_principale == habitat)) %>% 
     mutate(iam_note = prop*attractivité_iam, .after = attractivité_iam) %>% 
     mutate(isca_note = prop*attractivite_isca, .after = attractivite_isca)
   iam_obs <- iam_isca_calcul %>% units::drop_units() %>% summarise(iam_obs = sum(iam_note)) %>% pull(iam_obs) * bonus * var_substrats * var_vitesses * var_hauteurs
@@ -192,10 +203,6 @@ topographie.iam <- function(
     mutate(tpiam_noteiam_theorique = iam_th) %>% 
     mutate(tpiam_noteiam_ratio = iam_ratio) %>% 
     mutate(tpiam_classe_etat = iam_classe)
-  
-  #### Représentation ####
-  # Figuré hâchuré
-  
   
   #### Export ####
   if(export == TRUE){

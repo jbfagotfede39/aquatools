@@ -1,5 +1,22 @@
 # NEWS - aquatools
 
+## 0.0.185 - 2025-12-18
+### Ajouts
+- `iam_cotation` : ajout des regroupement (`BLO`/`BLS`, etc.)
+- `palette_habitats` : création
+- `habitats_exemple` : création
+- `topographie.habitats.vue` : création
+- `topographie.iam` : ajout du calcul de `tpiam_superficie` et `tpiam_longueur_mouillee`
+
+### Modifications
+- `iam_cotation` : renommage depuis `iam`
+  
+### Corrections
+- `topographie.iam` : 
+  * correction d'un bug introduit via l'ajout du message d'erreur de `0.0.184`
+  * correction calcul IAM avec catégories multiples qui ne comptent que pour 1 substrat
+  * correction calcul de l'indice de diversité qui générait des `NaN` dans le cas de surfaces très faibles (~ 0)
+
 ## 0.0.184 - 2025-12-10
 ### Ajouts
 - `chronique.analyse` : ajout des `typemesure` `Nitrates` et `Conductivité`
