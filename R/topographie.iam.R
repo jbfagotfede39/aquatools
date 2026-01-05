@@ -60,6 +60,7 @@ topographie.iam <- function(
   habitats_type_gra_n <- substrats %>% filter(groupe == 93) %>% nrow() # GRA / GRS
   if(habitats_type_ggr_n != 0 & habitats_type_gal_n != 0) habitats_type_ggr_id <- 92
   if(habitats_type_ggr_n != 0 & habitats_type_gra_n != 0) habitats_type_ggr_id <- 93
+  if(habitats_type_ggr_n != 0 & habitats_type_gal_n == 0 & habitats_type_gra_n == 0) habitats_type_ggr_id <- 91 # redondant mais nécessaire, car habitats_type_ggr_id doit existe ensuite pour le bloc suivant (juste en dessous)
   if(habitats_type_ggr_n != 0){
     substrats <- substrats %>% mutate(groupe = ifelse(groupe == 91, habitats_type_ggr_id, groupe))
   }
