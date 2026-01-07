@@ -25,6 +25,6 @@ Cette fonction permet de convertir des coordonnées en du Lambert 93 (2154) vers
 }
 \examples{
 SIG.conversion(888227, 6655627, 2154, 4326)
-SIG.conversion.l93dec2(888227, 6655627)
+SIG.conversion.l93dec2(888227, 6655627) \%>\% mapview::mapview()
 }
 \keyword{SIG}

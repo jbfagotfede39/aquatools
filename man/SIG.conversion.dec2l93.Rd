@@ -15,6 +15,6 @@ SIG.conversion.dec2l93(coord_x = NA, coord_y = NA)
 Cette fonction permet de convertir des coordonnées en degrés décimaux (4326) vers du Lambert 93 (2154)
 }
 \examples{
-SIG.conversion.dec2l93(46.806626, 5.972321)
+SIG.conversion.dec2l93(5.972321, 46.806626) \%>\% mapview::mapview()
 }
 \keyword{SIG}

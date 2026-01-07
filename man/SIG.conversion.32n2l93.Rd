@@ -15,6 +15,6 @@ SIG.conversion.32n2l93(coord_x = NA, coord_y = NA)
 Cette fonction permet de convertir des coordonnées en 32N (32632) vers Lambert 93 (2154)
 }
 \examples{
-SIG.conversion.32n2l93(276412.375, 5154007.570)
+SIG.conversion.32n2l93(276412.375, 5154007.570) \%>\% mapview::mapview()
 }
 \keyword{SIG}
