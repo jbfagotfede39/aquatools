@@ -9,7 +9,7 @@
 #' @import tidyverse
 #' @export
 #' @examples
-#' SIG.conversion.l93dec2(888227, 6655627)
+#' SIG.conversion.l93dec2(888227, 6655627) %>% mapview::mapview()
 
     SIG.conversion.l93dec2 <- function(coord_x = NA, coord_y = NA) {
         

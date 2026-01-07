@@ -29,7 +29,9 @@
         mutate(chsta_coord_x_conv = st_coordinates(.)[,1]) %>% 
         mutate(chsta_coord_y_conv= st_coordinates(.)[,2]) %>% 
         st_drop_geometry() %>% 
-        st_as_sf(coords = c("chsta_coord_y_conv", "chsta_coord_x_conv"), crs = projection_cible, dim = "XY", remove = T)
+        st_as_sf(coords = c("chsta_coord_x_conv", "chsta_coord_y_conv"), crs = projection_cible, dim = "XY", remove = T)
+        # {if(projection_source %in% c("32631", "32632", "4326")) st_as_sf(., coords = c("chsta_coord_x_conv", "chsta_coord_y_conv"), crs = projection_cible, dim = "XY", remove = T) else .} %>%
+        # {if(projection_source == c("2154") & projection_cible == c("4326")) st_as_sf(., coords = c("chsta_coord_y_conv", "chsta_coord_x_conv"), crs = projection_cible, dim = "XY", remove = T) else .}
       
       #### Sortie ####
       return(cible)

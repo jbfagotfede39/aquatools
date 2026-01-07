@@ -1,7 +1,7 @@
-#' Conversion de coordonnées en 32N vers Lambert 93
+#' Conversion de coordonnées en 31N vers Lambert 93
 #'
-#' Cette fonction permet de convertir des coordonnées en 32N (32632) vers Lambert 93 (2154)
-#' @name SIG.conversion.32n2l93
+#' Cette fonction permet de convertir des coordonnées en 31N (32631) vers Lambert 93 (2154)
+#' @name SIG.conversion.31n2l93
 #' @param coord_x Coordonnée x à convertir
 #' @param coord_y Coordonnée y à convertir
 #' @keywords SIG
@@ -9,16 +9,16 @@
 #' @import tidyverse
 #' @export
 #' @examples
-#' SIG.conversion.32n2l93(276412.375, 5154007.570) %>% mapview::mapview()
+#' SIG.conversion.31n2l93(695737.448, 5174080.793) %>% mapview::mapview()
 
-    SIG.conversion.32n2l93 <- function(coord_x = NA, coord_y = NA) {
+    SIG.conversion.31n2l93 <- function(coord_x = NA, coord_y = NA) {
       
       #### Test de cohérence ####
       if(is.na(coord_x)) stop("Pas de coord_x fournie")
       if(is.na(coord_y)) stop("Pas de coord_y fournie")
       
       #### Calcul ####
-      cible <- SIG.conversion(coord_x, coord_y, 32632, 2154)
+      cible <- SIG.conversion(coord_x, coord_y, 32631, 2154)
       
       #### Sortie ####
       return(cible)
