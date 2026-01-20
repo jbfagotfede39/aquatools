@@ -1,5 +1,25 @@
 # NEWS - aquatools
 
+## 0.0.186 - 2026-01-20
+### Ajouts
+- `chronique.ouverture` : 
+  - amélioration du message d'erreur en cas d'absence de coordonnées dans l'importation des stations
+  - ajout d'un message d'erreur en cas d'absence de la colonne `chsta_coderhj` dans l'importation des stations
+- `SIG.conversion.l93dec2` : complément de l'exemple avec mapview()
+- `SIG.conversion.31n2l93` : création
+- `SIG.conversion.32n2l93` : complément de l'exemple avec mapview()
+- `SIG.conversion.dec2l93` : 
+  * correction de l'exmple afin de mettre les coordonnées dans le bon sens
+  * complément de l'exemple avec mapview()
+
+### Modifications
+- `SIG.export` : amélioration afin que les champs `NAME` et `DESCRIPTION` soient bien complétés
+  
+### Corrections
+- `chronique.recalage.valeur` : correction du test de valeur vide de la variable `decalage`
+- `topographie.iam` : correction du traitement des `GGR` qui était lacunaire
+- `SIG.conversion` : correction de l'ordre des coordonnées en sortie
+
 ## 0.0.185 - 2025-12-18
 ### Ajouts
 - `iam_cotation` : ajout des regroupement (`BLO`/`BLS`, etc.)

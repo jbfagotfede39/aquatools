@@ -907,10 +907,13 @@ dataaimporter <-
 #### Stations ####
 if(Type == "Stations"){
 
-## Chargement des données ##
+##### Chargement des données #####
 dataaimporter <- read_excel(Localisation, sheet = feuille)
 
-## Transformation ##
+##### Test de cohérence #####
+if(!("chsta_coderhj" %in% names(dataaimporter))) stop(glue("Attention : pas de colonne chsta_coderhj dans le fichier {Localisation}"))
+
+##### Transformation  #####
 dataaimporter <- 
   dataaimporter %>% 
   rename_at(vars(contains("CodeRDT")), list(~str_replace(., "CodeRDT", "coderhj"))) %>%
@@ -1106,8 +1109,8 @@ dataaimporter <-
   mutate('_modif_date' = NA) %>% 
   dplyr::select(id, everything(), '_modif_utilisateur', '_modif_type', '_modif_date')
 
-## Test ##
-if(dataaimporter %>% filter(is.na(chsta_coord_x)) %>% nrow() > 0) stop("Présence de stations sans coordonnées")
+##### Test  #####
+if(dataaimporter %>% filter(is.na(chsta_coord_x)) %>% nrow() > 0) stop(glue("Présence de stations sans coordonnées : dataaimporter %>% filter(is.na(chsta_coord_x)) %>% distinct(chsta_coderhj)"))
 }
 
 

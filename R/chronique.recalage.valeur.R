@@ -18,7 +18,9 @@ chronique.recalage.valeur <- function(data,
 
   #### Nettoyage & reformatage ####
   ##### Valeur de décalage #####
-  if(decalage == 0) decalage <- NA_real_
+  test_decalage <- decalage %>% nchar()
+  if(!(test_decalage %>% is.na())) {
+    if(test_decalage == 0) decalage <- NA_real_}
   
   ##### Tri #####
   data_v2 <-

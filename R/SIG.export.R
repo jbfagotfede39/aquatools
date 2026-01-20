@@ -66,8 +66,9 @@ if(kml == TRUE){
 data %>% 
   mutate(name = ifelse("chsta_coderhj" %in% names(.), chsta_coderhj, NA)) %>% 
   mutate(name = ifelse("nom" %in% names(.), nom, NA)) %>% # pour la table de multifish
+  mutate(description = ifelse("description" %in% names(.), nom, NA)) %>% # pour la table de multifish
   st_transform(4326) %>% 
-  st_write(dsn = paste0(nomfichier, ".kml"), driver='kml', overwrite = TRUE, append = FALSE)
+  st_write(dsn = paste0(nomfichier, ".kml"), driver = 'kml', layer_options = "NAME=name,DESCRIPTION=description", overwrite = TRUE, append = FALSE)
 }
 
 # Export en shp #
