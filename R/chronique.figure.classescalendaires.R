@@ -3,14 +3,14 @@
 #' Cette fonction permet de représenter les classes de valeurs de référence pour des chroniques de mesures (température, niveaux, etc.) sous forme calendaire.
 #' @name chronique.figure.classescalendaires
 #' @param data Data.frame issu de chronique.agregation (données journalières)
-#' @param Titre Titre du graphique (vide par défaut)
+#' @param titre Titre du graphique (vide par défaut)
+#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
 #' @param classe_variable Type de variable journalière agrégée à utiliser : \code{VMedJ} (par défaut), \code{VMinJ}, \code{VMoyJ}, \code{VMaxJ}, \code{VAmpliJ}, \code{VAmpliSigneJ}, \code{VarJ}, \code{NMesuresJ} ou \code{SommeMoyJ}
 #' @param stations Dataframe contenant les stations, avec au minimum \code{chsta_coderhj} et \code{chsta_distancesource}
 #' @param affichagevide Si \code{TRUE}, fait apparaître les années/stations ne contenant pas de résultats. Si \code{FALSE} (par défault), ne fait apparaître que les années/stations contenants des résultats
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes
 #' @param datedebutanneeneutre Date de démarrage de l'année neutre : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme d'années neutres
-#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
@@ -29,15 +29,15 @@
 
 chronique.figure.classescalendaires <- function(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
   classe_variable = c("VMedJ", "VMinJ", "VMoyJ", "VMaxJ", "VAmpliJ", "VAmpliSigneJ", "VarJ", "NMesuresJ", "SommeMoyJ"),
   stations = NA_character_,
   affichagevide = FALSE,
   datedebutanneebiol = "10-01",
   datedebutanneeneutre = "10-01",
-  origine_donnees = NA_character_,
-  save = F,
+  save = FALSE,
   projet = NA_character_,
   format = ".png"
   )
@@ -58,7 +58,7 @@ chronique.figure.classescalendaires <- function(
   
   #### Paramètres ####
   ##### Titre #####
-  if(nchar(Titre) == 0) Titre <- contexte$station
+  if(nchar(titre) == 0) titre <- contexte$station
   
   ##### Ajustement des paramètres en fonction du typemesure #####
   parametres <- contexte %>% chronique.figure.parametres()
@@ -112,7 +112,7 @@ chronique.figure.classescalendaires <- function(
   )
   ggplot <- ggplot + scale_x_date(date_breaks = "3 month", date_minor_breaks = "1 month", date_labels = "%b")
   ggplot <- ggplot + labs(fill = glue("{classe_variable} :"))
-  if(!is.na(origine_donnees)) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
+  if(nchar(origine_donnees) != 0) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
   if(contexte$nstation == 1 & contexte$nannee == 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station} - {contexte$annee}")) # S'il y a un unique couple station-année
   if(contexte$nstation == 1 & contexte$nannee != 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station}")) # S'il y a une unique station
   if(contexte$nstation != 1 & contexte$nannee == 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$annee}")) # S'il y a une unique année

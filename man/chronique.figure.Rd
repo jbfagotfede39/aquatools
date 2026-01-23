@@ -6,18 +6,19 @@
 \usage{
 chronique.figure(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Chlorophylle a",
     "Hydrologie", "Pluviométrie"),
   duree = c("Complet", "Relatif"),
   complement = FALSE,
-  Vmm30j = F,
-  Vminmax = T,
+  Vmm30j = FALSE,
+  Vminmax = TRUE,
   Ymin = -1,
   Ymax = NA,
-  save = F,
+  save = FALSE,
   projet = NA_character_,
   format = ".png"
 )
@@ -25,9 +26,11 @@ chronique.figure(
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
+\item{titre}{Titre du graphique (vide par défaut)}
 
-\item{typemesure}{Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, 0FQWDrd63kMqiXHzy56WkR0tu2JEHWwR-7\code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.}
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
+
+\item{typemesure}{Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, KxHSQciMl1A9zCHOjlQCNN4qCkreaKhs-7\code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.}
 
 \item{duree}{Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.}
 
@@ -56,6 +59,6 @@ Cette fonction permet de représenter des chroniques de mesures (température, n
 \examples{
 chronique.figure(data)
 chronique.figure(data = mesdonnees, typemesure = "Thermie", duree = "Complet")
-chronique.figure(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
+chronique.figure(data = tableaudonnee, titre = nom, typemesure = "Barométrie", save = TRUE, format=".png")
 }
 \keyword{chronique}

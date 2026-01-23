@@ -6,22 +6,25 @@
 \usage{
 chronique.figure.longitudinale(
   data = data,
-  Titre = "",
-  save = F,
+  titre = "",
+  origine_donnees = "",
+  save = FALSE,
   projet = NA_character_,
   format = ".png"
 )
 }
 \arguments{
-\item{data}{Data.frame issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de chsta_milieu et de chsta_distancesource}
+\item{data}{Dataframe issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de chsta_milieu et de chsta_distancesource}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
+\item{titre}{Titre du graphique (vide par défaut)}
+
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 
 \item{projet}{Nom du projet}
 
-\item{format}{Défini le format d'enregistrement (par défaut .png)}
+\item{format}{Définit le format d'enregistrement (par défaut .png)}
 }
 \description{
 Cette fonction permet de représenter sous forme de profil longitudinal des données de chroniques

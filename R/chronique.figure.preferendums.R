@@ -6,6 +6,7 @@
 #' @param tmm30j Valeur de Tmm30j à représenter : 0 par défaut (aucun affichage)
 #' @param liste_especes Liste des espèces à afficher : toutes par défaut. Les espèces sont affichées dans l'ordre de saisie.
 #' @param titre Titre du graphique (vide par défaut)
+#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
@@ -28,8 +29,9 @@ chronique.figure.preferendums <- function(
   staderecherche = c("Adulte", "Reproduction", "Embryon", "Larve", "Juvénile", "Tous stades"),
   tmm30j = 0,
   liste_especes = c("Toutes espèces", "TRF", "CHA", "LPP", "VAI", "LOF", "OBR", "EPI", "BLE", "BLN", "CHE", "APR", "GOU", "HOT", "TOX", "BAF", "LOT", "SPI", "VAN", "EPT", "BOU", "BRO", "PER", "GAR", "ABL", "CAS", "GRE", "CCO", "SAN", "TAN", "BRB", "BRE", "PES", "ROT", "BBG", "PCH", "SIL"),
-  titre="",
-  save=F,
+  titre = "",
+  origine_donnees = "",
+  save = FALSE,
   projet = NA_character_,
   format=".png")
 {
@@ -95,7 +97,9 @@ chronique.figure.preferendums <- function(
   if(tmm30j != 0 & length(liste_especes_propre) >= 5 & length(liste_especes_propre) < 8) gg <- gg + geom_text(aes(label = "Tmm30j"), x = 1.5, y = tmm30j + 0.5, size = 3, colour = "#009fee")
   if(tmm30j != 0 & (length(liste_especes_propre) >= 8 | "Toutes espèces" %in% liste_especes_propre)) gg <- gg + geom_text(aes(label = "Tmm30j"), x = 2.5, y = tmm30j + 0.5, size = 3, colour = "#009fee")
   gg <- gg + scale_color_manual(values=c("Gamme optimale" = "orange", "Zone de résistance" = "red"))
-  gg <- gg + labs(x = "Espèce", y = "Température (°C)", colour = "Confort piscicole", subtitle = glue("Stade de vie : {str_to_lower(staderecherche)}"), caption = "Source des données : Souchon and Tissot, 2012 & Elliott, 1981 & Elliott, 1994 & Dorts et al., 2012")
+  gg <- gg + labs(x = "Espèce", y = "Température (°C)", colour = "Confort piscicole", subtitle = glue("Stade de vie : {str_to_lower(staderecherche)}"))
+  if(nchar(origine_donnees) == 0) gg <- gg + labs(caption = "Source des données : Souchon and Tissot, 2012 & Elliott, 1981 & Elliott, 1994 & Dorts et al., 2012")
+  if(nchar(origine_donnees) != 0) gg <- gg + labs(caption = glue("Source des données : {origine_donnees}, Souchon and Tissot, 2012 & Elliott, 1981 & Elliott, 1994 & Dorts et al., 2012"))
   if(nchar(titre) != 0) gg <- gg + labs(title = titre)
   gg <- gg + theme_bw()
   if((length(liste_especes_propre) >= 8 | "Toutes espèces" %in% liste_especes_propre)) gg <- gg + theme(axis.text.x = element_text(size = 6)) # base_size = 11 pour theme_bw
@@ -103,9 +107,9 @@ chronique.figure.preferendums <- function(
   gg
   
   #### Affichage des résultats ####
-  if(save==T){
-    ggsave(file=glue('{projet}/Sorties/Vues/Preferendums_biologiques/Preferendums_biologiques_{titre}_{liste_especes_mis_en_forme}_{staderecherche}{format}'))
+  if(save == TRUE){
+    ggsave(file = glue('{projet}/Sorties/Vues/Preferendums_biologiques/Preferendums_biologiques_{titre}_{liste_especes_mis_en_forme}_{staderecherche}{format}'))
   }
-  if(save==F){return(gg)}
+  if(save == FALSE){return(gg)}
 
 } # Fin de la fonction

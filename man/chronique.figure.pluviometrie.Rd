@@ -6,7 +6,8 @@
 \usage{
 chronique.figure.pluviometrie(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   type = c("montant", "descendant"),
   datedebutanneebiol = "10-01",
   save = F,
@@ -17,7 +18,9 @@ chronique.figure.pluviometrie(
 \arguments{
 \item{data}{Data.frame de données de mesures brutes, issues de chronique.mesures()}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
+\item{titre}{Titre du graphique (vide par défaut)}
+
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{type}{Type de graphique : \code{montant} (par défaut), ou \code{descendant}}
 

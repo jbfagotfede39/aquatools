@@ -6,7 +6,8 @@
 \usage{
 chronique.figure.depassementscalendaires(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
@@ -21,7 +22,7 @@ chronique.figure.depassementscalendaires(
   couleur_inferieure = "#FDAE61",
   affichagevide = FALSE,
   datedebutanneebiol = "10-01",
-  save = F,
+  save = FALSE,
   projet = NA_character_,
   format = ".png"
 )
@@ -29,7 +30,9 @@ chronique.figure.depassementscalendaires(
 \arguments{
 \item{data}{Data.frame issu de chronique.agregation (données journalières)}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
+\item{titre}{Titre du graphique (vide par défaut)}
+
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{typemesure}{Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data}
 

@@ -3,7 +3,8 @@
 #' Cette fonction permet de représenter d'éventuels dépassements de valeurs de référence pour des chroniques de mesures (température, niveaux, etc.) sous forme de comparaison interannuelle
 #' @name chronique.figure.depassementscalendaires
 #' @param data Data.frame issu de chronique.agregation (données journalières)
-#' @param Titre Titre du graphique (vide par défaut)
+#' @param titre Titre du graphique (vide par défaut)
+#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
 #' @param seuil_variable Type de variable journalière agrégée à utiliser : \code{VMedJ} (par défaut), \code{VMinJ}, \code{VMoyJ}, \code{VMaxJ}, \code{VAmpliJ}, \code{VAmpliSigneJ}, \code{VarJ}, \code{NMesuresJ} ou \code{SommeMoyJ}
 #' @param seuil_valeur Valeur de seuil à tester (valeur de \code{19} par défaut)
@@ -31,7 +32,8 @@
 
 chronique.figure.depassementscalendaires <- function(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
   seuil_variable = c("VMedJ", "VMinJ", "VMoyJ", "VMaxJ", "VAmpliJ", "VAmpliSigneJ", "VarJ", "NMesuresJ", "SommeMoyJ"),
   seuil_valeur = 19,
@@ -42,7 +44,7 @@ chronique.figure.depassementscalendaires <- function(
   couleur_inferieure = "#FDAE61",
   affichagevide = FALSE,
   datedebutanneebiol = "10-01",
-  save = F,
+  save = FALSE,
   projet = NA_character_,
   format = ".png"
   )
@@ -68,7 +70,7 @@ chronique.figure.depassementscalendaires <- function(
 
   #### Paramètres ####
   ## Titre
-  if(nchar(Titre) == 0) Titre <- contexte$station
+  if(nchar(titre) == 0) titre <- contexte$station
   
   ## Ajustement des paramètres en fonction du typemesure ##
   parametres <- contexte %>% mutate(typemesure = "Piézométrie NGF") %>% chronique.figure.parametres()
@@ -105,11 +107,12 @@ chronique.figure.depassementscalendaires <- function(
   ggplot <- ggplot + geom_tile(height = .25)
   ggplot <- ggplot + theme_bw()
   ggplot <- ggplot + labs(
-    subtitle = Titre,
+    subtitle = titre,
     caption = glue("valeur seuil = {seuil_valeur} {unite}"),
     x = "Date",
     y = "Année biologique",
     fill = legendeTitre)
+  if(nchar(origine_donnees) != 0) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
   ggplot <- ggplot + scale_x_date(date_labels = "%b", date_breaks = "3 months", minor_breaks = "1 month")
   cols <- structure(c(couleur_superieure, couleur_inferieure), .Names = c(etiquette_superieure, etiquette_inferieure))
   ggplot <- ggplot + scale_fill_manual(values = cols)
@@ -119,7 +122,7 @@ chronique.figure.depassementscalendaires <- function(
   
   # Enregistrement
   if(save==T){
-    ggsave(file = glue("{projet}/Sorties/Vues/Interannuelles/Interannuelle{typemesureTitreSortie}{Titre}{format}"))
+    ggsave(file = glue("{projet}/Sorties/Vues/Interannuelles/Interannuelle{typemesureTitreSortie}{titre}{format}"))
       }
   
   return(ggplot)

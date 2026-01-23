@@ -1,5 +1,37 @@
 # NEWS - aquatools
 
+## 0.0.187 - 2026-01-23
+### Ajouts
+- `chronique.figure` : ajout du paramètre `origine_donnees`
+- `chronique.figure.cumul` : ajout du paramètre `origine_donnees`
+- `chronique.figure.depassementscalendaires` : ajout du paramètre `origine_donnees`
+- `chronique.figure.interannuelle` : ajout du paramètre `origine_donnees`
+- `chronique.figure.longitudinale` : ajout du paramètre `origine_donnees`
+- `chronique.figure.pluviometrie` : ajout du paramètre `origine_donnees`
+- `chronique.figure.preferendums` : ajout du paramètre `origine_donnees`
+
+### Modifications
+- `chronique.figure` : 
+  * très léger refactoring
+  * renommage de la variable `Titre` en `titre` ( close #108 et close jbfagotfede39/gestion_thermie_epage_hdhl/#1)
+- `chronique.figure.classescalendaires` : renommage de la variable `Titre` en `titre` ( fix #109 et fix jbfagotfede39/gestion_thermie_epage_hdhl/#1)
+- `chronique.figure.cumul` : 
+  * léger refactoring
+  * remplacement de `theme_bw` par `theme_minimal`
+  * refactoring de l'export avec `glue`
+  * retrait du paramètre `duree` qui n'était pas utilisé
+  * renommage de la variable `Titre` en `titre` ( close #107 et close jbfagotfede39/gestion_thermie_epage_hdhl/#1)
+- `chronique.figure.depassementscalendaires` : renommage de la variable `Titre` en `titre`
+- `chronique.figure.interannuelle` : 
+  * renommage de la variable `Titre` en `titre`
+  * léger refactoring
+- `chronique.figure.longitudinale` : 
+  * refactoring de l'aide
+  * remplacement de `theme_bw` par `theme_minimal`
+  * refactoring de l'export avec `glue`
+  * renommage de la variable `Titre` en `titre` ( close #106 et close jbfagotfede39/gestion_thermie_epage_hdhl/#1)
+- `chronique.figure.preferendums` : très léger refactoring
+
 ## 0.0.186 - 2026-01-20
 ### Ajouts
 - `chronique.ouverture` : 

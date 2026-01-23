@@ -3,7 +3,8 @@
 #' Cette fonction permet de représenter des chroniques de pluviométrie
 #' @name chronique.figure.pluviometrie
 #' @param data Data.frame de données de mesures brutes, issues de chronique.mesures()
-#' @param Titre Titre du graphique (vide par défaut)
+#' @param titre Titre du graphique (vide par défaut)
+#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param type Type de graphique : \code{montant} (par défaut), ou \code{descendant}
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
@@ -21,7 +22,8 @@
 
 chronique.figure.pluviometrie <- function(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   type = c("montant", "descendant"),
   datedebutanneebiol = "10-01",
   save = F,
@@ -91,7 +93,8 @@ chronique.figure.pluviometrie <- function(
   gg_pluvio <- gg_pluvio + geom_bar(aes(x = chmes_date, y = VSommeJ), stat = "identity", fill = "#3288BD", alpha = 0.8)
   gg_pluvio <- gg_pluvio + scale_x_date(labels = scales::date_format("%b", locale = "fr"), date_minor_breaks = "1 month")
   if(type == "descendant") gg_pluvio <- gg_pluvio + scale_y_reverse()
-  gg_pluvio <- gg_pluvio + xlab("") + ylab("Pluviométrie (mm/j)")
+  gg_pluvio <- gg_pluvio + labs(x = "", y = "Pluviométrie (mm/j)")
+  if(nchar(origine_donnees) != 0) gg_pluvio <- gg_pluvio + labs(caption = glue("Source des données : {origine_donnees}"))
   gg_pluvio <- gg_pluvio + theme_minimal()
   gg_pluvio <- gg_pluvio + theme(legend.position = "none")
   if(type == "descendant") gg_pluvio <- gg_pluvio + theme(axis.title.x = element_blank(),
@@ -102,7 +105,7 @@ chronique.figure.pluviometrie <- function(
 
   #### Export ####
   if(save == T){
-    ggsave(file = glue("{projet}/Sorties/Vues/Annuelles/Annuelle_pluviometrie{Titre}{format}"))
+    ggsave(file = glue("{projet}/Sorties/Vues/Annuelles/Annuelle_pluviometrie{titre}{format}"))
   }
   
   #### Sortie ####

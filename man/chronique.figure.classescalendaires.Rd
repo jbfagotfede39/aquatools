@@ -6,7 +6,8 @@
 \usage{
 chronique.figure.classescalendaires(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
@@ -17,8 +18,7 @@ chronique.figure.classescalendaires(
   affichagevide = FALSE,
   datedebutanneebiol = "10-01",
   datedebutanneeneutre = "10-01",
-  origine_donnees = NA_character_,
-  save = F,
+  save = FALSE,
   projet = NA_character_,
   format = ".png"
 )
@@ -26,7 +26,9 @@ chronique.figure.classescalendaires(
 \arguments{
 \item{data}{Data.frame issu de chronique.agregation (données journalières)}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
+\item{titre}{Titre du graphique (vide par défaut)}
+
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{typemesure}{Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data}
 
@@ -39,8 +41,6 @@ chronique.figure.classescalendaires(
 \item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes}
 
 \item{datedebutanneeneutre}{Date de démarrage de l'année neutre : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme d'années neutres}
-
-\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 

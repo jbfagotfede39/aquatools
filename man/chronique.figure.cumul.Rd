@@ -6,26 +6,26 @@
 \usage{
 chronique.figure.cumul(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Oxygénation", "Hydrologie", "Pluviométrie"),
-  duree = c("Relatif", "Complet"),
   datedebutanneebiol = "10-01",
   legendemax = 15,
-  save = F,
+  save = FALSE,
   projet = NA_character_,
-  etiquette = F,
+  etiquette = FALSE,
   format = ".png"
 )
 }
 \arguments{
 \item{data}{Data.frame de données de mesures brutes, issues de chronique.mesures()}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
+\item{titre}{Titre du graphique (vide par défaut)}
+
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{typemesure}{Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data}
-
-\item{duree}{Si \code{Relatif} (par défault), affichage uniquement de la période concernée. Si \code{Complet}, affichage de l'année complète.}
 
 \item{datedebutanneebiol}{Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)}
 

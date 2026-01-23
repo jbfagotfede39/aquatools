@@ -3,7 +3,8 @@
 #' Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.)
 #' @name chronique.figure
 #' @param data Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur
-#' @param Titre Titre du graphique (vide par défaut)
+#' @param titre Titre du graphique (vide par défaut)
+#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param typemesure Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, \code{Piézométrie compensée}, \code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.
 #' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
 #' @param complement Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut)
@@ -18,6 +19,7 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
+#' @import glue
 #' @import paletteer
 #' @import scales
 #' @import tidyverse
@@ -25,19 +27,20 @@
 #' @examples
 #' chronique.figure(data)
 #' chronique.figure(data = mesdonnees, typemesure = "Thermie", duree = "Complet")
-#' chronique.figure(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
+#' chronique.figure(data = tableaudonnee, titre = nom, typemesure = "Barométrie", save = TRUE, format=".png")
 
 chronique.figure <- function(
     data = data,
-    Titre="",
+    titre = "",
+    origine_donnees = "",
     typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Chlorophylle a", "Hydrologie", "Pluviométrie"),
     duree = c("Complet", "Relatif"),
     complement = FALSE,
-    Vmm30j=F,
-    Vminmax=T,
-    Ymin=-1,
-    Ymax=NA,
-    save=F,
+    Vmm30j = FALSE,
+    Vminmax = TRUE,
+    Ymin = -1,
+    Ymax = NA,
+    save = FALSE,
     projet = NA_character_,
     format=".png")
   {
@@ -210,16 +213,17 @@ if(length(unique(format(syntjour$chmes_date,"%m"))) < 9) plotrelatif <- plotrela
 if(length(unique(format(syntjour$chmes_date,"%m"))) >= 9) plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b %Y", date_minor_breaks = "1 month")
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotrelatif <- plotrelatif + ylim(0,as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotrelatif <- plotrelatif + ylim(as.numeric(Ymin),as.numeric(Ymax))
-plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
+plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
+if(nchar(origine_donnees) != 0) plotrelatif <- plotrelatif + labs(caption = glue("Source des données : {origine_donnees}"))
 plotrelatif <- plotrelatif + theme_minimal()
 
 if(duree == "Relatif"){
   plotrelatif
   if(save==T){
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixe/relatif-fixe",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixe/relatif-fixe-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre",typemesureTitreSortie,titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-libre/relatif-libre-vmm30j",typemesureTitreSortie,titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixe/relatif-fixe",typemesureTitreSortie,titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_relatif-fixe/relatif-fixe-vmm30j",typemesureTitreSortie,titre,format,sep=""))
     if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotrelatif avec Ymax fixe et Ymin libre non programmé")
     if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotrelatif avec Ymax libre et Ymin fixe non programmé")
     }
@@ -241,17 +245,18 @@ if(duree == "Relatif"){
   if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotabsolu <- plotabsolu + ylim(as.numeric(Ymin),as.numeric(Ymax))
   if(length(unique(format(syntjour$chmes_date,"%Y"))) < 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
   if(length(unique(format(syntjour$chmes_date,"%Y"))) >= 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
-  plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
+  plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
+  if(nchar(origine_donnees) != 0) plotabsolu <- plotabsolu + labs(caption = glue("Source des données : {origine_donnees}"))
   plotabsolu <- plotabsolu + theme_minimal()
 # }
 
 if(duree == "Complet"){
   plotabsolu
   if(save==T){
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixe/absolu-fixe",typemesureTitreSortie,Titre,format,sep=""))
-    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixe/absolu-fixe-vmm30j",typemesureTitreSortie,Titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre",typemesureTitreSortie,titre,format,sep=""))
+    if(is.na(Ymax) == TRUE & is.na(Ymin) == TRUE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-libre/absolu-libre-vmm30j",typemesureTitreSortie,titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == F) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixe/absolu-fixe",typemesureTitreSortie,titre,format,sep=""))
+    if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE & Vmm30j == T) ggsave(file=paste(projet,"/Sorties/Vues/Annuelles_absolu-fixe/absolu-fixe-vmm30j",typemesureTitreSortie,titre,format,sep=""))
     if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) warning("cas d'export de la figure plotabsolu avec Ymax fixe et Ymin libre non programmé")
     if(is.na(Ymax) == TRUE & is.na(Ymin) == FALSE) warning("cas d'export de la figure plotabsolu avec Ymax libre et Ymin fixe non programmé")
     }

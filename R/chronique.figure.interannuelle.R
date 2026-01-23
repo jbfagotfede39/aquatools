@@ -3,7 +3,8 @@
 #' Cette fonction permet de représenter des chroniques de mesures (température, niveaux, etc.) sous forme de comparaison interannuelle
 #' @name chronique.figure.interannuelle
 #' @param data Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur
-#' @param Titre Titre du graphique (vide par défaut)
+#' @param titre Titre du graphique (vide par défaut)
+#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param typemesure Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data
 #' @param Ymin Valeur minimale de l'axe des Y (-1 par défaut)
 #' @param Ymax Valeur maximale de l'axe des Y (aucune par défaut)
@@ -15,18 +16,20 @@
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
+#' @import glue
 #' @import scales
 #' @import tidyverse
 #' @export
 #' @examples
 #' chronique.figure.interannuelle(data)
 #' data %>% chronique.resultats.filtrage() %>% chronique.figure.interannuelle()
-#' chronique.figure.interannuelle(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
+#' chronique.figure.interannuelle(data = tableaudonnee, titre = nom, typemesure = "Barométrie", save = T, format = ".png")
 #' chronique.figure.interannuelle(dataVOG4, affichagevide = F, style = "courbes")
 
 chronique.figure.interannuelle <- function(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique", "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée", "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie", "Pluviométrie"),
   Ymin = -1,
   Ymax = 30,
@@ -42,7 +45,7 @@ chronique.figure.interannuelle <- function(
   typemesure <- match.arg(typemesure)
   style <- match.arg(style)
   
-  Sys.setlocale(locale="fr_FR.UTF-8") # Afin d'avoir les abréviations des mois en français sur les figures
+  Sys.setlocale(locale = "fr_FR.UTF-8") # Afin d'avoir les abréviations des mois en français sur les figures
   
 ##### -------------- A FAIRE -------------- #####
 # Implantation de chronique.figure.parametres()
@@ -55,7 +58,7 @@ chronique.figure.interannuelle <- function(
   # chmes_typemesure
   typemesure <- contexte$typemesure
   # Stations
-  if(nchar(Titre) == 0) Titre <- contexte$station
+  if(nchar(titre) == 0) titre <- contexte$station
   # Calcul du nombre d'années biologiques ##
   if(!("chmes_anneebiol" %in% names(data))) data <- data %>% formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol)
   
@@ -177,25 +180,26 @@ chronique.figure.interannuelle <- function(
 ggplot <- ggplot(data, aes(as.character(chmes_anneebiol), chmes_valeur))
 if(style == "boxplot"){ggplot <- ggplot + geom_boxplot()}
 if(style == "violon"){ggplot <- ggplot + geom_violin()}
-if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) ggplot <- ggplot + ylim(0,as.numeric(Ymax))
-if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
-ggplot <- ggplot + labs(x = "Année", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
+if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) ggplot <- ggplot + ylim(0, as.numeric(Ymax))
+if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin), as.numeric(Ymax))
+ggplot <- ggplot + labs(x = "Année", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
+if(nchar(origine_donnees) != 0) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
 ggplot <- ggplot + theme_minimal()
 # Ajout des valeurs journalières annuelles remarquables #
 ggplot <- ggplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMoyJMinPer), colour = "#5f90ff")
 ggplot <- ggplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMoyJMaxPer), colour = "red")
 ggplot <- ggplot + geom_point(data = ValeursRemarquables, aes(as.character(Annee), VMaxMoy30J), colour = "orange")
-ggplot <- ggplot + geom_text(data = ValeursRemarquables, aes(as.character(Annee), positionNbJ, label=paste0(NbJ, " j.")), size = 2.5)
+ggplot <- ggplot + geom_text(data = ValeursRemarquables, aes(as.character(Annee), positionNbJ, label = paste0(NbJ, " j.")), size = 2.5)
 # Ajout des valeurs instantannées pluriannuelles remarquables #
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesMinI, aes(as.character(Annee), VMinI), colour = "#5f90ff")
-ggplot <- ggplot + geom_text(data = ValeursRemarquablesMinI, aes(as.character(Annee), VMinI-2*ecartvisuel, label=AnneeEt), size = 2.5)
+ggplot <- ggplot + geom_text(data = ValeursRemarquablesMinI, aes(as.character(Annee), VMinI-2*ecartvisuel, label = AnneeEt), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesMaxI, aes(as.character(Annee), VMaxI), colour = "red")
-ggplot <- ggplot + geom_text(data = ValeursRemarquablesMaxI, aes(as.character(Annee), VMaxI+2*ecartvisuel, label=AnneeEt), size = 2.5)
+ggplot <- ggplot + geom_text(data = ValeursRemarquablesMaxI, aes(as.character(Annee), VMaxI+2*ecartvisuel, label = AnneeEt), size = 2.5)
 # Ajout des Vmm30j pluriannuelles remarquables #
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM), colour = "#5f90ff")
-ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM-2*ecartvisuel, label=AnneeVMinVMM), size = 2.5)
+ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMinVMM-2*ecartvisuel, label = AnneeVMinVMM), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM), colour = "red")
-if(contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM+2*ecartvisuel, label=AnneeVMaxVMM), size = 2.5)
+if(contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMaxVMM+2*ecartvisuel, label = AnneeVMaxVMM), size = 2.5)
 ggplot <- ggplot + geom_point(data = ValeursRemarquablesVMM, aes(as.character(Annee), VMoyVMM), colour = "orange")
 if(contexte$nannee == 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " année")), size = 2.5)
 if(contexte$nannee != 1) ggplot <- ggplot + geom_text(data = ValeursRemarquablesVMM, aes(as.character(Annee), positionNbJ, label= paste0(NVMM, " années")), size = 2.5)
@@ -239,7 +243,8 @@ if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE){
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin),as.numeric(Ymax))
 ggplot <- ggplot + scale_x_date(date_labels = "%b", date_minor_breaks = "1 month")
 if(contexte$nannee != 1 | contexte$nstation != 1) ggplot <- ggplot + scale_colour_manual(values = PaletteCouples)
-ggplot <- ggplot + labs(x = "", y = legendeY, title=Titre, color = legendeTitre) # Pour changer le titre
+ggplot <- ggplot + labs(x = "", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
+if(nchar(legende) != 0) ggplot <- ggplot + labs(caption = legende)
 ggplot <- ggplot + theme_minimal()
 }
 
@@ -248,9 +253,9 @@ ggplot
 
   # Enregistrement
 if(save==T){
-  if(style=="boxplot")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle",typemesureTitreSortie,Titre,format,sep=""))
-  if(style=="violon")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle_violon",typemesureTitreSortie,Titre,format,sep=""))
-  if(style=="courbes")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle_courbes",typemesureTitreSortie,Titre,format,sep=""))
+  if(style=="boxplot")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle",typemesureTitreSortie,titre,format,sep=""))
+  if(style=="violon")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle_violon",typemesureTitreSortie,titre,format,sep=""))
+  if(style=="courbes")ggsave(file=paste(projet,"/Sorties/Vues/Interannuelles/Interannuelle_courbes",typemesureTitreSortie,titre,format,sep=""))
   }
 
 if(save==F){return(ggplot)}

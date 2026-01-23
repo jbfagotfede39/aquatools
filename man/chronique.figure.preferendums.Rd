@@ -13,7 +13,8 @@ chronique.figure.preferendums(
     "BOU", "BRO", "PER", "GAR", "ABL", "CAS", "GRE", "CCO", "SAN", "TAN", "BRB", "BRE",
     "PES", "ROT", "BBG", "PCH", "SIL"),
   titre = "",
-  save = F,
+  origine_donnees = "",
+  save = FALSE,
   projet = NA_character_,
   format = ".png"
 )
@@ -26,6 +27,8 @@ chronique.figure.preferendums(
 \item{liste_especes}{Liste des espèces à afficher : toutes par défaut. Les espèces sont affichées dans l'ordre de saisie.}
 
 \item{titre}{Titre du graphique (vide par défaut)}
+
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 

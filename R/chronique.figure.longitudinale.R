@@ -2,12 +2,14 @@
 #'
 #' Cette fonction permet de représenter sous forme de profil longitudinal des données de chroniques
 #' @name chronique.figure.longitudinale
-#' @param data Data.frame issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de chsta_milieu et de chsta_distancesource
-#' @param Titre Titre du graphique (vide par défaut)
-#' @param format Défini le format d'enregistrement (par défaut .png)
+#' @param data Dataframe issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de chsta_milieu et de chsta_distancesource
+#' @param titre Titre du graphique (vide par défaut)
+#' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
+#' @param format Définit le format d'enregistrement (par défaut .png)
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
 #' @param projet Nom du projet
 #' @keywords chronique
+#' @import glue
 #' @import RColorBrewer
 #' @import tidyverse
 #' @export
@@ -16,14 +18,11 @@
 #' Resultats %>% chronique.resultats.filtrage() %>% chronique.figure.longitudinale()
 #' Resultats %>% left_join(Stations %>% select(chsta_coderhj, chsta_milieu, chsta_distancesource, chsta_distancesource_confluencedrainprincipal), by = c("chres_coderhj" = "chsta_coderhj")) %>% chronique.resultats.filtrage() %>% chronique.figure.longitudinale()
 
-##### TODO LIST #####
-# Utiliser la fonction de renommage des variables
-#####################
-
 chronique.figure.longitudinale <- function(
   data = data,
-  Titre="",
-  save=F,
+  titre = "",
+  origine_donnees = "",
+  save = FALSE,
   projet = NA_character_,
   format=".png"
 )
@@ -66,8 +65,8 @@ chronique.figure.longitudinale <- function(
   legendeTitre <- parametres$legendeTitre
   typemesureTitreSortie <- parametres$typemesureTitreSortie
   
-  if(nchar(Titre) == 0 & Contexte$nmilieu == 1) Titre <- Contexte$milieu
-  if(nchar(Titre) == 0 & Contexte$nmilieu != 1) Titre <- ecosystemeppal
+  if(nchar(titre) == 0 & Contexte$nmilieu == 1) titre <- Contexte$milieu
+  if(nchar(titre) == 0 & Contexte$nmilieu != 1) titre <- ecosystemeppal
 
   #### Calcul d'une clé par écosystème/année ####
   data <-
@@ -91,7 +90,8 @@ chronique.figure.longitudinale <- function(
   gg <- gg + ylim(0, 29)
   gg <- gg + labs(x = "Distance à la source (km)", y = expression(Tmm30j~(degree*C)), colour = "Milieu - Année biologique") # Pour changer le titre
   # if(Contexte$nannee != 1 | Contexte$nstation != 1) gg <- gg + scale_colour_manual(values = PaletteCouples)
-  gg <- gg + theme_bw()
+  gg <- gg + theme_minimal()
+  if(nchar(origine_donnees) != 0) gg <- gg + labs(caption = glue("Source des données : {origine_donnees}"))
   gg <- gg + theme(axis.title.x = element_text(size=10),
                    axis.title.y = element_text(size=10)
   )
@@ -99,7 +99,7 @@ chronique.figure.longitudinale <- function(
   
   #### Affichage des résultats ####
   if(save==T){
-    ggsave(file=paste(projet,"/Sorties/Vues/Intersites/Intersites",typemesureTitreSortie,Titre,format,sep=""))
+    ggsave(file = glue("{projet}/Sorties/Vues/Intersites/Intersites{typemesureTitreSortie}{titre}{format}"))
 
   }
   if(save==F){return(gg)}

@@ -6,7 +6,8 @@
 \usage{
 chronique.figure.interannuelle(
   data = data,
-  Titre = "",
+  titre = "",
+  origine_donnees = "",
   typemesure = c("Thermie", "Thermie barométrique", "Thermie piézométrique",
     "Barométrie", "Piézométrie", "Piézométrie brute", "Piézométrie compensée",
     "Piézométrie calée", "Piézométrie NGF", "Oxygénation", "Hydrologie",
@@ -24,7 +25,9 @@ chronique.figure.interannuelle(
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur}
 
-\item{Titre}{Titre du graphique (vide par défaut)}
+\item{titre}{Titre du graphique (vide par défaut)}
+
+\item{origine_donnees}{Éventuelle source des données à afficher sur la figure (vide par défaut)}
 
 \item{typemesure}{Défini le type de données et modifie les légendes en fonction. Ignoré si le champ chmes_typemesure est présent dans data}
 
@@ -51,7 +54,7 @@ Cette fonction permet de représenter des chroniques de mesures (température, n
 \examples{
 chronique.figure.interannuelle(data)
 data \%>\% chronique.resultats.filtrage() \%>\% chronique.figure.interannuelle()
-chronique.figure.interannuelle(data = tableaudonnee, Titre=nom, typemesure = "Barométrie", save=T, format=".png")
+chronique.figure.interannuelle(data = tableaudonnee, titre = nom, typemesure = "Barométrie", save = T, format = ".png")
 chronique.figure.interannuelle(dataVOG4, affichagevide = F, style = "courbes")
 }
 \keyword{chronique}
