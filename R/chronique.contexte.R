@@ -12,10 +12,6 @@
 #' Contexte <- chronique.contexte(Mesures)
 #' Contexte <- chronique.contexte(chronique.mesures("DRO6-8"))
 
-##### TODO LIST #####
-# Intérêt de créer ? pour mesures Contexte$njours <- n_distinct(syntjour$chmes_date) + total pour les résultats à partir de la colonne concernée ? -> Si modification, le retranscrire dans chronique.figure.parametres
-#####################
-
 chronique.contexte <- function(
   data = data
 )
@@ -25,6 +21,7 @@ chronique.contexte <- function(
   #Recherche <- match.arg(Recherche)
   
   #### Vérification des données en entrée ####
+  if(data %>% nrow() == 0) stop("Données vides en entrée")
   if("chmes_date" %in% colnames(data) == TRUE & "chmes_anneebiol" %in% colnames(data) == FALSE) data <- formatage.annee.biologique(data)
   if("VMedJ" %in% colnames(data)) message("/!\\ Les champs valeur_min et valeur_max sont calculés à partir de la colonne VMedJ")
   
@@ -46,8 +43,11 @@ chronique.contexte <- function(
     rename_at(vars(contains("chmesgr_typemesure")), list( ~ str_replace(., "chmesgr_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("chres_typemesure")), list( ~ str_replace(., "chres_typemesure", "typemesure"))) %>% 
     rename_at(vars(contains("Typemesure")), list( ~ str_replace(., "Typemesure", "typemesure"))) %>% 
-    # Unités de mesure
+    # Unité de mesure
     rename_at(vars(contains("chmes_unite")), list( ~ str_replace(., "chmes_unite", "unite"))) %>% 
+    # Date
+    rename_at(vars(contains("chmes_date")), list( ~ str_replace(., "chmes_date", "date"))) %>% 
+    rename_at(vars(contains("chmesgr_date")), list( ~ str_replace(., "chmesgr_date", "date"))) %>% 
     # Année
     rename_at(vars(contains("chmes_anneebiol")), list( ~ str_replace(., "chmes_anneebiol", "annee"))) %>%
     rename_at(vars(contains("Annee")), list( ~ str_replace(., "Annee", "annee"))) %>% 
@@ -61,10 +61,12 @@ chronique.contexte <- function(
     datarenomees %>% 
     {if("coderhj" %in% colnames(.) == FALSE) mutate(., coderhj = NA_character_) else .} %>% 
     {if("mo" %in% colnames(.) == FALSE) mutate(., mo = NA_character_) else .} %>% 
+    {if("date" %in% colnames(.) == FALSE) mutate(., date = NA_Date_) else .} %>% 
     {if("typemesure" %in% colnames(.) == FALSE) mutate(., typemesure = NA_character_) else .} %>% 
     {if("unite" %in% colnames(.) == FALSE) mutate(., unite = NA_character_) else .} %>% 
     {if("annee" %in% colnames(.) == FALSE) mutate(., annee = NA_character_) else .} %>% 
-    {if("milieu" %in% colnames(.) == FALSE) mutate(., milieu = NA_character_) else .}
+    {if("milieu" %in% colnames(.) == FALSE) mutate(., milieu = NA_character_) else .} %>% 
+    mutate(mois = format(date, "%m"))
     
   #### Calcul des indicateurs numériques ####
   Contexte <- 
@@ -73,6 +75,8 @@ chronique.contexte <- function(
     add_column(ntypemesure = n_distinct(datacompletees$typemesure)) %>% 
     add_column(nunite = n_distinct(datacompletees$unite, na.rm = T)) %>% 
     add_column(nannee = n_distinct(datacompletees$annee)) %>% 
+    add_column(nmois = n_distinct(datacompletees$mois)) %>% 
+    add_column(ndate = n_distinct(datacompletees$date)) %>% 
     add_column(nmilieu = n_distinct(datacompletees$milieu, na.rm = T)) %>% 
     add_column(nmesure = nrow(datacompletees))
   

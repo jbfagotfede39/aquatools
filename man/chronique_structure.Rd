@@ -17,6 +17,7 @@ Jeu de données de chronique d'exemple - Structure des tibbles uniquement
     \item{\code{capteurs_structure}}{un tibble contenant la structure de la table des capteurs}
     \item{\code{resultats_structure}}{un tibble contenant la structure de la table des résultats}
     \item{\code{commentaires_structure}}{un tibble contenant la structure de la table des commentaires}
+    \item{\code{contexte_structure}}{un tibble contenant la structure des contextes}
   }
 }
 \details{
@@ -36,5 +37,6 @@ mesures_structure
 capteurs_structure
 resultats_structure
 commentaires_structure
+contexte_structure
 }
 \keyword{datasets}

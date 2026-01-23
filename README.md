@@ -19,6 +19,8 @@ Les fonctions sont organisées avec des préfixes, permettant d'établir de gran
 - `SIG` : fonctions de traitements des données géomatiques
 - `topographie` : fonctions de traitements des données topographiques
 
+La notice présentant présentant les capacités et l'utilisation des fonctions relatives aux chroniques est disponible à l'adresse https://jbfagotfede39.github.io/notice-thermie/.
+
 ## Recevoir de l'aide
 Si vous rencontrez un bug clair, merci de créer un ticket avec un exemple minimal reproductible sur [GitHub](https://github.com/jbfagotfede39/aquatools/issues).
 

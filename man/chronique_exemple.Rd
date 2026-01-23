@@ -17,6 +17,7 @@ Jeu de données de chronique d'exemple
     \item{\code{capteurs_exemple}}{un tibble contenant différentes données de capteurs associées aux éléments de \code{suivi_exemple} et des \code{mesures_exemple}}
     \item{\code{resultats_exemple}}{un tibble contenant des résultats associées aux \code{mesures_exemple}}
     \item{\code{commentaires_exemple}}{un tibble contenant des commentaires des \code{resultats_exemple}}
+    \item{\code{contexte_exemple}}{un tibble contenant le contexte des mesures}
   }
 }
 \details{
@@ -36,5 +37,6 @@ mesures_exemple
 capteurs_exemple
 resultats_exemple
 commentaires_exemple
+contexte_exemple
 }
 \keyword{datasets}

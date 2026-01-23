@@ -1,5 +1,18 @@
 # NEWS - aquatools
 
+## 0.0.188 - 2026-01-23
+### Ajouts
+- `chronique.contexte` : 
+  * ajout du calcul de `nmois` et `ndate`
+  * ajout d'un test en entrée pour savoir si les données ne sont pas vides
+- `chronique.figure.classesdensite` : création
+- `contexte_exemple` : création
+- `contexte_structure` : création
+- `README` : URL de la notice thermie
+
+### Modifications
+- `chronique.figure.parametres` : implémentation de `contexte_structure` (fix #112)
+                                                                                                                                                                                                                                 
 ## 0.0.187 - 2026-01-23
 ### Ajouts
 - `chronique.figure` : ajout du paramètre `origine_donnees`
@@ -13,8 +26,8 @@
 ### Modifications
 - `chronique.figure` : 
   * très léger refactoring
-  * renommage de la variable `Titre` en `titre` ( close #108 et close jbfagotfede39/gestion_thermie_epage_hdhl/#1)
-- `chronique.figure.classescalendaires` : renommage de la variable `Titre` en `titre` ( fix #109 et fix jbfagotfede39/gestion_thermie_epage_hdhl/#1)
+  * renommage de la variable `Titre` en `titre` ( fix #108 et fix jbfagotfede39/gestion_thermie_epage_hdhl/#1)
+- `chronique.figure.classescalendaires` : renommage de la variable `Titre` en `titre` (close #109 et close jbfagotfede39/gestion_thermie_epage_hdhl/#1)
 - `chronique.figure.cumul` : 
   * léger refactoring
   * remplacement de `theme_bw` par `theme_minimal`
