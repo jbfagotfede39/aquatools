@@ -13,11 +13,13 @@
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre)
 #' @param export Si \code{TRUE}, exporte les résultats (\code{FALSE} par défaut)
 #' @keywords chronique
+#' @import dplyr
 #' @import glue
-#' @import openxlsx
+#' @import openxlsx2
 #' @import tidyverse
 #' @export
 #' @examples
+#' mesures_exemple %>% filter(chmes_coderhj == "DRO11-6") %>% chronique.agregation()
 #' DataTravail <- chronique.agregation(data)
 #' DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
 #' DataTravail %>% purrr::pluck(2)
@@ -72,22 +74,25 @@ data <-
   formatage.annee.biologique(datedebutanneebiol = datedebutanneebiol) # nécessaire pour le calcul des percentiles et les degrés-jours cumulés
 
 ##### Contexte de la chronique #####
-Contexte <- 
+contexte <- 
   data %>% 
-  distinct(chmes_coderhj)
-if(dim(Contexte)[1] == 0) stop("Aucune donnée dans la chronique à analyser")
-if(dim(Contexte)[1] > 1) stop("Différentes stations dans la chronique à analyser")
+  chronique.contexte()
+# 
+# contexte <- 
+#   data %>% 
+#   summarise(
+#     Annee = median(year(chmes_date))
+#   ) %>% 
+#   bind_cols(contexte)
 
-Contexte <- 
-  data %>% 
-  summarise(
-    Annee = median(year(chmes_date))
-  ) %>% 
-  bind_cols(Contexte)
-
+#### Complément des données ####
 if("chmes_typemesure" %in% colnames(data) == FALSE){
   data <- data %>% mutate(chmes_typemesure = NA_character_)
 }
+
+#### Test de cohérence ####
+if(contexte$nmesure == 0) stop("Aucune donnée dans la chronique à analyser")
+if(contexte$nstation > 1) stop("Différentes stations dans la chronique à analyser")
 
 #### Pas d'agrégation ####
 if(instantanne == TRUE){
@@ -319,7 +324,23 @@ if(exists("ValComplet") == TRUE){
 
 ## Export vers xlsx ##
 if(export == TRUE){
-  openxlsx::write.xlsx(liste, file = glue("./{projet}/Sorties/Données/Agrégations_diverses/{Contexte$chmes_coderhj}_données.xlsx"))
+  wb_workbook() %>% 
+    wb_add_worksheet("ValInstantanees") %>% 
+    wb_add_data(x = ValInstantanees, na.strings = "") %>% 
+    wb_set_col_widths(cols = 1:20, widths = "auto") %>% 
+    wb_add_worksheet("ValJours") %>% 
+    wb_add_data(x = ValJours, na.strings = "") %>% 
+    wb_set_col_widths(cols = 1:20, widths = "auto") %>% 
+    wb_add_worksheet("ValMois") %>% 
+    wb_add_data(x = ValMois, na.strings = "") %>% 
+    wb_set_col_widths(cols = 1:20, widths = "auto") %>% 
+    wb_add_worksheet("ValAnneeBiol") %>% 
+    wb_add_data(x = ValAnneeBiol, na.strings = "") %>% 
+    wb_set_col_widths(cols = 1:20, widths = "auto") %>% 
+    wb_add_worksheet("ValComplet") %>% 
+    wb_add_data(x = ValComplet, na.strings = "") %>% 
+    wb_set_col_widths(cols = 1:20, widths = "auto") %>% 
+    wb_save(glue("./{projet}/Sorties/Données/Agrégations_diverses/{contexte$station}_données.xlsx"), overwrite = T)
 }
 
 ## Dataframe vers R sous forme de listes imbriquées

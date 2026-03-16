@@ -66,7 +66,7 @@ chronique.contexte <- function(
     {if("unite" %in% colnames(.) == FALSE) mutate(., unite = NA_character_) else .} %>% 
     {if("annee" %in% colnames(.) == FALSE) mutate(., annee = NA_character_) else .} %>% 
     {if("milieu" %in% colnames(.) == FALSE) mutate(., milieu = NA_character_) else .} %>% 
-    mutate(mois = format(date, "%m"))
+    mutate(mois = format(ymd(date), "%m"))
     
   #### Calcul des indicateurs numériques ####
   Contexte <- 

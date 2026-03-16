@@ -42,6 +42,7 @@ chronique.agregation(
 Cette fonction permet d'agréger des chroniques de mesures (température, niveaux, etc.) à différentes fréquences (dans l'ordre : pas d'agrégation, jours, mois, années, chronique complète)
 }
 \examples{
+mesures_exemple \%>\% filter(chmes_coderhj == "DRO11-6") \%>\% chronique.agregation()
 DataTravail <- chronique.agregation(data)
 DataTravail[[1]];DataTravail[[2]];DataTravail[[3]];DataTravail[[4]];DataTravail[[5]]
 DataTravail \%>\% purrr::pluck(2)

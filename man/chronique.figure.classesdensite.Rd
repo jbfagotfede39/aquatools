@@ -17,6 +17,7 @@ chronique.figure.classesdensite(
   datedebutanneebiol = "10-01",
   datedebutanneeneutre = "10-01",
   save = FALSE,
+  estival = FALSE,
   projet = NA_character_,
   format = ".png"
 )
@@ -40,6 +41,8 @@ chronique.figure.classesdensite(
 
 \item{save}{Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.}
 
+\item{estival}{Si \code{FALSE} (par défault), n'enregistre pas les figures avec le terme \code{_estival} dans le nom de fichier. Si \code{TRUE}, l'ajoute}
+
 \item{projet}{Nom du projet}
 
 \item{format}{Défini le format d'enregistrement (par défaut .png)}
@@ -49,6 +52,6 @@ Cette fonction permet de représenter les classes de valeurs de référence pour
 }
 \examples{
 mesures_exemple \%>\% filter(chmes_coderhj == "HER14-8") \%>\% filter(chmes_validation == "Validé") \%>\% filter(chmes_typemesure == "Thermie") \%>\% chronique.figure.classesdensite()
-mesures_exemple \%>\% filter(chmes_coderhj == "HER14-8") \%>\% filter(chmes_validation == "Validé") \%>\% filter(chmes_typemesure == "Thermie") \%>\% formatage.annee.biologique() \%>\% filter(chmes_anneebiol == 2021) mutate(mois = format(chmes_date, "\%m")) \%>\% filter(mois \%in\% c("06", "07", "08", "09")) \%>\% chronique.figure.classesdensite()
+mesures_exemple \%>\% filter(chmes_coderhj == "HER14-8") \%>\% filter(chmes_validation == "Validé") \%>\% filter(chmes_typemesure == "Thermie") \%>\% formatage.annee.biologique() \%>\% filter(chmes_anneebiol == 2021) \%>\% mutate(mois = format(ymd(chmes_date), "\%m")) \%>\% filter(mois \%in\% c("06", "07", "08", "09")) \%>\% chronique.figure.classesdensite()
 }
 \keyword{chronique}

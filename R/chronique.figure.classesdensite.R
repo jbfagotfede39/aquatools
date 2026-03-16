@@ -11,6 +11,7 @@
 #' @param datedebutanneebiol Date de démarrage de l'année biologique : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme de courbes
 #' @param datedebutanneeneutre Date de démarrage de l'année neutre : 10-01 (par défaut - 1er octobre), pour l'affichage sous forme d'années neutres
 #' @param save Si \code{FALSE} (par défault), n'enregistre pas les figures. Si \code{TRUE}, les enregistre.
+#' @param estival Si \code{FALSE} (par défault), n'enregistre pas les figures avec le terme \code{_estival} dans le nom de fichier. Si \code{TRUE}, l'ajoute
 #' @param projet Nom du projet
 #' @param format Défini le format d'enregistrement (par défaut .png)
 #' @keywords chronique
@@ -22,7 +23,7 @@
 #' @export
 #' @examples
 #' mesures_exemple %>% filter(chmes_coderhj == "HER14-8") %>% filter(chmes_validation == "Validé") %>% filter(chmes_typemesure == "Thermie") %>% chronique.figure.classesdensite()
-#' mesures_exemple %>% filter(chmes_coderhj == "HER14-8") %>% filter(chmes_validation == "Validé") %>% filter(chmes_typemesure == "Thermie") %>% formatage.annee.biologique() %>% filter(chmes_anneebiol == 2021) mutate(mois = format(chmes_date, "%m")) %>% filter(mois %in% c("06", "07", "08", "09")) %>% chronique.figure.classesdensite()
+#' mesures_exemple %>% filter(chmes_coderhj == "HER14-8") %>% filter(chmes_validation == "Validé") %>% filter(chmes_typemesure == "Thermie") %>% formatage.annee.biologique() %>% filter(chmes_anneebiol == 2021) %>% mutate(mois = format(ymd(chmes_date), "%m")) %>% filter(mois %in% c("06", "07", "08", "09")) %>% chronique.figure.classesdensite()
 
 chronique.figure.classesdensite <- function(
   data = data,
@@ -34,6 +35,7 @@ chronique.figure.classesdensite <- function(
   datedebutanneebiol = "10-01",
   datedebutanneeneutre = "10-01",
   save = FALSE,
+  estival = FALSE,
   projet = NA_character_,
   format = ".png"
   )
@@ -109,18 +111,23 @@ chronique.figure.classesdensite <- function(
   if(contexte$nmois < 6) ggplot <- ggplot + scale_x_date(date_breaks = "1 month", date_labels = "%b")
   ggplot <- ggplot + labs(fill = "Valeurs \n instantanées :")
   if(nchar(origine_donnees) != 0) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
-  if(contexte$nstation == 1 & contexte$nannee != 1) ggplot <- ggplot + facet_wrap(chmes_anneebiol ~ )
-  if(contexte$nstation != 1 & contexte$nannee == 1) ggplot <- ggplot + facet_wrap(chmes_coderhj ~ )
+  if(contexte$nstation == 1 & contexte$nannee != 1) ggplot <- ggplot + facet_wrap(vars(chmes_anneebiol))
+  if(contexte$nstation != 1 & contexte$nannee == 1) ggplot <- ggplot + facet_wrap(vars(chmes_coderhj))
   if(contexte$nstation != 1 & contexte$nannee != 1) ggplot <- ggplot + facet_wrap(chmes_anneebiol ~ chmes_coderhj)
   ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station} - {contexte$annee}"))
   ggplot
   
   ### Enregistrement des vues ###
   if(save == TRUE){
-    if(contexte$nstation == 1 & contexte$nannee == 1) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_{contexte$station}_{contexte$annee}.png")) # S'il y a un unique couple station-année
-    if(contexte$nstation == 1 & contexte$nannee != 1) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_{contexte$station}_pluriannuel.png")) # S'il y a une unique station
-    if(contexte$nstation != 1 & contexte$nannee == 1) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_{contexte$annee}_pluristationnel.png")) # S'il y a une unique année
-    if(contexte$nstation != 1 & contexte$nannee != 1) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_pluriannuel_pluristationnel.png")) # S'il y a plusieurs années et plusieurs stations
+    if(contexte$nstation == 1 & contexte$nannee == 1 & estival == FALSE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_{contexte$station}_{contexte$annee}.png")) # S'il y a un unique couple station-année
+    if(contexte$nstation == 1 & contexte$nannee != 1 & estival == FALSE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_{contexte$station}_pluriannuel.png")) # S'il y a une unique station
+    if(contexte$nstation != 1 & contexte$nannee == 1 & estival == FALSE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_{contexte$annee}_pluristationnel.png")) # S'il y a une unique année
+    if(contexte$nstation != 1 & contexte$nannee != 1 & estival == FALSE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_{str_to_lower(contexte$typemesure)}_pluriannuel_pluristationnel.png")) # S'il y a plusieurs années et plusieurs stations
+  
+    if(contexte$nstation == 1 & contexte$nannee == 1 & estival == TRUE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_estival_{str_to_lower(contexte$typemesure)}_{contexte$station}_{contexte$annee}.png")) # S'il y a un unique couple station-année
+    if(contexte$nstation == 1 & contexte$nannee != 1 & estival == TRUE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_estival_{str_to_lower(contexte$typemesure)}_{contexte$station}_pluriannuel.png")) # S'il y a une unique station
+    if(contexte$nstation != 1 & contexte$nannee == 1 & estival == TRUE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_estival_{str_to_lower(contexte$typemesure)}_{contexte$annee}_pluristationnel.png")) # S'il y a une unique année
+    if(contexte$nstation != 1 & contexte$nannee != 1 & estival == TRUE) ggsave(filename = glue("{projet}/Sorties/Vues/Calendaires/Vue_chronologique_densite_classes_estival_{str_to_lower(contexte$typemesure)}_pluriannuel_pluristationnel.png")) # S'il y a plusieurs années et plusieurs stations
   }
   
   return(ggplot)

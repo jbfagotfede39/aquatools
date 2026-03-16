@@ -16,6 +16,13 @@ formatage.annee.neutre <- function(
   datedebutanneeneutre = "10-01")
   {
   
+  #### Test de cohérence ####
+  cols_date <- 
+    data %>%
+    select(where(~ inherits(., "Date"))) %>%
+    names()
+  if(length(cols_date) == 0) stop("Absence de colonne au format date en entrée")
+  
   #### Calculs ####
   data <- 
     data %>% 

@@ -1,5 +1,24 @@
 # NEWS - aquatools
 
+## 0.0.189 - 2026-03-16
+### Ajouts
+- `bdd.connexion` : création
+- `chronique.agregation` : 
+  * ajout d'un exemple avec le jeu de données d'exemple
+  * ajout d'un test unitaire d'exécution
+  * ajout d'une dépendance non satisfaite
+- `chronique.figure.classesdensite` : ajout d'un paramètre `estival`
+- `formatage.annee.neutre` : ajout d'un test en entrée afin de vérifier si on dispose bien d'une colonne au format `Date`
+
+### Modifications
+- `chronique.agregation` : 
+  * bascule de dépendance de `openxlsx` à `openxlsx2`
+  * implémentation de `chronique.contexte` (fix #37)
+- `chronique_exemple` : MAJ car champ manquant dans les stations (`tigre1`)
+
+### Corrections
+- `chronique.contexte` : correction d'un cas de bordure créant un bug suite à l'ajout récent du calcul de `nmois`
+
 ## 0.0.188 - 2026-01-23
 ### Ajouts
 - `chronique.contexte` : 

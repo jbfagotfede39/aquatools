@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.188
+Version: 0.0.189
 Authors@R: 
     person("Jean-Baptiste", "Fagot", , "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Maintainer: Jean-Baptiste Fagot <jean-baptiste.fagot@peche-jura.com>
@@ -45,6 +45,7 @@ Imports:
     readODS,
     rgeoapi,
     rlang,
+    RPostgres,
     RPostgreSQL,
     rstudioapi,
     rvest,
@@ -64,6 +65,7 @@ Imports:
     zoo
 Suggests: 
     dbplyr,
+    mapview,
     testthat
 Remotes: 
     colinfay/rgeoapi
