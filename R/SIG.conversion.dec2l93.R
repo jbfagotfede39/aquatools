@@ -10,6 +10,8 @@
 #' @export
 #' @examples
 #' SIG.conversion.dec2l93(5.972321, 46.806626) %>% mapview::mapview()
+#' SIG.conversion.dec2l93(5.972321, 46.806626) %>% st_coordinates() %>% format(digits = 9) %>% print(quote = FALSE)
+
 
     SIG.conversion.dec2l93 <- function(coord_x = NA, coord_y = NA) {
       

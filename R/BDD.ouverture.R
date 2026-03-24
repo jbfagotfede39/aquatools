@@ -76,6 +76,7 @@ BDD.ouverture <- function(
     if(system('uname -n',intern=T) == "MacBookPro"){utilisateur <- "jb"}
     if(system('uname -n',intern=T) == "MacBook-Pro-de-Jean-Baptiste.local"){utilisateur <- "jb"}
     if(system('uname -n',intern=T) == "MacBook-Pro-de-Jean-Baptiste.local"){utilisateur <- "jb"}
+    if(system('uname -n',intern=T) == "Mac"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "MBP-de-Adrien"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "MBP-de-Adrien.local"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "MBP-de-Adrien.cloud.peche-jura.com"){utilisateur <- "adrien"}

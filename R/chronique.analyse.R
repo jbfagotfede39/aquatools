@@ -11,6 +11,7 @@
 #' @keywords chronique
 #' @import RcppRoll
 #' @import tidyverse
+#' @importFrom dplyr summarise
 #' @export
 #' @examples
 #' chronique.analyse(data, "Thermie")
@@ -202,15 +203,27 @@ chronique.analyse <- function(
     ValJours %>%
     mutate(TestValeurInf = ifelse(VMoyJ < RefValeurInf, 1, NA)) %>% # identification de la journée passant sous une valeur repère
     filter(!is.na(TestValeurInf)) %>%
-    mutate(DegJours = cumsum(VMoyJ)) %>%
+    mutate(DegJours = cumsum(VMoyJ))
+  
+  if(degresjoursTRF %>% nrow() != 0){
+  degresjoursTRF <-
+    degresjoursTRF %>% 
+    mutate(DateDebutdegresjoursTRF = ifelse(TestValeurInf == 1, as.character(chmes_date), NA)) %>% 
+    mutate(DateFindegresjoursTRF = ifelse(DegJours > RefDegJours, as.character(chmes_date), NA)) %>% 
     summarise(
-      DateDebutdegresjoursTRF = chmes_date[first(TestValeurInf)],
-      DateFindegresjoursTRF = first(chmes_date[DegJours > RefDegJours])
-    ) %>%
+      DateDebutdegresjoursTRF = min(DateDebutdegresjoursTRF, na.rm = TRUE),
+      DateFindegresjoursTRF = min(DateFindegresjoursTRF, na.rm = TRUE)
+    ) %>% 
     mutate(DateDebutdegresjoursTRF = ymd(DateDebutdegresjoursTRF)) %>%
     mutate(DateFindegresjoursTRF = ymd(DateFindegresjoursTRF)) %>%
     mutate(NbJdegresjoursTRF = as.numeric(DateFindegresjoursTRF - DateDebutdegresjoursTRF))
-
+  }
+  
+  if(degresjoursTRF %>% nrow() == 0){
+    degresjoursTRF <-
+      tribble(~DateDebutdegresjoursTRF, ~DateFindegresjoursTRF, ~NbJdegresjoursTRF, NA, NA, NA)
+  }
+  
   ## Degrés-jours montants (OBR) ##
   RefValeurSup <- 9
   RefDegJours <- 270
@@ -220,15 +233,26 @@ chronique.analyse <- function(
     mutate(TestValeurSup = ifelse(VMoyJ > RefValeurSup, 1, NA)) %>% # identification de la journée passant au-dessus une valeur repère
     filter(chmes_date > paste0(year(last(chmes_date)),"-02-01")) %>% # 29 mars
     filter(!is.na(TestValeurSup)) %>%
-    #View()
-    mutate(DegJours = cumsum(VMoyJ)) %>%
+    mutate(DegJours = cumsum(VMoyJ)) 
+  
+  if(degresjoursAutreEsp %>% nrow() != 0){
+  degresjoursAutreEsp <-
+    degresjoursAutreEsp %>%
+    mutate(DateDebutdegresjoursAutreEsp = ifelse(TestValeurSup == 1, as.character(chmes_date), NA)) %>% 
+    mutate(DateFindegresjoursAutreEsp = ifelse(DegJours > RefDegJours, as.character(chmes_date), NA)) %>% 
     summarise(
-      DateDebutdegresjoursAutreEsp = chmes_date[first(TestValeurSup)],
-      DateFindegresjoursAutreEsp = first(chmes_date[DegJours > RefDegJours])
-    ) %>%
+      DateDebutdegresjoursAutreEsp = min(DateDebutdegresjoursAutreEsp, na.rm = TRUE),
+      DateFindegresjoursAutreEsp = min(DateFindegresjoursAutreEsp, na.rm = TRUE)
+    ) %>% 
     mutate(DateDebutdegresjoursAutreEsp = ymd(DateDebutdegresjoursAutreEsp)) %>%
     mutate(DateFindegresjoursAutreEsp = ymd(DateFindegresjoursAutreEsp)) %>%
     mutate(NbJdegresjoursAutreEsp = as.numeric(DateFindegresjoursAutreEsp - DateDebutdegresjoursAutreEsp))
+  }
+  
+  if(degresjoursAutreEsp %>% nrow() == 0){
+    degresjoursAutreEsp <-
+      tribble(~DateDebutdegresjoursAutreEsp, ~DateFindegresjoursAutreEsp, ~NbJdegresjoursAutreEsp, NA, NA, NA)
+  }
   
   ##### Dépassement de valeurs seuils ####
 # Fonctionnement général : on travail partout avec Vmax, avec un renommage avant et après des champs avec leur valeur réelle + calcul < ou > pour les faibles valeurs ou fortes valeurs

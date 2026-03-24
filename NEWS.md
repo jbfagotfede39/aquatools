@@ -1,5 +1,22 @@
 # NEWS - aquatools
 
+## 0.0.190 - 2026-03-24
+### Ajouts
+- `BDD.ouverture` : ajout d'un cas de nommage pour Adrien
+- `chronique.duree` : 
+  * Organisation du code/léger refactoring
+  * Exemples d'utilisation
+  * Ajout d'un paramètre `tri`
+- `SIG.conversion.dec2l93` : ajout d'un exemple
+- `SIG.conversion.31n2l93` : ajout d'un exemple
+- `SIG.conversion.32n2l93` : ajout d'un exemple
+
+### Modifications
+- `chronique.duree` : remplacement du thème `theme_bw` par `theme_minimal`
+
+### Corrections
+- `chronique.analyse` : refactoring de la partie relative aux reproductions TRF et autres espèces car bug si données manquantes
+
 ## 0.0.189 - 2026-03-16
 ### Ajouts
 - `bdd.connexion` : création

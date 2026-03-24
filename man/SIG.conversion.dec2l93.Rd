@@ -16,5 +16,6 @@ Cette fonction permet de convertir des coordonnées en degrés décimaux (4326) 
 }
 \examples{
 SIG.conversion.dec2l93(5.972321, 46.806626) \%>\% mapview::mapview()
+SIG.conversion.dec2l93(5.972321, 46.806626) \%>\% st_coordinates() \%>\% format(digits = 9) \%>\% print(quote = FALSE)
 }
 \keyword{SIG}

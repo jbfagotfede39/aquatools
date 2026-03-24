@@ -10,6 +10,7 @@
 #' @export
 #' @examples
 #' SIG.conversion.32n2l93(276412.375, 5154007.570) %>% mapview::mapview()
+#' SIG.conversion.32n2l93(276412.375, 5154007.570) %>% st_coordinates() %>% format(digits = 9) %>% print(quote = FALSE)
 
     SIG.conversion.32n2l93 <- function(coord_x = NA, coord_y = NA) {
       

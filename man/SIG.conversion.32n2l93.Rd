@@ -16,5 +16,6 @@ Cette fonction permet de convertir des coordonnées en 32N (32632) vers Lambert 
 }
 \examples{
 SIG.conversion.32n2l93(276412.375, 5154007.570) \%>\% mapview::mapview()
+SIG.conversion.32n2l93(276412.375, 5154007.570) \%>\% st_coordinates() \%>\% format(digits = 9) \%>\% print(quote = FALSE)
 }
 \keyword{SIG}

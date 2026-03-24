@@ -4,15 +4,19 @@
 \alias{chronique.duree}
 \title{Chroniques existantes}
 \usage{
-chronique.duree(Mesures)
+chronique.duree(data, tri = c("alphabétique", "temporel"))
 }
 \arguments{
-\item{Data}{Jeu de données issu de la matrice "Mesures" des chroniques}
+\item{data}{Jeu de données issu de la matrice "Mesures" des chroniques}
+
+\item{tri}{Tri des stations (\code{alphabétique} par défaut, \code{temporel})}
 }
 \description{
 Cette fonction permet de visualiser les chroniques existantes et leur statut de validation
 }
 \examples{
-chronique.duree(Mesures)
+chronique.duree(data)
+chronique.duree(data) + guides(y = guide_axis(n.dodge = 2))
+data \%>\% chronique.duree(tri = "temporel") + guides(y = guide_axis(n.dodge = 3)) + theme(legend.position = "none")
 }
 \keyword{chronique}
