@@ -7,7 +7,7 @@
 #' @param motdepasse Mot de passe du portefeuille keyring, si accès côté RStudio server
 #' @import DBI
 #' @import keyring
-#' @import RPostgreSQL
+#' @import RPostgres
 #' @import rstudioapi
 #' @import tidyverse
 #' @export
@@ -28,6 +28,13 @@ BDD.ouverture <- function(
   ## Évaluation des choix
   Type <- match.arg(Type)
 
+  if(Sys.getenv("RSTUDIO_USER_IDENTITY") == "bapth"){
+    utilisateur <- "baptiste"
+    client <- "machineordinaire"
+    }
+  
+  if(Sys.getenv("RSTUDIO_USER_IDENTITY") != "bapth"){
+  
   #### Version serveur ou version client classique ####
   ### r-ftp - VM172 - #201 ###
   if(system('uname -n',intern=T) == "r-ftp"){
@@ -104,7 +111,8 @@ if(is.na(utilisateur) == TRUE){
   if(client == "serveur" & system('whoami',intern=T) == "malide") utilisateur <- "malide"
   if(client == "serveur" & system('whoami',intern=T) == "ubuntu") utilisateur <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
   }
-
+}
+  
 #### Création de la connexion ####
 ## Si utilisateur connu ##
 if(!is.na(utilisateur)){
@@ -122,7 +130,7 @@ if(!is.na(utilisateur)){
       }
     }
     
-    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+    dbD <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
                                   dbname = "eaux-jura-sig-data",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
@@ -136,7 +144,7 @@ if(!is.na(utilisateur)){
       RPostgreSQL::dbDisconnect(dbP)}
   }
   if(Type == "Poissons"){
-    dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+    dbP <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
                                   dbname = "multifish",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
@@ -162,7 +170,7 @@ if(is.na(utilisateur)){
   }
   if(Type == "Data"){
     
-    dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+    dbD <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
                                   dbname = "eaux-jura-sig-data",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
@@ -176,7 +184,7 @@ if(is.na(utilisateur)){
       RPostgreSQL::dbDisconnect(dbP)}
   }
   if(Type == "Poissons"){
-    dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL(),
+    dbP <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
                                   dbname = "multifish",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
@@ -186,7 +194,6 @@ if(is.na(utilisateur)){
   }
   
 }
-
 
 
 #### Sortie de la connexion ####

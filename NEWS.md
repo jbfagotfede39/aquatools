@@ -1,5 +1,17 @@
 # NEWS - aquatools
 
+## 0.0.191 - 2026-04-01
+### Ajouts
+- `BDD.ouverture` : ajout de l'accès pour Baptiste (stagiaire)
+- `chronique.ouverture` : ajout de l'ouverture des piézomètres de type `Aquaread LeveLine`
+- `SIG.conversion.l932dec` : renommage depuis `SIG.conversion.l93dec2`
+
+### Modifications
+- `BDD.ouverture` : remplacement de la dépendance à `RPostgreSQL` par `RPostgres`
+
+### Suppressions
+- `SIG.conversion.l93dec2` : renommage vers `SIG.conversion.l932dec`
+
 ## 0.0.190 - 2026-03-24
 ### Ajouts
 - `BDD.ouverture` : ajout d'un cas de nommage pour Adrien

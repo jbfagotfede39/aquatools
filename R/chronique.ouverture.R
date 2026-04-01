@@ -39,7 +39,7 @@ chronique.ouverture <- function(
   separateur_decimales = c(",", "."),
   typefichier = c(".csv", "excel", ".ods", "Interne"),
   typedate = c("ymd", "dmy", "mdy", "dmy_hms", "dmy_hm", "mdy_hms", "mdy_hm", "ymd_hms"),
-  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread", "WiSens", "VuLink", "Cube", "RBRsolo3"),
+  typecapteur = c("Non précisé", "Hobo", "Diver", "VuSitu", "miniDOTindividuel", "miniDOTregroupe", "EDF", "RuggedTROLL", "Aquaread LeveLine", "Aquaread", "WiSens", "VuLink", "Cube", "RBRsolo3"),
   nomfichier = F,
   formatmacmasalmo = F
 )
@@ -196,12 +196,13 @@ dataaimporter <-
   
   if(typemesure == "Piézométrie"){
   if(typecapteur == "Non précisé"){
-  typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) ou 4 (RuggedTROLL) : ")
-  if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3 | typecapteur == 4)) {stop("Valeur non disponible")}
+  typecapteur = readline(prompt = "Type de capteur piézométrique : 1 (Hobo) ou 2 (Diver) ou 3 (VuSitu) ou 4 (RuggedTROLL) ou 5 (Aquaread LeveLine) : ")
+  if (!(typecapteur == 1 | typecapteur == 2 | typecapteur == 3 | typecapteur == 4 | typecapteur == 5)) {stop("Valeur non disponible")}
   if (typecapteur == 1) {typecapteur <- "Hobo"}
   if (typecapteur == 2) {typecapteur <- "Diver"}
   if (typecapteur == 3) {typecapteur <- "VuSitu"}
   if (typecapteur == 4) {typecapteur <- "RuggedTROLL"}
+  if (typecapteur == 5) {typecapteur <- "Aquaread LeveLine"}
   }
   
   typedonnee <- NA
@@ -257,6 +258,17 @@ dataaimporter <-
       mutate(Date = ymd(Date)) %>%
       dplyr::select(Date, Heure, Piézométrie, Thermie)
   }
+  if(typecapteur == "Aquaread LeveLine"){ # très proche de `VuSitu`
+    dataaimporter <- 
+      read_tsv(Localisation, skip = 4, col_names = c("Date", "Piézométrie", "Thermie"), col_types = "ccc") %>%
+      mutate(Thermie = as.numeric(sub(",", ".", Thermie))) %>% 
+      mutate(Piézométrie = as.numeric(sub(",", ".", Piézométrie))) %>% 
+      mutate(Date = dmy_hms(Date)) %>%
+      mutate(Heure = format(Date, format="%H:%M:%S")) %>% 
+      mutate(Datefine = Date) %>% 
+      mutate(Date = ymd(format(Date, format="%Y-%m-%d"))) %>% 
+      dplyr::select(Date, Heure, Piézométrie, Thermie)
+  }
   
   dataaimporter <- 
     dataaimporter %>% 
@@ -264,7 +276,7 @@ dataaimporter <-
     mutate(Heure = as.character(Heure)) %>% 
     tidyr::gather(typemesure, Valeur, Piézométrie:Thermie) %>% 
     mutate(unite = ifelse(typemesure == "Thermie", "°C", NA_character_)) %>% 
-    mutate(unite = ifelse(typemesure == "Piézométrie" & (typecapteur == "Hobo" | typecapteur == "RuggedTROLL"), "kPa", unite)) %>% 
+    mutate(unite = ifelse(typemesure == "Piézométrie" & (typecapteur == "Hobo" | typecapteur == "RuggedTROLL" | typecapteur == "Aquaread LeveLine"), "kPa", unite)) %>% 
     mutate(unite = ifelse(typemesure == "Piézométrie" & (typecapteur == "Diver" | typecapteur == "VuSitu"), "cm H2O", unite)) %>% 
     mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Baro", "Thermie barométrique", typemesure)) %>% 
     mutate(typemesure = ifelse(typemesure == "Thermie" & typedonnee == "Piézo", "Thermie piézométrique", typemesure)) %>% 
