@@ -32,7 +32,7 @@ BDD.ouverture <- function(
     utilisateur <- "baptiste"
     client <- "machineordinaire"
     }
-  
+
   if(Sys.getenv("RSTUDIO_USER_IDENTITY") != "bapth"){
   
   #### Version serveur ou version client classique ####
@@ -117,8 +117,10 @@ if(is.na(utilisateur) == TRUE){
 ## Si utilisateur connu ##
 if(!is.na(utilisateur)){
   if(Type == "Data" & exists("dbD") == TRUE){
-    if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
-      RPostgreSQL::dbDisconnect(dbD)}
+    # if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
+    if(DBI::dbIsValid(dbD) == FALSE){
+      # RPostgreSQL::dbDisconnect(dbD)}
+      RPostgres::dbDisconnect(dbD)}
   }
   if(Type == "Data"){
     if(is.na(motdepasse)){
@@ -130,7 +132,8 @@ if(!is.na(utilisateur)){
       }
     }
     
-    dbD <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
+    # dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL,
+    dbD <- RPostgres::dbConnect(RPostgres::Postgres(),
                                   dbname = "eaux-jura-sig-data",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
@@ -140,11 +143,14 @@ if(!is.na(utilisateur)){
   }
   
   if(Type == "Poissons" & exists("dbP") == TRUE){
-    if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
-      RPostgreSQL::dbDisconnect(dbP)}
+    # if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
+    if(DBI::dbIsValid(dbP) == FALSE){
+      # RPostgreSQL::dbDisconnect(dbP)}
+      RPostgres::dbDisconnect(dbP)}
   }
   if(Type == "Poissons"){
-    dbP <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
+    # dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL,
+    dbP <- RPostgres::dbConnect(RPostgres::Postgres(),
                                   dbname = "multifish",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
@@ -165,12 +171,15 @@ if(is.na(utilisateur)){
   if(is.na(motdepasse)){motdepasse <- rstudioapi::askForPassword(prompt = "Mot de passe")} # Demande du mdp si celui-ci est vide après la détection automatique #
 
   if(Type == "Data" & exists("dbD") == TRUE){
-    if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
-      RPostgreSQL::dbDisconnect(dbD)}
+    # if(RPostgreSQL::isPostgresqlIdCurrent(dbD) == FALSE){
+    if(DBI::dbIsValid(dbD) == FALSE){
+      # RPostgreSQL::dbDisconnect(dbD)}
+      RPostgres::dbDisconnect(dbD)}
   }
   if(Type == "Data"){
     
-    dbD <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
+    # dbD <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL,
+    dbD <- RPostgres::dbConnect(RPostgres::Postgres(),
                                   dbname = "eaux-jura-sig-data",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
@@ -180,11 +189,14 @@ if(is.na(utilisateur)){
   }
   
   if(Type == "Poissons" & exists("dbP") == TRUE){
-    if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
-      RPostgreSQL::dbDisconnect(dbP)}
+    # if(RPostgreSQL::isPostgresqlIdCurrent(dbP) == FALSE){
+    if(DBI::dbIsValid(dbP) == FALSE){
+      # RPostgreSQL::dbDisconnect(dbP)}
+      RPostgres::dbDisconnect(dbP)}
   }
   if(Type == "Poissons"){
-    dbP <- RPostgreSQL::dbConnect(RPostgres::Postgres(),
+    # dbP <- RPostgreSQL::dbConnect(RPostgreSQL::PostgreSQL,
+    dbP <- RPostgres::dbConnect(RPostgres::Postgres(),
                                   dbname = "multifish",
                                   host = "database.eaux-jura.com",
                                   port = 3254,
