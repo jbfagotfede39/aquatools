@@ -105,7 +105,7 @@ captures_v3 <-
 captures_v4 <- 
   captures_v3 %>% 
   rowwise() %>% # groupement par ligne
-  mutate(taillemoy = as.double(mean(c(tailleminimum,taillemaximum)))) %>% # Afin de calculer la taille moyenne pour les lots
+  mutate(taillemoy = round(mean(c(tailleminimum,taillemaximum))), 0) %>% # Afin de calculer la taille moyenne pour les lots
   ungroup() %>% # Afin d'enlever le groupement par ligne lié à rowwise
   mutate(taillemoy = case_when(.$nombre == 1 ~ .$taillemaximum,
                                .$nombre != 1 ~ .$taillemoy)) # Afin de compléter les tailles pour les poissons individuels
