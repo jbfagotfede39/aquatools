@@ -5,7 +5,7 @@
 #' @param data Data.frame contenant a minima une colonne chmes_date et une colonne chmes_valeur
 #' @param titre Titre du graphique (vide par défaut)
 #' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
-#' @param typemesure Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, \code{Piézométrie compensée}, \code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.
+#' @param typemesure Ignoré si le champ chmes_typemesure est présent dans data. Défini le type de données et modifie les légendes en fonction (\code{Thermie}, \code{Thermie barométrique}, \code{Thermie piézométrique}, \code{Barométrie}, \code{Piézométrie}, \code{Piézométrie brute}, \code{Piézométrie NGF}, \code{Oxygénation}, \code{Chlorophylle a}, \code{Hydrologie}, \code{Pluviométrie}.
 #' @param duree Si \code{Complet} (par défault), affichage de l'année complète.  Si \code{Relatif}, affichage uniquement de la période concernée.
 #' @param complement Si \code{TRUE}, complément de la chronique avec les données manquantes (\code{FALSE} par défaut)
 #' @param Vmm30j Si \code{FALSE} (par défault), n'affiche pas les
@@ -42,7 +42,7 @@ chronique.figure <- function(
     Ymax = NA,
     save = FALSE,
     projet = NA_character_,
-    format=".png")
+    format = ".png")
   {
 
   
@@ -202,18 +202,19 @@ if(Contexte$nStations > 16) PaletteSite <- scales::dichromat_pal("DarkRedtoBlue.
 ##### Plot temps relatif sur l'échantillon de données #####
 ## Version grisée avec enveloppe sur fond clair (min/max) ##
 plotrelatif <- ggplot(syntjour, aes(chmes_date))
-if(Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha=0.2)
+if(Contexte$nStations == 1) plotrelatif <- plotrelatif + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha = 0.2)
 if(Contexte$nStations != 1) plotrelatif <- plotrelatif + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
 # if(Contexte$nStations != 1) plotrelatif <- plotrelatif + scale_colour_manual(values = PaletteSite)
 if(Vmm30j == T & Contexte$nStations == 1){
-  plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
+  plotrelatif <- plotrelatif + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface = "bold")
   plotrelatif <- plotrelatif + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)
   }
 if(length(unique(format(syntjour$chmes_date,"%m"))) < 9) plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b %Y")
 if(length(unique(format(syntjour$chmes_date,"%m"))) >= 9) plotrelatif <- plotrelatif + scale_x_date(date_labels = "%b %Y", date_minor_breaks = "1 month")
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotrelatif <- plotrelatif + ylim(0,as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotrelatif <- plotrelatif + ylim(as.numeric(Ymin),as.numeric(Ymax))
-plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
+plotrelatif <- plotrelatif + labs(x = "", y = legendeY, title = titre)
+if(Contexte$nStations != 1) plotrelatif <- plotrelatif + labs(color = legendeTitre) # Pour changer le titre
 if(nchar(origine_donnees) != 0) plotrelatif <- plotrelatif + labs(caption = glue("Source des données : {origine_donnees}"))
 plotrelatif <- plotrelatif + theme_minimal()
 
@@ -234,18 +235,19 @@ if(duree == "Relatif"){
 ## Version grisée avec enveloppe sur fond clair (min/max) ##
 # if(length(unique(format(syntjour$chmes_date,"%Y"))) == 1){
   plotabsolu <- ggplot(syntjour, aes(chmes_date))
-  if(Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha=0.2)
+  if(Contexte$nStations == 1) plotabsolu <- plotabsolu + geom_ribbon(aes(ymin = VMinJ, ymax = VMaxJ), alpha = 0.2)
   if(Contexte$nStations != 1) plotabsolu <- plotabsolu + geom_line(aes(y = VMoyJ, colour = chmes_coderhj))
   if(Contexte$nStations != 1) plotabsolu <- plotabsolu + scale_colour_manual(values = PaletteSite)
   if(Vmm30j == T & Contexte$nStations == 1){
-    plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface="bold")
+    plotabsolu <- plotabsolu + geom_text(data = data.label, aes(x = xtext , y = ytext , label = label ), size = 4, color = "red", fontface = "bold")
     plotabsolu <- plotabsolu + geom_segment(data = data.label, aes(x = xdeb, y = ytmm, xend = xfin, yend = ytmm), color = "red", size = 2)
     }
-  if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotabsolu <- plotabsolu + ylim(-1,as.numeric(Ymax))
-  if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotabsolu <- plotabsolu + ylim(as.numeric(Ymin),as.numeric(Ymax))
+  if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) plotabsolu <- plotabsolu + ylim(-1, as.numeric(Ymax))
+  if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) plotabsolu <- plotabsolu + ylim(as.numeric(Ymin), as.numeric(Ymax))
   if(length(unique(format(syntjour$chmes_date,"%Y"))) < 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(as.numeric(format(syntjour$chmes_date[1],"%Y"))-1,"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
   if(length(unique(format(syntjour$chmes_date,"%Y"))) >= 2) plotabsolu <- plotabsolu + scale_x_date(date_minor_breaks = "1 month", limits = as.Date(c(paste(format(syntjour$chmes_date[1],"%Y"),"-10-01",sep=""),paste(format(syntjour$chmes_date[length(syntjour$chmes_date)],"%Y"),"-09-30",sep=""))))
-  plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
+  plotabsolu <- plotabsolu + labs(x = "", y = legendeY, title = titre)
+  if(Contexte$nStations != 1) plotabsolu <- plotabsolu + labs(color = legendeTitre) # Pour changer le titre
   if(nchar(origine_donnees) != 0) plotabsolu <- plotabsolu + labs(caption = glue("Source des données : {origine_donnees}"))
   plotabsolu <- plotabsolu + theme_minimal()
 # }

@@ -47,12 +47,6 @@ chronique.figure.interannuelle <- function(
   
   Sys.setlocale(locale = "fr_FR.UTF-8") # Afin d'avoir les abréviations des mois en français sur les figures
   
-##### -------------- A FAIRE -------------- #####
-# Implantation de chronique.figure.parametres()
-# Création d'une fonction chronique.palette(), à mutualiser avec chronique.figure.cumul() et chronique.figure.interannuelle()
-# Vérifier qu'il y a bien un filtre sur les dix dernières années ?
-##### ##### ##### ##### ##### ##### ##### ##### 
-
   #### Contexte ####
   contexte <- chronique.contexte(data)
   # chmes_typemesure
@@ -182,7 +176,7 @@ if(style == "boxplot"){ggplot <- ggplot + geom_boxplot()}
 if(style == "violon"){ggplot <- ggplot + geom_violin()}
 if(is.na(Ymax) == FALSE & is.na(Ymin) == TRUE) ggplot <- ggplot + ylim(0, as.numeric(Ymax))
 if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numeric(Ymin), as.numeric(Ymax))
-ggplot <- ggplot + labs(x = "Année", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
+ggplot <- ggplot + labs(x = "Année", y = legendeY, title = titre) # Pour changer le titre
 if(nchar(origine_donnees) != 0) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
 ggplot <- ggplot + theme_minimal()
 # Ajout des valeurs journalières annuelles remarquables #

@@ -1,5 +1,25 @@
 # NEWS - aquatools
 
+## 0.0.192 - 2026-06-03
+### Ajouts
+- `chronique.figure.horizonplot` : création
+- `filtrage.estival` : création
+- `formatage.mois` : création
+
+### Modifications
+- MAJ des jeux de données `chronique_exemple`, `chronique_structure` et `chronique_structure_hors_bdd`
+- `chronique.figure.classesdensite` : 
+  * ajout de `adjust = 0.1` dans `geom_density` car il y avait un effet de lissage bien trop important (valeur par défaut de `1`) (close #118)
+  * modification des exemples avec ajout de `filtrage.estival`
+- `chronique.ouverture` : 
+  * optimisation suite à une lenteur lors de traitement de jeu de données avec environ 20 lignes, car traitement ligne à ligne et présence de nombreuses lignes vides en-dessous (`NA`)
+  * correction du message d'erreur concernant des stations sans coordonnées, qui affichait mal la liste des stations concernées
+
+### Corrections
+- `chronique.figure` : correction d'une syntaxe afin de supprimer un avertissement systématique en cas de production de vues avec une unique station (test 2 de `2026-01-23_Test_fonction_chronique.traitement_v2.R`)
+- `chronique.figure.classesdensite` : correction d'une titre en fonction de plusieurs années/stations
+- `chronique.figure.interannuelle` : correction d'une syntaxe afin de supprimer un avertissement systématique en cas de production de vues avec une unique station (test 2 de `2026-01-23_Test_fonction_chronique.traitement_v2.R`)
+
 ## 0.0.191 - 2026-04-01
 ### Ajouts
 - `BDD.ouverture` : ajout de l'accès pour Baptiste (stagiaire)

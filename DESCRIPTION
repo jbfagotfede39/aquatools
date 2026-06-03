@@ -1,6 +1,6 @@
 Package: aquatools
 Title: Tools for freshwater managers
-Version: 0.0.191
+Version: 0.0.192
 Authors@R: 
     person("Jean-Baptiste", "Fagot", , "jean-baptiste.fagot@peche-jura.com", role = c("aut", "cre"))
 Maintainer: Jean-Baptiste Fagot <jean-baptiste.fagot@peche-jura.com>
@@ -21,6 +21,7 @@ Imports:
     dygraphs,
     fs,
     FSA,
+    ggHoriPlot,
     ggpattern,
     ggplot2,
     ggspatial,
@@ -54,7 +55,6 @@ Imports:
     stringi,
     stringr,
     suncalc,
-    tcltk,
     testit,
     tibble,
     tidyr,

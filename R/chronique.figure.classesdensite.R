@@ -23,7 +23,7 @@
 #' @export
 #' @examples
 #' mesures_exemple %>% filter(chmes_coderhj == "HER14-8") %>% filter(chmes_validation == "Validé") %>% filter(chmes_typemesure == "Thermie") %>% chronique.figure.classesdensite()
-#' mesures_exemple %>% filter(chmes_coderhj == "HER14-8") %>% filter(chmes_validation == "Validé") %>% filter(chmes_typemesure == "Thermie") %>% formatage.annee.biologique() %>% filter(chmes_anneebiol == 2021) %>% mutate(mois = format(ymd(chmes_date), "%m")) %>% filter(mois %in% c("06", "07", "08", "09")) %>% chronique.figure.classesdensite()
+#' mesures_exemple %>% filter(chmes_coderhj == "HER14-8") %>% filter(chmes_validation == "Validé") %>% filter(chmes_typemesure == "Thermie") %>% formatage.annee.biologique() %>% filter(chmes_anneebiol == 2021) %>% filtrage.estival() %>% chronique.figure.classesdensite()
 
 chronique.figure.classesdensite <- function(
   data = data,
@@ -100,7 +100,7 @@ chronique.figure.classesdensite <- function(
   #### Création de la vue ####
   # if(contexte$nstation == 1) ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, group = voyant_valeur, fill = voyant_valeur))
   ggplot <- ggplot(data_calculees, aes(chmes_date_anneeneutre, group = voyant_valeur, fill = voyant_valeur))
-  ggplot <- ggplot + geom_density(position = "fill", color = NA)
+  ggplot <- ggplot + geom_density(adjust = 0.1, position = "fill", color = NA)
   ggplot <- ggplot + scale_y_continuous(labels = scales::percent_format())
   ggplot <- ggplot + theme_minimal()
   ggplot <- ggplot + scale_fill_manual(values = palette)
@@ -114,7 +114,9 @@ chronique.figure.classesdensite <- function(
   if(contexte$nstation == 1 & contexte$nannee != 1) ggplot <- ggplot + facet_wrap(vars(chmes_anneebiol))
   if(contexte$nstation != 1 & contexte$nannee == 1) ggplot <- ggplot + facet_wrap(vars(chmes_coderhj))
   if(contexte$nstation != 1 & contexte$nannee != 1) ggplot <- ggplot + facet_wrap(chmes_anneebiol ~ chmes_coderhj)
-  ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station} - {contexte$annee}"))
+  # ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station} - {contexte$annee}"))
+  if(contexte$nstation == 1 & contexte$nannee != 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$station}"))
+  if(contexte$nstation != 1 & contexte$nannee == 1) ggplot <- ggplot + labs(subtitle = glue("{contexte$typemesure} : {contexte$annee}"))
   ggplot
   
   ### Enregistrement des vues ###

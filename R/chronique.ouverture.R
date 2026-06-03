@@ -928,6 +928,7 @@ if(!("chsta_coderhj" %in% names(dataaimporter))) stop(glue("Attention : pas de c
 ##### Transformation  #####
 dataaimporter <- 
   dataaimporter %>% 
+  filter(!is.na(chsta_coderhj)) %>% 
   rename_at(vars(contains("CodeRDT")), list(~str_replace(., "CodeRDT", "coderhj"))) %>%
   rename_at(vars(contains("X")), list(~str_replace(., "X", "coord_x"))) %>%
   rename_at(vars(contains("Y")), list(~str_replace(., "Y", "coord_y"))) %>%
@@ -1122,40 +1123,16 @@ dataaimporter <-
   dplyr::select(id, everything(), '_modif_utilisateur', '_modif_type', '_modif_date')
 
 ##### Test  #####
-if(dataaimporter %>% filter(is.na(chsta_coord_x)) %>% nrow() > 0) stop(glue("Présence de stations sans coordonnées : dataaimporter %>% filter(is.na(chsta_coord_x)) %>% distinct(chsta_coderhj)"))
+if(dataaimporter %>% filter(is.na(chsta_coord_x)) %>% nrow() > 0) stop(glue("Présence de stations sans coordonnées : {dataaimporter %>% filter(is.na(chsta_coord_x)) %>% distinct(chsta_coderhj)}"))
 }
 
 
 #### Commentaires ####
 if(Type == "Commentaires"){
   ## Chargement des données ##
-  Commentaires <-
-    structure(
-      list(
-        id = 2:3,
-        chres_coderhj = c("ORA2-7", "ANG0-7"),
-        chres_typemesure = c("Thermie", "Thermie"),
-        chres_anneebiol = c(2018L,
-                            2014L),
-        chres_commentaire = c(
-          "Test commentaire",
-          "La chronique de température fait état d'une amplitude totale annuelle moyenne, avec une température médiane assez faible. Les variations intra-journalières sont assez réduites, mais augmentent légèrement à partir du printemps et durant la période estivale. Les pics de chaleur restent toutefois à des valeurs peu importantes."
-        ),
-        `_modif_utilisateur` = c("jb", "jb"),
-        `_modif_type` = c("I",
-                          "I"),
-        `_modif_date` = structure(
-          c(1571991458.03569, 1574241840.5954),
-          class = c("POSIXct", "POSIXt"),
-          tzone = ""
-        )
-      ),
-      row.names = 1:2,
-      class = c("tbl_df",
-                "tbl", "data.frame")
-    )
+  Commentaires <- commentaires_structure %>% select(-id, -contains("_modif"))
   
-  dataaimporter <- read_excel(Localisation, sheet = feuille)
+  dataaimporter <- read_excel(Localisation, sheet = feuille) %>% mutate(chres_anneebiol = as.numeric(chres_anneebiol))
   if(all(names(dataaimporter) %in% names(Commentaires)) == FALSE) stop("Le fichier source de commentaires contient des noms de colonne à corriger")
   if(dataaimporter %>% nrow() == 0) dataaimporter <- commentaires_structure %>% select(contains("chres"))
 }
