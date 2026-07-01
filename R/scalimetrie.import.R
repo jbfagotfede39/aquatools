@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet d'importer et de formater les mesures de scalimétrie réalisée à l'aide du logiciel Mosaic de la loupe binoculaire avec caméra
 #' @name scalimetrie.import
-#' @param file Fichier à lire
+#' @param file Fichier à lire : formatage de référence : \code{44_ofb149_mesures_zx2_3}
 #' @keywords scalimétrie poissons
 #' @import tidyverse 
 #' @export
@@ -30,22 +30,22 @@ scalimetrie.import <- function(
   # Retourner les valeurs mal formées si elles existent
   noms_problemes <- 
     data %>%
-    filter(str_count(Name, "_") != 2) %>%
+    filter(str_count(Name, "_") != 4) %>%
     pull(Name)
   
   # si jamais il ya un fichier avec un nom mal formé : 
   if (length(noms_problemes) > 0) {
-    message("Noms mal formés dans le fichier : ", filename)
+    message("Noms mal formés (formatage de référence : 44_ofb149_mesures_zx2_3) dans le fichier : ", filename)
     print(noms_problemes)
   }
   
   # Continuer le traitement uniquement pour les noms bien formés
   data_v2 <- 
     data %>%
-    filter(str_count(Name, "_") == 2) %>%
-    separate(Name, into = c("id", "id_poissons", "type"), sep = "_", remove = TRUE) %>% 
-    mutate(type = str_replace(type, ".xlsx", "")) %>% 
-    mutate(type = str_replace(type, ".txt", ""))
+    filter(str_count(Name, "_") == 4) %>%
+    separate(Name, into = c("id", "id_poissons", "type", "zoom", "replicat"), sep = "_", remove = TRUE) %>% 
+    mutate(replicat = str_replace(replicat, ".xlsx", "")) %>% 
+    mutate(replicat = str_replace(replicat, ".txt", ""))
   
   #### Sortie ####
   return(data_v2)

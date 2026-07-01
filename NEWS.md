@@ -1,5 +1,29 @@
 # NEWS - aquatools
 
+## 0.0.193 - 2026-07-01
+### Ajouts
+- `formatage.liste` : création
+- `hydrologie.enquetedeaue` : création
+- `hydrologie.hubeau.onde` : création
+- `MI.SANDRE` : amélioration de la documentation
+- `scalimetrie.formatage.retrocalcul` : 
+  * ajout d'un warning dans le cas de la suppression de 0+
+  * ajout de la gestion des réplicats, car auparavant uniquement géré sur id
+- `scalimetrie.import` : 
+  * précision du format de nom de fichier en entrée
+  * ajout de la gestion des réplicats
+  * ajout de la gestion du niveau de zoom
+
+### Modifications
+- `chronique.figure.pluviometrie` : désactivation temporaire de l'option de francisation, en lien avec #138
+  
+### Corrections
+- `chronique.figure.interannuelle` : correction d'une syntaxe problématique relative au paramètre `origine_donnees`
+- `chronique.vue.dynamique` : correction d'une variable mal nommée
+- `poissons.captures` : correction du datatype `int64` généré par la nouvelle interface vers la base de données en `int`
+- `scalimetrie.formatage.retrocalcul` : correction du calcul de `total_length_μm`
+- `SIG.style.qgis` : correctif car non fonctionnel
+
 ## 0.0.192 - 2026-06-03
 ### Ajouts
 - `chronique.figure.horizonplot` : création

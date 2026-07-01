@@ -91,7 +91,8 @@ chronique.figure.pluviometrie <- function(
   #### Représentation ####
   gg_pluvio <- ggplot(syntjour)
   gg_pluvio <- gg_pluvio + geom_bar(aes(x = chmes_date, y = VSommeJ), stat = "identity", fill = "#3288BD", alpha = 0.8)
-  gg_pluvio <- gg_pluvio + scale_x_date(labels = scales::date_format("%b", locale = "fr"), date_minor_breaks = "1 month")
+  # gg_pluvio <- gg_pluvio + scale_x_date(labels = scales::date_format("%b", locale = "fr"), date_minor_breaks = "1 month") # Retrait temporaire car fait crasher le calcul
+  gg_pluvio <- gg_pluvio + scale_x_date(date_minor_breaks = "1 month")
   if(type == "descendant") gg_pluvio <- gg_pluvio + scale_y_reverse()
   gg_pluvio <- gg_pluvio + labs(x = "", y = "Pluviométrie (mm/j)")
   if(nchar(origine_donnees) != 0) gg_pluvio <- gg_pluvio + labs(caption = glue("Source des données : {origine_donnees}"))

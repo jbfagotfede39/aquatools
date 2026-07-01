@@ -23,7 +23,7 @@ SIG.style.qgis <- function(
   #### Nettoyage & reformatage ####
   ##### Extraction #####
   data_parse <- 
-    data %>% 
+    data[1] %>% 
     read_xml()
   
   data_parse_rules <-

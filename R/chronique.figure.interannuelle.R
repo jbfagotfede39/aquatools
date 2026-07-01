@@ -238,7 +238,7 @@ if(is.na(Ymax) == FALSE & is.na(Ymin) == FALSE) ggplot <- ggplot + ylim(as.numer
 ggplot <- ggplot + scale_x_date(date_labels = "%b", date_minor_breaks = "1 month")
 if(contexte$nannee != 1 | contexte$nstation != 1) ggplot <- ggplot + scale_colour_manual(values = PaletteCouples)
 ggplot <- ggplot + labs(x = "", y = legendeY, title = titre, color = legendeTitre) # Pour changer le titre
-if(nchar(legende) != 0) ggplot <- ggplot + labs(caption = legende)
+if(nchar(origine_donnees) != 0) ggplot <- ggplot + labs(caption = glue("Source des données : {origine_donnees}"))
 ggplot <- ggplot + theme_minimal()
 }
 

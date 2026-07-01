@@ -18,7 +18,7 @@ chronique.vue.dynamique <- function(
   
   ##### Nettoyage & reformatage #####
   data_v2 <-
-    data_to_add %>%
+    data %>%
     formatage.time() %>% 
     xts(x = .$chmes_valeur, order.by = .$time) %>% 
     dygraph() %>% 

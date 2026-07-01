@@ -7,9 +7,10 @@
 MI.SANDRE(data)
 }
 \description{
-Ajout des codes SANDRE et du nom du taxon de rang inférieur (espèce -> genre -> etc.) à partir d'un tableau issu de MI.systematique
+Ajout des codes SANDRE et du nom du taxon de rang inférieur (espèce -> genre -> etc.) à partir d'un tableau issu de \code{MI.systematique}
 }
 \examples{
 MI.SANDRE(data)
+data \%>\% MI.systematique() \%>\% MI.SANDRE()
 }
 \keyword{donnees}

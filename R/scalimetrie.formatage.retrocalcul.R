@@ -17,8 +17,8 @@ scalimetrie.formatage.retrocalcul <- function(
 {
   
   #### Test de cohérence ####
-  # if(is.na(lectures)) stop("Des lectures d'âge doivent être fournies")
-  # if(is.na(mesures)) stop("Les mesures des stries de croissance doivent être fournies")
+  # if(is.na(lectures)) stop("Des lectures d'âge doivent être fournies") # Ne fonctionne pas en l'état du fait de problèmes de formats entre valeur simple vs dataframe normalement fourni
+  # if(is.na(mesures)) stop("Les mesures des stries de croissance doivent être fournies") # Ne fonctionne pas en l'état du fait de problèmes de formats entre valeur simple vs dataframe normalement fourni
   
   #### Nettoyage & reformatage ####
   data_sortie <-
@@ -40,7 +40,7 @@ scalimetrie.formatage.retrocalcul <- function(
   data_sortie_v2 <-
     data_sortie %>% 
     # Calcul de la distance réelle entre le centre de l'écaille et le marquage
-    group_by(id) %>%
+    group_by(id, replicat) %>%
     mutate(
       Length_cumul_μm = if_else(
         row_number() == 1,
@@ -49,9 +49,27 @@ scalimetrie.formatage.retrocalcul <- function(
       )
     ) %>%
     ungroup() %>%
-    select(-Length_μm) %>% 
+    group_by(id, replicat) %>%
+    mutate(total_length_μm = max(Length_cumul_μm)) %>% 
+    ungroup() %>%
+    select(-Length_μm)
+  
+  data_sortie_v2_nb <- 
+    data_sortie_v2 %>% 
+    group_by(id_poissons, replicat) %>%
+    count() %>%
+    filter(n == 1) %>% # Pour observer les individus 0+
+    ungroup() %>% 
+    distinct(id_poissons)
+  
+  if(data_sortie_v2_nb %>% nrow() == 1) warning(glue("L'individu suivant a été supprimé du traitement car c'est un 0+ : {data_sortie_v2_nb$id_poissons}"))
+  if(data_sortie_v2_nb %>% nrow() > 1) warning(glue("Les individus suivants ont été supprimés du traitement car ce sont des 0+ : {glue_collapse(data_sortie_v2_nb$id_poissons, sep = ', ', last = ' et ')}"))
+  
+  data_sortie_v3 <-
+    data_sortie_v2 %>% 
+    filter(total_length_μm != Length_cumul_μm) %>% 
     # Ajout de suffixe dans les valeurs de la colonne "type" pour le format large
-    group_by(id) %>%
+    group_by(id, replicat) %>%
     mutate(type = paste0(type, "_position_", row_number())) %>% # Ajouter les positions
     ungroup() %>% 
     # Transformation en format large et ajout de la colonne "total"
@@ -59,10 +77,7 @@ scalimetrie.formatage.retrocalcul <- function(
       names_from = type, # Utiliser les valeurs de `type` comme noms de colonnes
       values_from = Length_cumul_μm # Utiliser les valeurs de `Length_cumul_μm` comme contenu
     ) %>%
-    mutate(
-      total_length_μm = rowSums(across(starts_with("mesures")), na.rm = TRUE) # Somme des colonnes "mesures"
-    ) %>%
-    select(id, contains("id_poissons"), espece, taille, poids, age, total_length_μm, starts_with("mesures")) %>% 
+    select(id, contains("id_poissons"), espece, taille, poids, age, replicat, total_length_μm, starts_with("mesures")) %>% 
     # Changement des noms de colonnes
     rename_with(
       .cols = starts_with("mesures_position"),
@@ -72,12 +87,12 @@ scalimetrie.formatage.retrocalcul <- function(
            agecap = age, 
            lencap = taille) 
   
-  data_sortie_v3 <- 
-    data_sortie_v2 %>% 
+  data_sortie_v4 <- 
+    data_sortie_v3 %>% 
     filter(!is.na(agecap)) %>% 
     arrange(lencap)
   
   #### Sortie ####
-  return(data_sortie_v3)
+  return(data_sortie_v4)
   
 } # Fin de la fonction

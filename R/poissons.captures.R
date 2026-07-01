@@ -88,6 +88,7 @@ colnames(captures)[9] <- "observations_cap" # car présence de plusieurs colonne
 captures_v2 <- 
   captures %>% 
   dplyr::select(codecapture, codeplacette, codeoperation, nom, datedebut, numerodepassage, codeespece, tailleminimum, taillemaximum, nombre, poids, observations_cap, profondeurcapture) %>% 
+  mutate(across(c(codecapture, codeplacette, codeoperation, numerodepassage, tailleminimum, taillemaximum, nombre, poids), ~ as.integer(.x))) %>% 
   rename(observations = observations_cap) %>% # car présence de plusieurs colonnes observations
   {if(codeCapture == F) select(., -codecapture) else .} %>% 
   {if(codePlacette == F) select(., -codeplacette) else .} %>% 

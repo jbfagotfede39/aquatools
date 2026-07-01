@@ -7,7 +7,7 @@
 scalimetrie.import(file = NA_character_)
 }
 \arguments{
-\item{file}{Fichier à lire}
+\item{file}{Fichier à lire : formatage de référence : \code{44_ofb149_mesures_zx2_3}}
 }
 \description{
 Cette fonction permet d'importer et de formater les mesures de scalimétrie réalisée à l'aide du logiciel Mosaic de la loupe binoculaire avec caméra
