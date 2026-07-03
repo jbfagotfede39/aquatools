@@ -20,7 +20,7 @@ chronique.agregation(
 \arguments{
 \item{data}{Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur}
 
-\item{projet}{Nom du projet}
+\item{projet}{Nom du projet. Si vide, alors export directement dans le répertoire courant}
 
 \item{instantanne}{Si \code{TRUE} (par défaut), sortie des données instantannées}
 

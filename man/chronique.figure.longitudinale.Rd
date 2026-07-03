@@ -14,7 +14,7 @@ chronique.figure.longitudinale(
 )
 }
 \arguments{
-\item{data}{Dataframe issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de chsta_milieu et de chsta_distancesource}
+\item{data}{Dataframe issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de \code{chsta_milieu} et de \code{chsta_distancesource}}
 
 \item{titre}{Titre du graphique (vide par défaut)}
 

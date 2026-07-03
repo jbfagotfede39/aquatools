@@ -3,7 +3,7 @@
 #' Cette fonction permet de renommer des variables de traitement de données de chroniques
 #' @name chronique.variables.renommage
 #' @param data Data.frame contenant des variables à renommer
-#' @param formatentree Type de format de noms de champs en entrée : \code{Tous} (par défaut), ou bien uniquement pour convertir certains : \code{chmes}, \code{chmesgr}, \code{chsta}, \code{chsvi}, \code{chres}
+#' @param formatentree Type de format de noms de champs en entrée : \code{Tous} (par défaut), ou bien uniquement pour convertir certains : \code{Vide}, \code{chmes}, \code{chmesgr}, \code{chsta}, \code{chsvi}, \code{chres}
 #' @param formatsortie Type de format de noms de champs en sortie : \code{chmes} (par défaut), \code{chmesgr}, \code{chsta}, \code{chsvi}, \code{chres}, \code{param} (pour utilisation générique)
 #' @keywords chronique
 #' @import glue
@@ -16,7 +16,7 @@
 
 chronique.variables.renommage <- function(
   data = data,
-  formatentree = c("Tous", "chmes", "chmesgr", "chsta", "chsvi", "chres"),
+  formatentree = c("Tous", "Vide", "chmes", "chmesgr", "chsta", "chsvi", "chres"),
   formatsortie = c("chmes", "chmesgr", "chsta", "chsvi", "chres", "param")
   )
 {
@@ -31,7 +31,7 @@ chronique.variables.renommage <- function(
   listecompleteformatentree <- c("chmes", "chmesgr", "chsta", "chsvi", "chres")
   
   #### Renommage des champs ####
-  if(formatentree != "Tous_"){
+  if(formatentree %in% c("chmes", "chmesgr", "chsta", "chsvi", "chres")){
   data <-
     data %>% 
     rename_with(~str_replace(., formatentree, formatsortie), .cols = everything())
@@ -43,6 +43,12 @@ chronique.variables.renommage <- function(
       data %>% 
       rename_with(~str_replace(., listecompleteformatentree[i], formatsortie), .cols = everything())
     }
+  }
+    
+  if(formatentree %in% c("Tous_", "Vide_")){
+    data <-
+      data %>% 
+      rename_with(~str_c(formatsortie, "_", .), .cols = !contains("_"))
   }
   
   #### Mise en minuscules ####

@@ -928,6 +928,7 @@ if(!("chsta_coderhj" %in% names(dataaimporter))) stop(glue("Attention : pas de c
 ##### Transformation  #####
 dataaimporter <- 
   dataaimporter %>% 
+  mutate(chsta_coderhj = ifelse(is.na(chsta_coderhj), chsta_codemo, chsta_coderhj)) %>% 
   filter(!is.na(chsta_coderhj)) %>% 
   rename_at(vars(contains("CodeRDT")), list(~str_replace(., "CodeRDT", "coderhj"))) %>%
   rename_at(vars(contains("X")), list(~str_replace(., "X", "coord_x"))) %>%

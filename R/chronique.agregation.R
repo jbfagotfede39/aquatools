@@ -3,7 +3,7 @@
 #' Cette fonction permet d'agréger des chroniques de mesures (température, niveaux, etc.) à différentes fréquences (dans l'ordre : pas d'agrégation, jours, mois, années, chronique complète)
 #' @name chronique.agregation
 #' @param data Data.frame contenant a minima une colonne chmes_date, une colonne chmes_heure et une colonne chmes_valeur
-#' @param projet Nom du projet
+#' @param projet Nom du projet. Si vide, alors export directement dans le répertoire courant
 #' @param instantanne Si \code{TRUE} (par défaut), sortie des données instantannées
 #' @param quotidien Si \code{TRUE} (par défaut), agrégation journalière
 #' @param mensuel Si \code{TRUE} (par défaut), agrégation mensuelle
@@ -340,7 +340,8 @@ if(export == TRUE){
     wb_add_worksheet("ValComplet") %>% 
     wb_add_data(x = ValComplet, na.strings = "") %>% 
     wb_set_col_widths(cols = 1:20, widths = "auto") %>% 
-    wb_save(glue("./{projet}/Sorties/Données/Agrégations_diverses/{contexte$station}_données.xlsx"), overwrite = T)
+    {if(!is.na(projet)) wb_save(., glue("./{projet}/Sorties/Données/Agrégations_diverses/{contexte$station}_données.xlsx"), overwrite = T) else .} %>% 
+    {if(is.na(projet)) wb_save(., glue("{contexte$station}_données.xlsx"), overwrite = T) else .}
 }
 
 ## Dataframe vers R sous forme de listes imbriquées

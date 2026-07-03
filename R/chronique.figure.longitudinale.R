@@ -2,7 +2,7 @@
 #'
 #' Cette fonction permet de représenter sous forme de profil longitudinal des données de chroniques
 #' @name chronique.figure.longitudinale
-#' @param data Dataframe issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de chsta_milieu et de chsta_distancesource
+#' @param data Dataframe issu de la fonction chronique.resultats ou de la base de données Chroniques, avec jointure de \code{chsta_milieu} et de \code{chsta_distancesource}
 #' @param titre Titre du graphique (vide par défaut)
 #' @param origine_donnees Éventuelle source des données à afficher sur la figure (vide par défaut)
 #' @param format Définit le format d'enregistrement (par défaut .png)
@@ -24,7 +24,7 @@ chronique.figure.longitudinale <- function(
   origine_donnees = "",
   save = FALSE,
   projet = NA_character_,
-  format=".png"
+  format = ".png"
 )
 {
   
@@ -35,38 +35,39 @@ chronique.figure.longitudinale <- function(
   # Stations
   data <-
     data %>% 
-    rename_at(vars(contains("VMaxMoy30J")), list( ~ str_replace(., "VMaxMoy30J", "chres_vmaxmoy30j")))
+    chronique.variables.renommage(formatentree = "Vide", formatsortie = "chres") |> 
+    mutate(chsta_distancesource = as.numeric(chsta_distancesource))
   
   #### Contexte des données ####
-  Contexte <- chronique.contexte(data)
+  contexte <- chronique.contexte(data)
   
   #### Tests ####
-  if(Contexte$ntypemesure != 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
-  if(Contexte$nstation == 0 | Contexte$nannee == 0) stop("Aucune donnée dans la chronique à analyser")
-  if(Contexte$nstation <= 2) stop(glue("Seulement {Contexte$nstation} station(s) au sein du jeu de données"))
+  if(contexte$ntypemesure != 1) stop("Plusieurs chmes_typemesure au sein du jeu de données")
+  if(contexte$nstation == 0 | contexte$nannee == 0) stop("Aucune donnée dans la chronique à analyser")
+  if(contexte$nstation <= 2) stop(glue("Seulement {contexte$nstation} station(s) au sein du jeu de données"))
   if("chsta_milieu" %in% names(data) == FALSE) stop("Pas de champs chsta_milieu dans le jeu de données en entrée")
   if("chsta_distancesource" %in% names(data) == FALSE) stop("Pas de champs chsta_distancesource dans le jeu de données en entrée")
-  if(Contexte$nmilieu != 1 & ("chsta_distancesource_confluencedrainprincipal" %in% names(data) == FALSE)) stop("Pas de champs chsta_distancesource_confluencedrainprincipal dans le jeu de données en entrée")
+  if(contexte$nmilieu != 1 & ("chsta_distancesource_confluencedrainprincipal" %in% names(data) == FALSE)) stop("Pas de champs chsta_distancesource_confluencedrainprincipal dans le jeu de données en entrée")
   
   #### Calcul des distances à la source homogènes ####
-  if(Contexte$nmilieu != 1){
-    # ecosystemeppal <- tcltk::tk_select.list(sort(unlist(strsplit(Contexte$milieu, ";"))), multiple = F, title = "Écosystème principal")
+  if(contexte$nmilieu != 1){
+    # ecosystemeppal <- tcltk::tk_select.list(sort(unlist(strsplit(contexte$milieu, ";"))), multiple = F, title = "Écosystème principal")
     stop("Commande à remplacer pour supprimer la dépendance à tcltk::tk_select.list")
   }
   
   data <-
     data %>% 
-    {if(Contexte$nmilieu == 1) mutate(., distancesourcesynthetique = chsta_distancesource) else .} %>% 
-    {if(Contexte$nmilieu != 1) mutate(., distancesourcesynthetique = ifelse(chsta_milieu == ecosystemeppal, chsta_distancesource, chsta_distancesource_confluencedrainprincipal)) else .}
+    {if(contexte$nmilieu == 1) mutate(., distancesourcesynthetique = chsta_distancesource) else .} %>% 
+    {if(contexte$nmilieu != 1) mutate(., distancesourcesynthetique = ifelse(chsta_milieu == ecosystemeppal, chsta_distancesource, chsta_distancesource_confluencedrainprincipal)) else .}
   
   #### Paramètres de légende ####
-  parametres <- Contexte %>% chronique.figure.parametres(typefigure = "vmm30j")
+  parametres <- contexte %>% chronique.figure.parametres(typefigure = "vmm30j")
   legendeY <- parametres$legendeY
   legendeTitre <- parametres$legendeTitre
   typemesureTitreSortie <- parametres$typemesureTitreSortie
   
-  if(nchar(titre) == 0 & Contexte$nmilieu == 1) titre <- Contexte$milieu
-  if(nchar(titre) == 0 & Contexte$nmilieu != 1) titre <- ecosystemeppal
+  if(nchar(titre) == 0 & contexte$nmilieu == 1) titre <- contexte$milieu
+  if(nchar(titre) == 0 & contexte$nmilieu != 1) titre <- ecosystemeppal
 
   #### Calcul d'une clé par écosystème/année ####
   data <-
@@ -74,23 +75,27 @@ chronique.figure.longitudinale <- function(
     chronique.cle(formatcle = "MA")
   
   ## Palette de couleurs ##
-  if(Contexte$nannee != 1 | Contexte$nstation != 1){
+  if(contexte$nannee != 1 | contexte$nstation != 1){
     # data(PaletteAnnees) # Couleurs trop proches pour années successives
-    if(Contexte$nannee <= 11){PaletteCouples <- RColorBrewer::brewer.pal(Contexte$nannee, "Spectral")} #Set3
-    if(Contexte$nannee > 11){
-      colourCount <- Contexte$nannee
+    if(contexte$nannee <= 11){PaletteCouples <- RColorBrewer::brewer.pal(contexte$nannee, "Spectral")} #Set3
+    if(contexte$nannee > 11){
+      colourCount <- contexte$nannee
       getPalette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral")) #Set3
       PaletteCouples <- getPalette(colourCount)
     }
   }
     
   #### Représentation graphique
-  gg <- ggplot(data, aes(x=chsta_distancesource, y=chres_vmaxmoy30j, color = str_replace(Cle, "_", " - ")))
+  if(contexte$nmilieu == 1) gg <- ggplot(data, aes(x = chsta_distancesource, y = chres_vmaxmoy30j, colour = as.character(chres_anneevmm)))
+  if(contexte$nmilieu != 1) gg <- ggplot(data, aes(x = chsta_distancesource, y = chres_vmaxmoy30j, colour = str_replace(Cle, "_", " - ")))
   gg <- gg + geom_line()
+  gg <- gg + xlim(0, max(data$chsta_distancesource))
   gg <- gg + ylim(0, 29)
-  gg <- gg + labs(x = "Distance à la source (km)", y = expression(Tmm30j~(degree*C)), colour = "Milieu - Année biologique") # Pour changer le titre
-  # if(Contexte$nannee != 1 | Contexte$nstation != 1) gg <- gg + scale_colour_manual(values = PaletteCouples)
+  if(contexte$nmilieu == 1) gg <- gg + labs(x = "Distance à la source (km)", y = expression(Tmm30j~(degree*C)), colour = "Année biologique") # Pour changer le titre
+  if(contexte$nmilieu != 1) gg <- gg + labs(x = "Distance à la source (km)", y = expression(Tmm30j~(degree*C)), colour = "Milieu - Année biologique") # Pour changer le titre
+  # if(contexte$nannee != 1 | contexte$nstation != 1) gg <- gg + scale_colour_manual(values = PaletteCouples)
   gg <- gg + theme_minimal()
+  gg <- gg + labs(title = titre)
   if(nchar(origine_donnees) != 0) gg <- gg + labs(caption = glue("Source des données : {origine_donnees}"))
   gg <- gg + theme(axis.title.x = element_text(size=10),
                    axis.title.y = element_text(size=10)

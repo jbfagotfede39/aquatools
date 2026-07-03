@@ -6,14 +6,14 @@
 \usage{
 chronique.variables.renommage(
   data = data,
-  formatentree = c("Tous", "chmes", "chmesgr", "chsta", "chsvi", "chres"),
+  formatentree = c("Tous", "Vide", "chmes", "chmesgr", "chsta", "chsvi", "chres"),
   formatsortie = c("chmes", "chmesgr", "chsta", "chsvi", "chres", "param")
 )
 }
 \arguments{
 \item{data}{Data.frame contenant des variables à renommer}
 
-\item{formatentree}{Type de format de noms de champs en entrée : \code{Tous} (par défaut), ou bien uniquement pour convertir certains : \code{chmes}, \code{chmesgr}, \code{chsta}, \code{chsvi}, \code{chres}}
+\item{formatentree}{Type de format de noms de champs en entrée : \code{Tous} (par défaut), ou bien uniquement pour convertir certains : \code{Vide}, \code{chmes}, \code{chmesgr}, \code{chsta}, \code{chsvi}, \code{chres}}
 
 \item{formatsortie}{Type de format de noms de champs en sortie : \code{chmes} (par défaut), \code{chmesgr}, \code{chsta}, \code{chsvi}, \code{chres}, \code{param} (pour utilisation générique)}
 }
