@@ -362,7 +362,7 @@ for(i in 1:length(seuils)){
   if(Episodes$nbepisodesvmax != 0){
     Episodes <- 
       Episodes %>% 
-      bind_cols(AnalyseSeuilsTemp %>% filter(!is.na(EpisodeVmax)) %>% group_by(EpisodeVmax) %>% summarise(N = n()) %>% right_join(AnalyseSeuilsTemp, by = "EpisodeVmax") %>% filter(N == max(N, na.rm = T)) %>% filter(EpisodeVmax == max(EpisodeVmax, na.rm = T)) %>% summarise(datedebutepisodevmax = first(chmes_datefine), datefinepisodevmax = last(chmes_datefine)) %>% mutate(dureemaxepisodesvmax = (datefinepisodevmax - datedebutepisodevmax)))
+      bind_cols(AnalyseSeuilsTemp %>% filter(!is.na(EpisodeVmax)) %>% group_by(EpisodeVmax) %>% summarise(N = n()) %>% right_join(AnalyseSeuilsTemp, by = "EpisodeVmax") %>% filter(N == max(N, na.rm = T)) %>% filter(EpisodeVmax == max(EpisodeVmax, na.rm = T)) %>% summarise(datedebutepisodevmax = first(chmes_datefine), datefinepisodevmax = last(chmes_datefine)) %>% mutate(dureemaxepisodesvmax = as.numeric(difftime(datefinepisodevmax, datedebutepisodevmax, units = "hours")))) 
     }
   if(Episodes$nbepisodesvmax == 0){
     Episodes <- 
