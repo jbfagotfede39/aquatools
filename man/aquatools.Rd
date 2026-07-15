@@ -19,4 +19,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Jean-Baptiste Fagot \email{jean-baptiste.fagot@peche-jura.com}
 
+Authors:
+\itemize{
+  \item Jean-Baptiste Fagot \email{jean-baptiste.fagot@peche-jura.com}
+}
+
 }

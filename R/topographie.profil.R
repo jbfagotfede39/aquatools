@@ -54,7 +54,7 @@ topographie.profil <- function(
     st_nearest_points(transects_1) %>% # On obtient des LINESTRING avec le point de départ et d'arrivée de la plus courte distance entre chaque point et le transect
     cbind(leves_2 %>% 
             # select(tplv_coderhj, geom) %>%
-            dplyr::select(id, geom) %>%
+            dplyr::select(id, tplv_code, geom) %>%
             mutate(tplv_coord_x = st_coordinates(.)[,1]) %>%
             mutate(tplv_coord_y = st_coordinates(.)[,2]) %>%
             mutate(tplv_coord_z = st_coordinates(.)[,3]) %>%

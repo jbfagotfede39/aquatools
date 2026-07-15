@@ -1,5 +1,27 @@
 # NEWS - aquatools
 
+## 0.0.194 - 2026-07-15
+### Ajouts
+- `chronique.figure.longitudinale` : 
+  * Implémentation de `chronique.variables.renommage` (close #105)
+  * Refactoring de `Contexte` en `contexte`
+  * Gestion du format de `chsta_distancesource`, ce qui permet de résoudre un problème d'affichage très inesthétique
+  * Ajout d'un affichage depuis une distance à la source = 0
+  * Ajout de l'affichage du titre qui était absent
+- `chronique.ouverture` : ajout d'une récupération de `chsta_codemo` dans `chsta_coderhj` si `chsta_coderhj` vide
+- `chronique.variables.renommage` : ajout du `formatentree` : `Vide`, permettant de ne compléter que les champs ne contenant pas encore un intitulé
+- `topographie.profil` : ajout du `tplv_code` dans l'export
+
+### Modifications
+- `chronique.analyse` : modification de la formule de calcul de la durée max d'épisodes avec `difftime` afin d'avoir des unités homogènes et un affichage plus explicite
+- `chronique.agregation` : si `projet` vide, alors export directement dans le répertoire courant
+
+### Corrections
+- 
+
+### Suppressions
+- 
+
 ## 0.0.193 - 2026-07-01
 ### Ajouts
 - `formatage.liste` : création
