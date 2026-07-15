@@ -96,6 +96,7 @@ BDD.ouverture <- function(
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.local"){utilisateur <- "adrien"}
     if(system('uname -n',intern=T) == "Client_MBP-de-Adrien.cloud.peche-jura.com"){utilisateur <- "adrien"}
+    if(system('uname -n',intern=T) == "MBP-de-Mehdi-8"){utilisateur <- "mehdi"}
     if(system('uname -n',intern=T) == "Air-de-Malide"){utilisateur <- "malide"}
     if(system('uname -n',intern=T) == "MacBookesident6"){utilisateur <- "malide"}
     if(system('uname -n',intern=T) == "Air-de-Malide.lan"){utilisateur <- "malide"}
@@ -108,6 +109,7 @@ BDD.ouverture <- function(
 if(is.na(utilisateur) == TRUE){
   if(client == "serveur" & system('whoami',intern=T) == "jb") utilisateur <- "jb"
   if(client == "serveur" & system('whoami',intern=T) == "adrien") utilisateur <- "adrien"
+  if(client == "serveur" & system('whoami',intern=T) == "mehdi") utilisateur <- "mehdi"
   if(client == "serveur" & system('whoami',intern=T) == "malide") utilisateur <- "malide"
   if(client == "serveur" & system('whoami',intern=T) == "ubuntu") utilisateur <- "jb" # il faudrait automate dans l'absolu, mais pas possible d'actualiser des MV car automate n'est pas propriétaire de celles-ci
   }
