@@ -41,6 +41,8 @@ chronique.compensation.barometrie <- function(data,
   #### Contexte ####
   contexte_baro <- data %>% filter(grepl("aro", chmes_typemesure)) %>% chronique.contexte()
   contexte_piezo <- data %>% filter(grepl("iézo", chmes_typemesure)) %>% chronique.contexte()
+  contexte_baro_station <- data %>% filter(grepl("baro", chmes_coderhj)) %>% chronique.contexte()
+  contexte_piezo_station <- data %>% filter(!grepl("baro", chmes_coderhj)) %>% chronique.contexte()
   
   #### Test de cohérence ####
   if(contexte_baro$nstation != 1) stop(glue("Attention : il y a différentes stations de barométrie : {contexte_baro$station}"))
@@ -49,6 +51,8 @@ chronique.compensation.barometrie <- function(data,
   if(contexte_baro$nunite != 1) stop(glue("Attention : il y a différents unités de barométrie : {contexte_baro$unite}"))
   if(contexte_piezo$nunite != 1) stop(glue("Attention : il y a différents unités de piézométrie : {contexte_piezo$unite}"))
   if(contexte_piezo$unite != contexte_baro$unite) stop(glue("Attention : il y a différentes unités entre piézométrie et barométrie : respectivement {contexte_piezo$unite} et {contexte_baro$unite}"))
+  if(contexte_baro_station$ntypemesure != 1) stop(glue("Présence de plusieurs types de données pour les données de la station barométrique : {contexte_baro_station$typemesure}"))
+  if(contexte_baro_station$ntypemesure == 1 & contexte_baro_station$typemesure != "Barométrie") stop(glue("Les données de la station barométrique ne sont pas de la barométrie mais {contexte_baro_station$typemesure}"))
   
   # Test du nb de mesures pas uniques #
   baro_avec_doublons <-
@@ -84,6 +88,8 @@ chronique.compensation.barometrie <- function(data,
     
     ## Identification de la colonne de barométrie ##
     baro_name <- data_v3 %>% select(contains("baro")) %>% names()
+    
+    if(baro_name %>% length() > 1) stop(glue("Présence de plusieurs stations avec données barométriques : glue_collapse(baro_name, sep = ' ,', last = ' et ')")
     
     ## Éventuel complément des premières et dernières données de barométrie qui ne doivent pas être des NA
     # Identifier l'index des premières et dernières valeurs non-NA

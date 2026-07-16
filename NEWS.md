@@ -1,5 +1,9 @@
 # NEWS - aquatools
 
+## 0.0.195 - 2026-07-16
+### Ajouts
+- `chronique.compensation.barometrie` : ajout de tests de vérification de cohérence de données en entrées (close #150) - Données initiales mal formatées en base, mais ajout par précaution ultérieure
+
 ## 0.0.194 - 2026-07-15
 ### Ajouts
 - `chronique.figure.longitudinale` : 
@@ -15,12 +19,6 @@
 ### Modifications
 - `chronique.analyse` : modification de la formule de calcul de la durée max d'épisodes avec `difftime` afin d'avoir des unités homogènes et un affichage plus explicite
 - `chronique.agregation` : si `projet` vide, alors export directement dans le répertoire courant
-
-### Corrections
-- 
-
-### Suppressions
-- 
 
 ## 0.0.193 - 2026-07-01
 ### Ajouts
